@@ -32,38 +32,17 @@
             overflow-x: hidden;
         }
 
-        /* --- 🎨 30S MULTI-COLOR INK BACKGROUND --- */
+        /* --- 🎨 MULTI-COLOR INK BACKGROUND --- */
         #intro-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000; z-index: 9999;
+            display: flex; justify-content: center; align-items: center;
+            pointer-events: none; transition: opacity 0.5s ease;
         }
 
-        .ink-container {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0; left: 0;
-            overflow: hidden;
-        }
-
-        .ink-blast {
-            position: absolute;
-            border-radius: 50%;
-            mix-blend-mode: screen;
-            opacity: 0;
-            filter: blur(8px);
-        }
-
+        .ink-container { position: absolute; width: 100%; height: 100%; top: 0; left: 0; overflow: hidden; }
+        .ink-blast { position: absolute; border-radius: 50%; mix-blend-mode: screen; opacity: 0; filter: blur(8px); }
         .ib-1 { background: var(--gold); width: 120px; height: 120px; top: 20%; left: 30%; animation: blast-cycle 6s infinite 0s; }
         .ib-2 { background: var(--blue-glow); width: 150px; height: 150px; top: 50%; left: 60%; animation: blast-cycle 7s infinite 1.5s; }
         .ib-3 { background: var(--pink); width: 100px; height: 100px; top: 70%; left: 20%; animation: blast-cycle 5s infinite 3s; }
@@ -77,122 +56,68 @@
             100% { transform: scale(12) translate(-5px, 40px); opacity: 0; }
         }
 
-        /* --- ⚠️ WARNING MODAL (DUAL LANGUAGE) --- */
+        /* --- ⚠️ WARNING MODAL --- */
         #warning-modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.95);
-            justify-content: center; align-items: center;
-            z-index: 10000;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.95); justify-content: center; align-items: center; z-index: 10000;
         }
-
         .warning-content {
-            background-color: #050a12;
-            border: 2px solid var(--gold);
-            padding: 40px;
-            border-radius: 20px;
-            max-width: 650px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 0 40px rgba(243, 186, 47, 0.4);
-            animation: modalFadeIn 0.5s ease;
+            background-color: #050a12; border: 2px solid var(--gold); padding: 40px; border-radius: 20px;
+            max-width: 650px; width: 90%; text-align: center; box-shadow: 0 0 40px rgba(243, 186, 47, 0.4); animation: modalFadeIn 0.5s ease;
         }
-
         @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
-        .warning-title { color: var(--red); font-size: 24px; margin-top: 0; font-weight: bold; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255, 77, 77, 0.3); }
+        .warning-title { color: var(--red); font-size: 24px; margin-top: 0; font-weight: bold; letter-spacing: 1px; }
         .warning-box-sinhala { font-size: 17px; line-height: 1.8; color: #fff; margin-bottom: 25px; font-weight: 500; }
         .warning-box-english { font-size: 14px; line-height: 1.6; color: var(--text-muted); margin-bottom: 35px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-style: italic; }
-
-        .agree-btn {
-            background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%);
-            color: #000; border: none; padding: 14px 40px; border-radius: 30px;
-            font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s;
-            box-shadow: 0 0 15px var(--gold-glow);
-        }
+        .agree-btn { background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); color: #000; border: none; padding: 14px 40px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .agree-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 25px rgba(243, 186, 47, 0.6); }
 
-        /* --- 🔒 PREMIUM CYBERPUNK LOCK BOX UI --- */
+        /* --- 🔒 CYBERPUNK LOCK BOX UI --- */
         .login-box {
-            background: linear-gradient(135deg, #070f1a 0%, #0c182b 100%);
-            border: 2px solid var(--blue-glow);
-            padding: 45px 35px;
-            border-radius: 24px;
-            text-align: center;
-            max-width: 420px;
-            width: 100%;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 25px rgba(0, 210, 255, 0.2);
-            display: none;
-            position: relative;
-            animation: lockFadeIn 0.8s ease;
+            background: linear-gradient(135deg, #070f1a 0%, #0c182b 100%); border: 2px solid var(--blue-glow);
+            padding: 45px 35px; border-radius: 24px; text-align: center; max-width: 420px; width: 100%;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 25px rgba(0, 210, 255, 0.2); display: none; animation: lockFadeIn 0.8s ease;
         }
-
         @keyframes lockFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .lock-icon-head { font-size: 55px; color: var(--gold); text-shadow: 0 0 20px var(--gold-glow); margin-bottom: 15px; animation: pulse-gold 2s infinite; }
-        @keyframes pulse-gold { 0% { transform: scale(1); } 50% { transform: scale(1.05); text-shadow: 0 0 30px rgba(243, 186, 47, 0.5); } 100% { transform: scale(1); } }
-
-        .login-box h2 { margin: 0 0 5px 0; font-size: 30px; background: linear-gradient(135deg, #fff 0%, var(--blue-glow) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; letter-spacing: 1px; }
+        .lock-icon-head { font-size: 55px; color: var(--gold); margin-bottom: 15px; animation: pulse-gold 2s infinite; }
+        @keyframes pulse-gold { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .login-box h2 { margin: 0 0 5px 0; font-size: 30px; background: linear-gradient(135deg, #fff 0%, var(--blue-glow) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
         .login-box p { color: var(--text-muted); font-size: 11px; letter-spacing: 3px; margin-bottom: 35px; text-transform: uppercase; }
-
-        .secure-badge-matrix {
-            font-size: 10px; font-family: monospace; color: var(--green);
-            background: rgba(0, 255, 136, 0.07); border: 1px solid rgba(0, 255, 136, 0.2);
-            padding: 6px 12px; border-radius: 6px; display: inline-block; margin-bottom: 25px;
-        }
-
+        .secure-badge-matrix { font-size: 10px; font-family: monospace; color: var(--green); background: rgba(0, 255, 136, 0.07); border: 1px solid rgba(0, 255, 136, 0.2); padding: 6px 12px; border-radius: 6px; display: inline-block; margin-bottom: 25px; }
         .input-group { margin-bottom: 25px; text-align: left; }
-        .input-group label { display: block; font-size: 11px; color: var(--blue-glow); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1.5px; font-weight: bold; }
-        .input-group input { width: 100%; background: #040912; border: 1px solid rgba(0, 210, 255, 0.2); padding: 14px; border-radius: 10px; color: white; font-size: 16px; box-sizing: border-box; transition: 0.3s; font-family: monospace; text-align: center; letter-spacing: 2px; }
+        .input-group label { display: block; font-size: 11px; color: var(--blue-glow); text-transform: uppercase; margin-bottom: 8px; font-weight: bold; }
+        .input-group input { width: 100%; background: #040912; border: 1px solid rgba(0, 210, 255, 0.2); padding: 14px; border-radius: 10px; color: white; font-size: 16px; box-sizing: border-box; font-family: monospace; text-align: center; letter-spacing: 2px; }
         .input-group input:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 15px var(--gold-glow); }
 
-        /* --- 🛡️ PREMIUM STATIC SYSTEM FOOTER PANEL --- */
-        .premium-footer {
-            position: fixed;
-            bottom: 0; left: 0; width: 100%;
-            background: linear-gradient(180deg, #050d1a 0%, #02060d 100%);
-            border-top: 1px solid rgba(0, 210, 255, 0.3);
-            padding: 12px 20px; z-index: 95;
-            box-shadow: 0 -5px 25px rgba(0,0,0,0.8);
-            box-sizing: border-box;
-            display: none;
-            text-align: center;
-        }
-        .footer-grid-text {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 30px;
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-        .footer-grid-text span { display: flex; align-items: center; gap: 8px; }
+        /* --- 🛡️ PREMIUM SYSTEM FOOTER PANEL --- */
+        .premium-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: linear-gradient(180deg, #050d1a 0%, #02060d 100%); border-top: 1px solid rgba(0, 210, 255, 0.3); padding: 12px 20px; z-index: 95; box-shadow: 0 -5px 25px rgba(0,0,0,0.8); box-sizing: border-box; display: none; text-align: center; }
+        .footer-grid-text { display: flex; justify-content: center; align-items: center; gap: 30px; font-size: 12px; font-weight: 600; }
         .footer-grid-text .sin { color: #fff; }
         .footer-grid-text .eng { color: var(--text-muted); border-left: 1px solid rgba(255,255,255,0.1); padding-left: 30px; }
 
-        /* --- MAIN DASHBOARD INTERFACE --- */
+        /* --- MAIN INTERFACE --- */
         .container { max-width: 1000px; width: 100%; margin: auto; display: none; padding-bottom: 80px; }
         .header { text-align: center; margin-bottom: 20px; }
         .header h1 { font-size: 42px; margin: 0; background: linear-gradient(135deg, #fff 0%, var(--gold) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px; }
         .header p { color: var(--text-muted); margin: 5px 0; font-size: 14px; letter-spacing: 4px; }
-        .user-expiry-badge { text-align: center; color: var(--gold); font-size: 13px; font-weight: bold; letter-spacing: 1px; margin-bottom: 25px; background: rgba(243, 186, 47, 0.08); padding: 8px 15px; border-radius: 20px; display: inline-block; border: 1px solid rgba(243, 186, 47, 0.2); }
+        .user-expiry-badge { text-align: center; color: var(--gold); font-size: 13px; font-weight: bold; background: rgba(243, 186, 47, 0.08); padding: 8px 15px; border-radius: 20px; display: inline-block; border: 1px solid rgba(243, 186, 47, 0.2); }
         .stats-panel { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 15px; padding: 20px; display: flex; justify-content: space-around; align-items: center; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .stat-item { text-align: center; }
-        .stat-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .stat-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; }
         .stat-value { font-size: 28px; font-weight: bold; color: #fff; }
 
         .gauge-section { text-align: center; margin: 40px 0; }
-        .scanning-coin { font-size: 22px; color: var(--gold); font-weight: bold; text-shadow: 0 0 10px var(--gold-glow); margin-bottom: 10px; height: 30px; }
+        .scanning-coin { font-size: 22px; color: var(--gold); font-weight: bold; height: 30px; }
         .meter-container { position: relative; width: 240px; height: 120px; margin: auto; overflow: hidden; }
         .gauge-bg { width: 200px; height: 200px; border-radius: 50%; border: 15px solid #16263d; box-sizing: border-box; position: absolute; top: 0; left: 20px; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); }
         .gauge-fill { position: absolute; top: 0; left: 20px; width: 200px; height: 200px; border-radius: 50%; border: 15px solid var(--blue-glow); box-sizing: border-box; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); transform: rotate(-180deg); transform-origin: center center; transition: transform 0.1s linear; }
         .gauge-percentage { position: absolute; bottom: 0px; left: 0; right: 0; font-size: 36px; font-weight: bold; color: #fff; }
 
-        .scan-init-btn, .rescan-btn { background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); color: #000; border: none; padding: 15px 40px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 25px; transition: 0.3s; box-shadow: 0 0 20px var(--gold-glow); }
+        .scan-init-btn, .rescan-btn { background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); color: #000; border: none; padding: 15px 40px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 25px; transition: 0.3s; }
         .scan-init-btn:hover, .rescan-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(243, 186, 47, 0.6); }
         .rescan-btn { display: none; font-size: 16px; padding: 10px 30px; margin-top: 15px; }
-        .live-status-indicator { color: var(--green); font-size: 14px; font-weight: bold; text-transform: uppercase; margin-top: 15px; letter-spacing: 2px; animation: blink 1.5s infinite; }
+        .live-status-indicator { color: var(--green); font-size: 14px; font-weight: bold; text-transform: uppercase; margin-top: 15px; animation: blink 1.5s infinite; }
+        @keyframes blink { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
 
         .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
         .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; position: relative; transition: all 0.3s ease; }
@@ -210,8 +135,6 @@
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 10100; }
         .modal-content { background: #0d1b2e; border: 1px solid var(--gold); padding: 30px; border-radius: 15px; max-width: 500px; width: 90%; position: relative; box-shadow: 0 0 30px var(--gold-glow); }
         .close-modal { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: var(--text-muted); }
-        .expired-screen { display: none; text-align: center; max-width: 500px; width: 100%; }
-        .expired-screen h1 { font-size: 44px; color: var(--red); margin-bottom: 10px; }
     </style>
 </head>
 <body onload="initiateSystemSequence()">
@@ -260,12 +183,14 @@
     <div style="text-align: center;">
         <div class="user-expiry-badge" id="user-expiry-text">PREMIUM ACCESS ACTIVE</div>
     </div>
+    
     <div class="stats-panel">
         <div class="stat-item"><div class="stat-label">Total Signals</div><div id="stat-total" class="stat-value">--</div></div>
         <div class="stat-item"><div class="stat-label">TP Hit</div><div id="stat-tp" class="stat-value" style="color: var(--green);">--</div></div>
         <div class="stat-item"><div class="stat-label">SL Hit</div><div id="stat-sl" class="stat-value" style="color: var(--red);">--</div></div>
         <div class="stat-item"><div class="stat-label">Win Rate</div><div id="stat-winrate" class="stat-value" style="color: var(--gold);">--</div></div>
     </div>
+    
     <div class="gauge-section">
         <div class="scanning-coin" id="scan-coin-name">READY TO ANALYZE PERPETUAL FUTURES MARKET</div>
         <div class="meter-container">
@@ -277,12 +202,8 @@
         <button class="rescan-btn" id="rescan-btn-id" onclick="fetchLiveSignalsFromFirebase()">🔄 Re-Scan Live Market</button>
         <div class="live-status-indicator" id="live-status-id" style="display: none;">🟢 AI Quantum Matrix: Connected & Syncing Live Updates</div>
     </div>
+    
     <div class="signal-grid" id="cards-container"></div>
-</div>
-
-<div class="expired-screen" id="expired-app">
-    <h1>❌ ACCESS EXPIRED</h1>
-    <p style="font-size: 18px; color: var(--text-muted);">Your membership key has reached its limit. Please contact administrator to renew access.</p>
 </div>
 
 <div class="modal" id="info-modal">
@@ -307,32 +228,27 @@
 <script>
     function initiateSystemSequence() {
         document.getElementById('warning-modal').style.display = 'flex';
+        // වෝනින් එක අස්සේ බැක්ග්‍රවුන්ඩ් එකේ විනාඩි 5ක් යනකන් ස්ක්‍රීන් එක ලස්සනට තබා ගැනීම
+        setInterval(syncStatsOnly, 3000); 
     }
 
     function triggerPremiumLockScreen() {
-        // "Agree" බටන් එක ක්ලික් කළ සැනින් තීන්ත ඇනිමේෂන් එක වහාම නැති වී යයි
         const overlay = document.getElementById('intro-overlay');
         if(overlay) {
             overlay.style.opacity = '0';
             setTimeout(() => overlay.style.display = 'none', 500);
         }
-        
         document.getElementById('warning-modal').style.display = 'none';
         document.getElementById('login-container').style.display = 'block';
-        document.getElementById('live-footer-ticker').style.display = 'block'; // ස්ථාවර ප්‍රිමියම් පැනලය පෙන්වීම
+        document.getElementById('live-footer-ticker').style.display = 'block';
     }
 
-    // --- Dynamic Auth & Signals Interface Logic ---
     const premiumKeysDatabase = {
-        "user777": { status: "active", expiry: "2027-12-31" },
-        "alpha123": { status: "active", expiry: "2027-06-15" },
         "pehelitha": { status: "active", expiry: "2028-12-31" },
         "ptest": { status: "active", expiry: "2028-12-31" }
     };
     
     let cryptoDataPool = [];
-    const coinNames = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT", "XRPUSDT", "AVAXUSDT"];
-    
     const firebaseSignalsUrl = "https://alphasigna-live-default-rtdb.firebaseio.com/live_signals.json";
     const firebaseStatsUrl = "https://alphasigna-live-default-rtdb.firebaseio.com/live_stats.json";
 
@@ -341,36 +257,32 @@
     function validateLogin() {
         const key = document.getElementById('access-key').value.trim();
         const error = document.getElementById('error-msg');
-        
         if(!key) { error.innerText = "Please enter an access key."; return; }
         const userData = premiumKeysDatabase[key];
 
-        if (!userData) {
-            error.innerText = "❌ INVALID ACCESS KEY. ACCESS DENIED.";
-            return;
-        }
+        if (!userData) { error.innerText = "❌ INVALID ACCESS KEY. ACCESS DENIED."; return; }
 
-        if (userData.status === "expired") {
-            document.getElementById('login-container').style.display = 'none';
-            document.getElementById('expired-app').style.display = 'block';
-        } else if (userData.status === "active") {
-            document.getElementById('login-container').style.display = 'none';
-            document.getElementById('main-app').style.display = 'block';
-            document.getElementById('user-expiry-text').innerText = "🔑 PREMIUM EXPIRE DATE: " + userData.expiry;
-            
-            fetch(firebaseStatsUrl)
-            .then(res => res.json())
-            .then(stats => {
-                if(stats) {
-                    document.getElementById('stat-total').innerText = stats.total;
-                    document.getElementById('stat-tp').innerText = stats.tp;
-                    document.getElementById('stat-sl').innerText = stats.sl;
-                    document.getElementById('stat-winrate').innerText = stats.winrate;
-                }
-            });
-        }
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('main-app').style.display = 'block';
+        document.getElementById('user-expiry-text').innerText = "🔑 PREMIUM EXPIRE DATE: " + userData.expiry;
+        syncStatsOnly();
     }
 
+    // 📊 පසුබිමෙන් TP/SL වැදෙද්දී උඩ තියෙන Numbers හැම තත්පර 3කට වරක්ම ඔටෝ අප්ඩේට් වීම
+    function syncStatsOnly() {
+        fetch(firebaseStatsUrl)
+        .then(res => res.json())
+        .then(stats => {
+            if(stats) {
+                document.getElementById('stat-total').innerText = stats.total;
+                document.getElementById('stat-tp').innerText = stats.tp;
+                document.getElementById('stat-sl').innerText = stats.sl;
+                document.getElementById('stat-winrate').innerText = stats.winrate;
+            }
+        });
+    }
+
+    // 🔍 100%ක්ම Dynamic All-Coin Scanner Function එක (පයිතන් බොට් එකෙන් දෙන ඕනෑම කාසියක් ස්කෑන් කරගනී)
     function fetchLiveSignalsFromFirebase() {
         document.getElementById('start-scan-btn').style.display = 'none';
         document.getElementById('rescan-btn-id').style.display = 'none';
@@ -386,14 +298,15 @@
                 return;
             }
 
-            coinNames.forEach(coin => {
-                if (data[coin]) { cryptoDataPool.push(data[coin]); }
+            // 🎯 FIXED: නිශ්චිත කාසි නම් වෙනුවට, Firebase එකේ ඒ වෙලාවේ තියෙන ඕනෑම කාසි 6ක් ඔටෝ ඇදලා ගැනීම
+            Object.keys(data).forEach(key => {
+                cryptoDataPool.push(data[key]);
             });
 
             startScanningAnimation();
         })
         .catch(() => {
-            document.getElementById('scan-coin-name').innerText = "⚠️ Firebase Node Connection Error.";
+            document.getElementById('scan-coin-name').innerText = "⚠️ Firebase Connection Error.";
             document.getElementById('start-scan-btn').style.display = 'inline-block';
         });
     }
@@ -417,7 +330,7 @@
                 clearInterval(scanInterval);
                 document.getElementById('scan-coin-name').innerText = "🎯 95%+ REAL FUTURES SIGNALS ENGAGED";
                 document.getElementById('live-status-id').style.display = 'block';
-                document.getElementById('rescan-btn-id').style.display = 'inline-block';
+                document.getElementById('rescan-btn-id').style.display = 'inline-block'; // Re-scan button stays visible
                 renderRealCards();
             }
         }, 30);
@@ -452,6 +365,9 @@
         document.getElementById('info-modal').style.display = 'flex';
     }
     function closeModal() { document.getElementById('info-modal').style.display = 'none'; }
+    
+    // වෙබ් පිටුව ඕපන් කරගෙන ඉන්න අතරතුරත් පසුබිමෙන් සේරම Numbers ලයිව් අප්ඩේට් කර තැබීම
+    setInterval(syncStatsOnly, 5000);
 </script>
 </body>
 </html>
