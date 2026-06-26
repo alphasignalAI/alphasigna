@@ -14,6 +14,7 @@
             --green: #00ff88;
             --red: #ff4d4d;
             --text-muted: #8492a6;
+            --pink: #ff007f;
         }
 
         body {
@@ -27,43 +28,49 @@
             align-items: center;
             min-height: 100vh;
             box-sizing: border-box;
-            overflow: hidden; /* Prevent scrolling during intro */
+            overflow-x: hidden;
         }
 
-        /* --- Ink Burst Intro --- */
+        /* --- 🎨 MULTI-COLOR INK SPLATTER INTRO --- */
         #intro-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: black;
+            background-color: #000;
             z-index: 9999;
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: opacity 1s ease;
+            transition: opacity 0.8s ease;
         }
 
-        .ink-ball {
-            width: 50px;
-            height: 50px;
-            background-color: var(--gold);
+        .ink-hub {
+            position: relative;
+            width: 40px;
+            height: 40px;
+        }
+
+        /* පාට පාට තීන්ත බිංදු විසිවෙන ආකාරය */
+        .ink-drop {
+            position: absolute;
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
-            animation: burst 1.5s ease-out forwards;
+            opacity: 0.8;
         }
+        .drop-gold  { background: var(--gold); animation: splatter-1 1.2s ease-out forwards; }
+        .drop-blue  { background: var(--blue-glow); animation: splatter-2 1.2s ease-out forwards; }
+        .drop-green { background: var(--green); animation: splatter-3 1.2s ease-out forwards; }
+        .drop-pink  { background: var(--pink); animation: splatter-4 1.2s ease-out forwards; }
 
-        @keyframes burst {
-            0% {
-                transform: scale(1);
-                box-shadow: 0 0 10px var(--gold-glow);
-            }
-            100% {
-                transform: scale(200); /* Spreads ink across screen */
-                box-shadow: 0 0 50px var(--gold-glow);
-            }
-        }
+        @keyframes splatter-1 { 0% { transform: scale(1) translate(0, 0); filter: blur(0); } 100% { transform: scale(35) translate(-40px, -30px); filter: blur(5px); opacity: 0; } }
+        @keyframes splatter-2 { 0% { transform: scale(1) translate(0, 0); filter: blur(0); } 100% { transform: scale(45) translate(50px, -20px); filter: blur(4px); opacity: 0; } }
+        @keyframes splatter-3 { 0% { transform: scale(1) translate(0, 0); filter: blur(0); } 100% { transform: scale(40) translate(-20px, 40px); filter: blur(6px); opacity: 0; } }
+        @keyframes splatter-4 { 0% { transform: scale(1) translate(0, 0); filter: blur(0); } 100% { transform: scale(50) translate(30px, 50px); filter: blur(5px); opacity: 0; } }
 
+        /* --- ⚠️ WARNING MODAL (DUAL LANGUAGE) --- */
         #warning-modal {
             display: none;
             position: fixed;
@@ -71,191 +78,72 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
+            background-color: rgba(0, 0, 0, 0.95);
             justify-content: center;
             align-items: center;
             z-index: 10000;
         }
 
         .warning-content {
-            background-color: #0d1b2e;
-            border: 2px solid var(--red);
-            padding: 40px;
+            background-color: #070e17;
+            border: 2px solid var(--gold);
+            padding: 35px;
             border-radius: 15px;
-            max-width: 600px;
+            max-width: 650px;
             width: 90%;
             text-align: center;
-            box-shadow: 0 0 30px var(--gold-glow);
-            animation: fadeIn 1s ease;
+            box-shadow: 0 0 35px rgba(243, 186, 47, 0.3);
+            animation: modalFadeIn 0.5s ease;
         }
 
-        .warning-text {
-            font-size: 18px;
-            line-height: 1.8;
-            color: #e0e6ed;
-            margin-bottom: 30px;
-        }
+        @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 
-        .close-warning-btn {
-            background: linear-gradient(135deg, var(--gold) 0%, #d49a17 100%);
-            color: #000;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+        .warning-title { color: var(--red); font-size: 24px; margin-top: 0; font-weight: bold; letter-spacing: 1px; }
+        
+        .warning-box-sinhala { font-size: 16px; line-height: 1.8; color: #fff; margin-bottom: 20px; font-weight: 500; }
+        .warning-box-english { font-size: 14px; line-height: 1.6; color: var(--text-muted); margin-bottom: 30px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; font-style: italic; }
 
-        .close-warning-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(243, 186, 47, 0.4);
+        .agree-btn {
+            background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%);
+            color: #000; border: none; padding: 12px 35px; border-radius: 25px;
+            font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.3s;
         }
+        .agree-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(243, 186, 47, 0.4); }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* --- Rest of Web Site Styles --- */
-        .container {
-            max-width: 1000px;
-            width: 100%;
-            margin: auto;
+        /* --- 🏃 ANIMATED RUNNING FOOTER MARQUEE --- */
+        .footer-ticker {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%;
+            background: rgba(22, 11, 11, 0.9);
+            border-top: 1px solid var(--red);
+            padding: 8px 0; z-index: 95;
+            overflow: hidden; white-space: nowrap;
             display: none;
         }
+        .ticker-wrap { display: inline-block; animation: marquee 25s linear infinite; }
+        .ticker-text { color: #fff; font-size: 13px; font-weight: bold; letter-spacing: 1px; margin-right: 50px; }
+        @keyframes marquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate33d(-50%, 0, 0); } }
 
-        .login-box {
-            background: var(--card-bg);
-            border: 1px solid rgba(243, 186, 47, 0.2);
-            padding: 40px 30px;
-            border-radius: 15px;
-            text-align: center;
-            max-width: 400px;
-            width: 100%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 20px var(--gold-glow);
-        }
+        /* --- DASHBOARD LOGIC STRUCTURE --- */
+        .container { max-width: 1000px; width: 100%; margin: auto; display: none; padding-bottom: 50px; }
+        .login-box { background: var(--card-bg); border: 1px solid rgba(243, 186, 47, 0.2); padding: 40px 30px; border-radius: 15px; text-align: center; max-width: 400px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 20px var(--gold-glow); display: none; }
+        .login-box h2 { margin: 0 0 10px 0; font-size: 32px; background: linear-gradient(135deg, #fff 0%, var(--gold) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .login-box p { color: var(--text-muted); font-size: 13px; letter-spacing: 2px; margin-bottom: 30px; }
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; font-size: 11px; color: var(--gold); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
+        .input-group input { width: 100%; background: #060b13; border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; color: white; font-size: 16px; box-sizing: border-box; transition: 0.3s; }
+        .input-group input:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 10px var(--gold-glow); }
+        .login-btn { width: 100%; background: linear-gradient(135deg, var(--gold) 0%, #d49a17 100%); color: #000; border: none; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(243, 186, 47, 0.4); }
+        #error-msg { color: var(--red); font-size: 14px; margin-top: 15px; font-weight: 500; }
 
-        .login-box h2 {
-            margin: 0 0 10px 0;
-            font-size: 32px;
-            background: linear-gradient(135deg, #fff 0%, var(--gold) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { font-size: 42px; margin: 0; background: linear-gradient(135deg, #fff 0%, var(--gold) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px; }
+        .header p { color: var(--text-muted); margin: 5px 0; font-size: 14px; letter-spacing: 4px; }
 
-        .login-box p {
-            color: var(--text-muted);
-            font-size: 13px;
-            letter-spacing: 2px;
-            margin-bottom: 30px;
-        }
+        .user-expiry-badge { text-align: center; color: var(--gold); font-size: 13px; font-weight: bold; letter-spacing: 1px; margin-bottom: 25px; background: rgba(243, 186, 47, 0.08); padding: 8px 15px; border-radius: 20px; display: inline-block; border: 1px solid rgba(243, 186, 47, 0.2); }
 
-        .input-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        .input-group label {
-            display: block;
-            font-size: 11px;
-            color: var(--gold);
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            letter-spacing: 1px;
-        }
-
-        .input-group input {
-            width: 100%;
-            background: #060b13;
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 12px;
-            border-radius: 8px;
-            color: white;
-            font-size: 16px;
-            box-sizing: border-box;
-            transition: 0.3s;
-        }
-
-        .input-group input:focus {
-            border-color: var(--gold);
-            outline: none;
-            box-shadow: 0 0 10px var(--gold-glow);
-        }
-
-        .login-btn {
-            width: 100%;
-            background: linear-gradient(135deg, var(--gold) 0%, #d49a17 100%);
-            color: #000;
-            border: none;
-            padding: 14px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(243, 186, 47, 0.4);
-        }
-
-        #error-msg {
-            color: var(--red);
-            font-size: 14px;
-            margin-top: 15px;
-            font-weight: 500;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .header h1 {
-            font-size: 42px;
-            margin: 0;
-            background: linear-gradient(135deg, #fff 0%, var(--gold) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 2px;
-        }
-
-        .header p {
-            color: var(--text-muted);
-            margin: 5px 0;
-            font-size: 14px;
-            letter-spacing: 4px;
-        }
-
-        .user-expiry-badge {
-            text-align: center;
-            color: var(--gold);
-            font-size: 13px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            margin-bottom: 25px;
-            background: rgba(243, 186, 47, 0.08);
-            padding: 8px 15px;
-            border-radius: 20px;
-            display: inline-block;
-            border: 1px solid rgba(243, 186, 47, 0.2);
-        }
-
-        .stats-panel {
-            background: var(--card-bg);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 15px;
-            padding: 20px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
+        .stats-panel { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 15px; padding: 20px; display: flex; justify-content: space-around; align-items: center; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .stat-item { text-align: center; }
         .stat-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
         .stat-value { font-size: 28px; font-weight: bold; color: #fff; }
@@ -268,23 +156,9 @@
         .gauge-fill { position: absolute; top: 0; left: 20px; width: 200px; height: 200px; border-radius: 50%; border: 15px solid var(--blue-glow); box-sizing: border-box; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); transform: rotate(-180deg); transform-origin: center center; transition: transform 0.1s linear; }
         .gauge-percentage { position: absolute; bottom: 0px; left: 0; right: 0; font-size: 36px; font-weight: bold; color: #fff; }
 
-        .scan-init-btn {
-            background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%);
-            color: #000;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 30px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 25px;
-            transition: 0.3s;
-            box-shadow: 0 0 20px var(--gold-glow);
-        }
-        .scan-init-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(243, 186, 47, 0.6);
-        }
+        .scan-init-btn, .rescan-btn { background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); color: #000; border: none; padding: 15px 40px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 25px; transition: 0.3s; box-shadow: 0 0 20px var(--gold-glow); }
+        .scan-init-btn:hover, .rescan-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(243, 186, 47, 0.6); }
+        .rescan-btn { display: none; font-size: 16px; padding: 10px 30px; margin-top: 15px; }
 
         .live-status-indicator { color: var(--green); font-size: 14px; font-weight: bold; text-transform: uppercase; margin-top: 15px; letter-spacing: 2px; animation: blink 1.5s infinite; }
         @keyframes blink { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
@@ -304,7 +178,7 @@
         .more-btn { width: 100%; background: linear-gradient(135deg, #1a2f4c 0%, #112035 100%); border: 1px solid rgba(243, 186, 47, 0.3); color: var(--gold); padding: 10px; border-radius: 6px; cursor: pointer; margin-top: 15px; font-weight: bold; transition: 0.3s; }
         .more-btn:hover { background: var(--gold); color: #000; }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 100; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 10100; }
         .modal-content { background: #0d1b2e; border: 1px solid var(--gold); padding: 30px; border-radius: 15px; max-width: 500px; width: 90%; position: relative; box-shadow: 0 0 30px var(--gold-glow); }
         .close-modal { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: var(--text-muted); }
 
@@ -312,21 +186,30 @@
         .expired-screen h1 { font-size: 44px; color: var(--red); margin-bottom: 10px; }
     </style>
 </head>
-<body onload="startIntro()">
+<body onload="runInkSplatter()">
 
 <div id="intro-overlay">
-    <div class="ink-ball"></div>
+    <div class="ink-hub">
+        <div class="ink-drop drop-gold"></div>
+        <div class="ink-drop drop-blue"></div>
+        <div class="ink-drop drop-green"></div>
+        <div class="ink-drop drop-pink"></div>
+    </div>
 </div>
 
 <div id="warning-modal">
     <div class="warning-content">
-        <h2 style="color: var(--gold);">⚠️ අති විශේෂ අනතුරු ඇඟවීම! ⚠️</h2>
-        <div class="warning-text">
-            පෙහෙළිත ඒකනායක සතු දේපළකි. <br>
-            උපුටා ගැනීම හෝ අනවසරයෙන් භාවිතය හා විකිණීමට සපුරා තහනම්. <br>
-            2026 © AlphaSigna AI. සියලුම හිමිකම් ඇවිරිණි.
+        <div class="warning-title">⚠️ SECURITY NOTICE & COPYRIGHT ALERT</div>
+        
+        <div class="warning-box-sinhala">
+            පෙහෙළිත ඒකනායක සතු පුද්ගලික දේපළකි. මෙහි අන්තර්ගත කිසිදු දත්තයක් හෝ කේතයක් උපුටා ගැනීම, අනවසරයෙන් භාවිත කිරීම හෝ නැවත විකිණීම සපුරා තහනම් වේ.
         </div>
-        <button class="close-warning-btn" onclick="closeWarning()">පිළිගන්නවා & ඉදිරියට</button>
+        
+        <div class="warning-box-english">
+            This terminal application is the exclusive property of Pehelitha Ekanayaka. Copying, unauthorized distribution, modification, or commercial reselling of this matrix ecosystem is strictly prohibited.
+        </div>
+        
+        <button class="agree-btn" onclick="acceptWarningTerms()">I AGREE & PROCEED / එකඟයි</button>
     </div>
 </div>
 
@@ -337,7 +220,7 @@
         <label>Enter Premium Access Key</label>
         <input type="password" id="access-key" placeholder="••••••••••••" onkeypress="checkEnter(event)">
     </div>
-    <div style="margin-bottom: 15px; font-size: 12px; color: var(--text-muted);">Free Premium Keys: <span style="color:var(--gold)">pehelitha</span> | <span style="color:var(--gold)">ptest</span></div>
+    <div style="margin-bottom: 15px; font-size: 11px; color: var(--text-muted);">Terminal Pass: <span style="color:var(--gold)">pehelitha</span></div>
     <button class="login-btn" onclick="validateLogin()">Connect Terminal</button>
     <div id="error-msg"></div>
 </div>
@@ -367,6 +250,7 @@
             <div class="gauge-percentage" id="gauge-text">0%</div>
         </div>
         <button class="scan-init-btn" id="start-scan-btn" onclick="fetchLiveSignalsFromFirebase()">🔍 Scan Live Market</button>
+        <button class="rescan-btn" id="rescan-btn-id" onclick="fetchLiveSignalsFromFirebase()">🔄 Re-Scan Live Market</button>
         <div class="live-status-indicator" id="live-status-id" style="display: none;">🟢 AI Quantum Matrix: Connected & Syncing Live Updates</div>
     </div>
 
@@ -390,37 +274,44 @@
     </div>
 </div>
 
+<div class="footer-ticker" id="live-footer-ticker">
+    <div class="ticker-wrap">
+        <span class="ticker-text">⚠️ 2026 © ALPHASIGNA AI - පෙහෙළිත ඒකනායක සතු පුද්ගලික දේපළකි. උපුටා ගැනීම හෝ අනවසරයෙන් භාවිතය සපුරා තහනම්.</span>
+        <span class="ticker-text">⚠️ WARNING: PROPERTY OF PEHELITHA EKANAYAKA. UNAUTHORIZED DISTRIBUTION OR RESELLING IS STRICTLY PROHIBITED.</span>
+        <span class="ticker-text">⚠️ 2026 © ALPHASIGNA AI - පෙහෙළිත ඒකනායක සතු පුද්ගලික දේපළකි. උපුටා ගැනීම හෝ අනවසරයෙන් භාවිතය සපුරා තහනම්.</span>
+        <span class="ticker-text">⚠️ WARNING: PROPERTY OF PEHELITHA EKANAYAKA. UNAUTHORIZED DISTRIBUTION OR RESELLING IS STRICTLY PROHIBITED.</span>
+    </div>
+</div>
+
 <script>
-    // --- Intro and Warning ---
-    function startIntro() {
+    // 🎨 Ink Splatter Control Core Logic
+    function runInkSplatter() {
         setTimeout(() => {
             document.getElementById('intro-overlay').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('intro-overlay').style.display = 'none';
                 document.getElementById('warning-modal').style.display = 'flex';
-            }, 1000); // 1s to fade out
-        }, 1500); // 1.5s bursting ink animation
+            }, 800);
+        }, 1300);
     }
 
-    function closeWarning() {
+    function acceptWarningTerms() {
         document.getElementById('warning-modal').style.display = 'none';
-        document.body.style.overflow = 'auto'; // Re-enable scrolling
         document.getElementById('login-container').style.display = 'block';
+        document.getElementById('live-footer-ticker').style.display = 'block'; // Activate moving footer
     }
 
-    // --- Original Script ---
+    // --- Premium Core Dynamic Interface ---
     const premiumKeysDatabase = {
         "user777": { status: "active", expiry: "2027-12-31" },
         "alpha123": { status: "active", expiry: "2027-06-15" },
         "pehelitha": { status: "active", expiry: "2028-12-31" },
-        "ptest": { status: "active", expiry: "2028-12-31" },
-        "ttest": { status: "active", expiry: "2028-12-31" }
+        "ptest": { status: "active", expiry: "2028-12-31" }
     };
     
     let cryptoDataPool = [];
     const coinNames = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT", "XRPUSDT", "AVAXUSDT"];
     
-    // 🌐 Firebase Realtime Endpoints
     const firebaseSignalsUrl = "https://alphasigna-live-default-rtdb.firebaseio.com/live_signals.json";
     const firebaseStatsUrl = "https://alphasigna-live-default-rtdb.firebaseio.com/live_stats.json";
 
@@ -431,7 +322,6 @@
         const error = document.getElementById('error-msg');
         
         if(!key) { error.innerText = "Please enter an access key."; return; }
-
         const userData = premiumKeysDatabase[key];
 
         if (!userData) {
@@ -462,6 +352,7 @@
 
     function fetchLiveSignalsFromFirebase() {
         document.getElementById('start-scan-btn').style.display = 'none';
+        document.getElementById('rescan-btn-id').style.display = 'none';
         document.getElementById('cards-container').innerHTML = '';
         cryptoDataPool = [];
 
@@ -505,6 +396,7 @@
                 clearInterval(scanInterval);
                 document.getElementById('scan-coin-name').innerText = "🎯 95%+ REAL FUTURES SIGNALS ENGAGED";
                 document.getElementById('live-status-id').style.display = 'block';
+                document.getElementById('rescan-btn-id').style.display = 'inline-block'; // Re-scan button appears
                 renderRealCards();
             }
         }, 30);
@@ -515,7 +407,6 @@
         container.innerHTML = '';
 
         cryptoDataPool.forEach((coin, idx) => {
-            const isLowPrice = coin.entry < 10;
             container.innerHTML += `
                 <div class="card">
                     <div class="card-header"><span class="coin-title" style="color:var(--gold)">${coin.pair}</span><span class="badge buy">LONG / BUY</span></div>
