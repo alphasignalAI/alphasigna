@@ -32,7 +32,7 @@
             overflow-x: hidden;
         }
 
-        /* --- 🎨 EXTENDED 30S MULTI-COLOR INK BACKGROUND --- */
+        /* --- 🎨 30S MULTI-COLOR INK BACKGROUND --- */
         #intro-overlay {
             position: fixed;
             top: 0;
@@ -45,6 +45,7 @@
             justify-content: center;
             align-items: center;
             pointer-events: none;
+            transition: opacity 0.5s ease;
         }
 
         .ink-container {
@@ -63,7 +64,6 @@
             filter: blur(8px);
         }
 
-        /* තත්පර 30ක් පුරා විවිධ තැන්වලින් පාට පාට තීන්ත පුපුරන ඇනිමේෂන් */
         .ib-1 { background: var(--gold); width: 120px; height: 120px; top: 20%; left: 30%; animation: blast-cycle 6s infinite 0s; }
         .ib-2 { background: var(--blue-glow); width: 150px; height: 150px; top: 50%; left: 60%; animation: blast-cycle 7s infinite 1.5s; }
         .ib-3 { background: var(--pink); width: 100px; height: 100px; top: 70%; left: 20%; animation: blast-cycle 5s infinite 3s; }
@@ -129,13 +129,7 @@
 
         @keyframes lockFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .lock-icon-head {
-            font-size: 55px;
-            color: var(--gold);
-            text-shadow: 0 0 20px var(--gold-glow);
-            margin-bottom: 15px;
-            animation: pulse-gold 2s infinite;
-        }
+        .lock-icon-head { font-size: 55px; color: var(--gold); text-shadow: 0 0 20px var(--gold-glow); margin-bottom: 15px; animation: pulse-gold 2s infinite; }
         @keyframes pulse-gold { 0% { transform: scale(1); } 50% { transform: scale(1.05); text-shadow: 0 0 30px rgba(243, 186, 47, 0.5); } 100% { transform: scale(1); } }
 
         .login-box h2 { margin: 0 0 5px 0; font-size: 30px; background: linear-gradient(135deg, #fff 0%, var(--blue-glow) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; letter-spacing: 1px; }
@@ -152,23 +146,33 @@
         .input-group input { width: 100%; background: #040912; border: 1px solid rgba(0, 210, 255, 0.2); padding: 14px; border-radius: 10px; color: white; font-size: 16px; box-sizing: border-box; transition: 0.3s; font-family: monospace; text-align: center; letter-spacing: 2px; }
         .input-group input:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 15px var(--gold-glow); }
 
-        /* --- 🏃 RUNNING FOOTER MARQUEE TICKER --- */
-        .footer-ticker {
+        /* --- 🛡️ PREMIUM STATIC SYSTEM FOOTER PANEL --- */
+        .premium-footer {
             position: fixed;
             bottom: 0; left: 0; width: 100%;
-            background: rgba(3, 7, 13, 0.95);
-            border-top: 2px solid var(--red);
-            padding: 10px 0; z-index: 10050;
-            overflow: hidden; white-space: nowrap;
+            background: linear-gradient(180deg, #050d1a 0%, #02060d 100%);
+            border-top: 1px solid rgba(0, 210, 255, 0.3);
+            padding: 12px 20px; z-index: 95;
+            box-shadow: 0 -5px 25px rgba(0,0,0,0.8);
+            box-sizing: border-box;
             display: none;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+            text-align: center;
         }
-        .ticker-wrap { display: inline-block; animation: marquee-run 30s linear infinite; }
-        .ticker-text { color: #fff; font-size: 13px; font-weight: bold; letter-spacing: 1.5px; margin-right: 60px; }
-        @keyframes marquee-run { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
+        .footer-grid-text {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .footer-grid-text span { display: flex; align-items: center; gap: 8px; }
+        .footer-grid-text .sin { color: #fff; }
+        .footer-grid-text .eng { color: var(--text-muted); border-left: 1px solid rgba(255,255,255,0.1); padding-left: 30px; }
 
         /* --- MAIN DASHBOARD INTERFACE --- */
-        .container { max-width: 1000px; width: 100%; margin: auto; display: none; padding-bottom: 60px; }
+        .container { max-width: 1000px; width: 100%; margin: auto; display: none; padding-bottom: 80px; }
         .header { text-align: center; margin-bottom: 20px; }
         .header h1 { font-size: 42px; margin: 0; background: linear-gradient(135deg, #fff 0%, var(--gold) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px; }
         .header p { color: var(--text-muted); margin: 5px 0; font-size: 14px; letter-spacing: 4px; }
@@ -293,38 +297,32 @@
     </div>
 </div>
 
-<div class="footer-ticker" id="live-footer-ticker">
-    <div class="ticker-wrap">
-        <span class="ticker-text">⚠️ 2026 © ALPHASIGNA AI - පෙහෙළිත ඒකනායක සතු පුද්ගලික දේපළකි. උපුටා ගැනීම හෝ අනවසරයෙන් භාවිතය සපුරා තහනම්.</span>
-        <span class="ticker-text">⚠️ WARNING: PROPERTY OF PEHELITHA EKANAYAKA. UNAUTHORIZED DISTRIBUTION OR RESELLING IS STRICTLY PROHIBITED.</span>
-        <span class="ticker-text">⚠️ 2026 © ALPHASIGNA AI - පෙහෙළිත ඒකනායක සතු පුද්ගලික දේපළකි. උපුටා ගැනීම හෝ අනවසරයෙන් භාවිතය සපුරා තහනම්.</span>
-        <span class="ticker-text">⚠️ WARNING: PROPERTY OF PEHELITHA EKANAYAKA. UNAUTHORIZED DISTRIBUTION OR RESELLING IS STRICTLY PROHIBITED.</span>
+<div class="premium-footer" id="live-footer-ticker">
+    <div class="footer-grid-text">
+        <span class="sin">🛑 2026 © AlphaSigna AI - පෙහෙළිත ඒකනායක සතු පුද්ගලික දේපළකි. අනවසරයෙන් භාවිතය සපුරා තහනම්.</span>
+        <span class="eng">🛑 All Rights Reserved. Exclusive Property of Pehelitha Ekanayaka. Unauthorized duplication is prohibited.</span>
     </div>
 </div>
 
 <script>
-    // 🎨 Ink Splatter Sequencer (Runs inside background up to 30s)
     function initiateSystemSequence() {
-        // වෝනින් එක සැනින් ඕපන් වේ, නමුත් පසුබිමෙන් තීන්ත බෝල දිගටම විසිවේ
         document.getElementById('warning-modal').style.display = 'flex';
-        
-        // තත්පර 30කට පසුව (30000ms) තීන්ත ඉන්ට්‍රෝ එක සම්පූර්ණයෙන්ම ක්ලියර් වේ
-        setTimeout(() => {
-            const overlay = document.getElementById('intro-overlay');
-            if(overlay) {
-                overlay.style.opacity = '0';
-                setTimeout(() => overlay.style.display = 'none', 1000);
-            }
-        }, 30000); 
     }
 
     function triggerPremiumLockScreen() {
+        // "Agree" බටන් එක ක්ලික් කළ සැනින් තීන්ත ඇනිමේෂන් එක වහාම නැති වී යයි
+        const overlay = document.getElementById('intro-overlay');
+        if(overlay) {
+            overlay.style.opacity = '0';
+            setTimeout(() => overlay.style.display = 'none', 500);
+        }
+        
         document.getElementById('warning-modal').style.display = 'none';
         document.getElementById('login-container').style.display = 'block';
-        document.getElementById('live-footer-ticker').style.display = 'block'; // Activate smooth crawling footer
+        document.getElementById('live-footer-ticker').style.display = 'block'; // ස්ථාවර ප්‍රිමියම් පැනලය පෙන්වීම
     }
 
-    // --- Premium Auth Database Logic ---
+    // --- Dynamic Auth & Signals Interface Logic ---
     const premiumKeysDatabase = {
         "user777": { status: "active", expiry: "2027-12-31" },
         "alpha123": { status: "active", expiry: "2027-06-15" },
