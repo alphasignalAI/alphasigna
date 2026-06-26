@@ -27,8 +27,98 @@
             align-items: center;
             min-height: 100vh;
             box-sizing: border-box;
+            overflow: hidden; /* Prevent scrolling during intro */
         }
 
+        /* --- Ink Burst Intro --- */
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease;
+        }
+
+        .ink-ball {
+            width: 50px;
+            height: 50px;
+            background-color: var(--gold);
+            border-radius: 50%;
+            animation: burst 1.5s ease-out forwards;
+        }
+
+        @keyframes burst {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 10px var(--gold-glow);
+            }
+            100% {
+                transform: scale(200); /* Spreads ink across screen */
+                box-shadow: 0 0 50px var(--gold-glow);
+            }
+        }
+
+        #warning-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .warning-content {
+            background-color: #0d1b2e;
+            border: 2px solid var(--red);
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 0 30px var(--gold-glow);
+            animation: fadeIn 1s ease;
+        }
+
+        .warning-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #e0e6ed;
+            margin-bottom: 30px;
+        }
+
+        .close-warning-btn {
+            background: linear-gradient(135deg, var(--gold) 0%, #d49a17 100%);
+            color: #000;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .close-warning-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(243, 186, 47, 0.4);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* --- Rest of Web Site Styles --- */
         .container {
             max-width: 1000px;
             width: 100%;
@@ -222,7 +312,23 @@
         .expired-screen h1 { font-size: 44px; color: var(--red); margin-bottom: 10px; }
     </style>
 </head>
-<body>
+<body onload="startIntro()">
+
+<div id="intro-overlay">
+    <div class="ink-ball"></div>
+</div>
+
+<div id="warning-modal">
+    <div class="warning-content">
+        <h2 style="color: var(--gold);">⚠️ අති විශේෂ අනතුරු ඇඟවීම! ⚠️</h2>
+        <div class="warning-text">
+            පෙහෙළිත ඒකනායක සතු දේපළකි. <br>
+            උපුටා ගැනීම හෝ අනවසරයෙන් භාවිතය හා විකිණීමට සපුරා තහනම්. <br>
+            2026 © AlphaSigna AI. සියලුම හිමිකම් ඇවිරිණි.
+        </div>
+        <button class="close-warning-btn" onclick="closeWarning()">පිළිගන්නවා & ඉදිරියට</button>
+    </div>
+</div>
 
 <div class="login-box" id="login-container">
     <h2>AlphaSigna AI</h2>
@@ -231,6 +337,7 @@
         <label>Enter Premium Access Key</label>
         <input type="password" id="access-key" placeholder="••••••••••••" onkeypress="checkEnter(event)">
     </div>
+    <div style="margin-bottom: 15px; font-size: 12px; color: var(--text-muted);">Free Premium Keys: <span style="color:var(--gold)">pehelitha</span> | <span style="color:var(--gold)">ptest</span></div>
     <button class="login-btn" onclick="validateLogin()">Connect Terminal</button>
     <div id="error-msg"></div>
 </div>
@@ -246,10 +353,10 @@
     </div>
 
     <div class="stats-panel">
-        <div class="stat-item"><div class="stat-label">Total Signals</div><div class="stat-value">120</div></div>
-        <div class="stat-item"><div class="stat-label">TP Hit</div><div class="stat-value" style="color: var(--green);">98</div></div>
-        <div class="stat-item"><div class="stat-label">SL Hit</div><div class="stat-value" style="color: var(--red);">22</div></div>
-        <div class="stat-item"><div class="stat-label">Win Rate</div><div class="stat-value" style="color: var(--gold);">81.6%</div></div>
+        <div class="stat-item"><div class="stat-label">Total Signals</div><div id="stat-total" class="stat-value">--</div></div>
+        <div class="stat-item"><div class="stat-label">TP Hit</div><div id="stat-tp" class="stat-value" style="color: var(--green);">--</div></div>
+        <div class="stat-item"><div class="stat-label">SL Hit</div><div id="stat-sl" class="stat-value" style="color: var(--red);">--</div></div>
+        <div class="stat-item"><div class="stat-label">Win Rate</div><div id="stat-winrate" class="stat-value" style="color: var(--gold);">--</div></div>
     </div>
 
     <div class="gauge-section">
@@ -284,7 +391,24 @@
 </div>
 
 <script>
-    // 🔑 Secure Local Keys Matrix Database
+    // --- Intro and Warning ---
+    function startIntro() {
+        setTimeout(() => {
+            document.getElementById('intro-overlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('intro-overlay').style.display = 'none';
+                document.getElementById('warning-modal').style.display = 'flex';
+            }, 1000); // 1s to fade out
+        }, 1500); // 1.5s bursting ink animation
+    }
+
+    function closeWarning() {
+        document.getElementById('warning-modal').style.display = 'none';
+        document.body.style.overflow = 'auto'; // Re-enable scrolling
+        document.getElementById('login-container').style.display = 'block';
+    }
+
+    // --- Original Script ---
     const premiumKeysDatabase = {
         "user777": { status: "active", expiry: "2027-12-31" },
         "alpha123": { status: "active", expiry: "2027-06-15" },
@@ -296,8 +420,9 @@
     let cryptoDataPool = [];
     const coinNames = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT", "XRPUSDT", "AVAXUSDT"];
     
-    // 🌐 100% Connected with your Firebase database URL
-    const firebaseDbUrl = "https://alphasigna-live-default-rtdb.firebaseio.com/live_signals.json";
+    // 🌐 Firebase Realtime Endpoints
+    const firebaseSignalsUrl = "https://alphasigna-live-default-rtdb.firebaseio.com/live_signals.json";
+    const firebaseStatsUrl = "https://alphasigna-live-default-rtdb.firebaseio.com/live_stats.json";
 
     function checkEnter(e) { if(e.key === 'Enter') validateLogin(); }
 
@@ -321,37 +446,42 @@
             document.getElementById('login-container').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
             document.getElementById('user-expiry-text').innerText = "🔑 PREMIUM EXPIRE DATE: " + userData.expiry;
+            
+            fetch(firebaseStatsUrl)
+            .then(res => res.json())
+            .then(stats => {
+                if(stats) {
+                    document.getElementById('stat-total').innerText = stats.total;
+                    document.getElementById('stat-tp').innerText = stats.tp;
+                    document.getElementById('stat-sl').innerText = stats.sl;
+                    document.getElementById('stat-winrate').innerText = stats.winrate;
+                }
+            });
         }
     }
 
-    // 📡 Firebase එකෙන් සැබෑම සිග්නල් දත්ත ඇදලා ගන්නා ප්‍රධාන Function එක
     function fetchLiveSignalsFromFirebase() {
         document.getElementById('start-scan-btn').style.display = 'none';
         document.getElementById('cards-container').innerHTML = '';
         cryptoDataPool = [];
 
-        // Firebase Cloud API Call
-        fetch(firebaseDbUrl)
+        fetch(firebaseSignalsUrl)
         .then(res => res.json())
         .then(data => {
             if (!data) {
-                document.getElementById('scan-coin-name').innerText = "⚠️ No Active Signals found in AI Node. Start your Python Bot!";
+                document.getElementById('scan-coin-name').innerText = "⚠️ No Active Signals found. Run your Python Bot first!";
                 document.getElementById('start-scan-btn').style.display = 'inline-block';
                 return;
             }
 
-            // Firebase එකේ තියෙන දත්ත Array එකකට සකස් කර ගැනීම
             coinNames.forEach(coin => {
-                if (data[coin]) {
-                    cryptoDataPool.push(data[coin]);
-                }
+                if (data[coin]) { cryptoDataPool.push(data[coin]); }
             });
 
-            // ස්කෑනින් මීටරයේ ලස්සන ඇනිමේෂන් එක පටන් ගැනීම
             startScanningAnimation();
         })
         .catch(() => {
-            document.getElementById('scan-coin-name').innerText = "⚠️ Firebase Gateway Connection Timeout.";
+            document.getElementById('scan-coin-name').innerText = "⚠️ Firebase Node Connection Error.";
             document.getElementById('start-scan-btn').style.display = 'inline-block';
         });
     }
@@ -364,7 +494,7 @@
         const scanInterval = setInterval(() => {
             progress += 2;
             if (progress % 10 === 0 && cryptoDataPool.length > 0) {
-                document.getElementById('scan-coin-name').innerText = "DECRYPTING NODE: " + cryptoDataPool[coinIndex].pair;
+                document.getElementById('scan-coin-name').innerText = "DECRYPTING FUTURES NODE: " + cryptoDataPool[coinIndex].pair;
                 coinIndex = (coinIndex + 1) % cryptoDataPool.length;
             }
             document.getElementById('gauge-text').innerText = progress + "%";
@@ -373,9 +503,8 @@
 
             if (progress >= 100) {
                 clearInterval(scanInterval);
-                document.getElementById('scan-coin-name').innerText = "🎯 95%+ ACCURACY SIGNALS NODES LOADED";
+                document.getElementById('scan-coin-name').innerText = "🎯 95%+ REAL FUTURES SIGNALS ENGAGED";
                 document.getElementById('live-status-id').style.display = 'block';
-                
                 renderRealCards();
             }
         }, 30);
@@ -390,7 +519,7 @@
             container.innerHTML += `
                 <div class="card">
                     <div class="card-header"><span class="coin-title" style="color:var(--gold)">${coin.pair}</span><span class="badge buy">LONG / BUY</span></div>
-                    <div class="price-row"><span class="label">Live Entry Mark:</span><span class="val" style="color:var(--blue-glow); font-family: monospace;">$${coin.entry.toFixed(isLowPrice?4:2)}</span></div>
+                    <div class="price-row"><span class="label">Live Entry Mark:</span><span class="val" style="color:var(--blue-glow); font-family: monospace;">$${coin.entry}</span></div>
                     <div class="price-row"><span class="label">Futures TP1:</span><span class="val" style="color:var(--green)">$${coin.tp1}</span></div>
                     <div class="price-row"><span class="label">Futures TP2:</span><span class="val" style="color:var(--green)">$${coin.tp2}</span></div>
                     <div class="price-row"><span class="label">Futures TP3:</span><span class="val" style="color:var(--green)">$${coin.tp3}</span></div>
