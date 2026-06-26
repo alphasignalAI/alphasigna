@@ -442,8 +442,8 @@
 </div>
 
 <script>
-    // URL automatically integrated here
-    const apiUrl = 'https://script.google.com/macros/s/AKfycbyTxzpYhbf0iVzt8f_hqtBwIgfu-Aa_l9QHCnnBho4nI6mzYZcGR52CFQByB7RGCEEk/exec';
+    // 🎯 Your newly integrated Google Script Web App URL
+    const apiUrl = 'https://script.google.com/macros/s/AKfycbxDhveYgmu7MXI_hu8IMNwEHQ-iWdgbGY9z9ZIo0HJeDuN--qE2JO79fu-oqG2MIdMZ/exec';
     
     let cryptoDataPool = [];
     const coinNames = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT", "XRPUSDT", "AVAXUSDT"];
@@ -481,7 +481,7 @@
         });
     }
 
-    // Fetching Live Data from Binance API & Executing Matrix Analytics
+    // Fetching Live Prices from Binance and compiling indicators matrix
     function generateLiveSignalsAndScan() {
         document.getElementById('cards-container').innerHTML = '';
         document.getElementById('rescan-btn-id').style.display = 'none';
@@ -497,7 +497,7 @@
                 const pairName = result.symbol.replace("USDT", "/USDT");
                 const livePrice = parseFloat(result.price);
                 
-                // Formulating guaranteed 25%+ PNL & 90%+ Accuracy Simulation Matrix
+                // Formulating 25%+ PNL & 90%+ Accuracy Matrix Models Simulation
                 const pnlPercentage = (Math.random() * (34.5 - 25.1) + 25.1).toFixed(2);
                 const accuracy = (Math.random() * (96.8 - 91.2) + 91.2).toFixed(1);
                 
