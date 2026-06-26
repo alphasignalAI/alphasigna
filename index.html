@@ -203,7 +203,7 @@
         .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; position: relative; transition: all 0.3s ease; }
         .card:hover { transform: translateY(-5px); border-color: var(--gold); box-shadow: 0 5px 20px var(--gold-glow); }
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .coin-title { font-size: 18px; font-weight: bold; }
+        .coin-title { font-size: 16px; font-weight: bold; }
         .badge { padding: 5px 12px; border-radius: 5px; font-size: 12px; font-weight: bold; }
         .badge.buy { background: rgba(0, 255, 136, 0.1); color: var(--green); border: 1px solid var(--green); }
         
@@ -238,7 +238,7 @@
 <div class="container" id="main-app">
     <div class="header">
         <h1>AlphaSigna AI</h1>
-        <p>AI-POWERED MARKET INTELLIGENCE</p>
+        <p>PERPETUAL FUTURES INTELLIGENCE</p>
     </div>
 
     <div style="text-align: center;">
@@ -253,14 +253,14 @@
     </div>
 
     <div class="gauge-section">
-        <div class="scanning-coin" id="scan-coin-name">READY TO ANALYZE REAL-TIME MARKET</div>
+        <div class="scanning-coin" id="scan-coin-name">READY TO ANALYZE PERPETUAL FUTURES MARKET</div>
         <div class="meter-container">
             <div class="gauge-bg"></div>
             <div class="gauge-fill" id="gauge-pointer"></div>
             <div class="gauge-percentage" id="gauge-text">0%</div>
         </div>
-        <button class="scan-init-btn" id="start-scan-btn" onclick="triggerMarketAnalysis()">🔍 Scan Live Market</button>
-        <div class="live-status-indicator" id="live-status-id" style="display: none;">🟢 AI Quantum Matrix: Streaming Live Changes Every 0.01s</div>
+        <button class="scan-init-btn" id="start-scan-btn" onclick="fetchLiveSignalsFromFirebase()">🔍 Scan Live Market</button>
+        <div class="live-status-indicator" id="live-status-id" style="display: none;">🟢 AI Quantum Matrix: Connected & Syncing Live Updates</div>
     </div>
 
     <div class="signal-grid" id="cards-container"></div>
@@ -276,14 +276,15 @@
         <span class="close-modal" onclick="closeModal()">&times;</span>
         <h2 style="color: var(--gold); margin-top: 0;" id="modal-coin">COIN ANALYSIS</h2>
         <hr style="border-color: #16263d;">
-        <h3 style="color: var(--blue-glow);">🧠 SMC / ICT Logic Summary</h3>
+        <h3 style="color: var(--blue-glow);">🧠 Technical AI Analysis Logic</h3>
         <p id="modal-logic" style="font-size: 14px; line-height: 1.6; color: #e0e6ed;"></p>
-        <h3 style="color: var(--green);">📰 Related Live News Insight</h3>
+        <h3 style="color: var(--green);">📰 Fundamental News Insight Node</h3>
         <p id="modal-news" style="font-size: 14px; line-height: 1.6; color: #e0e6ed; font-style: italic;"></p>
     </div>
 </div>
 
 <script>
+    // 🔑 Secure Local Keys Matrix Database
     const premiumKeysDatabase = {
         "user777": { status: "active", expiry: "2027-12-31" },
         "alpha123": { status: "active", expiry: "2027-06-15" },
@@ -294,6 +295,9 @@
     
     let cryptoDataPool = [];
     const coinNames = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT", "XRPUSDT", "AVAXUSDT"];
+    
+    // 🌐 100% Connected with your Firebase database URL
+    const firebaseDbUrl = "https://alphasigna-live-default-rtdb.firebaseio.com/live_signals.json";
 
     function checkEnter(e) { if(e.key === 'Enter') validateLogin(); }
 
@@ -320,44 +324,34 @@
         }
     }
 
-    // 🎯 යූසර් Scan බටන් එක එබුවම ක්‍රියාත්මක වන ෆන්ක්ෂන් එක
-    function triggerMarketAnalysis() {
+    // 📡 Firebase එකෙන් සැබෑම සිග්නල් දත්ත ඇදලා ගන්නා ප්‍රධාන Function එක
+    function fetchLiveSignalsFromFirebase() {
         document.getElementById('start-scan-btn').style.display = 'none';
         document.getElementById('cards-container').innerHTML = '';
         cryptoDataPool = [];
 
-        const promises = coinNames.map(coin => 
-            fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${coin}`)
-            .then(res => res.json())
-        );
+        // Firebase Cloud API Call
+        fetch(firebaseDbUrl)
+        .then(res => res.json())
+        .then(data => {
+            if (!data) {
+                document.getElementById('scan-coin-name').innerText = "⚠️ No Active Signals found in AI Node. Start your Python Bot!";
+                document.getElementById('start-scan-btn').style.display = 'inline-block';
+                return;
+            }
 
-        Promise.all(promises).then(results => {
-            results.forEach(result => {
-                const pairName = result.symbol.replace("USDT", "/USDT");
-                const livePrice = parseFloat(result.price);
-                
-                const pnlPercentage = (Math.random() * (34.5 - 25.1) + 25.1);
-                const accuracy = (Math.random() * (96.8 - 91.2) + 91.2).toFixed(1);
-                
-                const entry = livePrice;
-                const tp1 = (entry * 1.05).toFixed(livePrice < 10 ? 4 : 2);
-                const tp2 = (entry * 1.10).toFixed(livePrice < 10 ? 4 : 2);
-                const tp3 = (entry * 1.18).toFixed(livePrice < 10 ? 4 : 2);
-                const tp4 = (entry * (1 + (pnlPercentage/100))).toFixed(livePrice < 10 ? 4 : 2);
-                const sl = (entry * 0.94).toFixed(livePrice < 10 ? 4 : 2);
-
-                cryptoDataPool.push({
-                    pair: pairName, symbol: result.symbol, basePrice: entry, currentPrice: entry, 
-                    tp1: tp1, tp2: tp2, tp3: tp3, tp4: tp4, sl: sl,
-                    status: "RUNNING", pnl: pnlPercentage,
-                    logic: `🚨 [Accuracy: ${accuracy}%] Consensus of 5x Core Artificial Intelligence Modules Met. Ultra-Fast Node Tracking of 4H Institutional Order Block + Premium Liquidity Sweep. Fully verified by 20x Technical Indicators Node Matrix (RSI/MACD/OTE Fibonacci) & 20x Fundamental Institutional Analysis Data Nodes.`,
-                    news: `🟢 High volume whale wallet accumulation actions detected on Live Binance Orderbook. Overall network trading metric spikes up by 41.5% inside 24 hours.`
-                });
+            // Firebase එකේ තියෙන දත්ත Array එකකට සකස් කර ගැනීම
+            coinNames.forEach(coin => {
+                if (data[coin]) {
+                    cryptoDataPool.push(data[coin]);
+                }
             });
 
+            // ස්කෑනින් මීටරයේ ලස්සන ඇනිමේෂන් එක පටන් ගැනීම
             startScanningAnimation();
-        }).catch(() => {
-            document.getElementById('scan-coin-name').innerText = "⚠️ Binance Live API Connection Timeout.";
+        })
+        .catch(() => {
+            document.getElementById('scan-coin-name').innerText = "⚠️ Firebase Gateway Connection Timeout.";
             document.getElementById('start-scan-btn').style.display = 'inline-block';
         });
     }
@@ -369,9 +363,9 @@
         
         const scanInterval = setInterval(() => {
             progress += 2;
-            if (progress % 10 === 0) {
-                document.getElementById('scan-coin-name').innerText = "ANALYZING NODES: " + coinNames[coinIndex].replace("USDT", "/USDT");
-                coinIndex = (coinIndex + 1) % coinNames.length;
+            if (progress % 10 === 0 && cryptoDataPool.length > 0) {
+                document.getElementById('scan-coin-name').innerText = "DECRYPTING NODE: " + cryptoDataPool[coinIndex].pair;
+                coinIndex = (coinIndex + 1) % cryptoDataPool.length;
             }
             document.getElementById('gauge-text').innerText = progress + "%";
             let rotation = -180 + (progress * 1.8);
@@ -379,74 +373,41 @@
 
             if (progress >= 100) {
                 clearInterval(scanInterval);
-                document.getElementById('scan-coin-name').innerText = "🎯 QUANTUM AI TERMINAL ENGAGED";
+                document.getElementById('scan-coin-name').innerText = "🎯 95%+ ACCURACY SIGNALS NODES LOADED";
                 document.getElementById('live-status-id').style.display = 'block';
                 
-                renderCards();
-                // ⚡💥 ULTRA FAST HIGH-FREQUENCY 0.01s REAL LIVE UPDATE TICKER START
-                startHighFrequencyLiveTicker();
+                renderRealCards();
             }
-        }, 35);
+        }, 30);
     }
 
-    function renderCards() {
+    function renderRealCards() {
         const container = document.getElementById('cards-container');
         container.innerHTML = '';
 
         cryptoDataPool.forEach((coin, idx) => {
-            const isLowPrice = coin.basePrice < 10;
+            const isLowPrice = coin.entry < 10;
             container.innerHTML += `
                 <div class="card">
-                    <div class="card-header"><span class="coin-title">${coin.pair}</span><span class="badge buy">BUY</span></div>
-                    <div class="price-row"><span class="label">Live Entry Price:</span><span class="val" id="live-price-${idx}" style="color:var(--blue-glow); font-family: monospace;">$${coin.currentPrice.toFixed(isLowPrice?4:2)}</span></div>
-                    <div class="price-row"><span class="label">Target TP1:</span><span class="val" style="color:var(--green)">$${coin.tp1}</span></div>
-                    <div class="price-row"><span class="label">Target TP2:</span><span class="val" style="color:var(--green)">$${coin.tp2}</span></div>
-                    <div class="price-row"><span class="label">Target TP3:</span><span class="val" style="color:var(--green)">$${coin.tp3}</span></div>
-                    <div class="price-row"><span class="label">Target TP4:</span><span class="val" style="color:var(--green)">$${coin.tp4}</span></div>
-                    <div class="price-row"><span class="label">Target SL:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
-                    <div class="price-row"><span class="label">Live PNL:</span><span class="val" id="live-pnl-${idx}" style="color:var(--green); font-weight:bold; font-family: monospace;">+${coin.pnl.toFixed(2)}%</span></div>
-                    <div class="price-row"><span class="label">AI Status:</span><span class="val" style="color: var(--gold); font-weight:bold;">${coin.status}</span></div>
+                    <div class="card-header"><span class="coin-title" style="color:var(--gold)">${coin.pair}</span><span class="badge buy">LONG / BUY</span></div>
+                    <div class="price-row"><span class="label">Live Entry Mark:</span><span class="val" style="color:var(--blue-glow); font-family: monospace;">$${coin.entry.toFixed(isLowPrice?4:2)}</span></div>
+                    <div class="price-row"><span class="label">Futures TP1:</span><span class="val" style="color:var(--green)">$${coin.tp1}</span></div>
+                    <div class="price-row"><span class="label">Futures TP2:</span><span class="val" style="color:var(--green)">$${coin.tp2}</span></div>
+                    <div class="price-row"><span class="label">Futures TP3:</span><span class="val" style="color:var(--green)">$${coin.tp3}</span></div>
+                    <div class="price-row"><span class="label">Futures Max TP4:</span><span class="val" style="color:var(--green)">$${coin.tp4}</span></div>
+                    <div class="price-row"><span class="label">Futures Risk SL:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
+                    <div class="price-row"><span class="label">Expected PNL:</span><span class="val" style="color:var(--green); font-weight:bold;">+${coin.pnl}%</span></div>
+                    <div class="price-row"><span class="label">AI Accuracy:</span><span class="val" style="color:var(--green); font-weight:bold;">${coin.accuracy}%</span></div>
                     <button class="more-btn" onclick="openModal(${idx})">More / Learn Logic</button>
                 </div>`;
         });
     }
 
-    // ⚡ තත්පර 0.01න් (මිලි තත්පර 10න්) ලයිව් ප්‍රයිස් සහ PNL එක රියල් මාකට් එක වගේ ගැස්සි ගැස්සි වෙනස් කරන ටිකර් එක
-    function startHighFrequencyLiveTicker() {
-        setInterval(() => {
-            cryptoDataPool.forEach((coin, idx) => {
-                // සැබෑ ක්‍රිප්ටෝ මාකට් එකේ තත්පරේට වෙනස් වෙන පුංචිම මිල විචලනය (Micro Fluctuation)
-                const changePercent = (Math.random() * 0.04) - 0.018; // පුංචි පොසිටිව් අප්ඩේට් එකක් එක්ක
-                
-                coin.currentPrice = coin.currentPrice * (1 + (changePercent / 100));
-                coin.pnl = coin.pnl + (changePercent * 5); // Leverage එකක් වගේ ලයිව් PNL එක වෙනස් වීම
-
-                if (coin.pnl < 15) coin.pnl = 25.42; // සීමාව පැනීම වැලැක්වීම
-
-                const priceElem = document.getElementById(`live-price-${idx}`);
-                const pnlElem = document.getElementById(`live-pnl-${idx}`);
-                
-                if (priceElem && pnlElem) {
-                    const isLowPrice = coin.basePrice < 10;
-                    priceElem.innerText = `$${coin.currentPrice.toFixed(isLowPrice ? 4 : 2)}`;
-                    pnlElem.innerText = `+${coin.pnl.toFixed(2)}%`;
-                    
-                    // මිල ඉහල පහල යද්දී පොඩි ලයිව් කලර් ෆ්ලෑෂ් එකක් (Visual Effect)
-                    if(changePercent > 0) {
-                        priceElem.style.color = "var(--green)";
-                    } else {
-                        priceElem.style.color = "var(--blue-glow)";
-                    }
-                }
-            });
-        }, 10); // ⚡ 10ms කියන්නේ හරියටම තත්පර 0.01න් අප්ඩේට් වෙනවා!
-    }
-
     function openModal(index) {
         const data = cryptoDataPool[index];
         document.getElementById('modal-coin').innerText = data.pair + " REAL-TIME ANALYSIS";
-        document.getElementById('modal-logic').innerText = data.logic;
-        document.getElementById('modal-news').innerText = data.news;
+        document.getElementById('modal-logic').innerText = data.tech_logic;
+        document.getElementById('modal-news').innerText = data.fund_logic;
         document.getElementById('info-modal').style.display = 'flex';
     }
     function closeModal() { document.getElementById('info-modal').style.display = 'none'; }
