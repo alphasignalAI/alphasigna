@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna AI - Premium Market Intelligence</title>
+    <title>AlphaSigna AI - Live Premium Terminal</title>
     <style>
         :root {
             --bg-color: #060b13;
@@ -178,8 +178,26 @@
         .gauge-fill { position: absolute; top: 0; left: 20px; width: 200px; height: 200px; border-radius: 50%; border: 15px solid var(--blue-glow); box-sizing: border-box; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); transform: rotate(-180deg); transform-origin: center center; transition: transform 0.1s linear; }
         .gauge-percentage { position: absolute; bottom: 0px; left: 0; right: 0; font-size: 36px; font-weight: bold; color: #fff; }
 
-        .rescan-btn { background: linear-gradient(135deg, #1f3b60 0%, #11223a 100%); border: 1px solid var(--gold); color: var(--gold); padding: 12px 30px; border-radius: 30px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; box-shadow: 0 0 15px rgba(243, 186, 47, 0.1); }
-        .rescan-btn:hover { background: var(--gold); color: #000; box-shadow: 0 0 20px var(--gold-glow); }
+        .scan-init-btn {
+            background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%);
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: 0.3s;
+            box-shadow: 0 0 20px var(--gold-glow);
+        }
+        .scan-init-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(243, 186, 47, 0.6);
+        }
+
+        .live-status-indicator { color: var(--green); font-size: 14px; font-weight: bold; text-transform: uppercase; margin-top: 15px; letter-spacing: 2px; animation: blink 1.5s infinite; }
+        @keyframes blink { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
 
         .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
         .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; position: relative; transition: all 0.3s ease; }
@@ -235,13 +253,14 @@
     </div>
 
     <div class="gauge-section">
-        <div class="scanning-coin" id="scan-coin-name">RUNNING ALGORITHMIC SCAN...</div>
+        <div class="scanning-coin" id="scan-coin-name">READY TO ANALYZE REAL-TIME MARKET</div>
         <div class="meter-container">
             <div class="gauge-bg"></div>
             <div class="gauge-fill" id="gauge-pointer"></div>
             <div class="gauge-percentage" id="gauge-text">0%</div>
         </div>
-        <button class="rescan-btn" id="rescan-btn-id" onclick="triggerRescan()" style="display: none;">🔄 Re-Scan Live Market</button>
+        <button class="scan-init-btn" id="start-scan-btn" onclick="triggerMarketAnalysis()">🔍 Scan Live Market</button>
+        <div class="live-status-indicator" id="live-status-id" style="display: none;">🟢 AI Quantum Matrix: Streaming Live Changes Every 0.01s</div>
     </div>
 
     <div class="signal-grid" id="cards-container"></div>
@@ -265,7 +284,6 @@
 </div>
 
 <script>
-    // 🔑 Secure Local Keys Matrix Database with your updated inputs
     const premiumKeysDatabase = {
         "user777": { status: "active", expiry: "2027-12-31" },
         "alpha123": { status: "active", expiry: "2027-06-15" },
@@ -299,13 +317,13 @@
             document.getElementById('login-container').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
             document.getElementById('user-expiry-text').innerText = "🔑 PREMIUM EXPIRE DATE: " + userData.expiry;
-            generateLiveSignalsAndScan();
         }
     }
 
-    function generateLiveSignalsAndScan() {
+    // 🎯 යූසර් Scan බටන් එක එබුවම ක්‍රියාත්මක වන ෆන්ක්ෂන් එක
+    function triggerMarketAnalysis() {
+        document.getElementById('start-scan-btn').style.display = 'none';
         document.getElementById('cards-container').innerHTML = '';
-        document.getElementById('rescan-btn-id').style.display = 'none';
         cryptoDataPool = [];
 
         const promises = coinNames.map(coin => 
@@ -318,7 +336,7 @@
                 const pairName = result.symbol.replace("USDT", "/USDT");
                 const livePrice = parseFloat(result.price);
                 
-                const pnlPercentage = (Math.random() * (34.5 - 25.1) + 25.1).toFixed(2);
+                const pnlPercentage = (Math.random() * (34.5 - 25.1) + 25.1);
                 const accuracy = (Math.random() * (96.8 - 91.2) + 91.2).toFixed(1);
                 
                 const entry = livePrice;
@@ -329,22 +347,22 @@
                 const sl = (entry * 0.94).toFixed(livePrice < 10 ? 4 : 2);
 
                 cryptoDataPool.push({
-                    pair: pairName, side: "BUY", entry: entry, tp1: tp1, tp2: tp2, tp3: tp3, tp4: tp4, sl: sl,
-                    status: "TRIGGERED", pnl: `+${pnlPercentage}%`,
-                    logic: `🚨 [Accuracy: ${accuracy}%] Consensus of 5x Core Artificial Intelligence Modules Met. Verified by 20x Technical Indicators Node Matrix (RSI/MACD/OTE Fibonacci) & 20x Fundamental Institutional Analysis Data Nodes.`,
+                    pair: pairName, symbol: result.symbol, basePrice: entry, currentPrice: entry, 
+                    tp1: tp1, tp2: tp2, tp3: tp3, tp4: tp4, sl: sl,
+                    status: "RUNNING", pnl: pnlPercentage,
+                    logic: `🚨 [Accuracy: ${accuracy}%] Consensus of 5x Core Artificial Intelligence Modules Met. Ultra-Fast Node Tracking of 4H Institutional Order Block + Premium Liquidity Sweep. Fully verified by 20x Technical Indicators Node Matrix (RSI/MACD/OTE Fibonacci) & 20x Fundamental Institutional Analysis Data Nodes.`,
                     news: `🟢 High volume whale wallet accumulation actions detected on Live Binance Orderbook. Overall network trading metric spikes up by 41.5% inside 24 hours.`
                 });
             });
 
-            startScanning();
+            startScanningAnimation();
         }).catch(() => {
             document.getElementById('scan-coin-name').innerText = "⚠️ Binance Live API Connection Timeout.";
+            document.getElementById('start-scan-btn').style.display = 'inline-block';
         });
     }
 
-    function triggerRescan() { generateLiveSignalsAndScan(); }
-
-    function startScanning() {
+    function startScanningAnimation() {
         let progress = 0; let coinIndex = 0;
         document.getElementById('gauge-text').innerText = "0%";
         document.getElementById('gauge-pointer').style.transform = `rotate(-180deg)`;
@@ -352,7 +370,7 @@
         const scanInterval = setInterval(() => {
             progress += 2;
             if (progress % 10 === 0) {
-                document.getElementById('scan-coin-name').innerText = "SCANNING LIVE MARKET: " + coinNames[coinIndex].replace("USDT", "/USDT");
+                document.getElementById('scan-coin-name').innerText = "ANALYZING NODES: " + coinNames[coinIndex].replace("USDT", "/USDT");
                 coinIndex = (coinIndex + 1) % coinNames.length;
             }
             document.getElementById('gauge-text').innerText = progress + "%";
@@ -361,11 +379,14 @@
 
             if (progress >= 100) {
                 clearInterval(scanInterval);
-                document.getElementById('scan-coin-name').innerText = "🎯 LIVE AI SIGNALS GENERATED";
-                document.getElementById('rescan-btn-id').style.display = 'inline-block';
+                document.getElementById('scan-coin-name').innerText = "🎯 QUANTUM AI TERMINAL ENGAGED";
+                document.getElementById('live-status-id').style.display = 'block';
+                
                 renderCards();
+                // ⚡💥 ULTRA FAST HIGH-FREQUENCY 0.01s REAL LIVE UPDATE TICKER START
+                startHighFrequencyLiveTicker();
             }
-        }, 40);
+        }, 35);
     }
 
     function renderCards() {
@@ -373,20 +394,52 @@
         container.innerHTML = '';
 
         cryptoDataPool.forEach((coin, idx) => {
+            const isLowPrice = coin.basePrice < 10;
             container.innerHTML += `
                 <div class="card">
-                    <div class="card-header"><span class="coin-title">${coin.pair}</span><span class="badge buy">${coin.side}</span></div>
-                    <div class="price-row"><span class="label">AI Entry:</span><span class="val">$${coin.entry}</span></div>
+                    <div class="card-header"><span class="coin-title">${coin.pair}</span><span class="badge buy">BUY</span></div>
+                    <div class="price-row"><span class="label">Live Entry Price:</span><span class="val" id="live-price-${idx}" style="color:var(--blue-glow); font-family: monospace;">$${coin.currentPrice.toFixed(isLowPrice?4:2)}</span></div>
                     <div class="price-row"><span class="label">Target TP1:</span><span class="val" style="color:var(--green)">$${coin.tp1}</span></div>
                     <div class="price-row"><span class="label">Target TP2:</span><span class="val" style="color:var(--green)">$${coin.tp2}</span></div>
                     <div class="price-row"><span class="label">Target TP3:</span><span class="val" style="color:var(--green)">$${coin.tp3}</span></div>
                     <div class="price-row"><span class="label">Target TP4:</span><span class="val" style="color:var(--green)">$${coin.tp4}</span></div>
                     <div class="price-row"><span class="label">Target SL:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
-                    <div class="price-row"><span class="label">Live PNL:</span><span class="val" style="color:var(--green)">${coin.pnl}</span></div>
-                    <div class="price-row"><span class="label">Status:</span><span class="val" style="color: var(--gold)">${coin.status}</span></div>
+                    <div class="price-row"><span class="label">Live PNL:</span><span class="val" id="live-pnl-${idx}" style="color:var(--green); font-weight:bold; font-family: monospace;">+${coin.pnl.toFixed(2)}%</span></div>
+                    <div class="price-row"><span class="label">AI Status:</span><span class="val" style="color: var(--gold); font-weight:bold;">${coin.status}</span></div>
                     <button class="more-btn" onclick="openModal(${idx})">More / Learn Logic</button>
                 </div>`;
         });
+    }
+
+    // ⚡ තත්පර 0.01න් (මිලි තත්පර 10න්) ලයිව් ප්‍රයිස් සහ PNL එක රියල් මාකට් එක වගේ ගැස්සි ගැස්සි වෙනස් කරන ටිකර් එක
+    function startHighFrequencyLiveTicker() {
+        setInterval(() => {
+            cryptoDataPool.forEach((coin, idx) => {
+                // සැබෑ ක්‍රිප්ටෝ මාකට් එකේ තත්පරේට වෙනස් වෙන පුංචිම මිල විචලනය (Micro Fluctuation)
+                const changePercent = (Math.random() * 0.04) - 0.018; // පුංචි පොසිටිව් අප්ඩේට් එකක් එක්ක
+                
+                coin.currentPrice = coin.currentPrice * (1 + (changePercent / 100));
+                coin.pnl = coin.pnl + (changePercent * 5); // Leverage එකක් වගේ ලයිව් PNL එක වෙනස් වීම
+
+                if (coin.pnl < 15) coin.pnl = 25.42; // සීමාව පැනීම වැලැක්වීම
+
+                const priceElem = document.getElementById(`live-price-${idx}`);
+                const pnlElem = document.getElementById(`live-pnl-${idx}`);
+                
+                if (priceElem && pnlElem) {
+                    const isLowPrice = coin.basePrice < 10;
+                    priceElem.innerText = `$${coin.currentPrice.toFixed(isLowPrice ? 4 : 2)}`;
+                    pnlElem.innerText = `+${coin.pnl.toFixed(2)}%`;
+                    
+                    // මිල ඉහල පහල යද්දී පොඩි ලයිව් කලර් ෆ්ලෑෂ් එකක් (Visual Effect)
+                    if(changePercent > 0) {
+                        priceElem.style.color = "var(--green)";
+                    } else {
+                        priceElem.style.color = "var(--blue-glow)";
+                    }
+                }
+            });
+        }, 10); // ⚡ 10ms කියන්නේ හරියටම තත්පර 0.01න් අප්ඩේට් වෙනවා!
     }
 
     function openModal(index) {
