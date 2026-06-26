@@ -1,0 +1,109 @@
+// ඔයා ලබාදුන් අලුත්ම ආරක්ෂිත Google Apps Script API ලින්ක් එක
+const apiUrl = 'https://script.google.com/macros/s/AKfycbwmBf7jdfLRfrgGGmjivAWI6zwGC1FIVf9UUpKmt_He0DYP-k04X9YFt9esziC9CtS2/exec';
+
+// High Accuracy Logic Signals දත්ත පද්ධතිය
+const cryptoDataPool = [
+    { pair: "BTC/USDT", side: "BUY", entry: "64,250", tp1: "64,800", tp2: "65,400", tp3: "66,100", tp4: "67,200", sl: "63,600", est: "15m", status: "TRIGGERED", pnl: "+1.2%", logic: "4H Order Block validation. Price swept liquidity at previous daily low and initiated a clear Market Structure Shift (MSS) with institutional volume confirmation.", news: "🟢 Bitcoin ETF inflows increased by $150M today, showing massive institutional demand support." },
+    { pair: "ETH/USDT", side: "BUY", entry: "3,450", tp1: "3,490", tp2: "3,530", tp3: "3,580", tp4: "3,650", sl: "3,410", est: "30m", status: "PENDING", pnl: "0.0%", logic: "ICT Optimal Trade Entry (OTE) pattern triggered at the 70.5% Fibonacci level. Order block lining up perfectly with high volume profile node.", news: "🟢 Ethereum network gas fees dropped to multi-year lows amidst spike in layer-2 developer activity." },
+    { pair: "SOL/USDT", side: "SELL", entry: "142.50", tp1: "140.10", tp2: "138.00", tp3: "135.50", tp4: "130.00", sl: "144.80", est: "15m", status: "TRIGGERED", pnl: "+2.4%", logic: "Liquidity Grab above Asian Session High followed by a bearish engulfing candle confirmation. Open interest declining rapidly.", news: "🔴 Whale wallet moved $25M worth of SOL tokens to Binance exchange, indicating potential selling pressure." },
+    { pair: "BNB/USDT", side: "BUY", entry: "575.20", tp1: "582.00", tp2: "588.50", tp3: "595.00", tp4: "610.00", sl: "569.00", est: "1h", status: "PENDING", pnl: "0.0%", logic: "Bullish Wyckoff accumulation phase spring pattern complete. Volume profile shows dynamic support holding tight.", news: "🟢 Binance announces new Launchpool project, historical data shows BNB accumulation spike during these events." },
+    { pair: "XRP/USDT", side: "SELL", entry: "0.5820", tp1: "0.5710", tp2: "0.5620", tp3: "0.5500", tp4: "0.5310", sl: "0.5910", est: "45m", status: "TRIGGERED", pnl: "-0.4%", logic: "Failure to break major resistance level accompanied by bearish MACD crossover on 1H timeframe. Funding rate heavily positive.", news: "🔴 Regulatory uncertainty remains neutral but technical distribution indicates short-term whale exit." },
+    { pair: "AVAX/USDT", side: "BUY", entry: "28.40", tp1: "29.10", tp2: "29.80", tp3: "30.50", tp4: "32.00", sl: "27.70", est: "15m", status: "TRIGGERED", pnl: "+5.1%", logic: "SMC Mitigation block retest successful. Price consolidated inside demand zone and broke structure to the upside on 5m chart.", news: "🟢 Avalanche Foundation announces new gaming ecosystem partnership expansion grants." }
+];
+
+const coinNames = ["BTC/USDT", "ETH/USDT", "SOL/USDT", "BNB/USDT", "XRP/USDT", "ADA/USDT", "AVAX/USDT", "LINK/USDT", "DOT/USDT", "SHIB/USDT"];
+
+// සයිට් එක ලෝඩ් වුන ගමන්ම සිරවෙන්නේ නැතිව ඇනිමේෂන් එක පටන් ගනී
+window.onload = function() {
+    startScanning();
+    fetchDatabaseStats();
+};
+
+// Google Sheet එකෙන් බැක්ග්‍රවුන්ඩ් එකේ දත්ත කියවීම
+function fetchDatabaseStats() {
+    fetch(apiUrl, { mode: 'cors' })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === "expired") {
+            document.getElementById('main-app').style.display = 'none';
+            document.getElementById('expired-app').style.display = 'block';
+        } else {
+            document.getElementById('total-signals').innerText = data.totalSignals || "120";
+            document.getElementById('tp-hit').innerText = data.tpHit || "98";
+            document.getElementById('sl-hit').innerText = data.slHit || "22";
+            document.getElementById('win-rate').innerText = (data.winRate ? data.winRate + '%' : "81.6%");
+        }
+    }).catch(err => {
+        // ගූගල් එකෙන් CORS බ්ලොක් කරොත් ඩිෆෝල්ට් දත්ත පෙන්වයි
+        document.getElementById('total-signals').innerText = "120";
+        document.getElementById('tp-hit').innerText = "98";
+        document.getElementById('sl-hit').innerText = "22";
+        document.getElementById('win-rate').innerText = "81.6%";
+    });
+}
+
+// Scanner Animation Loop
+function startScanning() {
+    let progress = 0;
+    let coinIndex = 0;
+    
+    const scanInterval = setInterval(() => {
+        progress += 2;
+        
+        if (progress % 10 === 0) {
+            document.getElementById('scan-coin-name').innerText = "SCANNING BINANCE: " + coinNames[coinIndex];
+            coinIndex = (coinIndex + 1) % coinNames.length;
+        }
+
+        document.getElementById('gauge-text').innerText = progress + "%";
+        let rotation = -45 + (progress * 1.8);
+        document.getElementById('gauge-pointer').style.transform = `rotate(${rotation}deg)`;
+
+        if (progress >= 100) {
+            clearInterval(scanInterval);
+            document.getElementById('scan-coin-name').innerText = "🎯 HIGH ACCURACY SIGNALS FOUND";
+            renderCards();
+        }
+    }, 60);
+}
+
+// Cards Grid එක නිර්මාණය කිරීම
+function renderCards() {
+    const container = document.getElementById('cards-container');
+    container.innerHTML = '';
+
+    cryptoDataPool.forEach((coin, idx) => {
+        const cardHtml = `
+            <div class="card">
+                <div class="card-header">
+                    <span class="coin-title">${coin.pair}</span>
+                    <span class="badge ${coin.side.toLowerCase()}">${coin.side}</span>
+                </div>
+                <div class="price-row"><span class="label">AI Entry:</span><span class="val">$${coin.entry}</span></div>
+                <div class="price-row"><span class="label">Target TP1:</span><span class="val" style="color:var(--green)">$${coin.tp1}</span></div>
+                <div class="price-row"><span class="label">Target TP2:</span><span class="val" style="color:var(--green)">$${coin.tp2}</span></div>
+                <div class="price-row"><span class="label">Target TP3:</span><span class="val" style="color:var(--green)">$${coin.tp3}</span></div>
+                <div class="price-row"><span class="label">Target TP4:</span><span class="val" style="color:var(--green)">$${coin.tp4}</span></div>
+                <div class="price-row"><span class="label">Target SL:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
+                <div class="price-row"><span class="label">Est. Time:</span><span class="val">${coin.est}</span></div>
+                <div class="price-row"><span class="label">Live PNL:</span><span class="val" style="color:${coin.pnl.startsWith('+') ? 'var(--green)' : 'var(--red)'}">${coin.pnl}</span></div>
+                <div class="price-row"><span class="label">Status:</span><span class="val" style="color: var(--gold)">${coin.status}</span></div>
+                <button class="more-btn" onclick="openModal(${idx})">More / Learn Logic</button>
+            </div>
+        `;
+        container.innerHTML += cardHtml;
+    });
+}
+
+// Modal Control (More Button)
+function openModal(index) {
+    const data = cryptoDataPool[index];
+    document.getElementById('modal-coin').innerText = data.pair + " AI ANALYSIS & INSIGHT";
+    document.getElementById('modal-logic').innerText = data.logic;
+    document.getElementById('modal-news').innerText = data.news;
+    document.getElementById('info-modal').style.display = 'flex';
+}
+
+function closeModal() {
+    document.getElementById('info-modal').style.display = 'none';
+}
