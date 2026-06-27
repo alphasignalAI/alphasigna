@@ -29,7 +29,6 @@
         #warning-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.96); justify-content: center; align-items: center; z-index: 10000; padding: 15px; box-sizing: border-box; backdrop-filter: blur(10px);}
         .warning-content { background: rgba(5, 10, 18, 0.85); backdrop-filter: blur(15px); border: 2px solid var(--gold); padding: 35px 25px; border-radius: 20px; max-width: 600px; text-align: center; box-shadow: 0 0 40px rgba(243, 186, 47, 0.2); width: 100%;}
         
-        /* 🔥 Centered Buttons Fix */
         .agree-btn, .login-btn, .scan-init-btn, .rescan-btn { 
             background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); 
             color: #000; border: none; padding: 14px 30px; border-radius: 8px; 
@@ -54,7 +53,7 @@
         .expiry-badge { text-align: center; margin-top: -10px; margin-bottom: 25px; font-size: 13px; color: var(--text-muted); font-weight: bold; letter-spacing: 1px;}
         .expiry-badge span { color: var(--gold); border: 1px solid rgba(243, 186, 47, 0.3); padding: 4px 10px; border-radius: 6px; background: rgba(243, 186, 47, 0.1); font-family: monospace; box-shadow: 0 0 10px rgba(243, 186, 47, 0.1);}
 
-        /* Stats Panels with Glassmorphism */
+        /* Stats Panels */
         .section-title { font-size: 12px; color: var(--text-muted); text-align: center; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 2px; font-weight: 800;}
         .stats-panel { background: rgba(6, 13, 23, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 35px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .stat-item { text-align: center; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.04); display: flex; flex-direction: column; justify-content: center; transition: transform 0.3s, background 0.3s;}
@@ -62,7 +61,7 @@
         .stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; font-weight: 700; letter-spacing: 0.5px;}
         .stat-value { font-size: 26px; font-weight: 900; color: #fff; font-family: 'Segoe UI', monospace; text-shadow: 0 2px 5px rgba(0,0,0,0.5);}
 
-        /* 🔥 Premium Meter / Gauge */
+        /* Gauge Meter */
         .gauge-section { text-align: center; margin: 40px 0; }
         @keyframes pulseGlow { 0% { text-shadow: 0 0 5px var(--gold); } 50% { text-shadow: 0 0 20px var(--gold); } 100% { text-shadow: 0 0 5px var(--gold); } }
         .scanning-coin { font-size: 15px; color: var(--gold); font-weight: bold; min-height: 40px; letter-spacing: 1px; text-transform: uppercase; animation: pulseGlow 2s infinite;}
@@ -72,7 +71,7 @@
         .gauge-fill { width: 200px; height: 200px; border-radius: 50%; border: 10px solid var(--blue-glow); position: absolute; top: 0; left: 20px; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); transform: rotate(-180deg); transform-origin: center center; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .gauge-percentage { position: absolute; bottom: -5px; left: 0; right: 0; font-size: 34px; font-weight: 900; color: #fff; text-shadow: 0 0 15px var(--blue-glow); font-family: monospace; transition: color 0.3s, text-shadow 0.3s;}
 
-        /* 🔥 Cards Grid - Advanced Look */
+        /* Cards Grid */
         .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 20px; box-sizing: border-box; width: 100%; align-items: stretch;}
         .card { background: linear-gradient(180deg, rgba(12,24,43,0.8) 0%, rgba(8,16,26,0.95) 100%); backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.1); border-left: 1px solid rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(0,0,0,0.5); border-radius: 16px; padding: 22px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.3s ease;}
         .card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0, 210, 255, 0.15); border-top: 1px solid rgba(0, 210, 255, 0.3);}
@@ -97,7 +96,7 @@
         .more-btn { flex: 1; background: linear-gradient(135deg, #1a2f4c, #112035); border: 1px solid rgba(243, 186, 47, 0.4); color: var(--gold); padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; transition: background 0.2s, box-shadow 0.2s;}
         .more-btn:hover { background: rgba(243, 186, 47, 0.1); box-shadow: 0 0 10px rgba(243, 186, 47, 0.2);}
 
-        /* Modal UI */
+        /* Modal Box */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 10100; padding: 15px; box-sizing: border-box;}
         .modal-content { background: rgba(10, 20, 35, 0.95); border: 1px solid var(--gold); padding: 30px; border-radius: 20px; max-width: 550px; width: 100%; position: relative; max-height: 85vh; overflow-y: auto; box-sizing: border-box; box-shadow: 0 20px 50px rgba(0,0,0,0.8);}
         .close-modal { position: absolute; top: 12px; right: 20px; font-size: 32px; cursor: pointer; color: var(--text-muted); transition: color 0.2s;}
@@ -247,25 +246,24 @@
         }).catch(() => { document.getElementById('error-msg').innerText = "⚠️ Server Gateway Error."; });
     }
 
-    // 🔥 V6.0 - Advanced Scanning UI Logic with News Pause Shield
+    // 🔥 V6.0 - Advanced Scanning UI Logic with Dynamic Card Fetch
     function triggerPremiumScanUI() {
         document.getElementById('start-scan-btn').style.display = 'none';
         document.getElementById('rescan-btn-id').style.display = 'none';
         document.getElementById('cards-container').innerHTML = '';
         cryptoDataPool = []; currentProgress = 0;
 
-        // 1. Check System Status for High Impact News
+        // 1. Check Fundamental News Shield Status
         fetch(`${FIREBASE_URL}/system_status.json`).then(res => res.json()).then(statusData => {
             
             if (statusData && statusData.is_paused === true) {
-                // System is Paused due to News
                 if(scanAnimationLoop) clearInterval(scanAnimationLoop);
                 document.getElementById('gauge-text').innerText = "PAUSED";
                 document.getElementById('gauge-text').style.color = "var(--red)";
                 document.getElementById('gauge-text').style.textShadow = "0 0 15px var(--red)";
                 
                 document.getElementById('scan-coin-name').innerHTML = `
-                    <span style="color: var(--red); font-size: 16px; font-weight: 900; animation: none;">
+                    <span style="color: var(--red); font-size: 15px; font-weight: 900; animation: none; line-height: 1.4; display: inline-block;">
                         ${statusData.message}
                     </span><br>
                     <span style="color: #8492a6; font-size: 12px; margin-top:8px; display:inline-block; font-weight: bold;">
@@ -274,10 +272,10 @@
                 `;
                 
                 document.getElementById('rescan-btn-id').style.display = 'block';
-                return; // Stop execution here
+                return;
             }
 
-            // 2. System is Safe - Proceed with Scanning
+            // 2. Normal Scanning Flow
             document.getElementById('gauge-text').style.color = "#fff";
             document.getElementById('gauge-text').style.textShadow = "0 0 15px var(--blue-glow)";
             
@@ -287,23 +285,42 @@
                     document.getElementById('rescan-btn-id').style.display = 'block';
                     return;
                 }
+                
                 const rawCoins = Object.values(data);
+                let renderedCount = 0;
                 
                 scanAnimationLoop = setInterval(() => {
                     currentProgress += 2;
                     if(currentProgress > 100) currentProgress = 100;
+                    
                     document.getElementById('gauge-text').innerText = currentProgress + "%";
                     document.getElementById('gauge-pointer').style.transform = `rotate(${-180 + (currentProgress * 1.8)}deg)`;
 
-                    if (currentProgress < 20) { document.getElementById('scan-coin-name').innerText = "🧠 INTERROGATING MULTI-TIMEFRAME DATA..."; }
-                    else if (currentProgress % 16 === 0 && rawCoins[(currentProgress/16)-1]) { renderSingleCard(rawCoins[(currentProgress/16)-1]); }
+                    if (currentProgress < 20) { 
+                        document.getElementById('scan-coin-name').innerText = "🧠 INTERROGATING MULTI-TIMEFRAME DATA..."; 
+                    }
+                    // 🔥 Fixed Dynamic Card Loader Logic
+                    else if (currentProgress > 20 && renderedCount < rawCoins.length) {
+                        let targetCount = Math.floor((currentProgress - 20) / (80 / rawCoins.length));
+                        while (renderedCount < targetCount && renderedCount < rawCoins.length) {
+                            renderSingleCard(rawCoins[renderedCount]);
+                            renderedCount++;
+                        }
+                    }
 
                     if (currentProgress >= 100) {
                         clearInterval(scanAnimationLoop);
+                        while (renderedCount < rawCoins.length) {
+                            renderSingleCard(rawCoins[renderedCount]);
+                            renderedCount++;
+                        }
                         document.getElementById('scan-coin-name').innerText = "🎯 HIGH-PROFIT TARGET SIGNALS SECURED";
                         document.getElementById('rescan-btn-id').style.display = 'block';
                     }
-                }, 240);
+                }, 100); 
+            }).catch(err => {
+                document.getElementById('scan-coin-name').innerText = "⚠️ DATA STREAM DISCONNECTED.";
+                document.getElementById('rescan-btn-id').style.display = 'block';
             });
         });
     }
