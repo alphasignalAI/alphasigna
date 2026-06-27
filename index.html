@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna AI - Ultimate Trading Terminal</title>
+    <title>AlphaSigna AI - V6 Ultimate Terminal</title>
     <style>
         :root {
             --bg-color: #03070d; 
@@ -29,12 +29,11 @@
         #warning-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.96); justify-content: center; align-items: center; z-index: 10000; padding: 15px; box-sizing: border-box; backdrop-filter: blur(10px);}
         .warning-content { background: rgba(5, 10, 18, 0.85); backdrop-filter: blur(15px); border: 2px solid var(--gold); padding: 35px 25px; border-radius: 20px; max-width: 600px; text-align: center; box-shadow: 0 0 40px rgba(243, 186, 47, 0.2); width: 100%;}
         
-        /* 🔥 Button UI FIX: මැදට ගැනීම (Centered) */
+        /* 🔥 Centered Buttons Fix */
         .agree-btn, .login-btn, .scan-init-btn, .rescan-btn { 
             background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); 
             color: #000; border: none; padding: 14px 30px; border-radius: 8px; 
-            font-weight: 900; cursor: pointer; 
-            margin: 15px auto 0 auto; display: block; /* මේ පේළියෙන් බොත්තම් හරියටම මැදට එයි */
+            font-weight: 900; cursor: pointer; margin: 15px auto 0 auto; display: block; 
             width: 100%; max-width: 300px; text-transform: uppercase; 
             font-size: 14px; letter-spacing: 0.5px; transition: transform 0.2s, box-shadow 0.2s;
         }
@@ -71,7 +70,7 @@
         .meter-container { position: relative; width: 240px; height: 120px; margin: 20px auto; overflow: hidden; filter: drop-shadow(0 0 15px rgba(0, 210, 255, 0.3)); }
         .gauge-bg { width: 200px; height: 200px; border-radius: 50%; border: 10px solid #111d2e; position: absolute; top: 0; left: 20px; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); }
         .gauge-fill { width: 200px; height: 200px; border-radius: 50%; border: 10px solid var(--blue-glow); position: absolute; top: 0; left: 20px; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); transform: rotate(-180deg); transform-origin: center center; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .gauge-percentage { position: absolute; bottom: -5px; left: 0; right: 0; font-size: 34px; font-weight: 900; color: #fff; text-shadow: 0 0 15px var(--blue-glow); font-family: monospace;}
+        .gauge-percentage { position: absolute; bottom: -5px; left: 0; right: 0; font-size: 34px; font-weight: 900; color: #fff; text-shadow: 0 0 15px var(--blue-glow); font-family: monospace; transition: color 0.3s, text-shadow 0.3s;}
 
         /* 🔥 Cards Grid - Advanced Look */
         .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 20px; box-sizing: border-box; width: 100%; align-items: stretch;}
@@ -121,7 +120,7 @@
 
 <div class="login-box" id="login-container">
     <h2 style="margin-top: 0; color: #fff; font-weight: 900;">AlphaSigna AI</h2>
-    <p style="font-size: 11px; color:var(--text-muted); margin-top:-10px; letter-spacing: 2px;">PREMIUM QUANTUM TERMINAL</p>
+    <p style="font-size: 11px; color:var(--text-muted); margin-top:-10px; letter-spacing: 2px;">V6 ULTIMATE QUANTUM TERMINAL</p>
     <div class="input-group" style="margin-top: 30px;">
         <label>Terminal Key</label>
         <input type="password" id="access-key" placeholder="••••••••••••">
@@ -183,7 +182,7 @@
 </div>
 
 <script>
-    // 🔥 මෙතැන ඔබේ නිවැරදි FIREBASE URL එක යොදන්න
+    // 🔥 Firebase Database URL
     const FIREBASE_URL = "https://alphasigna-live-d644a-default-rtdb.firebaseio.com";
     
     let cryptoDataPool = [];
@@ -248,41 +247,69 @@
         }).catch(() => { document.getElementById('error-msg').innerText = "⚠️ Server Gateway Error."; });
     }
 
+    // 🔥 V6.0 - Advanced Scanning UI Logic with News Pause Shield
     function triggerPremiumScanUI() {
         document.getElementById('start-scan-btn').style.display = 'none';
         document.getElementById('rescan-btn-id').style.display = 'none';
         document.getElementById('cards-container').innerHTML = '';
         cryptoDataPool = []; currentProgress = 0;
 
-        fetch(`${FIREBASE_URL}/live_signals.json`).then(res => res.json()).then(data => {
-            if (!data) {
-                document.getElementById('scan-coin-name').innerText = "⚠️ BUFFER OVERFLOW. RETRY IN 10 SECONDS.";
-                document.getElementById('rescan-btn-id').style.display = 'block';
-                return;
-            }
-            const rawCoins = Object.values(data);
+        // 1. Check System Status for High Impact News
+        fetch(`${FIREBASE_URL}/system_status.json`).then(res => res.json()).then(statusData => {
             
-            scanAnimationLoop = setInterval(() => {
-                currentProgress += 2;
-                if(currentProgress > 100) currentProgress = 100;
-                document.getElementById('gauge-text').innerText = currentProgress + "%";
-                document.getElementById('gauge-pointer').style.transform = `rotate(${-180 + (currentProgress * 1.8)}deg)`;
+            if (statusData && statusData.is_paused === true) {
+                // System is Paused due to News
+                if(scanAnimationLoop) clearInterval(scanAnimationLoop);
+                document.getElementById('gauge-text').innerText = "PAUSED";
+                document.getElementById('gauge-text').style.color = "var(--red)";
+                document.getElementById('gauge-text').style.textShadow = "0 0 15px var(--red)";
+                
+                document.getElementById('scan-coin-name').innerHTML = `
+                    <span style="color: var(--red); font-size: 16px; font-weight: 900; animation: none;">
+                        ${statusData.message}
+                    </span><br>
+                    <span style="color: #8492a6; font-size: 12px; margin-top:8px; display:inline-block; font-weight: bold;">
+                        Waiting for safe market conditions (30 Mins)...
+                    </span>
+                `;
+                
+                document.getElementById('rescan-btn-id').style.display = 'block';
+                return; // Stop execution here
+            }
 
-                if (currentProgress < 20) { document.getElementById('scan-coin-name').innerText = "🧠 INTERROGATING ALL BINANCE FUTURES ASSETS..."; }
-                else if (currentProgress % 16 === 0 && rawCoins[(currentProgress/16)-1]) { renderSingleCard(rawCoins[(currentProgress/16)-1]); }
-
-                if (currentProgress >= 100) {
-                    clearInterval(scanAnimationLoop);
-                    document.getElementById('scan-coin-name').innerText = "🎯 6 HIGH-PROFIT TARGET SIGNALS SECURED";
+            // 2. System is Safe - Proceed with Scanning
+            document.getElementById('gauge-text').style.color = "#fff";
+            document.getElementById('gauge-text').style.textShadow = "0 0 15px var(--blue-glow)";
+            
+            fetch(`${FIREBASE_URL}/live_signals.json`).then(res => res.json()).then(data => {
+                if (!data) {
+                    document.getElementById('scan-coin-name').innerText = "⚠️ WAITING FOR INSTITUTIONAL SETUPS...";
                     document.getElementById('rescan-btn-id').style.display = 'block';
+                    return;
                 }
-            }, 240);
+                const rawCoins = Object.values(data);
+                
+                scanAnimationLoop = setInterval(() => {
+                    currentProgress += 2;
+                    if(currentProgress > 100) currentProgress = 100;
+                    document.getElementById('gauge-text').innerText = currentProgress + "%";
+                    document.getElementById('gauge-pointer').style.transform = `rotate(${-180 + (currentProgress * 1.8)}deg)`;
+
+                    if (currentProgress < 20) { document.getElementById('scan-coin-name').innerText = "🧠 INTERROGATING MULTI-TIMEFRAME DATA..."; }
+                    else if (currentProgress % 16 === 0 && rawCoins[(currentProgress/16)-1]) { renderSingleCard(rawCoins[(currentProgress/16)-1]); }
+
+                    if (currentProgress >= 100) {
+                        clearInterval(scanAnimationLoop);
+                        document.getElementById('scan-coin-name').innerText = "🎯 HIGH-PROFIT TARGET SIGNALS SECURED";
+                        document.getElementById('rescan-btn-id').style.display = 'block';
+                    }
+                }, 240);
+            });
         });
     }
 
     function renderSingleCard(coin) {
         cryptoDataPool.push(coin);
-        document.getElementById('scan-coin-name').innerText = "✨ LIVE MATRIX CAPTURED: " + coin.pair;
         const idx = cryptoDataPool.length - 1;
         const cleanSymbol = coin.pair.split("/")[0];
         
@@ -298,8 +325,8 @@
                     <span class="${badgeClass}">${badgeText}</span>
                 </div>
                 <div class="price-row"><span class="label">Live Entry Price:</span><span class="val" style="color:var(--blue-glow)">$${coin.entry}</span></div>
-                <div class="price-row"><span class="label">Futures TP1 Target:</span><span class="val" style="color:var(--green)">$${coin.tp1} <br><span style="font-size:11px;">(+${coin.pnl}%)</span></span></div>
-                <div class="price-row"><span class="label">Futures Risk SL:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
+                <div class="price-row"><span class="label">Futures Target:</span><span class="val" style="color:var(--green)">$${coin.tp1} <br><span style="font-size:11px;">(+${coin.pnl}%)</span></span></div>
+                <div class="price-row"><span class="label">Safe Stop Loss:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
                 <div class="price-row"><span class="label">SMC Reliability Matrix:</span><span class="val" style="color:var(--gold)">${coin.accuracy}%</span></div>
                 <div class="action-container">
                     <button class="${btnClass}" id="t-btn-${idx}" onclick="engageUserLocalTrade(${idx}, '${cleanSymbol}', ${coin.tp1}, ${coin.sl}, '${coin.side}')">🚀 Take Trade</button>
