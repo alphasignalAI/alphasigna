@@ -18,7 +18,7 @@
         }
         #warning-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.95); justify-content: center; align-items: center; z-index: 10000; }
         .warning-content { background-color: #050a12; border: 2px solid var(--gold); padding: 25px; border-radius: 20px; max-width: 650px; width: 90%; text-align: center; box-shadow: 0 0 40px rgba(243, 186, 47, 0.4); box-sizing: border-box; }
-        .agree-btn { background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); color: #000; border: none; padding: 12px 35px; border-radius: 30px; font-size: 15px; font-weight: bold; cursor: pointer; }
+        .agree-btn { background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); color: #000; border: none; padding: 12px 35px; border-radius: 30px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 15px;}
         
         .login-box { background: linear-gradient(135deg, #070f1a 0%, #0c182b 100%); border: 2px solid var(--blue-glow); padding: 35px 25px; border-radius: 24px; text-align: center; max-width: 420px; width: 100%; box-shadow: 0 15px 40px rgba(0,0,0,0.8); display: none; box-sizing: border-box; }
         .input-group { margin-bottom: 25px; text-align: left; margin-top: 20px; }
@@ -32,11 +32,11 @@
         .header h1 { font-size: 34px; margin: 0; background: linear-gradient(135deg, #fff 0%, var(--gold) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .user-expiry-badge { text-align: center; color: var(--gold); font-size: 11px; font-weight: bold; background: rgba(243, 186, 47, 0.08); padding: 6px 12px; border-radius: 20px; display: inline-block; border: 1px solid rgba(243, 186, 47, 0.2); margin-bottom: 20px; }
         
+        .section-title { font-size: 12px; color: var(--text-muted); text-align: center; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;}
         .stats-panel { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 15px; padding: 15px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 25px; }
         .stat-item { text-align: center; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 10px; }
-        .stat-item:nth-child(4) { grid-column: span 2; }
         .stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
-        .stat-value { font-size: 22px; font-weight: bold; color: #fff; }
+        .stat-value { font-size: 20px; font-weight: bold; color: #fff; }
 
         .gauge-section { text-align: center; margin: 30px 0; }
         .scanning-coin { font-size: 15px; color: var(--gold); font-weight: bold; min-height: 40px; }
@@ -66,12 +66,11 @@
         .modal-content { background: #0d1b2e; border: 1px solid var(--gold); padding: 25px; border-radius: 15px; max-width: 500px; width: 90%; position: relative; max-height: 85vh; overflow-y: auto; }
         .close-modal { position: absolute; top: 10px; right: 15px; font-size: 28px; cursor: pointer; color: var(--text-muted); }
 
-        .premium-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: #02060d; border-top: 1px solid rgba(0, 210, 255, 0.3); padding: 12px 15px; text-align: center; }
+        .premium-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: #02060d; border-top: 1px solid rgba(0, 210, 255, 0.3); padding: 12px 15px; text-align: center; z-index:9000; }
         .footer-version { font-size: 11px; color: var(--gold); font-weight: bold; margin-top: 4px; letter-spacing: 1px; }
 
         @media (min-width: 768px) {
             .stats-panel { grid-template-columns: repeat(4, 1fr); gap: 20px; }
-            .stat-item:nth-child(4) { grid-column: auto; }
             .signal-grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
         }
     </style>
@@ -80,9 +79,10 @@
 
 <div id="warning-modal">
     <div class="warning-content">
-        <h2 style="color:var(--red)">⚠️ PROTECTION INTERFACE</h2>
-        <p>Private Property of Pehelitha Ekanayaka. Private encryption logic active.</p>
-        <button class="agree-btn" onclick="triggerPremiumLockScreen()">PROCEED TERMINAL</button>
+        <h2 style="color:var(--red); margin-top: 0;">⚠️ PROTECTION INTERFACE</h2>
+        <p style="color:#e0e6ed; font-size: 14px; margin-bottom: 5px;">Private Property of Pehelitha Ekanayaka. Unauthorized extraction is prohibited.</p>
+        <p style="color:var(--text-muted); font-size: 13px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; font-style: italic;">මෙය පෞද්ගලික දේපළකි. මෙහි දත්ත අනවසරයෙන් භාවිත කිරීම සපුරා තහනම් වේ.</p>
+        <button class="agree-btn" onclick="triggerPremiumLockScreen()">I AGREE / එකඟයි</button>
     </div>
 </div>
 
@@ -101,11 +101,18 @@
     <div class="header"><h1>AlphaSigna AI</h1><p>REAL-TIME LIVE INTELLIGENCE</p></div>
     <div style="text-align: center;"><div class="user-expiry-badge" id="user-expiry-text">🔑 VALIDATING SYSTEM TIMELINE...</div></div>
     
+    <div class="section-title">🌐 Global Tool Performance</div>
+    <div class="stats-panel" style="grid-template-columns: repeat(2, 1fr);">
+        <div class="stat-item"><div class="stat-label">Total Signals Generated</div><div class="stat-value">28,450+</div></div>
+        <div class="stat-item"><div class="stat-label">Tool Average Winrate</div><div class="stat-value" style="color: var(--blue-glow);">84.6%</div></div>
+    </div>
+
+    <div class="section-title">👤 Your Personal Trade Stats</div>
     <div class="stats-panel">
-        <div class="stat-item"><div class="stat-label">Total Signals Taken</div><div id="stat-total" class="stat-value">0</div></div>
-        <div class="stat-item"><div class="stat-label">Your TP Hit</div><div id="stat-tp" class="stat-value" style="color: var(--green);">0</div></div>
-        <div class="stat-item"><div class="stat-label">Your SL Hit</div><div id="stat-sl" class="stat-value" style="color: var(--red);">0</div></div>
-        <div class="stat-item"><div class="stat-label">Personal Win Rate</div><div id="stat-winrate" class="stat-value" style="color: var(--gold);">0.0%</div></div>
+        <div class="stat-item"><div class="stat-label">Your Trades</div><div id="stat-total" class="stat-value">0</div></div>
+        <div class="stat-item"><div class="stat-label">TP Hit</div><div id="stat-tp" class="stat-value" style="color: var(--green);">0</div></div>
+        <div class="stat-item"><div class="stat-label">SL Hit</div><div id="stat-sl" class="stat-value" style="color: var(--red);">0</div></div>
+        <div class="stat-item"><div class="stat-label">Personal Winrate</div><div id="stat-winrate" class="stat-value" style="color: var(--gold);">0.0%</div></div>
     </div>
     
     <div class="gauge-section">
@@ -126,12 +133,14 @@
     <div class="modal-content">
         <span class="close-modal" onclick="closeModal()">&times;</span>
         <h2 style="color: var(--gold); margin-top: 0;" id="modal-coin">ANALYSIS</h2>
-        <h3 style="color: var(--blue-glow);">🧠 Technical AI Logic</h3>
-        <p id="modal-logic"></p>
-        <h3 style="color: var(--green);">📰 Live Fundamental & On-Chain News</h3>
-        <p id="modal-news" style="white-space: pre-line;"></p>
-        <h3 style="color: var(--red);">⚖️ Smart Risk Architecture</h3>
-        <p id="modal-risk" style="white-space: pre-line;"></p>
+        <h3 style="color: var(--blue-glow); font-size: 15px;">🧠 Technical AI Logic</h3>
+        <p id="modal-logic" style="white-space: pre-line; font-size: 13px; line-height: 1.5; color: #e0e6ed;"></p>
+        
+        <h3 style="color: var(--green); font-size: 15px;">📰 Live Fundamental & On-Chain News</h3>
+        <p id="modal-news" style="white-space: pre-line; font-size: 13px; line-height: 1.5; color: #e0e6ed;"></p>
+        
+        <h3 style="color: var(--red); font-size: 15px;">⚖️ Smart Risk Architecture</h3>
+        <p id="modal-risk" style="white-space: pre-line; font-size: 13px; line-height: 1.5; color: #ff9999; font-weight: bold;"></p>
     </div>
 </div>
 
@@ -163,7 +172,6 @@
             document.getElementById('main-app').style.display = 'block';
             document.getElementById('user-expiry-text').innerText = "🔑 TERMINAL SUBSCRIPTION EXPIRY: " + userData.expiry;
             
-            // Local Storage එකෙන් කලින් දත්ත තිබේ නම් නැවත Dashboard එකට කියවා ගැනීම
             if(localStorage.getItem('trade_total')) {
                 localTotal = parseInt(localStorage.getItem('trade_total'));
                 localTp = parseInt(localStorage.getItem('trade_tp'));
@@ -219,17 +227,16 @@
         const idx = cryptoDataPool.length - 1;
         const cleanSymbol = coin.pair.split("/")[0];
 
-        // 🎯 ඔබ ඉල්ලූ පරිදි $0.587 (36.5%) ආකෘතියට සකසන ලද Futures TP1 පේළිය
         document.getElementById('cards-container').innerHTML += `
             <div class="card">
                 <div class="card-header"><span class="coin-title" style="color:var(--gold)">${coin.pair}</span><span class="badge buy">LONG / BUY</span></div>
                 <div class="price-row"><span class="label">Live Entry Price:</span><span class="val" style="color:var(--blue-glow)">$${coin.entry}</span></div>
-                <div class="price-row"><span class="label">Futures TP1:</span><span class="val" style="color:var(--green)">$${coin.tp1} (${coin.pnl}%)</span></div>
+                <div class="price-row"><span class="label">Futures TP1:</span><span class="val" style="color:var(--green)">$${coin.tp1} (+${coin.pnl}%)</span></div>
                 <div class="price-row"><span class="label">Futures Risk SL:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
                 <div class="price-row"><span class="label">AI Metric Accuracy:</span><span class="val" style="color:var(--green)">${coin.accuracy}%</span></div>
                 <div class="action-container">
                     <button class="trade-btn" id="t-btn-${idx}" onclick="engageUserLocalTrade(${idx}, '${cleanSymbol}', ${coin.tp1}, ${coin.sl})">🚀 Take Trade</button>
-                    <button class="more-btn" onclick="openModal(${idx})">Logic</button>
+                    <button class="more-btn" onclick="openModal(${idx})">Logic / විස්තර</button>
                 </div>
             </div>`;
     }
