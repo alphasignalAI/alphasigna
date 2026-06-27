@@ -3,70 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna AI - Professional Trading Terminal</title>
+    <title>AlphaSigna AI - Ultimate Trading Terminal</title>
     <style>
         :root {
-            --bg-color: #03070d; --card-bg: #0b1523; --gold: #f3ba2f;
+            --bg-color: #03070d; --card-bg: #08101a; --gold: #f3ba2f;
             --blue-glow: #00d2ff; --green: #00ff88; --red: #ff4d4d; --text-muted: #8492a6;
         }
-        body { margin: 0; padding: 15px; background-color: var(--bg-color); color: white; font-family: 'Segoe UI', Tahoma, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; overflow-x: hidden; }
+        body { margin: 0; padding: 20px 15px; background-color: var(--bg-color); color: white; font-family: 'Segoe UI', Tahoma, sans-serif; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; box-sizing: border-box; overflow-x: hidden; }
         
         #warning-modal, .login-box, .modal { display: none; }
-        #warning-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.96); justify-content: center; align-items: center; z-index: 10000; padding: 10px; box-sizing: border-box;}
-        .warning-content { background: #050a12; border: 2px solid var(--gold); padding: 30px 20px; border-radius: 20px; max-width: 600px; text-align: center; box-shadow: 0 0 30px var(--gold-glow); width: 100%;}
+        #warning-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.96); justify-content: center; align-items: center; z-index: 10000; padding: 15px; box-sizing: border-box;}
+        .warning-content { background: #050a12; border: 2px solid var(--gold); padding: 35px 25px; border-radius: 20px; max-width: 600px; text-align: center; box-shadow: 0 0 30px rgba(243, 186, 47, 0.3); width: 100%;}
         
-        .agree-btn, .login-btn, .scan-init-btn, .rescan-btn { background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); color: #000; border: none; padding: 12px 30px; border-radius: 30px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 85%; max-width: 280px; text-transform: uppercase;}
-        .login-box { background: linear-gradient(135deg, #070f1a, #0c182b); border: 2px solid var(--blue-glow); padding: 35px 25px; border-radius: 24px; text-align: center; max-width: 420px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .input-group { margin-bottom: 20px; text-align: left; }
-        .input-group label { display: block; font-size: 11px; color: var(--blue-glow); margin-bottom: 6px; font-weight: bold;}
-        .input-group input { width: 100%; background: #040912; border: 1px solid rgba(0, 210, 255, 0.2); padding: 12px; border-radius: 10px; color: white; text-align: center; letter-spacing: 2px; box-sizing: border-box;}
+        .agree-btn, .login-btn, .scan-init-btn, .rescan-btn { background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); color: #000; border: none; padding: 14px 30px; border-radius: 8px; font-weight: 900; cursor: pointer; margin-top: 15px; width: 100%; max-width: 300px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.5px;}
+        .login-box { background: linear-gradient(135deg, #070f1a, #0c182b); border: 2px solid var(--blue-glow); padding: 40px 30px; border-radius: 16px; text-align: center; max-width: 420px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.6); margin-top: 10vh;}
+        .input-group { margin-bottom: 25px; text-align: left; }
+        .input-group label { display: block; font-size: 12px; color: var(--blue-glow); margin-bottom: 8px; font-weight: bold; text-transform: uppercase;}
+        .input-group input { width: 100%; background: #02050a; border: 1px solid rgba(0, 210, 255, 0.3); padding: 14px; border-radius: 8px; color: white; text-align: center; letter-spacing: 3px; box-sizing: border-box; font-size: 16px;}
         
-        .container { max-width: 1050px; width: 100%; display: none; padding-bottom: 60px; box-sizing: border-box;}
-        .header { text-align: center; margin-bottom: 20px; }
-        .header h1 { font-size: 36px; margin: 0; background: linear-gradient(135deg, #fff, var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+        .container { max-width: 1100px; width: 100%; display: none; padding-bottom: 80px; box-sizing: border-box;}
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { font-size: 38px; margin: 0; background: linear-gradient(135deg, #ffffff, var(--blue-glow)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; letter-spacing: 1px;}
+        .header p { color: var(--blue-glow); font-size: 12px; letter-spacing: 2px; margin-top: 5px; font-weight: bold;}
         
-        .section-title { font-size: 11px; color: var(--text-muted); text-align: center; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700;}
-        .stats-panel { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 15px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 25px; box-shadow: 0 8px 25px rgba(0,0,0,0.4); }
-        .stat-item { text-align: center; background: rgba(255,255,255,0.01); padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.02); }
-        .stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;}
-        .stat-value { font-size: 22px; font-weight: bold; color: #fff; }
+        /* 🔥 Stats Panels - UI FIX */
+        .section-title { font-size: 12px; color: var(--text-muted); text-align: center; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 800;}
+        .stats-panel { background: #060d17; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 35px; box-shadow: 0 8px 25px rgba(0,0,0,0.5); }
+        .stat-item { text-align: center; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.03); display: flex; flex-direction: column; justify-content: center; }
+        .stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; font-weight: 600; letter-spacing: 0.5px;}
+        .stat-value { font-size: 24px; font-weight: 900; color: #fff; }
 
-        .gauge-section { text-align: center; margin: 25px 0; }
-        .scanning-coin { font-size: 14px; color: var(--gold); font-weight: bold; min-height: 40px; letter-spacing: 0.5px;}
-        .meter-container { position: relative; width: 200px; height: 100px; margin: auto; overflow: hidden; }
-        .gauge-bg { width: 160px; height: 160px; border-radius: 50%; border: 12px solid #16263d; position: absolute; top: 0; left: 20px; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); }
-        .gauge-fill { position: absolute; top: 0; left: 20px; width: 160px; height: 160px; border-radius: 50%; border: 12px solid var(--blue-glow); clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); transform: rotate(-180deg); transform-origin: center center; transition: transform 0.2s ease; }
-        .gauge-percentage { position: absolute; bottom: 0px; left: 0; right: 0; font-size: 26px; font-weight: bold; }
+        .gauge-section { text-align: center; margin: 40px 0; }
+        .scanning-coin { font-size: 15px; color: var(--gold); font-weight: bold; min-height: 40px; letter-spacing: 1px; text-transform: uppercase;}
+        .meter-container { position: relative; width: 220px; height: 110px; margin: auto; overflow: hidden; }
+        .gauge-bg { width: 180px; height: 180px; border-radius: 50%; border: 14px solid #16263d; position: absolute; top: 0; left: 20px; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); }
+        .gauge-fill { position: absolute; top: 0; left: 20px; width: 180px; height: 180px; border-radius: 50%; border: 14px solid var(--blue-glow); clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); transform: rotate(-180deg); transform-origin: center center; transition: transform 0.2s ease; }
+        .gauge-percentage { position: absolute; bottom: 0px; left: 0; right: 0; font-size: 30px; font-weight: 900; }
 
-        .signal-grid { display: grid; grid-template-columns: 1fr; gap: 20px; box-sizing: border-box;}
-        .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.04); border-radius: 14px; padding: 18px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); box-sizing: border-box; position: relative;}
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 10px;}
-        .coin-title { font-size: 17px; font-weight: bold; letter-spacing: 0.5px;}
+        /* 🔥 Card Grid FIX - Overlap වීම වළක්වා ඇත */
+        .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; box-sizing: border-box; width: 100%; align-items: stretch;}
+        .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.4); box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;}
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px;}
+        .coin-title { font-size: 18px; font-weight: 900; letter-spacing: 0.5px;}
         
-        .badge { padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; text-transform: uppercase;}
-        .badge.buy { background: rgba(0, 255, 136, 0.08); color: var(--green); border: 1px solid rgba(0,255,136,0.3); }
-        .badge.sell { background: rgba(255, 77, 77, 0.08); color: var(--red); border: 1px solid rgba(255,77,77,0.3); }
+        .badge { padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px;}
+        .badge.buy { background: rgba(0, 255, 136, 0.1); color: var(--green); border: 1px solid rgba(0,255,136,0.3); }
+        .badge.sell { background: rgba(255, 77, 77, 0.1); color: var(--red); border: 1px solid rgba(255,77,77,0.3); }
         
-        .price-row { display: flex; justify-content: space-between; margin: 10px 0; font-size: 13.5px; }
-        .label { color: var(--text-muted); }
-        .val { font-weight: 600; font-family: monospace; }
+        .price-row { display: flex; justify-content: space-between; margin: 10px 0; font-size: 13px; align-items: center;}
+        .label { color: var(--text-muted); font-weight: 500;}
+        .val { font-weight: 700; font-family: monospace; font-size: 14px; text-align: right;}
         
         .action-container { display: flex; gap: 10px; margin-top: 15px; }
-        .trade-btn { flex: 2; background: linear-gradient(135deg, var(--green) 0%, #00b359 100%); color: #000; border: none; padding: 11px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px;}
+        .trade-btn { flex: 2; background: linear-gradient(135deg, var(--green) 0%, #00b359 100%); color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: 900; cursor: pointer; font-size: 13px; text-transform: uppercase;}
         .trade-btn.short { background: linear-gradient(135deg, var(--red) 0%, #cc0000 100%); color: #fff;}
         .trade-btn:disabled { background: #16263d !important; color: var(--text-muted) !important; cursor: not-allowed; }
-        .more-btn { flex: 1; background: linear-gradient(135deg, #1a2f4c, #112035); border: 1px solid rgba(243, 186, 47, 0.25); color: var(--gold); padding: 11px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px;}
+        .more-btn { flex: 1; background: linear-gradient(135deg, #1a2f4c, #112035); border: 1px solid rgba(243, 186, 47, 0.4); color: var(--gold); padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px;}
 
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 10100; padding: 15px; box-sizing: border-box;}
-        .modal-content { background: #0d1b2e; border: 1px solid var(--gold); padding: 25px; border-radius: 16px; max-width: 520px; width: 100%; position: relative; max-height: 85vh; overflow-y: auto; box-sizing: border-box;}
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.88); justify-content: center; align-items: center; z-index: 10100; padding: 15px; box-sizing: border-box;}
+        .modal-content { background: #0d1b2e; border: 1px solid var(--gold); padding: 25px; border-radius: 16px; max-width: 500px; width: 100%; position: relative; max-height: 85vh; overflow-y: auto; box-sizing: border-box;}
         .close-modal { position: absolute; top: 10px; right: 15px; font-size: 28px; cursor: pointer; color: var(--text-muted); }
         
+        /* Responsive Grid Fixes */
         @media (min-width: 768px) {
-            .stats-panel { grid-template-columns: repeat(4, 1fr); gap: 15px; }
-            .signal-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        }
-        @media (min-width: 1024px) {
-            .signal-grid { grid-template-columns: repeat(3, 1fr); }
+            #personal-stats-panel { grid-template-columns: repeat(4, 1fr); gap: 15px; }
         }
     </style>
 </head>
@@ -74,32 +74,35 @@
 
 <div id="warning-modal">
     <div class="warning-content">
-        <h2 style="color:var(--red); margin-top: 0;">⚠️ PROTECTION INTERFACE / ආරක්ෂිත පද්ධතිය</h2>
+        <h2 style="color:var(--red); margin-top: 0;">⚠️ PROTECTION INTERFACE</h2>
         <p style="color:#e0e6ed; font-size: 14px; margin-bottom: 5px;">Private Property of Pehelitha Ekanayaka. Copying or extraction is completely prohibited.</p>
-        <p style="color:var(--text-muted); font-size: 13px; font-style: italic; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 10px;">මෙය පෙහෙළිත ඒකනායක සතු පෞද්ගලික දේපළකි. මෙහි දත්ත පිටපත් කිරීම සපුරා තහනම් වේ.</p>
+        <p style="color:var(--text-muted); font-size: 13px; font-style: italic; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 10px;">මෙය පෞද්ගලික දේපළකි. මෙහි දත්ත පිටපත් කිරීම සපුරා තහනම් වේ.</p>
         <button class="agree-btn" onclick="triggerPremiumLockScreen()">I AGREE / එකඟයි</button>
     </div>
 </div>
 
 <div class="login-box" id="login-container">
-    <h2>AlphaSigna AI</h2>
-    <p style="font-size: 11px; color:var(--text-muted); margin-top:-10px;">PREMIUM QUANTUM TERMINAL</p>
+    <h2 style="margin-top: 0; color: #fff;">AlphaSigna AI</h2>
+    <p style="font-size: 11px; color:var(--text-muted); margin-top:-10px; letter-spacing: 1px;">PREMIUM QUANTUM TERMINAL</p>
     <div class="input-group"><label>Terminal Key</label><input type="password" id="access-key" placeholder="••••••••••••"></div>
     <button class="login-btn" onclick="validateLogin()">Connect Terminal</button>
-    <div id="error-msg"></div>
+    <div id="error-msg" style="color: var(--red); margin-top: 10px; font-size: 12px; font-weight: bold;"></div>
 </div>
 
 <div class="container" id="main-app">
-    <div class="header"><h1>AlphaSigna AI</h1><p style="font-size:12px; color:var(--blue-glow); margin-top:-10px; letter-spacing:1px;">INSTITUTIONAL ORDERFLOW INTELLIGENCE</p></div>
+    <div class="header">
+        <h1>AlphaSigna AI</h1>
+        <p>INSTITUTIONAL ORDERFLOW INTELLIGENCE</p>
+    </div>
     
-    <div class="section-title">🌐 Global Tool Performance</div>
-    <div class="stats-panel" style="grid-template-columns: repeat(2, 1fr);">
-        <div class="stat-item"><div class="stat-label">Total Signals Generated</div><div class="stat-value">28,450+</div></div>
-        <div class="stat-item"><div class="stat-label">Tool Average Winrate</div><div class="stat-value" style="color: var(--blue-glow);">84.6%</div></div>
+    <div class="section-title">🌐 GLOBAL TOOL PERFORMANCE</div>
+    <div class="stats-panel" id="global-stats-panel">
+        <div class="stat-item"><div class="stat-label">Total Signals Generated</div><div id="global-signals" class="stat-value">0</div></div>
+        <div class="stat-item"><div class="stat-label">Tool Average Winrate</div><div id="global-winrate" class="stat-value" style="color: var(--blue-glow);">0.0%</div></div>
     </div>
 
-    <div class="section-title">👤 Your Personal Trade Stats</div>
-    <div class="stats-panel">
+    <div class="section-title">👤 YOUR PERSONAL TRADE STATS</div>
+    <div class="stats-panel" id="personal-stats-panel">
         <div class="stat-item"><div class="stat-label">Your Trades</div><div id="stat-total" class="stat-value">0</div></div>
         <div class="stat-item"><div class="stat-label">TP Hit</div><div id="stat-tp" class="stat-value" style="color: var(--green);">0</div></div>
         <div class="stat-item"><div class="stat-label">SL Hit</div><div id="stat-sl" class="stat-value" style="color: var(--red);">0</div></div>
@@ -110,7 +113,7 @@
         <div class="scanning-coin" id="scan-coin-name">READY TO DECODE HUB DATA</div>
         <div class="meter-container"><div class="gauge-bg"></div><div class="gauge-fill" id="gauge-pointer"></div><div class="gauge-percentage" id="gauge-text">0%</div></div>
         <button class="scan-init-btn" id="start-scan-btn" onclick="triggerPremiumScanUI()">🔍 Scan Live Market</button>
-        <button class="rescan-btn" id="rescan-btn-id" onclick="triggerPremiumScanUI()">🔄 Re-Scan Live Market</button>
+        <button class="rescan-btn" id="rescan-btn-id" style="display:none;" onclick="triggerPremiumScanUI()">🔄 Re-Scan Live Market</button>
     </div>
     
     <div class="signal-grid" id="cards-container"></div>
@@ -120,10 +123,15 @@
     <div class="modal-content">
         <span class="close-modal" onclick="closeModal()">&times;</span>
         <h2 style="color: var(--gold); margin-top: 0; font-size: 18px;" id="modal-coin">ANALYSIS</h2>
-        <hr style="border-color: rgba(255,255,255,0.05);">
-        <h3 style="color: var(--blue-glow); font-size: 14px;">🧠 Technical AI Logic / තාක්ෂණික විස්තරය</h3><p id="modal-logic" style="white-space: pre-line; font-size: 12.5px; color: #e0e6ed; line-height:1.5;"></p>
-        <h3 style="color: var(--green); font-size: 14px;">📰 Live Fundamental News / සජීවී පුවත්</h3><p id="modal-news" style="white-space: pre-line; font-size: 12.5px; color: #e0e6ed; line-height:1.5;"></p>
-        <h3 style="color: var(--red); font-size: 14px;">⚖️ Smart Risk Architecture / අවදානම් කළමනාකරණය</h3><p id="modal-risk" style="white-space: pre-line; font-size: 12.5px; color: #ff9999; font-weight: bold; line-height:1.5;"></p>
+        <hr style="border-color: rgba(255,255,255,0.05); margin-bottom: 15px;">
+        <h3 style="color: var(--blue-glow); font-size: 14px; margin-bottom:5px;">🧠 Technical AI Logic / තාක්ෂණික විස්තරය</h3>
+        <p id="modal-logic" style="white-space: pre-line; font-size: 12.5px; color: #e0e6ed; line-height:1.5; margin-top:0;"></p>
+        
+        <h3 style="color: var(--green); font-size: 14px; margin-bottom:5px; margin-top:15px;">📰 Live Fundamental News / සජීවී පුවත්</h3>
+        <p id="modal-news" style="white-space: pre-line; font-size: 12.5px; color: #e0e6ed; line-height:1.5; margin-top:0;"></p>
+        
+        <h3 style="color: var(--red); font-size: 14px; margin-bottom:5px; margin-top:15px;">⚖️ Smart Risk Architecture / අවදානම් කළමනාකරණය</h3>
+        <p id="modal-risk" style="white-space: pre-line; font-size: 12.5px; color: #ff9999; font-weight: bold; line-height:1.5; margin-top:0;"></p>
     </div>
 </div>
 
@@ -131,9 +139,14 @@
     const FIREBASE_URL = "https://alphasigna-live-d644a-default-rtdb.firebaseio.com";
     let cryptoDataPool = [];
     let currentProgress = 0, scanAnimationLoop;
+    
+    // 🔥 Clean Slate - සෑම විටම 0 න් ආරම්භ වේ. LocalStorage ඉවත් කර ඇත.
     let localTotal = 0, localTp = 0, localSl = 0;
+    let globalSignalsGenerated = 0;
 
-    window.onload = function() { document.getElementById('warning-modal').style.display = 'flex'; };
+    window.onload = function() { 
+        document.getElementById('warning-modal').style.display = 'flex'; 
+    };
 
     function triggerPremiumLockScreen() {
         document.getElementById('warning-modal').style.display = 'none';
@@ -143,13 +156,17 @@
     function validateLogin() {
         const key = document.getElementById('access-key').value.trim();
         fetch(`${FIREBASE_URL}/premium_keys/${key}.json`).then(res => res.json()).then(userData => {
-            if (!userData || userData.status !== "active") { document.getElementById('error-msg').innerText = "❌ INVALID PRESET TERMINAL KEY."; return; }
+            if (!userData || userData.status !== "active") { 
+                document.getElementById('error-msg').innerText = "❌ INVALID PRESET TERMINAL KEY."; 
+                return; 
+            }
             document.getElementById('login-container').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
-            if(localStorage.getItem('trade_total')) {
-                localTotal = parseInt(localStorage.getItem('trade_total')); localTp = parseInt(localStorage.getItem('trade_tp')); localSl = parseInt(localStorage.getItem('trade_sl'));
-                refreshDashboardUI();
-            }
+            
+            // 🔥 Reset Data on Login (නැවත 0 කිරීම)
+            localTotal = 0; localTp = 0; localSl = 0; globalSignalsGenerated = 0;
+            refreshDashboardUI();
+
         }).catch(() => { document.getElementById('error-msg').innerText = "⚠️ Server Gateway Error."; });
     }
 
@@ -167,6 +184,10 @@
             }
             const rawCoins = Object.values(data);
             
+            // Scan කරන සෑම වාරයකදීම Global Signals ගණන වැඩි වේ
+            globalSignalsGenerated += rawCoins.length;
+            refreshDashboardUI();
+            
             scanAnimationLoop = setInterval(() => {
                 currentProgress += 2;
                 if(currentProgress > 100) currentProgress = 100;
@@ -181,7 +202,7 @@
                     document.getElementById('scan-coin-name').innerText = "🎯 6 HIGH-PROFIT TARGET SIGNALS SECURED";
                     document.getElementById('rescan-btn-id').style.display = 'inline-block';
                 }
-            }, 240); // Fast Visual Loading
+            }, 240);
         });
     }
 
@@ -198,11 +219,14 @@
 
         document.getElementById('cards-container').innerHTML += `
             <div class="card">
-                <div class="card-header"><span class="coin-title" style="color:var(--gold)">${coin.pair}</span><span class="${badgeClass}">${badgeText}</span></div>
+                <div class="card-header">
+                    <span class="coin-title" style="color:var(--gold)">${coin.pair}</span>
+                    <span class="${badgeClass}">${badgeText}</span>
+                </div>
                 <div class="price-row"><span class="label">Live Entry Price:</span><span class="val" style="color:var(--blue-glow)">$${coin.entry}</span></div>
-                <div class="price-row"><span class="label">Futures TP1 Target:</span><span class="val" style="color:var(--green)">$${coin.tp1} (+${coin.pnl}%)</span></div>
+                <div class="price-row"><span class="label">Futures TP1 Target:</span><span class="val" style="color:var(--green)">$${coin.tp1} <br><span style="font-size:11px;">(+${coin.pnl}%)</span></span></div>
                 <div class="price-row"><span class="label">Futures Risk SL:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
-                <div class="price-row"><span class="label">SMC Reliability Matrix:</span><span class="val" style="color:var(--green)">${coin.accuracy}%</span></div>
+                <div class="price-row"><span class="label">SMC Reliability Matrix:</span><span class="val" style="color:var(--gold)">${coin.accuracy}%</span></div>
                 <div class="action-container">
                     <button class="${btnClass}" id="t-btn-${idx}" onclick="engageUserLocalTrade(${idx}, '${cleanSymbol}', ${coin.tp1}, ${coin.sl}, '${coin.side}', '${coin.est_time}')">🚀 Take Trade</button>
                     <button class="more-btn" onclick="openModal(${idx})">Logic / විස්තර</button>
@@ -213,10 +237,11 @@
     function engageUserLocalTrade(cardIdx, cleanSymbol, tpTarget, slTarget, side, estTime) {
         const btn = document.getElementById(`t-btn-${cardIdx}`);
         btn.disabled = true; 
-        btn.innerText = `⏳ Tracking... (Est: ${estTime})`; 
+        btn.innerText = `⏳ Tracking...`; 
         btn.style.background = "#16263d";
         
-        localTotal += 1; refreshDashboardUI();
+        localTotal += 1; // Trade එකක් දැමූ විට Total ගණන 1කින් වැඩිවේ
+        refreshDashboardUI();
 
         let orderTracker = setInterval(() => {
             fetch(`https://fapi.binance.com/fapi/v1/ticker/price?symbol=${cleanSymbol}USDT`).then(res => res.json()).then(ticker => {
@@ -232,9 +257,13 @@
                 }
 
                 if (win) {
-                    clearInterval(orderTracker); localTp += 1; btn.innerText = "🎯 TP HIT!"; btn.style.background = "rgba(0,255,136,0.15)"; btn.style.color = "var(--green)"; refreshDashboardUI();
+                    clearInterval(orderTracker); localTp += 1; 
+                    btn.innerText = "🎯 TP HIT!"; btn.style.background = "rgba(0,255,136,0.15)"; btn.style.color = "var(--green)"; 
+                    refreshDashboardUI();
                 } else if (loss) {
-                    clearInterval(orderTracker); localSl += 1; btn.innerText = "🛑 SL HIT"; btn.style.background = "rgba(255,77,77,0.15)"; btn.style.color = "var(--red)"; refreshDashboardUI();
+                    clearInterval(orderTracker); localSl += 1; 
+                    btn.innerText = "🛑 SL HIT"; btn.style.background = "rgba(255,77,77,0.15)"; btn.style.color = "var(--red)"; 
+                    refreshDashboardUI();
                 }
             }).catch(() => {});
         }, 3000);
@@ -244,8 +273,18 @@
         document.getElementById('stat-total').innerText = localTotal;
         document.getElementById('stat-tp').innerText = localTp;
         document.getElementById('stat-sl').innerText = localSl;
-        document.getElementById('stat-winrate').innerText = localTotal > 0 ? ((localTp / localTotal) * 100).toFixed(1) + "%" : "0.0%";
-        localStorage.setItem('trade_total', localTotal); localStorage.setItem('trade_tp', localTp); localStorage.setItem('trade_sl', localSl);
+        document.getElementById('global-signals').innerText = globalSignalsGenerated;
+
+        // 🔥 නිවැරදිම Winrate ගණනය කිරීම (අවසන් වූ Trades පමණක් අදාළ කරගනී)
+        let completedTrades = localTp + localSl;
+        let accurateWinrate = "0.0%";
+        
+        if (completedTrades > 0) {
+            accurateWinrate = ((localTp / completedTrades) * 100).toFixed(1) + "%";
+        }
+        
+        document.getElementById('stat-winrate').innerText = accurateWinrate;
+        document.getElementById('global-winrate').innerText = accurateWinrate;
     }
 
     function openModal(index) {
