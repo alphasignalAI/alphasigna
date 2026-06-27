@@ -29,7 +29,15 @@
         #warning-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.96); justify-content: center; align-items: center; z-index: 10000; padding: 15px; box-sizing: border-box; backdrop-filter: blur(10px);}
         .warning-content { background: rgba(5, 10, 18, 0.85); backdrop-filter: blur(15px); border: 2px solid var(--gold); padding: 35px 25px; border-radius: 20px; max-width: 600px; text-align: center; box-shadow: 0 0 40px rgba(243, 186, 47, 0.2); width: 100%;}
         
-        .agree-btn, .login-btn, .scan-init-btn, .rescan-btn { background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); color: #000; border: none; padding: 14px 30px; border-radius: 8px; font-weight: 900; cursor: pointer; margin-top: 15px; width: 100%; max-width: 300px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.5px; transition: transform 0.2s, box-shadow 0.2s;}
+        /* 🔥 Button UI FIX: මැදට ගැනීම (Centered) */
+        .agree-btn, .login-btn, .scan-init-btn, .rescan-btn { 
+            background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); 
+            color: #000; border: none; padding: 14px 30px; border-radius: 8px; 
+            font-weight: 900; cursor: pointer; 
+            margin: 15px auto 0 auto; display: block; /* මේ පේළියෙන් බොත්තම් හරියටම මැදට එයි */
+            width: 100%; max-width: 300px; text-transform: uppercase; 
+            font-size: 14px; letter-spacing: 0.5px; transition: transform 0.2s, box-shadow 0.2s;
+        }
         .agree-btn:hover, .login-btn:hover, .scan-init-btn:hover, .rescan-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(243, 186, 47, 0.4); }
         
         .login-box { background: rgba(7, 15, 26, 0.8); backdrop-filter: blur(20px); border: 2px solid var(--blue-glow); padding: 40px 30px; border-radius: 16px; text-align: center; max-width: 420px; width: 100%; box-shadow: 0 15px 40px rgba(0, 210, 255, 0.15); margin-top: 10vh;}
@@ -60,7 +68,6 @@
         @keyframes pulseGlow { 0% { text-shadow: 0 0 5px var(--gold); } 50% { text-shadow: 0 0 20px var(--gold); } 100% { text-shadow: 0 0 5px var(--gold); } }
         .scanning-coin { font-size: 15px; color: var(--gold); font-weight: bold; min-height: 40px; letter-spacing: 1px; text-transform: uppercase; animation: pulseGlow 2s infinite;}
         
-        /* Meter Design Fixes */
         .meter-container { position: relative; width: 240px; height: 120px; margin: 20px auto; overflow: hidden; filter: drop-shadow(0 0 15px rgba(0, 210, 255, 0.3)); }
         .gauge-bg { width: 200px; height: 200px; border-radius: 50%; border: 10px solid #111d2e; position: absolute; top: 0; left: 20px; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); }
         .gauge-fill { width: 200px; height: 200px; border-radius: 50%; border: 10px solid var(--blue-glow); position: absolute; top: 0; left: 20px; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); transform: rotate(-180deg); transform-origin: center center; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -176,7 +183,9 @@
 </div>
 
 <script>
+    // 🔥 මෙතැන ඔබේ නිවැරදි FIREBASE URL එක යොදන්න
     const FIREBASE_URL = "https://alphasigna-live-d644a-default-rtdb.firebaseio.com";
+    
     let cryptoDataPool = [];
     let currentProgress = 0, scanAnimationLoop;
     
@@ -248,7 +257,7 @@
         fetch(`${FIREBASE_URL}/live_signals.json`).then(res => res.json()).then(data => {
             if (!data) {
                 document.getElementById('scan-coin-name').innerText = "⚠️ BUFFER OVERFLOW. RETRY IN 10 SECONDS.";
-                document.getElementById('rescan-btn-id').style.display = 'inline-block';
+                document.getElementById('rescan-btn-id').style.display = 'block';
                 return;
             }
             const rawCoins = Object.values(data);
@@ -265,7 +274,7 @@
                 if (currentProgress >= 100) {
                     clearInterval(scanAnimationLoop);
                     document.getElementById('scan-coin-name').innerText = "🎯 6 HIGH-PROFIT TARGET SIGNALS SECURED";
-                    document.getElementById('rescan-btn-id').style.display = 'inline-block';
+                    document.getElementById('rescan-btn-id').style.display = 'block';
                 }
             }, 240);
         });
