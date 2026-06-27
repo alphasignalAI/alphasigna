@@ -9,7 +9,7 @@
             --bg-color: #03070d; --card-bg: #0b1523; --gold: #f3ba2f;
             --gold-glow: rgba(243, 186, 47, 0.25); --blue-glow: #00d2ff;
             --green: #00ff88; --red: #ff4d4d; --text-muted: #8492a6;
-            --pink: #ff007f; --purple: #9d00ff;
+            --pink: #ff007f;
         }
 
         body {
@@ -33,7 +33,7 @@
         .warning-box-sinhala { font-size: 15px; line-height: 1.7; color: #fff; margin-bottom: 20px; font-weight: 500; }
         .agree-btn { background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); color: #000; border: none; padding: 12px 35px; border-radius: 30px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.3s; }
 
-        .login-box { background: linear-gradient(135deg, #070f1a 0%, #0c182b 100%); border: 2px solid var(--blue-glow); padding: 35px 25px; border-radius: 24px; text-align: center; max-width: 420px; width: 100%; display: none; box-sizing: border-box; }
+        .login-box { background: linear-gradient(135deg, #070f1a 0%, #0c182b 100%); border: 2px solid var(--blue-glow); padding: 35px 25px; border-radius: 24px; text-align: center; max-width: 420px; width: 100%; box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 25px rgba(0, 210, 255, 0.2); display: none; box-sizing: border-box; }
         .login-box h2 { margin: 0 0 5px 0; font-size: 26px; background: linear-gradient(135deg, #fff 0%, var(--blue-glow) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
         .input-group { margin-bottom: 25px; text-align: left; margin-top: 20px; }
         .input-group label { display: block; font-size: 11px; color: var(--blue-glow); text-transform: uppercase; margin-bottom: 8px; font-weight: bold; }
@@ -56,7 +56,6 @@
         .scanning-coin { font-size: 16px; color: var(--gold); font-weight: bold; min-height: 40px; padding: 0 10px; box-sizing: border-box; }
         .meter-container { position: relative; width: 200px; height: 100px; margin: auto; overflow: hidden; }
         .gauge-bg { width: 160px; height: 160px; border-radius: 50%; border: 12px solid #16263d; box-sizing: border-box; position: absolute; top: 0; left: 20px; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); }
-        /* 🚨 අවධානය: Smooth වීම සඳහා මෙතනින් transition ඉවත් කර ඇත */
         .gauge-fill { position: absolute; top: 0; left: 20px; width: 160px; height: 160px; border-radius: 50%; border: 12px solid var(--blue-glow); box-sizing: border-box; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); transform: rotate(-180deg); transform-origin: center center; }
         .gauge-percentage { position: absolute; bottom: 0px; left: 0; right: 0; font-size: 28px; font-weight: bold; color: #fff; }
 
@@ -64,7 +63,9 @@
         .rescan-btn { display: none; }
 
         .signal-grid { display: grid; grid-template-columns: 1fr; gap: 15px; padding: 0 5px; }
-        .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; position: relative; box-sizing: border-box; }
+        .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; position: relative; box-sizing: border-box; animation: cardSlideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes cardSlideIn { 0% { opacity:0; transform: translateY(20px) scale(0.95); } 100% { opacity:1; transform: translateY(0) scale(1); } }
+        
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .coin-title { font-size: 15px; font-weight: bold; }
         .badge.buy { background: rgba(0, 255, 136, 0.1); color: var(--green); border: 1px solid var(--green); padding: 4px 10px; border-radius: 5px; font-size: 11px; font-weight: bold; }
@@ -80,7 +81,6 @@
         .premium-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: linear-gradient(180deg, #050d1a 0%, #02060d 100%); border-top: 1px solid rgba(0, 210, 255, 0.3); padding: 12px 15px; z-index: 10050; box-shadow: 0 -5px 25px rgba(0,0,0,0.8); box-sizing: border-box; display: none; text-align: center; }
         .footer-grid-text { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 6px; font-size: 10px; font-weight: 600; }
         .footer-grid-text .sin { color: #fff; }
-        .footer-grid-text .eng { color: var(--text-muted); }
 
         @media (min-width: 768px) {
             .stats-panel { grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 20px; }
@@ -88,7 +88,6 @@
             .stat-value { font-size: 28px; }
             .signal-grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
             .footer-grid-text { flex-direction: row; gap: 30px; font-size: 12px; }
-            .footer-grid-text .eng { border-left: 1px solid rgba(255,255,255,0.1); padding-left: 30px; }
         }
     </style>
 </head>
@@ -164,8 +163,8 @@
     const FIREBASE_URL = "https://alphasigna-live-d644a-default-rtdb.firebaseio.com";
     let cryptoDataPool = [];
     let liveScanInterval;
+    let cardCountTracked = 0;
     
-    // 🏍️ SMOOTH ANIMATION VARIABLES
     let currentVisualProgress = 0;
     let targetProgress = 0;
     let animationFrameId;
@@ -208,15 +207,17 @@
         });
     }
 
-    // --- SMOOTH SPEEDOMETER ANIMATION FUNCTION ---
     function animateMeter() {
-        currentVisualProgress += (targetProgress - currentVisualProgress) * 0.05; // Lerp effect
+        currentVisualProgress += (targetProgress - currentVisualProgress) * 0.04; // Smooth Lerp
         
         let displayValue = Math.floor(currentVisualProgress);
         document.getElementById('gauge-text').innerText = displayValue + "%";
         
         let rotation = -180 + (currentVisualProgress * 1.8);
         document.getElementById('gauge-pointer').style.transform = `rotate(${rotation}deg)`;
+
+        // Real-time Card Injection Listener (මීටරය යන අතරතුරේදීම ලයිව් කාඩ්ස් ඇදීම)
+        injectCardsDynamically();
 
         if (displayValue >= 99 && targetProgress >= 100) {
             document.getElementById('gauge-text').innerText = "100%";
@@ -226,7 +227,6 @@
             clearInterval(liveScanInterval);
             document.getElementById('scan-coin-name').innerText = "🎯 REAL FUTURES SIGNALS ENGAGED";
             document.getElementById('rescan-btn-id').style.display = 'inline-block';
-            loadFinalRealCards();
             return;
         }
         animationFrameId = requestAnimationFrame(animateMeter);
@@ -236,6 +236,8 @@
         document.getElementById('start-scan-btn').style.display = 'none';
         document.getElementById('rescan-btn-id').style.display = 'none';
         document.getElementById('cards-container').innerHTML = '';
+        cryptoDataPool = [];
+        cardCountTracked = 0;
         
         currentVisualProgress = 0; targetProgress = 0;
         cancelAnimationFrame(animationFrameId);
@@ -250,40 +252,46 @@
                     }
                 }
             });
-        }, 500);
+        }, 400);
     }
 
-    function loadFinalRealCards() {
-        const container = document.getElementById('cards-container');
-        cryptoDataPool = [];
+    // 🚀 INTERACTIVE REAL-TIME INJECTOR CORE
+    function injectCardsDynamically() {
         fetch(`${FIREBASE_URL}/live_signals.json`).then(res => res.json()).then(data => {
             if (!data) return;
-            Object.keys(data).forEach(key => { if(data[key]) cryptoDataPool.push(data[key]); });
             
-            cryptoDataPool.forEach((coin, idx) => {
-                container.innerHTML += `
-                    <div class="card">
-                        <div class="card-header"><span class="coin-title" style="color:var(--gold)">${coin.pair}</span><span class="badge buy">LONG / BUY</span></div>
-                        <div class="price-row"><span class="label">Live Entry Mark:</span><span class="val" style="color:var(--blue-glow);">$${coin.entry}</span></div>
-                        <div class="price-row"><span class="label">Futures TP1:</span><span class="val" style="color:var(--green)">$${coin.tp1}</span></div>
-                        <div class="price-row"><span class="label">Futures TP2:</span><span class="val" style="color:var(--green)">$${coin.tp2}</span></div>
-                        <div class="price-row"><span class="label">Futures TP3:</span><span class="val" style="color:var(--green)">$${coin.tp3}</span></div>
-                        <div class="price-row"><span class="label">Futures Max TP4:</span><span class="val" style="color:var(--green)">$${coin.tp4}</span></div>
-                        <div class="price-row"><span class="label">Futures Risk SL:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
-                        <div class="price-row"><span class="label">Expected PNL:</span><span class="val" style="color:var(--green); font-weight:bold;">+${coin.pnl}%</span></div>
-                        <div class="price-row"><span class="label">AI Accuracy:</span><span class="val" style="color:var(--green); font-weight:bold;">${coin.accuracy}%</span></div>
-                        <button class="more-btn" onclick="openModal(${idx})">More / Learn Logic</button>
-                    </div>`;
+            Object.keys(data).forEach(key => {
+                // දැනටමත් මේ කාඩ් එක පෙන්වලා නැත්නම් පමණක් ඇතුළත් කරයි
+                if (data[key] && !cryptoDataPool.some(c => c.pair === data[key].pair)) {
+                    cryptoDataPool.push(data[key]);
+                    const idx = cryptoDataPool.length - 1;
+                    const coin = data[key];
+                    
+                    const container = document.getElementById('cards-container');
+                    container.innerHTML += `
+                        <div class="card">
+                            <div class="card-header"><span class="coin-title" style="color:var(--gold)">${coin.pair}</span><span class="badge buy">LONG / BUY</span></div>
+                            <div class="price-row"><span class="label">Live Entry Mark:</span><span class="val" style="color:var(--blue-glow);">$${coin.entry}</span></div>
+                            <div class="price-row"><span class="label">Futures TP1:</span><span class="val" style="color:var(--green)">$${coin.tp1}</span></div>
+                            <div class="price-row"><span class="label">Futures TP3:</span><span class="val" style="color:var(--green)">$${coin.tp3}</span></div>
+                            <div class="price-row"><span class="label">Futures Max TP4:</span><span class="val" style="color:var(--green)">$${coin.tp4}</span></div>
+                            <div class="price-row"><span class="label">Futures Risk SL:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
+                            <div class="price-row"><span class="label">Expected PNL:</span><span class="val" style="color:var(--green); font-weight:bold;">+${coin.pnl}%</span></div>
+                            <div class="price-row"><span class="label">AI Accuracy:</span><span class="val" style="color:var(--green); font-weight:bold;">${coin.accuracy}%</span></div>
+                            <button class="more-btn" onclick="openModal(${idx})">More / Learn Logic</button>
+                        </div>`;
+                }
             });
         });
     }
 
     function openModal(index) {
         const data = cryptoDataPool[index];
+        if(!data) return;
         document.getElementById('modal-coin').innerText = data.pair + " REAL-TIME ANALYSIS";
         document.getElementById('modal-logic').innerText = data.tech_logic;
         document.getElementById('modal-news').innerText = data.fund_logic;
-        document.getElementById('modal-risk').innerText = data.risk_logic || "Risk metrics calculation successful.";
+        document.getElementById('modal-risk').innerText = data.risk_logic;
         document.getElementById('info-modal').style.display = 'flex';
     }
     function closeModal() { document.getElementById('info-modal').style.display = 'none'; }
