@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AlphaSigna AI - Live Premium Terminal</title>
+    
+    <link rel="icon" type="image/png" href="https://i.ibb.co/colors-logo-or-your-link.png">
+    
     <style>
         :root {
             --bg-color: #03070d; --card-bg: #0b1523; --gold: #f3ba2f;
@@ -30,7 +33,8 @@
         #warning-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.95); justify-content: center; align-items: center; z-index: 10000; }
         .warning-content { background-color: #050a12; border: 2px solid var(--gold); padding: 25px; border-radius: 20px; max-width: 650px; width: 90%; text-align: center; box-shadow: 0 0 40px rgba(243, 186, 47, 0.4); box-sizing: border-box; }
         .warning-title { color: var(--red); font-size: 20px; margin-top: 0; font-weight: bold; }
-        .warning-box-sinhala { font-size: 15px; line-height: 1.7; color: #fff; margin-bottom: 20px; font-weight: 500; }
+        .warning-box-sinhala { font-size: 15px; line-height: 1.7; color: #fff; margin-bottom: 12px; font-weight: 500; }
+        .warning-box-english { font-size: 13px; line-height: 1.6; color: var(--text-muted); margin-bottom: 20px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px; font-style: italic; }
         .agree-btn { background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); color: #000; border: none; padding: 12px 35px; border-radius: 30px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.3s; }
 
         .login-box { background: linear-gradient(135deg, #070f1a 0%, #0c182b 100%); border: 2px solid var(--blue-glow); padding: 35px 25px; border-radius: 24px; text-align: center; max-width: 420px; width: 100%; box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 25px rgba(0, 210, 255, 0.2); display: none; box-sizing: border-box; }
@@ -41,7 +45,7 @@
         .login-btn { width: 100%; background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); color: #000; border: none; padding: 12px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
         #error-msg { color: var(--red); font-size: 13px; margin-top: 15px; font-weight: 500; }
 
-        .container { max-width: 1000px; width: 100%; display: none; padding-bottom: 100px; box-sizing: border-box; }
+        .container { max-width: 1000px; width: 100%; display: none; padding-bottom: 120px; box-sizing: border-box; }
         .header { text-align: center; margin-bottom: 15px; }
         .header h1 { font-size: 34px; margin: 0; background: linear-gradient(135deg, #fff 0%, var(--gold) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; }
         .user-expiry-badge { text-align: center; color: var(--gold); font-size: 11px; font-weight: bold; background: rgba(243, 186, 47, 0.08); padding: 6px 12px; border-radius: 20px; display: inline-block; border: 1px solid rgba(243, 186, 47, 0.2); margin-bottom: 20px; }
@@ -78,16 +82,19 @@
         .modal-content { background: #0d1b2e; border: 1px solid var(--gold); padding: 25px; border-radius: 15px; max-width: 500px; width: 90%; position: relative; box-shadow: 0 0 30px var(--gold-glow); box-sizing: border-box; max-height: 85vh; overflow-y: auto; }
         .close-modal { position: absolute; top: 10px; right: 15px; font-size: 28px; cursor: pointer; color: var(--text-muted); }
 
+        /* --- 🛡️ DUAL-LANGUAGE PREMIUM FOOTER --- */
         .premium-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: linear-gradient(180deg, #050d1a 0%, #02060d 100%); border-top: 1px solid rgba(0, 210, 255, 0.3); padding: 12px 15px; z-index: 10050; box-shadow: 0 -5px 25px rgba(0,0,0,0.8); box-sizing: border-box; display: none; text-align: center; }
         .footer-grid-text { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 6px; font-size: 10px; font-weight: 600; }
         .footer-grid-text .sin { color: #fff; }
+        .footer-grid-text .eng { color: var(--text-muted); font-style: italic; }
 
         @media (min-width: 768px) {
             .stats-panel { grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 20px; }
             .stat-item:nth-child(4) { grid-column: auto; }
             .stat-value { font-size: 28px; }
             .signal-grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-            .footer-grid-text { flex-direction: row; gap: 30px; font-size: 12px; }
+            .footer-grid-text { flex-direction: row; gap: 30px; font-size: 11px; }
+            .footer-grid-text .eng { border-left: 1px solid rgba(255,255,255,0.1); padding-left: 30px; }
         }
     </style>
 </head>
@@ -97,9 +104,10 @@
 
 <div id="warning-modal">
     <div class="warning-content">
-        <div class="warning-title">⚠️ SECURITY NOTICE</div>
-        <div class="warning-box-sinhala">පෙහෙළිත ඒකනායක සතු පුද්ගලික දේපළකි. මෙහි අන්තර්ගත කිසිදු දත්තයක් අනවසරයෙන් භාවිත කිරීම සපුරා තහනම් වේ.</div>
-        <button class="agree-btn" onclick="triggerPremiumLockScreen()">I AGREE & PROCEED</button>
+        <div class="warning-title">⚠️ SECURITY NOTICE & COPYRIGHT PROTECTION</div>
+        <div class="warning-box-sinhala">පෙහෙළිත ඒකනායක සතු පුද්ගලික දේපළකි. මෙහි අන්තර්ගත කිසිදු දත්තයක් අනවසරයෙන් භාවිත කිරීම, පිටපත් කිරීම සපුරා තහනම් වේ.</div>
+        <div class="warning-box-english">Private property of Pehelitha Ekanayaka. Any unauthorized duplication, reverse engineering, or utilization of this system data is strictly prohibited under international copyright policies.</div>
+        <button class="agree-btn" onclick="triggerPremiumLockScreen()">I AGREE & PROCEED / එකඟයි</button>
     </div>
 </div>
 
@@ -116,7 +124,7 @@
 
 <div class="container" id="main-app">
     <div class="header"><h1>AlphaSigna AI</h1><p>PERPETUAL FUTURES INTELLIGENCE</p></div>
-    <div style="text-align: center;"><div class="user-expiry-badge" id="user-expiry-text">PREMIUM ACCESS ACTIVE</div></div>
+    <div style="text-align: center;"><div class="user-expiry-badge" id="user-expiry-text">🔑 VALIDATING ACCESS EXPIRY...</div></div>
     
     <div class="stats-panel">
         <div class="stat-item"><div class="stat-label">Total Signals</div><div id="stat-total" class="stat-value">--</div></div>
@@ -155,7 +163,8 @@
 
 <div class="premium-footer" id="live-footer-ticker">
     <div class="footer-grid-text">
-        <span class="sin">🛑 2026 © AlphaSigna AI - පෙහෙළිත ඒකනායක සතු පුද්ගලික දේපළකි.</span>
+        <span class="sin">🛑 2026 © AlphaSigna AI - පෙහෙළිත ඒකනායක සතු පුද්ගලික දේපළකි. අනවසරයෙන් භාවිතය සපුරා තහනම්.</span>
+        <span class="eng">🛑 All Rights Reserved. Exclusive Intellectual Property of Pehelitha Ekanayaka. Unauthorized duplication is criminally liable.</span>
     </div>
 </div>
 
@@ -163,7 +172,6 @@
     const FIREBASE_URL = "https://alphasigna-live-d644a-default-rtdb.firebaseio.com";
     let cryptoDataPool = [];
     let liveScanInterval;
-    let cardCountTracked = 0;
     
     let currentVisualProgress = 0;
     let targetProgress = 0;
@@ -192,7 +200,11 @@
             }
             document.getElementById('login-container').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
-            syncStatsOnly(); setInterval(syncStatsOnly, 10000);
+            document.getElementById('user-expiry-text').innerText = "🔑 PREMIUM END DATE: " + userData.expiry;
+            
+            // 🚨 FIX: ලොග් වූ සැනින් Stats පෙන්වීම
+            syncStatsOnly(); 
+            setInterval(syncStatsOnly, 10000);
         }).catch(() => { error.style.color = "var(--red)"; error.innerText = "⚠️ Gateway Connection Error."; });
     }
 
@@ -208,15 +220,13 @@
     }
 
     function animateMeter() {
-        currentVisualProgress += (targetProgress - currentVisualProgress) * 0.04; // Smooth Lerp
-        
+        currentVisualProgress += (targetProgress - currentVisualProgress) * 0.04;
         let displayValue = Math.floor(currentVisualProgress);
         document.getElementById('gauge-text').innerText = displayValue + "%";
         
         let rotation = -180 + (currentVisualProgress * 1.8);
         document.getElementById('gauge-pointer').style.transform = `rotate(${rotation}deg)`;
 
-        // Real-time Card Injection Listener (මීටරය යන අතරතුරේදීම ලයිව් කාඩ්ස් ඇදීම)
         injectCardsDynamically();
 
         if (displayValue >= 99 && targetProgress >= 100) {
@@ -237,7 +247,6 @@
         document.getElementById('rescan-btn-id').style.display = 'none';
         document.getElementById('cards-container').innerHTML = '';
         cryptoDataPool = [];
-        cardCountTracked = 0;
         
         currentVisualProgress = 0; targetProgress = 0;
         cancelAnimationFrame(animationFrameId);
@@ -255,13 +264,11 @@
         }, 400);
     }
 
-    // 🚀 INTERACTIVE REAL-TIME INJECTOR CORE
     function injectCardsDynamically() {
         fetch(`${FIREBASE_URL}/live_signals.json`).then(res => res.json()).then(data => {
             if (!data) return;
             
             Object.keys(data).forEach(key => {
-                // දැනටමත් මේ කාඩ් එක පෙන්වලා නැත්නම් පමණක් ඇතුළත් කරයි
                 if (data[key] && !cryptoDataPool.some(c => c.pair === data[key].pair)) {
                     cryptoDataPool.push(data[key]);
                     const idx = cryptoDataPool.length - 1;
@@ -273,6 +280,7 @@
                             <div class="card-header"><span class="coin-title" style="color:var(--gold)">${coin.pair}</span><span class="badge buy">LONG / BUY</span></div>
                             <div class="price-row"><span class="label">Live Entry Mark:</span><span class="val" style="color:var(--blue-glow);">$${coin.entry}</span></div>
                             <div class="price-row"><span class="label">Futures TP1:</span><span class="val" style="color:var(--green)">$${coin.tp1}</span></div>
+                            <div class="price-row"><span class="label">Futures TP2:</span><span class="val" style="color:var(--green)">$${coin.tp2}</span></div>
                             <div class="price-row"><span class="label">Futures TP3:</span><span class="val" style="color:var(--green)">$${coin.tp3}</span></div>
                             <div class="price-row"><span class="label">Futures Max TP4:</span><span class="val" style="color:var(--green)">$${coin.tp4}</span></div>
                             <div class="price-row"><span class="label">Futures Risk SL:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
