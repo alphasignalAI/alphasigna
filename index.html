@@ -162,12 +162,9 @@
                 return; 
             }
             
-            // 🔥 [DATE VALIDATION LOGIC] කල් ඉකුත් වීමේ දිනය පරික්ෂා කිරීම
             if(userData.expire_date) {
                 const today = new Date();
                 const expiryDate = new Date(userData.expire_date);
-                
-                // වේලාවන් බිංදු කර දින පමණක් සංසන්දනය කිරීම
                 today.setHours(0,0,0,0);
                 expiryDate.setHours(0,0,0,0);
                 
@@ -181,12 +178,16 @@
             document.getElementById('login-container').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
             
-            // Expiry Date එක UI එකට ඇතුළත් කිරීම
             document.getElementById('key-expiry').innerText = userData.expire_date || "LIFETIME VALIDITY";
             
-            pTrades = userData.stats?.trades || 0;
-            pTp = userData.stats?.tp || 0;
-            pSl = userData.stats?.sl || 0;
+            // 🔥 [SAFE PARSE FIX] : "stats": "" විදිහට තිබ්බත් අවුලක් නැතිවෙන්න
+            let statsObj = userData.stats;
+            if (typeof statsObj !== 'object' || statsObj === null) {
+                statsObj = { trades: 0, tp: 0, sl: 0 };
+            }
+            pTrades = statsObj.trades || 0;
+            pTp = statsObj.tp || 0;
+            pSl = statsObj.sl || 0;
 
             fetch(`${FIREBASE_URL}/global_stats.json`).then(res => res.json()).then(gData => {
                 if(gData) {
