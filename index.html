@@ -6,16 +6,10 @@
     <title>AlphaSigna AI - Live Premium Terminal</title>
     <style>
         :root {
-            --bg-color: #03070d;
-            --card-bg: #0b1523;
-            --gold: #f3ba2f;
-            --gold-glow: rgba(243, 186, 47, 0.25);
-            --blue-glow: #00d2ff;
-            --green: #00ff88;
-            --red: #ff4d4d;
-            --text-muted: #8492a6;
-            --pink: #ff007f;
-            --purple: #9d00ff;
+            --bg-color: #03070d; --card-bg: #0b1523; --gold: #f3ba2f;
+            --gold-glow: rgba(243, 186, 47, 0.25); --blue-glow: #00d2ff;
+            --green: #00ff88; --red: #ff4d4d; --text-muted: #8492a6;
+            --pink: #ff007f; --purple: #9d00ff;
         }
 
         body {
@@ -25,12 +19,7 @@
             box-sizing: border-box; overflow-x: hidden;
         }
 
-        /* --- 🎨 MULTI-COLOR INK BACKGROUND --- */
-        #intro-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000;
-            z-index: 9999; display: flex; justify-content: center; align-items: center;
-            pointer-events: none; transition: opacity 0.5s ease;
-        }
+        #intro-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; pointer-events: none; transition: opacity 0.5s ease; }
         .ink-container { position: absolute; width: 100%; height: 100%; top: 0; left: 0; overflow: hidden; }
         .ink-blast { position: absolute; border-radius: 50%; mix-blend-mode: screen; opacity: 0; filter: blur(8px); }
         .ib-1 { background: var(--gold); width: 120px; height: 120px; top: 20%; left: 30%; animation: blast-cycle 6s infinite 0s; }
@@ -38,32 +27,23 @@
         .ib-3 { background: var(--pink); width: 100px; height: 100px; top: 70%; left: 20%; animation: blast-cycle 5s infinite 3s; }
         @keyframes blast-cycle { 0% { transform: scale(0.1) translate(0,0); opacity: 0; } 20% { opacity: 0.7; } 50% { transform: scale(6) translate(30px, -20px); opacity: 0.3; } 100% { transform: scale(12) translate(-5px, 40px); opacity: 0; } }
 
-        /* --- ⚠️ WARNING SECURITY MODAL --- */
         #warning-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.95); justify-content: center; align-items: center; z-index: 10000; }
         .warning-content { background-color: #050a12; border: 2px solid var(--gold); padding: 25px; border-radius: 20px; max-width: 650px; width: 90%; text-align: center; box-shadow: 0 0 40px rgba(243, 186, 47, 0.4); box-sizing: border-box; }
-        .warning-title { color: var(--red); font-size: 20px; margin-top: 0; font-weight: bold; letter-spacing: 1px; }
+        .warning-title { color: var(--red); font-size: 20px; margin-top: 0; font-weight: bold; }
         .warning-box-sinhala { font-size: 15px; line-height: 1.7; color: #fff; margin-bottom: 20px; font-weight: 500; }
-        .warning-box-english { font-size: 13px; line-height: 1.5; color: var(--text-muted); margin-bottom: 25px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; font-style: italic; }
         .agree-btn { background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); color: #000; border: none; padding: 12px 35px; border-radius: 30px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .agree-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 25px rgba(243, 186, 47, 0.6); }
 
-        /* --- 🔒 CYBERPUNK LOCK BOX UI --- */
-        .login-box { background: linear-gradient(135deg, #070f1a 0%, #0c182b 100%); border: 2px solid var(--blue-glow); padding: 35px 25px; border-radius: 24px; text-align: center; max-width: 420px; width: 100%; box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 25px rgba(0, 210, 255, 0.2); display: none; box-sizing: border-box; }
+        .login-box { background: linear-gradient(135deg, #070f1a 0%, #0c182b 100%); border: 2px solid var(--blue-glow); padding: 35px 25px; border-radius: 24px; text-align: center; max-width: 420px; width: 100%; display: none; box-sizing: border-box; }
         .login-box h2 { margin: 0 0 5px 0; font-size: 26px; background: linear-gradient(135deg, #fff 0%, var(--blue-glow) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
-        .login-box p { color: var(--text-muted); font-size: 11px; letter-spacing: 2px; margin-bottom: 25px; text-transform: uppercase; }
-        .secure-badge-matrix { font-size: 9px; font-family: monospace; color: var(--green); background: rgba(0, 255, 136, 0.07); border: 1px solid rgba(0, 255, 136, 0.2); padding: 6px 12px; border-radius: 6px; display: inline-block; margin-bottom: 20px; }
-        .input-group { margin-bottom: 25px; text-align: left; }
+        .input-group { margin-bottom: 25px; text-align: left; margin-top: 20px; }
         .input-group label { display: block; font-size: 11px; color: var(--blue-glow); text-transform: uppercase; margin-bottom: 8px; font-weight: bold; }
         .input-group input { width: 100%; background: #040912; border: 1px solid rgba(0, 210, 255, 0.2); padding: 12px; border-radius: 10px; color: white; font-size: 15px; box-sizing: border-box; font-family: monospace; text-align: center; letter-spacing: 2px; }
-        .input-group input:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 15px var(--gold-glow); }
-        .login-btn { width: 100%; background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); color: #000; border: none; padding: 12px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .login-btn { width: 100%; background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); color: #000; border: none; padding: 12px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
         #error-msg { color: var(--red); font-size: 13px; margin-top: 15px; font-weight: 500; }
 
-        /* --- DASHBOARD UI APPLICATION INTERFACE --- */
         .container { max-width: 1000px; width: 100%; display: none; padding-bottom: 100px; box-sizing: border-box; }
         .header { text-align: center; margin-bottom: 15px; }
         .header h1 { font-size: 34px; margin: 0; background: linear-gradient(135deg, #fff 0%, var(--gold) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; }
-        .header p { color: var(--text-muted); margin: 5px 0; font-size: 12px; letter-spacing: 3px; }
         .user-expiry-badge { text-align: center; color: var(--gold); font-size: 11px; font-weight: bold; background: rgba(243, 186, 47, 0.08); padding: 6px 12px; border-radius: 20px; display: inline-block; border: 1px solid rgba(243, 186, 47, 0.2); margin-bottom: 20px; }
         
         .stats-panel { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 15px; padding: 15px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
@@ -76,11 +56,12 @@
         .scanning-coin { font-size: 16px; color: var(--gold); font-weight: bold; min-height: 40px; padding: 0 10px; box-sizing: border-box; }
         .meter-container { position: relative; width: 200px; height: 100px; margin: auto; overflow: hidden; }
         .gauge-bg { width: 160px; height: 160px; border-radius: 50%; border: 12px solid #16263d; box-sizing: border-box; position: absolute; top: 0; left: 20px; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); }
-        .gauge-fill { position: absolute; top: 0; left: 20px; width: 160px; height: 160px; border-radius: 50%; border: 12px solid var(--blue-glow); box-sizing: border-box; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); transform: rotate(-180deg); transform-origin: center center; transition: transform 0.2s ease; }
+        /* 🚨 අවධානය: Smooth වීම සඳහා මෙතනින් transition ඉවත් කර ඇත */
+        .gauge-fill { position: absolute; top: 0; left: 20px; width: 160px; height: 160px; border-radius: 50%; border: 12px solid var(--blue-glow); box-sizing: border-box; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); transform: rotate(-180deg); transform-origin: center center; }
         .gauge-percentage { position: absolute; bottom: 0px; left: 0; right: 0; font-size: 28px; font-weight: bold; color: #fff; }
 
-        .scan-init-btn, .rescan-btn { background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); color: #000; border: none; padding: 12px 30px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; width: 85%; max-width: 280px; }
-        .rescan-btn { display: none; font-size: 15px; padding: 10px 25px; margin-top: 10px; }
+        .scan-init-btn, .rescan-btn { background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); color: #000; border: none; padding: 12px 30px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; width: 85%; max-width: 280px; }
+        .rescan-btn { display: none; }
 
         .signal-grid { display: grid; grid-template-columns: 1fr; gap: 15px; padding: 0 5px; }
         .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; position: relative; box-sizing: border-box; }
@@ -92,12 +73,10 @@
         .val { font-weight: 500; font-family: monospace; }
         .more-btn { width: 100%; background: linear-gradient(135deg, #1a2f4c 0%, #112035 100%); border: 1px solid rgba(243, 186, 47, 0.3); color: var(--gold); padding: 10px; border-radius: 8px; cursor: pointer; margin-top: 12px; font-weight: bold; font-size: 13px; transition: 0.3s; }
 
-        /* --- MODAL ANALYSIS VIEW --- */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 10100; }
         .modal-content { background: #0d1b2e; border: 1px solid var(--gold); padding: 25px; border-radius: 15px; max-width: 500px; width: 90%; position: relative; box-shadow: 0 0 30px var(--gold-glow); box-sizing: border-box; max-height: 85vh; overflow-y: auto; }
         .close-modal { position: absolute; top: 10px; right: 15px; font-size: 28px; cursor: pointer; color: var(--text-muted); }
 
-        /* --- 🛡️ PREMIUM STATIC FOOTER PANEL --- */
         .premium-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: linear-gradient(180deg, #050d1a 0%, #02060d 100%); border-top: 1px solid rgba(0, 210, 255, 0.3); padding: 12px 15px; z-index: 10050; box-shadow: 0 -5px 25px rgba(0,0,0,0.8); box-sizing: border-box; display: none; text-align: center; }
         .footer-grid-text { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 6px; font-size: 10px; font-weight: 600; }
         .footer-grid-text .sin { color: #fff; }
@@ -119,16 +98,15 @@
 
 <div id="warning-modal">
     <div class="warning-content">
-        <div class="warning-title">⚠️ SECURITY NOTICE & COPYRIGHT ALERT</div>
+        <div class="warning-title">⚠️ SECURITY NOTICE</div>
         <div class="warning-box-sinhala">පෙහෙළිත ඒකනායක සතු පුද්ගලික දේපළකි. මෙහි අන්තර්ගත කිසිදු දත්තයක් අනවසරයෙන් භාවිත කිරීම සපුරා තහනම් වේ.</div>
-        <button class="agree-btn" onclick="triggerPremiumLockScreen()">I AGREE & PROCEED / එකඟයි</button>
+        <button class="agree-btn" onclick="triggerPremiumLockScreen()">I AGREE & PROCEED</button>
     </div>
 </div>
 
 <div class="login-box" id="login-container">
     <h2>AlphaSigna AI</h2>
     <p>QUANTUM SECURE ENTRY</p>
-    <div class="secure-badge-matrix">🛡️ STATUS: COLD STORAGE HUB SIGNALS ENCRYPTED</div>
     <div class="input-group">
         <label>Premium Terminal Access Key</label>
         <input type="password" id="access-key" placeholder="••••••••••••">
@@ -149,7 +127,7 @@
     </div>
     
     <div class="gauge-section">
-        <div class="scanning-coin" id="scan-coin-name">READY TO ANALYZE PERPETUAL FUTURES MARKET</div>
+        <div class="scanning-coin" id="scan-coin-name">READY TO ANALYZE MARKET</div>
         <div class="meter-container">
             <div class="gauge-bg"></div>
             <div class="gauge-fill" id="gauge-pointer"></div>
@@ -167,9 +145,9 @@
         <span class="close-modal" onclick="closeModal()">&times;</span>
         <h2 style="color: var(--gold); margin-top: 0; font-size: 18px;" id="modal-coin">COIN ANALYSIS</h2>
         <hr style="border-color: #16263d;">
-        <h3 style="color: var(--blue-glow);">🧠 Technical AI Analysis Logic</h3>
+        <h3 style="color: var(--blue-glow);">🧠 Technical AI Logic</h3>
         <p id="modal-logic" style="color: #e0e6ed; font-size: 13px; line-height: 1.5;"></p>
-        <h3 style="color: var(--green);">📰 Fundamental News Insight Node</h3>
+        <h3 style="color: var(--green);">📰 Fundamental News Insight</h3>
         <p id="modal-news" style="color: #e0e6ed; font-style: italic; font-size: 13px; line-height: 1.5;"></p>
         <h3 style="color: var(--red);">⚖️ Smart Risk & Position Calculator</h3>
         <p id="modal-risk" style="color: #ff9999; font-weight: bold; white-space: pre-line; font-size: 13px; line-height: 1.5;"></p>
@@ -178,16 +156,19 @@
 
 <div class="premium-footer" id="live-footer-ticker">
     <div class="footer-grid-text">
-        <span class="sin">🛑 2026 © AlphaSigna AI - පෙහෙළිත ඒකනායක සතු පුද්ගලික දේපළකි. අනවසරයෙන් භාවිතය තහනම්.</span>
-        <span class="eng">🛑 All Rights Reserved. Exclusive Property of Pehelitha Ekanayaka. Unauthorized duplication is prohibited.</span>
+        <span class="sin">🛑 2026 © AlphaSigna AI - පෙහෙළිත ඒකනායක සතු පුද්ගලික දේපළකි.</span>
     </div>
 </div>
 
 <script>
-    // 🔗 ඔයාගේ සැබෑ Firebase URL එක සාර්ථකව සම්බන්ධ කර ඇත (අගට / ලකුණ ඉවත් කර ඇත)
     const FIREBASE_URL = "https://alphasigna-live-d644a-default-rtdb.firebaseio.com";
     let cryptoDataPool = [];
     let liveScanInterval;
+    
+    // 🏍️ SMOOTH ANIMATION VARIABLES
+    let currentVisualProgress = 0;
+    let targetProgress = 0;
+    let animationFrameId;
 
     function initiateSystemSequence() { document.getElementById('warning-modal').style.display = 'flex'; }
 
@@ -206,17 +187,13 @@
         error.style.color = "var(--blue-glow)";
         error.innerText = "⚡ Connecting to Network Hub...";
 
-        fetch(`${FIREBASE_URL}/premium_keys/${key}.json`)
-        .then(res => res.json())
-        .then(userData => {
+        fetch(`${FIREBASE_URL}/premium_keys/${key}.json`).then(res => res.json()).then(userData => {
             if (!userData || userData.status !== "active") {
-                error.style.color = "var(--red)"; error.innerText = "❌ INVALID ACCESS KEY. ACCESS DENIED."; return;
+                error.style.color = "var(--red)"; error.innerText = "❌ INVALID ACCESS KEY."; return;
             }
             document.getElementById('login-container').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
-            document.getElementById('user-expiry-text').innerText = "🔑 PREMIUM EXPIRE DATE: " + userData.expiry;
-            syncStatsOnly(); 
-            setInterval(syncStatsOnly, 10000);
+            syncStatsOnly(); setInterval(syncStatsOnly, 10000);
         }).catch(() => { error.style.color = "var(--red)"; error.innerText = "⚠️ Gateway Connection Error."; });
     }
 
@@ -231,27 +208,45 @@
         });
     }
 
-    // 🔄 REAL-TIME METER SYNC VIA PYTHON BOT PROGRESS
+    // --- SMOOTH SPEEDOMETER ANIMATION FUNCTION ---
+    function animateMeter() {
+        currentVisualProgress += (targetProgress - currentVisualProgress) * 0.05; // Lerp effect
+        
+        let displayValue = Math.floor(currentVisualProgress);
+        document.getElementById('gauge-text').innerText = displayValue + "%";
+        
+        let rotation = -180 + (currentVisualProgress * 1.8);
+        document.getElementById('gauge-pointer').style.transform = `rotate(${rotation}deg)`;
+
+        if (displayValue >= 99 && targetProgress >= 100) {
+            document.getElementById('gauge-text').innerText = "100%";
+            document.getElementById('gauge-pointer').style.transform = `rotate(0deg)`;
+            cancelAnimationFrame(animationFrameId);
+            
+            clearInterval(liveScanInterval);
+            document.getElementById('scan-coin-name').innerText = "🎯 REAL FUTURES SIGNALS ENGAGED";
+            document.getElementById('rescan-btn-id').style.display = 'inline-block';
+            loadFinalRealCards();
+            return;
+        }
+        animationFrameId = requestAnimationFrame(animateMeter);
+    }
+
     function fetchLiveSignalsFromFirebase() {
         document.getElementById('start-scan-btn').style.display = 'none';
         document.getElementById('rescan-btn-id').style.display = 'none';
         document.getElementById('cards-container').innerHTML = '';
+        
+        currentVisualProgress = 0; targetProgress = 0;
+        cancelAnimationFrame(animationFrameId);
+        animateMeter();
 
         liveScanInterval = setInterval(() => {
             fetch(`${FIREBASE_URL}/system_status.json`).then(res => res.json()).then(status => {
                 if(status) {
-                    let progress = status.progress || 0;
-                    document.getElementById('scan-coin-name').innerText = "🚨 AI SCANNING: " + (status.current_coin || "SYSTEM READY") + "/USDT";
-                    document.getElementById('gauge-text').innerText = progress + "%";
-                    
-                    let rotation = -180 + (progress * 1.8);
-                    document.getElementById('gauge-pointer').style.transform = `rotate(${rotation}deg)`;
-
-                    if (progress >= 100) {
-                        clearInterval(liveScanInterval);
-                        document.getElementById('scan-coin-name').innerText = "🎯 REAL FUTURES SIGNALS ENGAGED";
-                        document.getElementById('rescan-btn-id').style.display = 'inline-block';
-                        loadFinalRealCards();
+                    targetProgress = status.progress || 0;
+                    if(targetProgress < 100) {
+                        document.getElementById('scan-coin-name').innerText = "🚨 AI SCANNING: " + (status.current_coin || "SYSTEM READY") + "/USDT";
                     }
                 }
             });
