@@ -19,16 +19,20 @@
             margin: 0; padding: 15px; background-color: var(--bg-color); color: white;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex; justify-content: center; align-items: center; min-height: 100vh;
-            box-sizing: border-box; overflow-x: hidden;
+            box-sizing: border-box; overflow-x: hidden; position: relative;
         }
 
-        #intro-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; pointer-events: none; transition: opacity 0.5s ease; }
-        .ink-container { position: absolute; width: 100%; height: 100%; top: 0; left: 0; overflow: hidden; }
-        .ink-blast { position: absolute; border-radius: 50%; mix-blend-mode: screen; opacity: 0; filter: blur(8px); }
-        .ib-1 { background: var(--gold); width: 120px; height: 120px; top: 20%; left: 30%; animation: blast-cycle 6s infinite 0s; }
-        .ib-2 { background: var(--blue-glow); width: 150px; height: 150px; top: 50%; left: 60%; animation: blast-cycle 7s infinite 1.5s; }
-        .ib-3 { background: var(--pink); width: 100px; height: 100px; top: 70%; left: 20%; animation: blast-cycle 5s infinite 3s; }
-        @keyframes blast-cycle { 0% { transform: scale(0.1) translate(0,0); opacity: 0; } 20% { opacity: 0.7; } 50% { transform: scale(6) translate(30px, -20px); opacity: 0.3; } 100% { transform: scale(12) translate(-5px, 40px); opacity: 0; } }
+        /* 🎪 CONTINUOUS BACKGROUND ANIMATION */
+        .ink-container { position: fixed; width: 100%; height: 100%; top: 0; left: 0; overflow: hidden; z-index: -1; pointer-events: none; }
+        .ink-blast { position: absolute; border-radius: 50%; mix-blend-mode: screen; opacity: 0; filter: blur(25px); }
+        .ib-1 { background: var(--gold); width: 250px; height: 250px; top: 10%; left: 15%; animation: blast-infinite 12s infinite linear; }
+        .ib-2 { background: var(--blue-glow); width: 300px; height: 300px; top: 40%; left: 55%; animation: blast-infinite 16s infinite linear 2s; }
+        .ib-3 { background: var(--pink); width: 220px; height: 220px; top: 65%; left: 10%; animation: blast-infinite 10s infinite linear 4s; }
+        @keyframes blast-infinite { 
+            0% { transform: scale(0.8) translate(0,0); opacity: 0.1; } 
+            50% { transform: scale(1.4) translate(60px, -40px); opacity: 0.3; } 
+            100% { transform: scale(0.8) translate(0,0); opacity: 0.1; } 
+        }
 
         #warning-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.95); justify-content: center; align-items: center; z-index: 10000; }
         .warning-content { background-color: #050a12; border: 2px solid var(--gold); padding: 25px; border-radius: 20px; max-width: 650px; width: 90%; text-align: center; box-shadow: 0 0 40px rgba(243, 186, 47, 0.4); box-sizing: border-box; }
@@ -37,7 +41,7 @@
         .warning-box-english { font-size: 13px; line-height: 1.6; color: var(--text-muted); margin-bottom: 20px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px; font-style: italic; }
         .agree-btn { background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); color: #000; border: none; padding: 12px 35px; border-radius: 30px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.3s; }
 
-        .login-box { background: linear-gradient(135deg, #070f1a 0%, #0c182b 100%); border: 2px solid var(--blue-glow); padding: 35px 25px; border-radius: 24px; text-align: center; max-width: 420px; width: 100%; box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 25px rgba(0, 210, 255, 0.2); display: none; box-sizing: border-box; }
+        .login-box { background: linear-gradient(135deg, #070f1a 0%, #0c182b 100%); border: 2px solid var(--blue-glow); padding: 35px 25px; border-radius: 24px; text-align: center; max-width: 420px; width: 100%; box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 25px rgba(0, 210, 255, 0.2); display: none; box-sizing: border-box; z-index: 10; }
         .login-box h2 { margin: 0 0 5px 0; font-size: 26px; background: linear-gradient(135deg, #fff 0%, var(--blue-glow) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
         .input-group { margin-bottom: 25px; text-align: left; margin-top: 20px; }
         .input-group label { display: block; font-size: 11px; color: var(--blue-glow); text-transform: uppercase; margin-bottom: 8px; font-weight: bold; }
@@ -45,7 +49,7 @@
         .login-btn { width: 100%; background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); color: #000; border: none; padding: 12px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
         #error-msg { color: var(--red); font-size: 13px; margin-top: 15px; font-weight: 500; }
 
-        .container { max-width: 1000px; width: 100%; display: none; padding-bottom: 120px; box-sizing: border-box; }
+        .container { max-width: 1000px; width: 100%; display: none; padding-bottom: 120px; box-sizing: border-box; z-index: 10; }
         .header { text-align: center; margin-bottom: 15px; }
         .header h1 { font-size: 34px; margin: 0; background: linear-gradient(135deg, #fff 0%, var(--gold) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; }
         .user-expiry-badge { text-align: center; color: var(--gold); font-size: 11px; font-weight: bold; background: rgba(243, 186, 47, 0.08); padding: 6px 12px; border-radius: 20px; display: inline-block; border: 1px solid rgba(243, 186, 47, 0.2); margin-bottom: 20px; }
@@ -76,7 +80,12 @@
         .price-row { display: flex; justify-content: space-between; margin: 8px 0; font-size: 13px; }
         .label { color: var(--text-muted); }
         .val { font-weight: 500; font-family: monospace; }
-        .more-btn { width: 100%; background: linear-gradient(135deg, #1a2f4c 0%, #112035 100%); border: 1px solid rgba(243, 186, 47, 0.3); color: var(--gold); padding: 10px; border-radius: 8px; cursor: pointer; margin-top: 12px; font-weight: bold; font-size: 13px; transition: 0.3s; }
+        
+        /* 🕹️ NEW BUTTON STYLING */
+        .action-container { display: flex; gap: 8px; margin-top: 12px; }
+        .trade-btn { flex: 1; background: linear-gradient(135deg, var(--green) 0%, #00b359 100%); color: #000; border: none; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.2s; }
+        .trade-btn:disabled { background: #16263d; color: var(--text-muted); cursor: not-allowed; }
+        .more-btn { flex: 1; background: linear-gradient(135deg, #1a2f4c 0%, #112035 100%); border: 1px solid rgba(243, 186, 47, 0.3); color: var(--gold); padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; transition: 0.3s; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 10100; }
         .modal-content { background: #0d1b2e; border: 1px solid var(--gold); padding: 25px; border-radius: 15px; max-width: 500px; width: 90%; position: relative; box-shadow: 0 0 30px var(--gold-glow); box-sizing: border-box; max-height: 85vh; overflow-y: auto; }
@@ -97,9 +106,13 @@
         }
     </style>
 </head>
-<body onload="initiateSystemSequence()">
+<body>
 
-<div id="intro-overlay"><div class="ink-container"><div class="ink-blast ib-1"></div><div class="ink-blast ib-2"></div><div class="ink-blast ib-3"></div></div></div>
+<div class="ink-container">
+    <div class="ink-blast ib-1"></div>
+    <div class="ink-blast ib-2"></div>
+    <div class="ink-blast ib-3"></div>
+</div>
 
 <div id="warning-modal">
     <div class="warning-content">
@@ -126,10 +139,10 @@
     <div style="text-align: center;"><div class="user-expiry-badge" id="user-expiry-text">🔑 VALIDATING ACCESS EXPIRY...</div></div>
     
     <div class="stats-panel">
-        <div class="stat-item"><div class="stat-label">Total Signals</div><div id="stat-total" class="stat-value">--</div></div>
-        <div class="stat-item"><div class="stat-label">TP Hit</div><div id="stat-tp" class="stat-value" style="color: var(--green);">--</div></div>
-        <div class="stat-item"><div class="stat-label">SL Hit</div><div id="stat-sl" class="stat-value" style="color: var(--red);">--</div></div>
-        <div class="stat-item"><div class="stat-label">Win Rate</div><div id="stat-winrate" class="stat-value" style="color: var(--gold);">--</div></div>
+        <div class="stat-item"><div class="stat-label">Total Signals Taken</div><div id="stat-total" class="stat-value">0</div></div>
+        <div class="stat-item"><div class="stat-label">Your TP Hit</div><div id="stat-tp" class="stat-value" style="color: var(--green);">0</div></div>
+        <div class="stat-item"><div class="stat-label">Your SL Hit</div><div id="stat-sl" class="stat-value" style="color: var(--red);">0</div></div>
+        <div class="stat-item"><div class="stat-label">Personal Win Rate</div><div id="stat-winrate" class="stat-value" style="color: var(--gold);">0.0%</div></div>
     </div>
     
     <div class="gauge-section">
@@ -173,10 +186,24 @@
     let currentProgress = 0;
     let scanAnimationLoop;
 
-    function initiateSystemSequence() { document.getElementById('warning-modal').style.display = 'flex'; }
+    // LOCAL USER STATS ENGINE
+    let localTotal = 0;
+    let localTp = 0;
+    let localSl = 0;
+
+    window.onload = function() { document.getElementById('warning-modal').style.display = 'flex'; };
+
+    document.addEventListener("DOMContentLoaded", () => {
+        // Load old trade scores if available
+        if(localStorage.getItem('trade_total')) {
+            localTotal = parseInt(localStorage.getItem('trade_total'));
+            localTp = parseInt(localStorage.getItem('trade_tp'));
+            localSl = parseInt(localStorage.getItem('trade_sl'));
+            refreshDashboardUI();
+        }
+    });
 
     function triggerPremiumLockScreen() {
-        document.getElementById('intro-overlay').style.display = 'none';
         document.getElementById('warning-modal').style.display = 'none';
         document.getElementById('login-container').style.display = 'block';
         document.getElementById('live-footer-ticker').style.display = 'block';
@@ -197,24 +224,9 @@
             document.getElementById('login-container').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
             document.getElementById('user-expiry-text').innerText = "🔑 PREMIUM END DATE: " + userData.expiry;
-            
-            syncStatsOnly(); 
-            setInterval(syncStatsOnly, 15000);
         }).catch(() => { error.style.color = "var(--red)"; error.innerText = "⚠️ Gateway Connection Error."; });
     }
 
-    function syncStatsOnly() {
-        fetch(`${FIREBASE_URL}/live_stats.json`).then(res => res.json()).then(stats => {
-            if(stats) {
-                document.getElementById('stat-total').innerText = stats.total;
-                document.getElementById('stat-tp').innerText = stats.tp;
-                document.getElementById('stat-sl').innerText = stats.sl;
-                document.getElementById('stat-winrate').innerText = stats.winrate;
-            }
-        });
-    }
-
-    // 🎯 NEW REAL-TIME UI SCANNING SIMULATION
     function triggerPremiumScanUI() {
         document.getElementById('start-scan-btn').style.display = 'none';
         document.getElementById('rescan-btn-id').style.display = 'none';
@@ -222,26 +234,23 @@
         cryptoDataPool = [];
         currentProgress = 0;
 
-        // බොට් දැනටමත් පසුබිමෙන් සූදානම් කර ඇති හොඳම සංඥා 6 ලබා ගැනීම
         fetch(`${FIREBASE_URL}/live_signals.json`).then(res => res.json()).then(data => {
             if (!data) {
-                document.getElementById('scan-coin-name').innerText = "⚠️ SYSTEM COOL DOWN. TRY AGAIN IN A MOMENT.";
+                document.getElementById('scan-coin-name').innerText = "⚠️ SYSTEM COOL DOWN. TRY AGAIN.";
                 document.getElementById('rescan-btn-id').style.display = 'inline-block';
                 return;
             }
             
             const rawCoins = Object.values(data);
             
-            // මීටරය කැරකෙන අතරතුර කාඩ්පත් එකින් එක ලෝඩ් කිරීමේ සජීවීකරණය
             scanAnimationLoop = setInterval(() => {
-                currentProgress += 2; // වේගය පාලනය
+                currentProgress += 2;
                 if(currentProgress > 100) currentProgress = 100;
 
                 document.getElementById('gauge-text').innerText = currentProgress + "%";
                 let rotation = -180 + (currentProgress * 1.8);
                 document.getElementById('gauge-pointer').style.transform = `rotate(${rotation}deg)`;
 
-                // ප්‍රතිශතය අනුව කාසිවල නම් පෙන්වීම සහ කාඩ්පත් Inject කිරීම
                 if (currentProgress < 15) {
                     document.getElementById('scan-coin-name').innerText = "🧠 AI EXTRACTING CURRENT ORDER FLOW NODE...";
                 } else if (currentProgress >= 15 && currentProgress < 30 && cryptoDataPool.length === 0 && rawCoins[0]) {
@@ -269,7 +278,7 @@
                     document.getElementById('scan-coin-name').innerText = "🎯 6 PREMIUM FUTURES SIGNALS ENGAGED";
                     document.getElementById('rescan-btn-id').style.display = 'inline-block';
                 }
-            }, 80); // Smooth Gauge Animation Loop Speed
+            }, 60);
         });
     }
 
@@ -277,19 +286,74 @@
         cryptoDataPool.push(coin);
         const idx = cryptoDataPool.length - 1;
         const container = document.getElementById('cards-container');
+        
+        // Clean symbol string for execution tracking
+        const cleanSymbol = coin.pair.split("/")[0];
+
         container.innerHTML += `
-            <div class="card">
+            <div class="card" id="card-${idx}">
                 <div class="card-header"><span class="coin-title" style="color:var(--gold)">${coin.pair}</span><span class="badge buy">LONG / BUY</span></div>
                 <div class="price-row"><span class="label">Live Entry Mark:</span><span class="val" style="color:var(--blue-glow);">$${coin.entry}</span></div>
                 <div class="price-row"><span class="label">Futures TP1:</span><span class="val" style="color:var(--green)">$${coin.tp1}</span></div>
-                <div class="price-row"><span class="label">Futures TP2:</span><span class="val" style="color:var(--green)">$${coin.tp2}</span></div>
-                <div class="price-row"><span class="label">Futures TP3:</span><span class="val" style="color:var(--green)">$${coin.tp3}</span></div>
-                <div class="price-row"><span class="label">Futures Max TP4:</span><span class="val" style="color:var(--green)">$${coin.tp4}</span></div>
                 <div class="price-row"><span class="label">Futures Risk SL:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
                 <div class="price-row"><span class="label">Expected PNL:</span><span class="val" style="color:var(--green); font-weight:bold;">+${coin.pnl}%</span></div>
                 <div class="price-row"><span class="label">AI Accuracy:</span><span class="val" style="color:var(--green); font-weight:bold;">${coin.accuracy}%</span></div>
-                <button class="more-btn" onclick="openModal(${idx})">More / Learn Logic</button>
+                <div class="action-container">
+                    <button class="trade-btn" id="t-btn-${idx}" onclick="engageUserLocalTrade(${idx}, '${cleanSymbol}', ${coin.tp1}, ${coin.sl})">🚀 Take Trade</button>
+                    <button class="more-btn" onclick="openModal(${idx})">Logic</button>
+                </div>
             </div>`;
+    }
+
+    // 🕹️ USER INTERACTIVE TRADE EXECUTION LOGIC
+    function engageUserLocalTrade(cardIdx, cleanSymbol, tpTarget, slTarget) {
+        const targetButton = document.getElementById(`t-btn-${cardIdx}`);
+        targetButton.disabled = true;
+        targetButton.innerText = "⏳ Live Tracking...";
+        targetButton.style.background = "#1a2f4c";
+        targetButton.style.color = "var(--blue-glow)";
+
+        // Increment total local trades taken
+        localTotal += 1;
+        refreshDashboardUI();
+
+        // Real-time calculation loop using live price tracking via public API
+        let orderTracker = setInterval(() => {
+            fetch(`https://fapi.binance.com/fapi/v1/ticker/price?symbol=${cleanSymbol}USDT`)
+            .then(res => res.json())
+            .then(ticker => {
+                const liveMarketPrice = parseFloat(ticker.price);
+                
+                if (liveMarketPrice >= tpTarget) {
+                    clearInterval(orderTracker);
+                    localTp += 1;
+                    targetButton.innerText = "🎯 TP HIT!";
+                    targetButton.style.background = "rgba(0, 255, 136, 0.2)";
+                    targetButton.style.color = "var(--green)";
+                    refreshDashboardUI();
+                } else if (liveMarketPrice <= slTarget) {
+                    clearInterval(orderTracker);
+                    localSl += 1;
+                    targetButton.innerText = "🛑 SL HIT";
+                    targetButton.style.background = "rgba(255, 77, 77, 0.2)";
+                    targetButton.style.color = "var(--red)";
+                    refreshDashboardUI();
+                }
+            }).catch(() => {});
+        }, 3000); // Poll tracking every 3 seconds
+    }
+
+    function refreshDashboardUI() {
+        document.getElementById('stat-total').innerText = localTotal;
+        document.getElementById('stat-tp').innerText = localTp;
+        document.getElementById('stat-sl').innerText = localSl;
+        
+        let rate = localTotal > 0 ? ((localTp / localTotal) * 100).toFixed(1) : "0.0";
+        document.getElementById('stat-winrate').innerText = rate + "%";
+
+        localStorage.setItem('trade_total', localTotal);
+        localStorage.setItem('trade_tp', localTp);
+        localStorage.setItem('trade_sl', localSl);
     }
 
     function openModal(index) {
