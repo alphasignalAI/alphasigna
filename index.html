@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna AI - V6 Ultimate Terminal</title>
+    <title>AlphaSigna AI - V7 Hybrid Terminal</title>
     <style>
         :root {
             --bg-color: #03070d; 
@@ -13,6 +13,7 @@
             --green: #00ff88; 
             --red: #ff4d4d; 
             --text-muted: #8492a6;
+            --purple: #a349a4;
         }
         body { 
             margin: 0; padding: 20px 15px; 
@@ -25,7 +26,6 @@
         
         #warning-modal, .login-box, .modal { display: none; }
         
-        /* Modals & Login */
         #warning-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.96); justify-content: center; align-items: center; z-index: 10000; padding: 15px; box-sizing: border-box; backdrop-filter: blur(10px);}
         .warning-content { background: rgba(5, 10, 18, 0.85); backdrop-filter: blur(15px); border: 2px solid var(--gold); padding: 35px 25px; border-radius: 20px; max-width: 600px; text-align: center; box-shadow: 0 0 40px rgba(243, 186, 47, 0.2); width: 100%;}
         
@@ -44,7 +44,6 @@
         .input-group input { width: 100%; background: rgba(2, 5, 10, 0.8); border: 1px solid rgba(0, 210, 255, 0.3); padding: 14px; border-radius: 8px; color: white; text-align: center; letter-spacing: 3px; box-sizing: border-box; font-size: 16px; outline: none; transition: border-color 0.3s, box-shadow 0.3s;}
         .input-group input:focus { border-color: var(--blue-glow); box-shadow: 0 0 15px rgba(0, 210, 255, 0.3); }
         
-        /* Main Container */
         .container { max-width: 1100px; width: 100%; display: none; padding-bottom: 80px; box-sizing: border-box;}
         .header { text-align: center; margin-bottom: 20px; }
         .header h1 { font-size: clamp(28px, 5vw, 42px); margin: 0; background: linear-gradient(135deg, #ffffff, var(--blue-glow)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; letter-spacing: 1px; text-shadow: 0 0 20px rgba(0, 210, 255, 0.3);}
@@ -53,7 +52,6 @@
         .expiry-badge { text-align: center; margin-top: -10px; margin-bottom: 25px; font-size: 13px; color: var(--text-muted); font-weight: bold; letter-spacing: 1px;}
         .expiry-badge span { color: var(--gold); border: 1px solid rgba(243, 186, 47, 0.3); padding: 4px 10px; border-radius: 6px; background: rgba(243, 186, 47, 0.1); font-family: monospace; box-shadow: 0 0 10px rgba(243, 186, 47, 0.1);}
 
-        /* Stats Panels */
         .section-title { font-size: 12px; color: var(--text-muted); text-align: center; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 2px; font-weight: 800;}
         .stats-panel { background: rgba(6, 13, 23, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 35px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .stat-item { text-align: center; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.04); display: flex; flex-direction: column; justify-content: center; transition: transform 0.3s, background 0.3s;}
@@ -61,7 +59,6 @@
         .stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; font-weight: 700; letter-spacing: 0.5px;}
         .stat-value { font-size: 26px; font-weight: 900; color: #fff; font-family: 'Segoe UI', monospace; text-shadow: 0 2px 5px rgba(0,0,0,0.5);}
 
-        /* Gauge Meter */
         .gauge-section { text-align: center; margin: 40px 0; }
         @keyframes pulseGlow { 0% { text-shadow: 0 0 5px var(--gold); } 50% { text-shadow: 0 0 20px var(--gold); } 100% { text-shadow: 0 0 5px var(--gold); } }
         .scanning-coin { font-size: 15px; color: var(--gold); font-weight: bold; min-height: 40px; letter-spacing: 1px; text-transform: uppercase; animation: pulseGlow 2s infinite;}
@@ -71,7 +68,6 @@
         .gauge-fill { width: 200px; height: 200px; border-radius: 50%; border: 10px solid var(--blue-glow); position: absolute; top: 0; left: 20px; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); transform: rotate(-180deg); transform-origin: center center; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .gauge-percentage { position: absolute; bottom: -5px; left: 0; right: 0; font-size: 34px; font-weight: 900; color: #fff; text-shadow: 0 0 15px var(--blue-glow); font-family: monospace; transition: color 0.3s, text-shadow 0.3s;}
 
-        /* Cards Grid */
         .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 20px; box-sizing: border-box; width: 100%; align-items: stretch;}
         .card { background: linear-gradient(180deg, rgba(12,24,43,0.8) 0%, rgba(8,16,26,0.95) 100%); backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.1); border-left: 1px solid rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(0,0,0,0.5); border-radius: 16px; padding: 22px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.3s ease;}
         .card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0, 210, 255, 0.15); border-top: 1px solid rgba(0, 210, 255, 0.3);}
@@ -96,7 +92,6 @@
         .more-btn { flex: 1; background: linear-gradient(135deg, #1a2f4c, #112035); border: 1px solid rgba(243, 186, 47, 0.4); color: var(--gold); padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; transition: background 0.2s, box-shadow 0.2s;}
         .more-btn:hover { background: rgba(243, 186, 47, 0.1); box-shadow: 0 0 10px rgba(243, 186, 47, 0.2);}
 
-        /* Modal Box */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 10100; padding: 15px; box-sizing: border-box;}
         .modal-content { background: rgba(10, 20, 35, 0.95); border: 1px solid var(--gold); padding: 30px; border-radius: 20px; max-width: 550px; width: 100%; position: relative; max-height: 85vh; overflow-y: auto; box-sizing: border-box; box-shadow: 0 20px 50px rgba(0,0,0,0.8);}
         .close-modal { position: absolute; top: 12px; right: 20px; font-size: 32px; cursor: pointer; color: var(--text-muted); transition: color 0.2s;}
@@ -119,7 +114,7 @@
 
 <div class="login-box" id="login-container">
     <h2 style="margin-top: 0; color: #fff; font-weight: 900;">AlphaSigna AI</h2>
-    <p style="font-size: 11px; color:var(--text-muted); margin-top:-10px; letter-spacing: 2px;">V6 ULTIMATE QUANTUM TERMINAL</p>
+    <p style="font-size: 11px; color:var(--text-muted); margin-top:-10px; letter-spacing: 2px;">V7 HYBRID SCALPER & SWING ENGINE</p>
     <div class="input-group" style="margin-top: 30px;">
         <label>Terminal Key</label>
         <input type="password" id="access-key" placeholder="••••••••••••">
@@ -131,7 +126,7 @@
 <div class="container" id="main-app">
     <div class="header">
         <h1>AlphaSigna AI</h1>
-        <p>INSTITUTIONAL ORDERFLOW INTELLIGENCE</p>
+        <p>HYBRID INSTI-FLOW LOGIC ARCHITECTURE</p>
     </div>
     
     <div class="expiry-badge">
@@ -153,7 +148,7 @@
     </div>
     
     <div class="gauge-section">
-        <div class="scanning-coin" id="scan-coin-name">READY TO DECODE HUB DATA</div>
+        <div class="scanning-coin" id="scan-coin-name">READY TO DECODE HYBRID CHANNELS</div>
         <div class="meter-container">
             <div class="gauge-bg"></div>
             <div class="gauge-fill" id="gauge-pointer"></div>
@@ -181,12 +176,9 @@
 </div>
 
 <script>
-    // 🔥 Firebase Database URL
     const FIREBASE_URL = "https://alphasigna-live-d644a-default-rtdb.firebaseio.com";
-    
     let cryptoDataPool = [];
     let currentProgress = 0, scanAnimationLoop;
-    
     let loggedInKey = "";
     let pTrades = 0, pTp = 0, pSl = 0; 
     let gTrades = 0, gTp = 0, gSl = 0; 
@@ -211,9 +203,7 @@
             if(userData.expire_date) {
                 const today = new Date();
                 const expiryDate = new Date(userData.expire_date);
-                today.setHours(0,0,0,0);
-                expiryDate.setHours(0,0,0,0);
-                
+                today.setHours(0,0,0,0); expiryDate.setHours(0,0,0,0);
                 if(today > expiryDate) {
                     document.getElementById('error-msg').innerText = `❌ TERMINAL KEY EXPIRED ON (${userData.expire_date}).`;
                     return;
@@ -223,65 +213,46 @@
             loggedInKey = key;
             document.getElementById('login-container').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
-            
             document.getElementById('key-expiry').innerText = userData.expire_date || "LIFETIME VALIDITY";
             
-            let statsObj = userData.stats;
-            if (typeof statsObj !== 'object' || statsObj === null) {
-                statsObj = { trades: 0, tp: 0, sl: 0 };
-            }
-            pTrades = statsObj.trades || 0;
-            pTp = statsObj.tp || 0;
-            pSl = statsObj.sl || 0;
+            let statsObj = userData.stats || { trades: 0, tp: 0, sl: 0 };
+            pTrades = statsObj.trades || 0; pTp = statsObj.tp || 0; pSl = statsObj.sl || 0;
 
             fetch(`${FIREBASE_URL}/global_stats.json`).then(res => res.json()).then(gData => {
                 if(gData) {
-                    gTrades = gData.total_trades || 0;
-                    gTp = gData.total_tp || 0;
-                    gSl = gData.total_sl || 0;
+                    gTrades = gData.total_trades || 0; gTp = gData.total_tp || 0; gSl = gData.total_sl || 0;
                 }
                 refreshDashboardUI();
             });
-
         }).catch(() => { document.getElementById('error-msg').innerText = "⚠️ Server Gateway Error."; });
     }
 
-    // 🔥 V6.0 - Advanced Scanning UI Logic with Dynamic Card Fetch
     function triggerPremiumScanUI() {
         document.getElementById('start-scan-btn').style.display = 'none';
         document.getElementById('rescan-btn-id').style.display = 'none';
         document.getElementById('cards-container').innerHTML = '';
         cryptoDataPool = []; currentProgress = 0;
 
-        // 1. Check Fundamental News Shield Status
         fetch(`${FIREBASE_URL}/system_status.json`).then(res => res.json()).then(statusData => {
-            
             if (statusData && statusData.is_paused === true) {
                 if(scanAnimationLoop) clearInterval(scanAnimationLoop);
                 document.getElementById('gauge-text').innerText = "PAUSED";
                 document.getElementById('gauge-text').style.color = "var(--red)";
                 document.getElementById('gauge-text').style.textShadow = "0 0 15px var(--red)";
-                
                 document.getElementById('scan-coin-name').innerHTML = `
-                    <span style="color: var(--red); font-size: 15px; font-weight: 900; animation: none; line-height: 1.4; display: inline-block;">
-                        ${statusData.message}
-                    </span><br>
-                    <span style="color: #8492a6; font-size: 12px; margin-top:8px; display:inline-block; font-weight: bold;">
-                        Waiting for safe market conditions (30 Mins)...
-                    </span>
+                    <span style="color: var(--red); font-size: 15px; font-weight: 900;">${statusData.message}</span><br>
+                    <span style="color: #8492a6; font-size: 12px; margin-top:8px; display:inline-block; font-weight: bold;">Waiting for safe market conditions...</span>
                 `;
-                
                 document.getElementById('rescan-btn-id').style.display = 'block';
                 return;
             }
 
-            // 2. Normal Scanning Flow
             document.getElementById('gauge-text').style.color = "#fff";
             document.getElementById('gauge-text').style.textShadow = "0 0 15px var(--blue-glow)";
             
             fetch(`${FIREBASE_URL}/live_signals.json`).then(res => res.json()).then(data => {
                 if (!data) {
-                    document.getElementById('scan-coin-name').innerText = "⚠️ WAITING FOR INSTITUTIONAL SETUPS...";
+                    document.getElementById('scan-coin-name').innerText = "⚠️ WAITING FOR INSTI-HYBRID SETUPS...";
                     document.getElementById('rescan-btn-id').style.display = 'block';
                     return;
                 }
@@ -297,34 +268,32 @@
                     document.getElementById('gauge-pointer').style.transform = `rotate(${-180 + (currentProgress * 1.8)}deg)`;
 
                     if (currentProgress < 20) { 
-                        document.getElementById('scan-coin-name').innerText = "🧠 INTERROGATING MULTI-TIMEFRAME DATA..."; 
+                        document.getElementById('scan-coin-name').innerText = "🧠 ACTIVATING HYBRID SWING & SCALPER CORES..."; 
                     }
-                    // 🔥 Fixed Dynamic Card Loader Logic
                     else if (currentProgress > 20 && renderedCount < rawCoins.length) {
                         let targetCount = Math.floor((currentProgress - 20) / (80 / rawCoins.length));
                         while (renderedCount < targetCount && renderedCount < rawCoins.length) {
-                            renderSingleCard(rawCoins[renderedCount]);
-                            renderedCount++;
+                            renderSingleCard(rawCoins[renderedCount]); renderedCount++;
                         }
                     }
 
                     if (currentProgress >= 100) {
                         clearInterval(scanAnimationLoop);
                         while (renderedCount < rawCoins.length) {
-                            renderSingleCard(rawCoins[renderedCount]);
-                            renderedCount++;
+                            renderSingleCard(rawCoins[renderedCount]); renderedCount++;
                         }
-                        document.getElementById('scan-coin-name').innerText = "🎯 HIGH-PROFIT TARGET SIGNALS SECURED";
+                        document.getElementById('scan-coin-name').innerText = "🎯 HYBRID TARGET SIGNALS DECODED";
                         document.getElementById('rescan-btn-id').style.display = 'block';
                     }
                 }, 100); 
-            }).catch(err => {
-                document.getElementById('scan-coin-name').innerText = "⚠️ DATA STREAM DISCONNECTED.";
+            }).catch(() => {
+                document.getElementById('scan-coin-name').innerText = "⚠️ SYSTEM DISCONNECTED.";
                 document.getElementById('rescan-btn-id').style.display = 'block';
             });
         });
     }
 
+    // 🔥 UI Render with Live Trade Type Mode Badge
     function renderSingleCard(coin) {
         cryptoDataPool.push(coin);
         const idx = cryptoDataPool.length - 1;
@@ -334,6 +303,9 @@
         const badgeClass = isLong ? "badge buy" : "badge sell";
         const badgeText = isLong ? "BUY / LONG 📈" : "SELL / SHORT 📉";
         const btnClass = isLong ? "trade-btn" : "trade-btn short";
+        
+        // Dynamic color for Trade Type Mode
+        const modeColor = coin.mode.includes("SCALPING") ? "var(--blue-glow)" : "var(--gold)";
 
         document.getElementById('cards-container').innerHTML += `
             <div class="card">
@@ -341,6 +313,7 @@
                     <span class="coin-title" style="color:var(--gold)">${coin.pair}</span>
                     <span class="${badgeClass}">${badgeText}</span>
                 </div>
+                <div class="price-row"><span class="label">Trade Type:</span><span class="val" style="color:${modeColor}; font-weight:900;">${coin.mode}</span></div>
                 <div class="price-row"><span class="label">Live Entry Price:</span><span class="val" style="color:var(--blue-glow)">$${coin.entry}</span></div>
                 <div class="price-row"><span class="label">Futures Target:</span><span class="val" style="color:var(--green)">$${coin.tp1} <br><span style="font-size:11px;">(+${coin.pnl}%)</span></span></div>
                 <div class="price-row"><span class="label">Safe Stop Loss:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
@@ -354,13 +327,9 @@
 
     function engageUserLocalTrade(cardIdx, cleanSymbol, tpTarget, slTarget, side) {
         const btn = document.getElementById(`t-btn-${cardIdx}`);
-        btn.disabled = true; 
-        btn.innerText = `⏳ Tracking...`; 
-        
-        pTrades += 1;
-        gTrades += 1;
-        syncDataToFirebase();
-        refreshDashboardUI();
+        btn.disabled = true; btn.innerText = `⏳ Tracking...`; 
+        pTrades += 1; gTrades += 1;
+        syncDataToFirebase(); refreshDashboardUI();
 
         let orderTracker = setInterval(() => {
             fetch(`https://fapi.binance.com/fapi/v1/ticker/price?symbol=${cleanSymbol}USDT`).then(res => res.json()).then(ticker => {
@@ -376,17 +345,13 @@
                 }
 
                 if (win) {
-                    clearInterval(orderTracker); 
-                    pTp += 1; gTp += 1;
+                    clearInterval(orderTracker); pTp += 1; gTp += 1;
                     btn.innerText = "🎯 TP HIT!"; btn.style.background = "rgba(0,255,136,0.15)"; btn.style.color = "var(--green)"; 
-                    syncDataToFirebase();
-                    refreshDashboardUI();
+                    syncDataToFirebase(); refreshDashboardUI();
                 } else if (loss) {
-                    clearInterval(orderTracker); 
-                    pSl += 1; gSl += 1;
+                    clearInterval(orderTracker); pSl += 1; gSl += 1;
                     btn.innerText = "🛑 SL HIT"; btn.style.background = "rgba(255,77,77,0.15)"; btn.style.color = "var(--red)"; 
-                    syncDataToFirebase();
-                    refreshDashboardUI();
+                    syncDataToFirebase(); refreshDashboardUI();
                 }
             }).catch(() => {});
         }, 3000);
@@ -394,14 +359,11 @@
 
     function syncDataToFirebase() {
         fetch(`${FIREBASE_URL}/premium_keys/${loggedInKey}/stats.json`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
+            method: 'PATCH', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ trades: pTrades, tp: pTp, sl: pSl })
         });
-        
         fetch(`${FIREBASE_URL}/global_stats.json`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
+            method: 'PATCH', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ total_trades: gTrades, total_tp: gTp, total_sl: gSl })
         });
     }
@@ -410,21 +372,17 @@
         document.getElementById('stat-total').innerText = pTrades;
         document.getElementById('stat-tp').innerText = pTp;
         document.getElementById('stat-sl').innerText = pSl;
-        
         let pCompleted = pTp + pSl;
-        let pWinrate = pCompleted > 0 ? ((pTp / pCompleted) * 100).toFixed(1) + "%" : "0.0%";
-        document.getElementById('stat-winrate').innerText = pWinrate;
+        document.getElementById('stat-winrate').innerText = pCompleted > 0 ? ((pTp / pCompleted) * 100).toFixed(1) + "%" : "0.0%";
 
         document.getElementById('global-signals').innerText = gTrades;
-        
         let gCompleted = gTp + gSl;
-        let gWinrate = gCompleted > 0 ? ((gTp / gCompleted) * 100).toFixed(1) + "%" : "0.0%";
-        document.getElementById('global-winrate').innerText = gWinrate;
+        document.getElementById('global-winrate').innerText = gCompleted > 0 ? ((gTp / gCompleted) * 100).toFixed(1) + "%" : "0.0%";
     }
 
     function openModal(index) {
         const data = cryptoDataPool[index];
-        document.getElementById('modal-coin').innerText = data.pair + " INTERACTIVE DATA STREAM";
+        document.getElementById('modal-coin').innerText = data.pair + " INTERACTIVE LOGIC PIPELINE";
         document.getElementById('modal-logic').innerText = data.tech_logic;
         document.getElementById('modal-news').innerText = data.fund_logic;
         document.getElementById('modal-risk').innerText = data.risk_logic;
