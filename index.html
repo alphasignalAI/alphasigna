@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna AI - V7 Hybrid Terminal</title>
+    <title>AlphaSigna AI - V8 Quantum Terminal</title>
     <style>
         :root {
             --bg-color: #03070d; 
@@ -13,7 +13,6 @@
             --green: #00ff88; 
             --red: #ff4d4d; 
             --text-muted: #8492a6;
-            --purple: #a349a4;
         }
         body { 
             margin: 0; padding: 20px 15px; 
@@ -65,8 +64,8 @@
         
         .meter-container { position: relative; width: 240px; height: 120px; margin: 20px auto; overflow: hidden; filter: drop-shadow(0 0 15px rgba(0, 210, 255, 0.3)); }
         .gauge-bg { width: 200px; height: 200px; border-radius: 50%; border: 10px solid #111d2e; position: absolute; top: 0; left: 20px; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); }
-        .gauge-fill { width: 200px; height: 200px; border-radius: 50%; border: 10px solid var(--blue-glow); position: absolute; top: 0; left: 20px; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); transform: rotate(-180deg); transform-origin: center center; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .gauge-percentage { position: absolute; bottom: -5px; left: 0; right: 0; font-size: 34px; font-weight: 900; color: #fff; text-shadow: 0 0 15px var(--blue-glow); font-family: monospace; transition: color 0.3s, text-shadow 0.3s;}
+        .gauge-fill { width: 200px; height: 200px; border-radius: 50%; border: 10px solid var(--blue-glow); position: absolute; top: 0; left: 20px; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); transform: rotate(-180deg); transform-origin: center center; transition: transform 0.2s linear; }
+        .gauge-percentage { position: absolute; bottom: -5px; left: 0; right: 0; font-size: 34px; font-weight: 900; color: #fff; text-shadow: 0 0 15px var(--blue-glow); font-family: monospace;}
 
         .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 20px; box-sizing: border-box; width: 100%; align-items: stretch;}
         .card { background: linear-gradient(180deg, rgba(12,24,43,0.8) 0%, rgba(8,16,26,0.95) 100%); backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.1); border-left: 1px solid rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(0,0,0,0.5); border-radius: 16px; padding: 22px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.3s ease;}
@@ -114,7 +113,7 @@
 
 <div class="login-box" id="login-container">
     <h2 style="margin-top: 0; color: #fff; font-weight: 900;">AlphaSigna AI</h2>
-    <p style="font-size: 11px; color:var(--text-muted); margin-top:-10px; letter-spacing: 2px;">V7 HYBRID SCALPER & SWING ENGINE</p>
+    <p style="font-size: 11px; color:var(--text-muted); margin-top:-10px; letter-spacing: 2px;">V8 HIGH-PROFIT QUANTUM TERMINAL</p>
     <div class="input-group" style="margin-top: 30px;">
         <label>Terminal Key</label>
         <input type="password" id="access-key" placeholder="••••••••••••">
@@ -126,7 +125,7 @@
 <div class="container" id="main-app">
     <div class="header">
         <h1>AlphaSigna AI</h1>
-        <p>HYBRID INSTI-FLOW LOGIC ARCHITECTURE</p>
+        <p>HIGH-REWARD SMC ALGO FLOW</p>
     </div>
     
     <div class="expiry-badge">
@@ -148,7 +147,7 @@
     </div>
     
     <div class="gauge-section">
-        <div class="scanning-coin" id="scan-coin-name">READY TO DECODE HYBRID CHANNELS</div>
+        <div class="scanning-coin" id="scan-coin-name">READY TO DECODE EXCLUSIVE MATRIX</div>
         <div class="meter-container">
             <div class="gauge-bg"></div>
             <div class="gauge-fill" id="gauge-pointer"></div>
@@ -168,8 +167,6 @@
         <hr style="border-color: rgba(255,255,255,0.1); margin-bottom: 20px;">
         <h3 style="color: var(--blue-glow); font-size: 14px; margin-bottom:8px;">🧠 Technical AI Logic / තාක්ෂණික විස්තරය</h3>
         <p id="modal-logic" style="white-space: pre-line; font-size: 13px; color: #e0e6ed; line-height:1.6; margin-top:0;"></p>
-        <h3 style="color: var(--green); font-size: 14px; margin-bottom:8px; margin-top:20px;">📰 Live Fundamental News / සජීවී පුවත්</h3>
-        <p id="modal-news" style="white-space: pre-line; font-size: 13px; color: #e0e6ed; line-height:1.6; margin-top:0;"></p>
         <h3 style="color: var(--red); font-size: 14px; margin-bottom:8px; margin-top:20px;">⚖️ Smart Risk Architecture / අවදානම් කළමනාකරණය</h3>
         <p id="modal-risk" style="white-space: pre-line; font-size: 13px; color: #ff9999; font-weight: bold; line-height:1.6; margin-top:0;"></p>
     </div>
@@ -177,6 +174,7 @@
 
 <script>
     const FIREBASE_URL = "https://alphasigna-live-d644a-default-rtdb.firebaseio.com";
+    
     let cryptoDataPool = [];
     let currentProgress = 0, scanAnimationLoop;
     let loggedInKey = "";
@@ -227,6 +225,7 @@
         }).catch(() => { document.getElementById('error-msg').innerText = "⚠️ Server Gateway Error."; });
     }
 
+    // 🔥 Ultra Fast Data Render UI Logic
     function triggerPremiumScanUI() {
         document.getElementById('start-scan-btn').style.display = 'none';
         document.getElementById('rescan-btn-id').style.display = 'none';
@@ -241,7 +240,7 @@
                 document.getElementById('gauge-text').style.textShadow = "0 0 15px var(--red)";
                 document.getElementById('scan-coin-name').innerHTML = `
                     <span style="color: var(--red); font-size: 15px; font-weight: 900;">${statusData.message}</span><br>
-                    <span style="color: #8492a6; font-size: 12px; margin-top:8px; display:inline-block; font-weight: bold;">Waiting for safe market conditions...</span>
+                    <span style="color: #8492a6; font-size: 12px; margin-top:8px; display:inline-block; font-weight: bold;">Waiting for safe market window...</span>
                 `;
                 document.getElementById('rescan-btn-id').style.display = 'block';
                 return;
@@ -252,7 +251,7 @@
             
             fetch(`${FIREBASE_URL}/live_signals.json`).then(res => res.json()).then(data => {
                 if (!data) {
-                    document.getElementById('scan-coin-name').innerText = "⚠️ WAITING FOR INSTI-HYBRID SETUPS...";
+                    document.getElementById('scan-coin-name').innerText = "⏳ SCANNING... NO HIGH-PROFIT (>20%) SETUPS FOUND YET.";
                     document.getElementById('rescan-btn-id').style.display = 'block';
                     return;
                 }
@@ -260,15 +259,16 @@
                 const rawCoins = Object.values(data);
                 let renderedCount = 0;
                 
+                // Interval reduced to 60ms for ultra fast response animation
                 scanAnimationLoop = setInterval(() => {
-                    currentProgress += 2;
+                    currentProgress += 4; 
                     if(currentProgress > 100) currentProgress = 100;
                     
                     document.getElementById('gauge-text').innerText = currentProgress + "%";
                     document.getElementById('gauge-pointer').style.transform = `rotate(${-180 + (currentProgress * 1.8)}deg)`;
 
                     if (currentProgress < 20) { 
-                        document.getElementById('scan-coin-name').innerText = "🧠 ACTIVATING HYBRID SWING & SCALPER CORES..."; 
+                        document.getElementById('scan-coin-name').innerText = "🛰️ DECODING MULTI-TIMEFRAME ORDERFLOW..."; 
                     }
                     else if (currentProgress > 20 && renderedCount < rawCoins.length) {
                         let targetCount = Math.floor((currentProgress - 20) / (80 / rawCoins.length));
@@ -282,18 +282,17 @@
                         while (renderedCount < rawCoins.length) {
                             renderSingleCard(rawCoins[renderedCount]); renderedCount++;
                         }
-                        document.getElementById('scan-coin-name').innerText = "🎯 HYBRID TARGET SIGNALS DECODED";
+                        document.getElementById('scan-coin-name').innerText = "🎯 HIGH-PROFIT TARGET SIGNALS SECURED";
                         document.getElementById('rescan-btn-id').style.display = 'block';
                     }
-                }, 100); 
+                }, 60); 
             }).catch(() => {
-                document.getElementById('scan-coin-name').innerText = "⚠️ SYSTEM DISCONNECTED.";
+                document.getElementById('scan-coin-name').innerText = "⚠️ GATEWAY DISCONNECTED.";
                 document.getElementById('rescan-btn-id').style.display = 'block';
             });
         });
     }
 
-    // 🔥 UI Render with Live Trade Type Mode Badge
     function renderSingleCard(coin) {
         cryptoDataPool.push(coin);
         const idx = cryptoDataPool.length - 1;
@@ -303,9 +302,6 @@
         const badgeClass = isLong ? "badge buy" : "badge sell";
         const badgeText = isLong ? "BUY / LONG 📈" : "SELL / SHORT 📉";
         const btnClass = isLong ? "trade-btn" : "trade-btn short";
-        
-        // Dynamic color for Trade Type Mode
-        const modeColor = coin.mode.includes("SCALPING") ? "var(--blue-glow)" : "var(--gold)";
 
         document.getElementById('cards-container').innerHTML += `
             <div class="card">
@@ -313,9 +309,8 @@
                     <span class="coin-title" style="color:var(--gold)">${coin.pair}</span>
                     <span class="${badgeClass}">${badgeText}</span>
                 </div>
-                <div class="price-row"><span class="label">Trade Type:</span><span class="val" style="color:${modeColor}; font-weight:900;">${coin.mode}</span></div>
                 <div class="price-row"><span class="label">Live Entry Price:</span><span class="val" style="color:var(--blue-glow)">$${coin.entry}</span></div>
-                <div class="price-row"><span class="label">Futures Target:</span><span class="val" style="color:var(--green)">$${coin.tp1} <br><span style="font-size:11px;">(+${coin.pnl}%)</span></span></div>
+                <div class="price-row"><span class="label">Futures Target:</span><span class="val" style="color:var(--green)">$${coin.tp1} <br><span style="font-size:11px; font-weight:bold;">(+${coin.pnl}%)</span></span></div>
                 <div class="price-row"><span class="label">Safe Stop Loss:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
                 <div class="price-row"><span class="label">SMC Reliability Matrix:</span><span class="val" style="color:var(--gold)">${coin.accuracy}%</span></div>
                 <div class="action-container">
@@ -382,9 +377,8 @@
 
     function openModal(index) {
         const data = cryptoDataPool[index];
-        document.getElementById('modal-coin').innerText = data.pair + " INTERACTIVE LOGIC PIPELINE";
+        document.getElementById('modal-coin').innerText = data.pair + " DETAILED DECODE ANALYSIS";
         document.getElementById('modal-logic').innerText = data.tech_logic;
-        document.getElementById('modal-news').innerText = data.fund_logic;
         document.getElementById('modal-risk').innerText = data.risk_logic;
         document.getElementById('info-modal').style.display = 'flex';
     }
