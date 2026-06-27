@@ -22,11 +22,13 @@
         .input-group input { width: 100%; background: #02050a; border: 1px solid rgba(0, 210, 255, 0.3); padding: 14px; border-radius: 8px; color: white; text-align: center; letter-spacing: 3px; box-sizing: border-box; font-size: 16px;}
         
         .container { max-width: 1100px; width: 100%; display: none; padding-bottom: 80px; box-sizing: border-box;}
-        .header { text-align: center; margin-bottom: 30px; }
+        .header { text-align: center; margin-bottom: 20px; }
         .header h1 { font-size: 38px; margin: 0; background: linear-gradient(135deg, #ffffff, var(--blue-glow)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; letter-spacing: 1px;}
         .header p { color: var(--blue-glow); font-size: 12px; letter-spacing: 2px; margin-top: 5px; font-weight: bold;}
         
-        /* 🔥 Stats Panels - UI FIX */
+        .expiry-badge { text-align: center; margin-top: -10px; margin-bottom: 25px; font-size: 13px; color: var(--text-muted); font-weight: bold; }
+        .expiry-badge span { color: var(--gold); border: 1px solid rgba(243, 186, 47, 0.2); padding: 4px 10px; border-radius: 6px; background: rgba(243, 186, 47, 0.05); font-family: monospace;}
+
         .section-title { font-size: 12px; color: var(--text-muted); text-align: center; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 800;}
         .stats-panel { background: #060d17; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 35px; box-shadow: 0 8px 25px rgba(0,0,0,0.5); }
         .stat-item { text-align: center; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.03); display: flex; flex-direction: column; justify-content: center; }
@@ -40,7 +42,6 @@
         .gauge-fill { position: absolute; top: 0; left: 20px; width: 180px; height: 180px; border-radius: 50%; border: 14px solid var(--blue-glow); clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); transform: rotate(-180deg); transform-origin: center center; transition: transform 0.2s ease; }
         .gauge-percentage { position: absolute; bottom: 0px; left: 0; right: 0; font-size: 30px; font-weight: 900; }
 
-        /* 🔥 Card Grid FIX - Overlap වීම වළක්වා ඇත */
         .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; box-sizing: border-box; width: 100%; align-items: stretch;}
         .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.4); box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;}
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px;}
@@ -64,7 +65,6 @@
         .modal-content { background: #0d1b2e; border: 1px solid var(--gold); padding: 25px; border-radius: 16px; max-width: 500px; width: 100%; position: relative; max-height: 85vh; overflow-y: auto; box-sizing: border-box;}
         .close-modal { position: absolute; top: 10px; right: 15px; font-size: 28px; cursor: pointer; color: var(--text-muted); }
         
-        /* Responsive Grid Fixes */
         @media (min-width: 768px) {
             #personal-stats-panel { grid-template-columns: repeat(4, 1fr); gap: 15px; }
         }
@@ -76,7 +76,6 @@
     <div class="warning-content">
         <h2 style="color:var(--red); margin-top: 0;">⚠️ PROTECTION INTERFACE</h2>
         <p style="color:#e0e6ed; font-size: 14px; margin-bottom: 5px;">Private Property of Pehelitha Ekanayaka. Copying or extraction is completely prohibited.</p>
-        <p style="color:var(--text-muted); font-size: 13px; font-style: italic; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 10px;">මෙය පෞද්ගලික දේපළකි. මෙහි දත්ත පිටපත් කිරීම සපුරා තහනම් වේ.</p>
         <button class="agree-btn" onclick="triggerPremiumLockScreen()">I AGREE / එකඟයි</button>
     </div>
 </div>
@@ -93,6 +92,10 @@
     <div class="header">
         <h1>AlphaSigna AI</h1>
         <p>INSTITUTIONAL ORDERFLOW INTELLIGENCE</p>
+    </div>
+    
+    <div class="expiry-badge">
+        TERMINAL KEY EXPIRES ON: <span id="key-expiry">YYYY-MM-DD</span>
     </div>
     
     <div class="section-title">🌐 GLOBAL TOOL PERFORMANCE</div>
@@ -126,10 +129,8 @@
         <hr style="border-color: rgba(255,255,255,0.05); margin-bottom: 15px;">
         <h3 style="color: var(--blue-glow); font-size: 14px; margin-bottom:5px;">🧠 Technical AI Logic / තාක්ෂණික විස්තරය</h3>
         <p id="modal-logic" style="white-space: pre-line; font-size: 12.5px; color: #e0e6ed; line-height:1.5; margin-top:0;"></p>
-        
         <h3 style="color: var(--green); font-size: 14px; margin-bottom:5px; margin-top:15px;">📰 Live Fundamental News / සජීවී පුවත්</h3>
         <p id="modal-news" style="white-space: pre-line; font-size: 12.5px; color: #e0e6ed; line-height:1.5; margin-top:0;"></p>
-        
         <h3 style="color: var(--red); font-size: 14px; margin-bottom:5px; margin-top:15px;">⚖️ Smart Risk Architecture / අවදානම් කළමනාකරණය</h3>
         <p id="modal-risk" style="white-space: pre-line; font-size: 12.5px; color: #ff9999; font-weight: bold; line-height:1.5; margin-top:0;"></p>
     </div>
@@ -140,13 +141,11 @@
     let cryptoDataPool = [];
     let currentProgress = 0, scanAnimationLoop;
     
-    // 🔥 Clean Slate - සෑම විටම 0 න් ආරම්භ වේ. LocalStorage ඉවත් කර ඇත.
-    let localTotal = 0, localTp = 0, localSl = 0;
-    let globalSignalsGenerated = 0;
+    let loggedInKey = "";
+    let pTrades = 0, pTp = 0, pSl = 0; 
+    let gTrades = 0, gTp = 0, gSl = 0; 
 
-    window.onload = function() { 
-        document.getElementById('warning-modal').style.display = 'flex'; 
-    };
+    window.onload = function() { document.getElementById('warning-modal').style.display = 'flex'; };
 
     function triggerPremiumLockScreen() {
         document.getElementById('warning-modal').style.display = 'none';
@@ -155,17 +154,48 @@
 
     function validateLogin() {
         const key = document.getElementById('access-key').value.trim();
+        if(!key) return;
+
         fetch(`${FIREBASE_URL}/premium_keys/${key}.json`).then(res => res.json()).then(userData => {
             if (!userData || userData.status !== "active") { 
                 document.getElementById('error-msg').innerText = "❌ INVALID PRESET TERMINAL KEY."; 
                 return; 
             }
+            
+            // 🔥 [DATE VALIDATION LOGIC] කල් ඉකුත් වීමේ දිනය පරික්ෂා කිරීම
+            if(userData.expire_date) {
+                const today = new Date();
+                const expiryDate = new Date(userData.expire_date);
+                
+                // වේලාවන් බිංදු කර දින පමණක් සංසන්දනය කිරීම
+                today.setHours(0,0,0,0);
+                expiryDate.setHours(0,0,0,0);
+                
+                if(today > expiryDate) {
+                    document.getElementById('error-msg').innerText = `❌ TERMINAL KEY EXPIRED ON (${userData.expire_date}).`;
+                    return;
+                }
+            }
+
+            loggedInKey = key;
             document.getElementById('login-container').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
             
-            // 🔥 Reset Data on Login (නැවත 0 කිරීම)
-            localTotal = 0; localTp = 0; localSl = 0; globalSignalsGenerated = 0;
-            refreshDashboardUI();
+            // Expiry Date එක UI එකට ඇතුළත් කිරීම
+            document.getElementById('key-expiry').innerText = userData.expire_date || "LIFETIME VALIDITY";
+            
+            pTrades = userData.stats?.trades || 0;
+            pTp = userData.stats?.tp || 0;
+            pSl = userData.stats?.sl || 0;
+
+            fetch(`${FIREBASE_URL}/global_stats.json`).then(res => res.json()).then(gData => {
+                if(gData) {
+                    gTrades = gData.total_trades || 0;
+                    gTp = gData.total_tp || 0;
+                    gSl = gData.total_sl || 0;
+                }
+                refreshDashboardUI();
+            });
 
         }).catch(() => { document.getElementById('error-msg').innerText = "⚠️ Server Gateway Error."; });
     }
@@ -183,10 +213,6 @@
                 return;
             }
             const rawCoins = Object.values(data);
-            
-            // Scan කරන සෑම වාරයකදීම Global Signals ගණන වැඩි වේ
-            globalSignalsGenerated += rawCoins.length;
-            refreshDashboardUI();
             
             scanAnimationLoop = setInterval(() => {
                 currentProgress += 2;
@@ -228,19 +254,21 @@
                 <div class="price-row"><span class="label">Futures Risk SL:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
                 <div class="price-row"><span class="label">SMC Reliability Matrix:</span><span class="val" style="color:var(--gold)">${coin.accuracy}%</span></div>
                 <div class="action-container">
-                    <button class="${btnClass}" id="t-btn-${idx}" onclick="engageUserLocalTrade(${idx}, '${cleanSymbol}', ${coin.tp1}, ${coin.sl}, '${coin.side}', '${coin.est_time}')">🚀 Take Trade</button>
+                    <button class="${btnClass}" id="t-btn-${idx}" onclick="engageUserLocalTrade(${idx}, '${cleanSymbol}', ${coin.tp1}, ${coin.sl}, '${coin.side}')">🚀 Take Trade</button>
                     <button class="more-btn" onclick="openModal(${idx})">Logic / විස්තර</button>
                 </div>
             </div>`;
     }
 
-    function engageUserLocalTrade(cardIdx, cleanSymbol, tpTarget, slTarget, side, estTime) {
+    function engageUserLocalTrade(cardIdx, cleanSymbol, tpTarget, slTarget, side) {
         const btn = document.getElementById(`t-btn-${cardIdx}`);
         btn.disabled = true; 
         btn.innerText = `⏳ Tracking...`; 
         btn.style.background = "#16263d";
         
-        localTotal += 1; // Trade එකක් දැමූ විට Total ගණන 1කින් වැඩිවේ
+        pTrades += 1;
+        gTrades += 1;
+        syncDataToFirebase();
         refreshDashboardUI();
 
         let orderTracker = setInterval(() => {
@@ -257,34 +285,50 @@
                 }
 
                 if (win) {
-                    clearInterval(orderTracker); localTp += 1; 
+                    clearInterval(orderTracker); 
+                    pTp += 1; gTp += 1;
                     btn.innerText = "🎯 TP HIT!"; btn.style.background = "rgba(0,255,136,0.15)"; btn.style.color = "var(--green)"; 
+                    syncDataToFirebase();
                     refreshDashboardUI();
                 } else if (loss) {
-                    clearInterval(orderTracker); localSl += 1; 
+                    clearInterval(orderTracker); 
+                    pSl += 1; gSl += 1;
                     btn.innerText = "🛑 SL HIT"; btn.style.background = "rgba(255,77,77,0.15)"; btn.style.color = "var(--red)"; 
+                    syncDataToFirebase();
                     refreshDashboardUI();
                 }
             }).catch(() => {});
         }, 3000);
     }
 
-    function refreshDashboardUI() {
-        document.getElementById('stat-total').innerText = localTotal;
-        document.getElementById('stat-tp').innerText = localTp;
-        document.getElementById('stat-sl').innerText = localSl;
-        document.getElementById('global-signals').innerText = globalSignalsGenerated;
+    function syncDataToFirebase() {
+        fetch(`${FIREBASE_URL}/premium_keys/${loggedInKey}/stats.json`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ trades: pTrades, tp: pTp, sl: pSl })
+        });
+        
+        fetch(`${FIREBASE_URL}/global_stats.json`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ total_trades: gTrades, total_tp: gTp, total_sl: gSl })
+        });
+    }
 
-        // 🔥 නිවැරදිම Winrate ගණනය කිරීම (අවසන් වූ Trades පමණක් අදාළ කරගනී)
-        let completedTrades = localTp + localSl;
-        let accurateWinrate = "0.0%";
+    function refreshDashboardUI() {
+        document.getElementById('stat-total').innerText = pTrades;
+        document.getElementById('stat-tp').innerText = pTp;
+        document.getElementById('stat-sl').innerText = pSl;
         
-        if (completedTrades > 0) {
-            accurateWinrate = ((localTp / completedTrades) * 100).toFixed(1) + "%";
-        }
+        let pCompleted = pTp + pSl;
+        let pWinrate = pCompleted > 0 ? ((pTp / pCompleted) * 100).toFixed(1) + "%" : "0.0%";
+        document.getElementById('stat-winrate').innerText = pWinrate;
+
+        document.getElementById('global-signals').innerText = gTrades;
         
-        document.getElementById('stat-winrate').innerText = accurateWinrate;
-        document.getElementById('global-winrate').innerText = accurateWinrate;
+        let gCompleted = gTp + gSl;
+        let gWinrate = gCompleted > 0 ? ((gTp / gCompleted) * 100).toFixed(1) + "%" : "0.0%";
+        document.getElementById('global-winrate').innerText = gWinrate;
     }
 
     function openModal(index) {
