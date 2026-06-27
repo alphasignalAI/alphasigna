@@ -49,7 +49,7 @@
         .login-btn { width: 100%; background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); color: #000; border: none; padding: 12px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
         #error-msg { color: var(--red); font-size: 13px; margin-top: 15px; font-weight: 500; }
 
-        .container { max-width: 1000px; width: 100%; display: none; padding-bottom: 120px; box-sizing: border-box; z-index: 10; }
+        .container { max-width: 1000px; width: 100%; display: none; padding-bottom: 140px; box-sizing: border-box; z-index: 10; }
         .header { text-align: center; margin-bottom: 15px; }
         .header h1 { font-size: 34px; margin: 0; background: linear-gradient(135deg, #fff 0%, var(--gold) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; }
         .user-expiry-badge { text-align: center; color: var(--gold); font-size: 11px; font-weight: bold; background: rgba(243, 186, 47, 0.08); padding: 6px 12px; border-radius: 20px; display: inline-block; border: 1px solid rgba(243, 186, 47, 0.2); margin-bottom: 20px; }
@@ -81,7 +81,6 @@
         .label { color: var(--text-muted); }
         .val { font-weight: 500; font-family: monospace; }
         
-        /* 🕹️ NEW BUTTON STYLING */
         .action-container { display: flex; gap: 8px; margin-top: 12px; }
         .trade-btn { flex: 1; background: linear-gradient(135deg, var(--green) 0%, #00b359 100%); color: #000; border: none; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.2s; }
         .trade-btn:disabled { background: #16263d; color: var(--text-muted); cursor: not-allowed; }
@@ -92,9 +91,10 @@
         .close-modal { position: absolute; top: 10px; right: 15px; font-size: 28px; cursor: pointer; color: var(--text-muted); }
 
         .premium-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: linear-gradient(180deg, #050d1a 0%, #02060d 100%); border-top: 1px solid rgba(0, 210, 255, 0.3); padding: 12px 15px; z-index: 10050; box-shadow: 0 -5px 25px rgba(0,0,0,0.8); box-sizing: border-box; display: none; text-align: center; }
-        .footer-grid-text { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 6px; font-size: 10px; font-weight: 600; }
+        .footer-grid-text { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; }
         .footer-grid-text .sin { color: #fff; }
         .footer-grid-text .eng { color: var(--text-muted); font-style: italic; }
+        .footer-version { font-size: 11px; color: var(--gold); font-weight: bold; margin-top: 4px; letter-spacing: 1px; }
 
         @media (min-width: 768px) {
             .stats-panel { grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 20px; }
@@ -176,8 +176,9 @@
 <div class="premium-footer" id="live-footer-ticker">
     <div class="footer-grid-text">
         <span class="sin">🛑 2026 © AlphaSigna AI - පෙහෙළිත ඒකනායක සතු පුද්ගලික දේපළකි. අනවසරයෙන් භාවිතය සපුරා තහනම්.</span>
-        <span class="eng">🛑 All Rights Reserved. Exclusive Intellectual Property of Pehelitha Ekanayaka. Unauthorized duplication is criminally liable.</span>
+        <span class="eng">🛑 All Rights Reserved. Exclusive Intellectual Property of Pehelitha Ekanayaka.</span>
     </div>
+    <div class="footer-version">AlphaSigna AI v1.0</div>
 </div>
 
 <script>
@@ -186,7 +187,6 @@
     let currentProgress = 0;
     let scanAnimationLoop;
 
-    // LOCAL USER STATS ENGINE
     let localTotal = 0;
     let localTp = 0;
     let localSl = 0;
@@ -194,7 +194,6 @@
     window.onload = function() { document.getElementById('warning-modal').style.display = 'flex'; };
 
     document.addEventListener("DOMContentLoaded", () => {
-        // Load old trade scores if available
         if(localStorage.getItem('trade_total')) {
             localTotal = parseInt(localStorage.getItem('trade_total'));
             localTp = parseInt(localStorage.getItem('trade_tp'));
@@ -227,6 +226,7 @@
         }).catch(() => { error.style.color = "var(--red)"; error.innerText = "⚠️ Gateway Connection Error."; });
     }
 
+    // 🎯 EXACT 1-MINUTE 100% TIMED ENGINE WITH FIXED CARD DISCOVERY RULES
     function triggerPremiumScanUI() {
         document.getElementById('start-scan-btn').style.display = 'none';
         document.getElementById('rescan-btn-id').style.display = 'none';
@@ -243,33 +243,38 @@
             
             const rawCoins = Object.values(data);
             
+            // 60000ms / 600 intervals = 100ms delay per tick (Exactly 60 seconds loop)
             scanAnimationLoop = setInterval(() => {
-                currentProgress += 2;
+                currentProgress += 1;
                 if(currentProgress > 100) currentProgress = 100;
 
                 document.getElementById('gauge-text').innerText = currentProgress + "%";
                 let rotation = -180 + (currentProgress * 1.8);
                 document.getElementById('gauge-pointer').style.transform = `rotate(${rotation}deg)`;
 
-                if (currentProgress < 15) {
-                    document.getElementById('scan-coin-name').innerText = "🧠 AI EXTRACTING CURRENT ORDER FLOW NODE...";
-                } else if (currentProgress >= 15 && currentProgress < 30 && cryptoDataPool.length === 0 && rawCoins[0]) {
-                    document.getElementById('scan-coin-name').innerText = "🚨 SCANNING COMPLETED: " + rawCoins[0].pair;
+                if (currentProgress < 10) {
+                    document.getElementById('scan-coin-name').innerText = "🧠 AI EXTRACTING ORDER FLOW LIQUIDITY POOLS...";
+                }
+                // 🚨 50% වීමට පෙර (අනිවාර්යයෙන්ම කාඩ්පත් 3ක් පෙන්වීමේ කොන්දේසිය)
+                else if (currentProgress === 15 && rawCoins[0]) {
+                    document.getElementById('scan-coin-name').innerText = "✨ MATRIX CONFIRMED: " + rawCoins[0].pair;
                     renderSingleCard(rawCoins[0]);
-                } else if (currentProgress >= 30 && currentProgress < 45 && cryptoDataPool.length === 1 && rawCoins[1]) {
-                    document.getElementById('scan-coin-name').innerText = "🚨 SCANNING COMPLETED: " + rawCoins[1].pair;
+                } else if (currentProgress === 30 && rawCoins[1]) {
+                    document.getElementById('scan-coin-name').innerText = "✨ MATRIX CONFIRMED: " + rawCoins[1].pair;
                     renderSingleCard(rawCoins[1]);
-                } else if (currentProgress >= 45 && currentProgress < 60 && cryptoDataPool.length === 2 && rawCoins[2]) {
-                    document.getElementById('scan-coin-name').innerText = "🚨 SCANNING COMPLETED: " + rawCoins[2].pair;
+                } else if (currentProgress === 45 && rawCoins[2]) {
+                    document.getElementById('scan-coin-name').innerText = "✨ MATRIX CONFIRMED: " + rawCoins[2].pair;
                     renderSingleCard(rawCoins[2]);
-                } else if (currentProgress >= 60 && currentProgress < 75 && cryptoDataPool.length === 3 && rawCoins[3]) {
-                    document.getElementById('scan-coin-name').innerText = "🚨 SCANNING COMPLETED: " + rawCoins[3].pair;
+                } 
+                // 🚀 ඉතිරි කාඩ්පත් 3 100% වීමට පෙර පිළිවෙලින් ලෝඩ් වීම
+                else if (currentProgress === 60 && rawCoins[3]) {
+                    document.getElementById('scan-coin-name').innerText = "✨ MATRIX CONFIRMED: " + rawCoins[3].pair;
                     renderSingleCard(rawCoins[3]);
-                } else if (currentProgress >= 75 && currentProgress < 90 && cryptoDataPool.length === 4 && rawCoins[4]) {
-                    document.getElementById('scan-coin-name').innerText = "🚨 SCANNING COMPLETED: " + rawCoins[4].pair;
+                } else if (currentProgress === 75 && rawCoins[4]) {
+                    document.getElementById('scan-coin-name').innerText = "✨ MATRIX CONFIRMED: " + rawCoins[4].pair;
                     renderSingleCard(rawCoins[4]);
-                } else if (currentProgress >= 90 && currentProgress < 100 && cryptoDataPool.length === 5 && rawCoins[5]) {
-                    document.getElementById('scan-coin-name').innerText = "🚨 SCANNING COMPLETED: " + rawCoins[5].pair;
+                } else if (currentProgress === 90 && rawCoins[5]) {
+                    document.getElementById('scan-coin-name').innerText = "✨ MATRIX CONFIRMED: " + rawCoins[5].pair;
                     renderSingleCard(rawCoins[5]);
                 }
 
@@ -278,7 +283,7 @@
                     document.getElementById('scan-coin-name').innerText = "🎯 6 PREMIUM FUTURES SIGNALS ENGAGED";
                     document.getElementById('rescan-btn-id').style.display = 'inline-block';
                 }
-            }, 60);
+            }, 600); // 600ms * 100 ticks = Exactly 60 Seconds (1 Minute)
         });
     }
 
@@ -286,8 +291,6 @@
         cryptoDataPool.push(coin);
         const idx = cryptoDataPool.length - 1;
         const container = document.getElementById('cards-container');
-        
-        // Clean symbol string for execution tracking
         const cleanSymbol = coin.pair.split("/")[0];
 
         container.innerHTML += `
@@ -305,19 +308,16 @@
             </div>`;
     }
 
-    // 🕹️ USER INTERACTIVE TRADE EXECUTION LOGIC
     function engageUserLocalTrade(cardIdx, cleanSymbol, tpTarget, slTarget) {
         const targetButton = document.getElementById(`t-btn-${cardIdx}`);
         targetButton.disabled = true;
-        targetButton.innerText = "⏳ Live Tracking...";
-        targetButton.style.background = "#1a2f4c";
+        targetButton.innerText = "⏳ Tracking...";
+        targetButton.style.background = "#16263d";
         targetButton.style.color = "var(--blue-glow)";
 
-        // Increment total local trades taken
         localTotal += 1;
         refreshDashboardUI();
 
-        // Real-time calculation loop using live price tracking via public API
         let orderTracker = setInterval(() => {
             fetch(`https://fapi.binance.com/fapi/v1/ticker/price?symbol=${cleanSymbol}USDT`)
             .then(res => res.json())
@@ -340,7 +340,7 @@
                     refreshDashboardUI();
                 }
             }).catch(() => {});
-        }, 3000); // Poll tracking every 3 seconds
+        }, 3000);
     }
 
     function refreshDashboardUI() {
