@@ -82,7 +82,6 @@
         .modal-content { background: #0d1b2e; border: 1px solid var(--gold); padding: 25px; border-radius: 15px; max-width: 500px; width: 90%; position: relative; box-shadow: 0 0 30px var(--gold-glow); box-sizing: border-box; max-height: 85vh; overflow-y: auto; }
         .close-modal { position: absolute; top: 10px; right: 15px; font-size: 28px; cursor: pointer; color: var(--text-muted); }
 
-        /* --- 🛡️ DUAL-LANGUAGE PREMIUM FOOTER --- */
         .premium-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: linear-gradient(180deg, #050d1a 0%, #02060d 100%); border-top: 1px solid rgba(0, 210, 255, 0.3); padding: 12px 15px; z-index: 10050; box-shadow: 0 -5px 25px rgba(0,0,0,0.8); box-sizing: border-box; display: none; text-align: center; }
         .footer-grid-text { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 6px; font-size: 10px; font-weight: 600; }
         .footer-grid-text .sin { color: #fff; }
@@ -140,8 +139,8 @@
             <div class="gauge-fill" id="gauge-pointer"></div>
             <div class="gauge-percentage" id="gauge-text">0%</div>
         </div>
-        <button class="scan-init-btn" id="start-scan-btn" onclick="fetchLiveSignalsFromFirebase()">🔍 Scan Live Market</button>
-        <button class="rescan-btn" id="rescan-btn-id" onclick="fetchLiveSignalsFromFirebase()">🔄 Re-Scan Live Market</button>
+        <button class="scan-init-btn" id="start-scan-btn" onclick="triggerPremiumScanUI()">🔍 Scan Live Market</button>
+        <button class="rescan-btn" id="rescan-btn-id" onclick="triggerPremiumScanUI()">🔄 Re-Scan Live Market</button>
     </div>
     
     <div class="signal-grid" id="cards-container"></div>
@@ -171,11 +170,8 @@
 <script>
     const FIREBASE_URL = "https://alphasigna-live-d644a-default-rtdb.firebaseio.com";
     let cryptoDataPool = [];
-    let liveScanInterval;
-    
-    let currentVisualProgress = 0;
-    let targetProgress = 0;
-    let animationFrameId;
+    let currentProgress = 0;
+    let scanAnimationLoop;
 
     function initiateSystemSequence() { document.getElementById('warning-modal').style.display = 'flex'; }
 
@@ -202,9 +198,8 @@
             document.getElementById('main-app').style.display = 'block';
             document.getElementById('user-expiry-text').innerText = "🔑 PREMIUM END DATE: " + userData.expiry;
             
-            // 🚨 FIX: ලොග් වූ සැනින් Stats පෙන්වීම
             syncStatsOnly(); 
-            setInterval(syncStatsOnly, 10000);
+            setInterval(syncStatsOnly, 15000);
         }).catch(() => { error.style.color = "var(--red)"; error.innerText = "⚠️ Gateway Connection Error."; });
     }
 
@@ -219,78 +214,82 @@
         });
     }
 
-    function animateMeter() {
-        currentVisualProgress += (targetProgress - currentVisualProgress) * 0.04;
-        let displayValue = Math.floor(currentVisualProgress);
-        document.getElementById('gauge-text').innerText = displayValue + "%";
-        
-        let rotation = -180 + (currentVisualProgress * 1.8);
-        document.getElementById('gauge-pointer').style.transform = `rotate(${rotation}deg)`;
-
-        injectCardsDynamically();
-
-        if (displayValue >= 99 && targetProgress >= 100) {
-            document.getElementById('gauge-text').innerText = "100%";
-            document.getElementById('gauge-pointer').style.transform = `rotate(0deg)`;
-            cancelAnimationFrame(animationFrameId);
-            
-            clearInterval(liveScanInterval);
-            document.getElementById('scan-coin-name').innerText = "🎯 REAL FUTURES SIGNALS ENGAGED";
-            document.getElementById('rescan-btn-id').style.display = 'inline-block';
-            return;
-        }
-        animationFrameId = requestAnimationFrame(animateMeter);
-    }
-
-    function fetchLiveSignalsFromFirebase() {
+    // 🎯 NEW REAL-TIME UI SCANNING SIMULATION
+    function triggerPremiumScanUI() {
         document.getElementById('start-scan-btn').style.display = 'none';
         document.getElementById('rescan-btn-id').style.display = 'none';
         document.getElementById('cards-container').innerHTML = '';
         cryptoDataPool = [];
-        
-        currentVisualProgress = 0; targetProgress = 0;
-        cancelAnimationFrame(animationFrameId);
-        animateMeter();
+        currentProgress = 0;
 
-        liveScanInterval = setInterval(() => {
-            fetch(`${FIREBASE_URL}/system_status.json`).then(res => res.json()).then(status => {
-                if(status) {
-                    targetProgress = status.progress || 0;
-                    if(targetProgress < 100) {
-                        document.getElementById('scan-coin-name').innerText = "🚨 AI SCANNING: " + (status.current_coin || "SYSTEM READY") + "/USDT";
-                    }
+        // බොට් දැනටමත් පසුබිමෙන් සූදානම් කර ඇති හොඳම සංඥා 6 ලබා ගැනීම
+        fetch(`${FIREBASE_URL}/live_signals.json`).then(res => res.json()).then(data => {
+            if (!data) {
+                document.getElementById('scan-coin-name').innerText = "⚠️ SYSTEM COOL DOWN. TRY AGAIN IN A MOMENT.";
+                document.getElementById('rescan-btn-id').style.display = 'inline-block';
+                return;
+            }
+            
+            const rawCoins = Object.values(data);
+            
+            // මීටරය කැරකෙන අතරතුර කාඩ්පත් එකින් එක ලෝඩ් කිරීමේ සජීවීකරණය
+            scanAnimationLoop = setInterval(() => {
+                currentProgress += 2; // වේගය පාලනය
+                if(currentProgress > 100) currentProgress = 100;
+
+                document.getElementById('gauge-text').innerText = currentProgress + "%";
+                let rotation = -180 + (currentProgress * 1.8);
+                document.getElementById('gauge-pointer').style.transform = `rotate(${rotation}deg)`;
+
+                // ප්‍රතිශතය අනුව කාසිවල නම් පෙන්වීම සහ කාඩ්පත් Inject කිරීම
+                if (currentProgress < 15) {
+                    document.getElementById('scan-coin-name').innerText = "🧠 AI EXTRACTING CURRENT ORDER FLOW NODE...";
+                } else if (currentProgress >= 15 && currentProgress < 30 && cryptoDataPool.length === 0 && rawCoins[0]) {
+                    document.getElementById('scan-coin-name').innerText = "🚨 SCANNING COMPLETED: " + rawCoins[0].pair;
+                    renderSingleCard(rawCoins[0]);
+                } else if (currentProgress >= 30 && currentProgress < 45 && cryptoDataPool.length === 1 && rawCoins[1]) {
+                    document.getElementById('scan-coin-name').innerText = "🚨 SCANNING COMPLETED: " + rawCoins[1].pair;
+                    renderSingleCard(rawCoins[1]);
+                } else if (currentProgress >= 45 && currentProgress < 60 && cryptoDataPool.length === 2 && rawCoins[2]) {
+                    document.getElementById('scan-coin-name').innerText = "🚨 SCANNING COMPLETED: " + rawCoins[2].pair;
+                    renderSingleCard(rawCoins[2]);
+                } else if (currentProgress >= 60 && currentProgress < 75 && cryptoDataPool.length === 3 && rawCoins[3]) {
+                    document.getElementById('scan-coin-name').innerText = "🚨 SCANNING COMPLETED: " + rawCoins[3].pair;
+                    renderSingleCard(rawCoins[3]);
+                } else if (currentProgress >= 75 && currentProgress < 90 && cryptoDataPool.length === 4 && rawCoins[4]) {
+                    document.getElementById('scan-coin-name').innerText = "🚨 SCANNING COMPLETED: " + rawCoins[4].pair;
+                    renderSingleCard(rawCoins[4]);
+                } else if (currentProgress >= 90 && currentProgress < 100 && cryptoDataPool.length === 5 && rawCoins[5]) {
+                    document.getElementById('scan-coin-name').innerText = "🚨 SCANNING COMPLETED: " + rawCoins[5].pair;
+                    renderSingleCard(rawCoins[5]);
                 }
-            });
-        }, 400);
+
+                if (currentProgress >= 100) {
+                    clearInterval(scanAnimationLoop);
+                    document.getElementById('scan-coin-name').innerText = "🎯 6 PREMIUM FUTURES SIGNALS ENGAGED";
+                    document.getElementById('rescan-btn-id').style.display = 'inline-block';
+                }
+            }, 80); // Smooth Gauge Animation Loop Speed
+        });
     }
 
-    function injectCardsDynamically() {
-        fetch(`${FIREBASE_URL}/live_signals.json`).then(res => res.json()).then(data => {
-            if (!data) return;
-            
-            Object.keys(data).forEach(key => {
-                if (data[key] && !cryptoDataPool.some(c => c.pair === data[key].pair)) {
-                    cryptoDataPool.push(data[key]);
-                    const idx = cryptoDataPool.length - 1;
-                    const coin = data[key];
-                    
-                    const container = document.getElementById('cards-container');
-                    container.innerHTML += `
-                        <div class="card">
-                            <div class="card-header"><span class="coin-title" style="color:var(--gold)">${coin.pair}</span><span class="badge buy">LONG / BUY</span></div>
-                            <div class="price-row"><span class="label">Live Entry Mark:</span><span class="val" style="color:var(--blue-glow);">$${coin.entry}</span></div>
-                            <div class="price-row"><span class="label">Futures TP1:</span><span class="val" style="color:var(--green)">$${coin.tp1}</span></div>
-                            <div class="price-row"><span class="label">Futures TP2:</span><span class="val" style="color:var(--green)">$${coin.tp2}</span></div>
-                            <div class="price-row"><span class="label">Futures TP3:</span><span class="val" style="color:var(--green)">$${coin.tp3}</span></div>
-                            <div class="price-row"><span class="label">Futures Max TP4:</span><span class="val" style="color:var(--green)">$${coin.tp4}</span></div>
-                            <div class="price-row"><span class="label">Futures Risk SL:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
-                            <div class="price-row"><span class="label">Expected PNL:</span><span class="val" style="color:var(--green); font-weight:bold;">+${coin.pnl}%</span></div>
-                            <div class="price-row"><span class="label">AI Accuracy:</span><span class="val" style="color:var(--green); font-weight:bold;">${coin.accuracy}%</span></div>
-                            <button class="more-btn" onclick="openModal(${idx})">More / Learn Logic</button>
-                        </div>`;
-                }
-            });
-        });
+    function renderSingleCard(coin) {
+        cryptoDataPool.push(coin);
+        const idx = cryptoDataPool.length - 1;
+        const container = document.getElementById('cards-container');
+        container.innerHTML += `
+            <div class="card">
+                <div class="card-header"><span class="coin-title" style="color:var(--gold)">${coin.pair}</span><span class="badge buy">LONG / BUY</span></div>
+                <div class="price-row"><span class="label">Live Entry Mark:</span><span class="val" style="color:var(--blue-glow);">$${coin.entry}</span></div>
+                <div class="price-row"><span class="label">Futures TP1:</span><span class="val" style="color:var(--green)">$${coin.tp1}</span></div>
+                <div class="price-row"><span class="label">Futures TP2:</span><span class="val" style="color:var(--green)">$${coin.tp2}</span></div>
+                <div class="price-row"><span class="label">Futures TP3:</span><span class="val" style="color:var(--green)">$${coin.tp3}</span></div>
+                <div class="price-row"><span class="label">Futures Max TP4:</span><span class="val" style="color:var(--green)">$${coin.tp4}</span></div>
+                <div class="price-row"><span class="label">Futures Risk SL:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
+                <div class="price-row"><span class="label">Expected PNL:</span><span class="val" style="color:var(--green); font-weight:bold;">+${coin.pnl}%</span></div>
+                <div class="price-row"><span class="label">AI Accuracy:</span><span class="val" style="color:var(--green); font-weight:bold;">${coin.accuracy}%</span></div>
+                <button class="more-btn" onclick="openModal(${idx})">More / Learn Logic</button>
+            </div>`;
     }
 
     function openModal(index) {
