@@ -81,7 +81,7 @@
 <div id="warning-modal">
     <div class="warning-content">
         <h2 style="color:var(--red)">⚠️ PROTECTION INTERFACE</h2>
-        <p>Private Property of Pehelitha Ekanayaka. Unauthorized extraction is prohibited.</p>
+        <p>Private Property of Pehelitha Ekanayaka. Private encryption logic active.</p>
         <button class="agree-btn" onclick="triggerPremiumLockScreen()">PROCEED TERMINAL</button>
     </div>
 </div>
@@ -163,6 +163,7 @@
             document.getElementById('main-app').style.display = 'block';
             document.getElementById('user-expiry-text').innerText = "🔑 TERMINAL SUBSCRIPTION EXPIRY: " + userData.expiry;
             
+            // Local Storage එකෙන් කලින් දත්ත තිබේ නම් නැවත Dashboard එකට කියවා ගැනීම
             if(localStorage.getItem('trade_total')) {
                 localTotal = parseInt(localStorage.getItem('trade_total'));
                 localTp = parseInt(localStorage.getItem('trade_tp'));
@@ -218,11 +219,12 @@
         const idx = cryptoDataPool.length - 1;
         const cleanSymbol = coin.pair.split("/")[0];
 
+        // 🎯 ඔබ ඉල්ලූ පරිදි $0.587 (36.5%) ආකෘතියට සකසන ලද Futures TP1 පේළිය
         document.getElementById('cards-container').innerHTML += `
             <div class="card">
                 <div class="card-header"><span class="coin-title" style="color:var(--gold)">${coin.pair}</span><span class="badge buy">LONG / BUY</span></div>
                 <div class="price-row"><span class="label">Live Entry Price:</span><span class="val" style="color:var(--blue-glow)">$${coin.entry}</span></div>
-                <div class="price-row"><span class="label">Futures TP1:</span><span class="val" style="color:var(--green)">$${coin.tp1}</span></div>
+                <div class="price-row"><span class="label">Futures TP1:</span><span class="val" style="color:var(--green)">$${coin.tp1} (${coin.pnl}%)</span></div>
                 <div class="price-row"><span class="label">Futures Risk SL:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
                 <div class="price-row"><span class="label">AI Metric Accuracy:</span><span class="val" style="color:var(--green)">${coin.accuracy}%</span></div>
                 <div class="action-container">
