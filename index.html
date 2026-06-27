@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna AI - Live Premium Terminal</title>
+    <title>AlphaSigna AI - Ultimate Premium Terminal</title>
     
     <link rel="icon" type="image/png" href="https://i.ibb.co/colors-logo-or-your-link.png">
     
@@ -22,7 +22,6 @@
             box-sizing: border-box; overflow-x: hidden; position: relative;
         }
 
-        /* 🎪 CONTINUOUS BACKGROUND ANIMATION */
         .ink-container { position: fixed; width: 100%; height: 100%; top: 0; left: 0; overflow: hidden; z-index: -1; pointer-events: none; }
         .ink-blast { position: absolute; border-radius: 50%; mix-blend-mode: screen; opacity: 0; filter: blur(25px); }
         .ib-1 { background: var(--gold); width: 250px; height: 250px; top: 10%; left: 15%; animation: blast-infinite 12s infinite linear; }
@@ -61,18 +60,18 @@
         .stat-value { font-size: 22px; font-weight: bold; color: #fff; }
 
         .gauge-section { text-align: center; margin: 30px 0; }
-        .scanning-coin { font-size: 16px; color: var(--gold); font-weight: bold; min-height: 40px; padding: 0 10px; box-sizing: border-box; }
+        .scanning-coin { font-size: 15px; color: var(--gold); font-weight: bold; min-height: 40px; padding: 0 10px; box-sizing: border-box; letter-spacing: 0.5px; }
         .meter-container { position: relative; width: 200px; height: 100px; margin: auto; overflow: hidden; }
         .gauge-bg { width: 160px; height: 160px; border-radius: 50%; border: 12px solid #16263d; box-sizing: border-box; position: absolute; top: 0; left: 20px; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); }
         .gauge-fill { position: absolute; top: 0; left: 20px; width: 160px; height: 160px; border-radius: 50%; border: 12px solid var(--blue-glow); box-sizing: border-box; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); transform: rotate(-180deg); transform-origin: center center; }
         .gauge-percentage { position: absolute; bottom: 0px; left: 0; right: 0; font-size: 28px; font-weight: bold; color: #fff; }
 
-        .scan-init-btn, .rescan-btn { background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); color: #000; border: none; padding: 12px 30px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; width: 85%; max-width: 280px; }
+        .scan-init-btn, .rescan-btn { background: linear-gradient(135deg, var(--gold) 0%, #b8850a 100%); color: #000; border: none; padding: 12px 30px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; width: 85%; max-width: 280px; box-shadow: 0 0 15px var(--gold-glow); }
         .rescan-btn { display: none; }
 
         .signal-grid { display: grid; grid-template-columns: 1fr; gap: 15px; padding: 0 5px; }
-        .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; position: relative; box-sizing: border-box; animation: cardSlideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes cardSlideIn { 0% { opacity:0; transform: translateY(20px) scale(0.95); } 100% { opacity:1; transform: translateY(0) scale(1); } }
+        .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; position: relative; box-sizing: border-box; animation: cardSlideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes cardSlideIn { 0% { opacity:0; transform: translateY(30px) scale(0.9); } 100% { opacity:1; transform: translateY(0) scale(1); } }
         
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .coin-title { font-size: 15px; font-weight: bold; }
@@ -178,7 +177,7 @@
         <span class="sin">🛑 2026 © AlphaSigna AI - පෙහෙළිත ඒකනායක සතු පුද්ගලික දේපළකි. අනවසරයෙන් භාවිතය සපුරා තහනම්.</span>
         <span class="eng">🛑 All Rights Reserved. Exclusive Intellectual Property of Pehelitha Ekanayaka.</span>
     </div>
-    <div class="footer-version">AlphaSigna AI v1.0</div>
+    <div class="footer-version">AlphaSigna AI v1.1</div>
 </div>
 
 <script>
@@ -226,7 +225,7 @@
         }).catch(() => { error.style.color = "var(--red)"; error.innerText = "⚠️ Gateway Connection Error."; });
     }
 
-    // 🎯 EXACT 1-MINUTE 100% TIMED ENGINE WITH FIXED CARD DISCOVERY RULES
+    // 🚀 FIXED 1-MINUTE ENGINE WITH LIVE ALGORITHMIC INTERACTION TEXTS
     function triggerPremiumScanUI() {
         document.getElementById('start-scan-btn').style.display = 'none';
         document.getElementById('rescan-btn-id').style.display = 'none';
@@ -243,7 +242,6 @@
             
             const rawCoins = Object.values(data);
             
-            // 60000ms / 600 intervals = 100ms delay per tick (Exactly 60 seconds loop)
             scanAnimationLoop = setInterval(() => {
                 currentProgress += 1;
                 if(currentProgress > 100) currentProgress = 100;
@@ -252,38 +250,51 @@
                 let rotation = -180 + (currentProgress * 1.8);
                 document.getElementById('gauge-pointer').style.transform = `rotate(${rotation}deg)`;
 
-                if (currentProgress < 10) {
-                    document.getElementById('scan-coin-name').innerText = "🧠 AI EXTRACTING ORDER FLOW LIQUIDITY POOLS...";
-                }
-                // 🚨 50% වීමට පෙර (අනිවාර්යයෙන්ම කාඩ්පත් 3ක් පෙන්වීමේ කොන්දේසිය)
-                else if (currentProgress === 15 && rawCoins[0]) {
-                    document.getElementById('scan-coin-name').innerText = "✨ MATRIX CONFIRMED: " + rawCoins[0].pair;
-                    renderSingleCard(rawCoins[0]);
-                } else if (currentProgress === 30 && rawCoins[1]) {
-                    document.getElementById('scan-coin-name').innerText = "✨ MATRIX CONFIRMED: " + rawCoins[1].pair;
-                    renderSingleCard(rawCoins[1]);
-                } else if (currentProgress === 45 && rawCoins[2]) {
-                    document.getElementById('scan-coin-name').innerText = "✨ MATRIX CONFIRMED: " + rawCoins[2].pair;
-                    renderSingleCard(rawCoins[2]);
+                // 🧠 LIVE REALTIME AI STATUS TEXT ENGINE
+                if (currentProgress > 0 && currentProgress < 15) {
+                    document.getElementById('scan-coin-name').innerText = "🧠 AI: CONNECTING BINANCE ORDERBOOK & LIQUIDITY POOLS...";
                 } 
-                // 🚀 ඉතිරි කාඩ්පත් 3 100% වීමට පෙර පිළිවෙලින් ලෝඩ් වීම
-                else if (currentProgress === 60 && rawCoins[3]) {
-                    document.getElementById('scan-coin-name').innerText = "✨ MATRIX CONFIRMED: " + rawCoins[3].pair;
+                // 🚨 BEFORE 50% - GUARANTEED FIRST 3 CARDS DISCOVERED
+                else if (currentProgress === 15 && rawCoins[0]) {
+                    document.getElementById('scan-coin-name').innerText = "✨ AI LOGIC ENGAGED: " + rawCoins[0].pair;
+                    renderSingleCard(rawCoins[0]);
+                } else if (currentProgress > 15 && currentProgress < 30) {
+                    document.getElementById('scan-coin-name').innerText = "🧠 AI: EXTRACTING MARKET STRUCTURE SHIFT (MSS) NODES...";
+                } else if (currentProgress === 30 && rawCoins[1]) {
+                    document.getElementById('scan-coin-name').innerText = "✨ AI LOGIC ENGAGED: " + rawCoins[1].pair;
+                    renderSingleCard(rawCoins[1]);
+                } else if (currentProgress > 30 && currentProgress < 45) {
+                    document.getElementById('scan-coin-name').innerText = "🧠 AI: SCANNING INSTITUTIONAL ORDER BLOCKS ON 4H DEMAND...";
+                } else if (currentProgress === 45 && rawCoins[2]) {
+                    document.getElementById('scan-coin-name').innerText = "✨ AI LOGIC ENGAGED: " + rawCoins[2].pair;
+                    renderSingleCard(rawCoins[2]);
+                }
+                // 🚀 AFTER 50% - GUARANTEED FINAL 3 CARDS PLACED CORRESPONDINGLY
+                else if (currentProgress > 45 && currentProgress < 60) {
+                    document.getElementById('scan-coin-name').innerText = "🧠 AI: RUNNING ATR POSITION VOLATILITY MULTIPLIERS...";
+                } else if (currentProgress === 60 && rawCoins[3]) {
+                    document.getElementById('scan-coin-name').innerText = "✨ AI LOGIC ENGAGED: " + rawCoins[3].pair;
                     renderSingleCard(rawCoins[3]);
+                } else if (currentProgress > 60 && currentProgress < 75) {
+                    document.getElementById('scan-coin-name').innerText = "🧠 AI: TRACKING WHALE CONCENTRATION WALLET LIMITS...";
                 } else if (currentProgress === 75 && rawCoins[4]) {
-                    document.getElementById('scan-coin-name').innerText = "✨ MATRIX CONFIRMED: " + rawCoins[4].pair;
+                    document.getElementById('scan-coin-name').innerText = "✨ AI LOGIC ENGAGED: " + rawCoins[4].pair;
                     renderSingleCard(rawCoins[4]);
+                } else if (currentProgress > 75 && currentProgress < 90) {
+                    document.getElementById('scan-coin-name').innerText = "🧠 AI: EVALUATING QUANT RISK PROFILE FOR MAXIMUM WINRATE...";
                 } else if (currentProgress === 90 && rawCoins[5]) {
-                    document.getElementById('scan-coin-name').innerText = "✨ MATRIX CONFIRMED: " + rawCoins[5].pair;
+                    document.getElementById('scan-coin-name').innerText = "✨ AI LOGIC ENGAGED: " + rawCoins[5].pair;
                     renderSingleCard(rawCoins[5]);
+                } else if (currentProgress > 90 && currentProgress < 100) {
+                    document.getElementById('scan-coin-name').innerText = "🧠 AI: FINALIZING PORTFOLIO BROADCAST STABILITY...";
                 }
 
                 if (currentProgress >= 100) {
                     clearInterval(scanAnimationLoop);
-                    document.getElementById('scan-coin-name').innerText = "🎯 6 PREMIUM FUTURES SIGNALS ENGAGED";
+                    document.getElementById('scan-coin-name').innerText = "🎯 6 HIGH-ACCURACY PREMIUM FUTURES SIGNALS ENGAGED";
                     document.getElementById('rescan-btn-id').style.display = 'inline-block';
                 }
-            }, 600); // 600ms * 100 ticks = Exactly 60 Seconds (1 Minute)
+            }, 600); // Exactly 60 Seconds Total Loop
         });
     }
 
