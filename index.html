@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna AI - V10 Pro Anti-Hunt</title>
+    <title>AlphaSigna AI - V16 Ultra Institutional</title>
     <style>
         :root {
             --bg-color: #03070d; 
@@ -113,7 +113,7 @@
 
 <div class="login-box" id="login-container">
     <h2 style="margin-top: 0; color: #fff; font-weight: 900;">AlphaSigna AI</h2>
-    <p style="font-size: 11px; color:var(--text-muted); margin-top:-10px; letter-spacing: 2px;">V10 PRO ANTI-HUNT MATRIX</p>
+    <p style="font-size: 11px; color:var(--text-muted); margin-top:-10px; letter-spacing: 2px;">V16 ULTRA INSTITUTIONAL MATRIX</p>
     <div class="input-group" style="margin-top: 30px;">
         <label>Terminal Key</label>
         <input type="password" id="access-key" placeholder="••••••••••••">
@@ -125,7 +125,7 @@
 <div class="container" id="main-app">
     <div class="header">
         <h1>AlphaSigna AI</h1>
-        <p>⚡ V10 HIGH-LIQUIDITY SECURE CORE</p>
+        <p>💎 V16.0 DEEP LIQUIDITY INSTITUTIONAL CORE</p>
     </div>
     
     <div class="expiry-badge">
@@ -147,14 +147,14 @@
     </div>
     
     <div class="gauge-section">
-        <div class="scanning-coin" id="scan-coin-name">READY TO ACTIVATE LIQUIDITY-CHECK SHIELD</div>
+        <div class="scanning-coin" id="scan-coin-name">READY TO ACTIVATE 5M-1W TIMEFRAME DEEP ANALYSIS</div>
         <div class="meter-container">
             <div class="gauge-bg"></div>
             <div class="gauge-fill" id="gauge-pointer"></div>
             <div class="gauge-percentage" id="gauge-text">0%</div>
         </div>
-        <button class="scan-init-btn" id="start-scan-btn" onclick="triggerPremiumScanUI()">🔍 Scan Market ($50M+ Volume)</button>
-        <button class="rescan-btn" id="rescan-btn-id" style="display:none;" onclick="triggerPremiumScanUI()">🔄 Re-Scan Secure Assets</button>
+        <button class="scan-init-btn" id="start-scan-btn" onclick="triggerPremiumScanUI()">🔍 Scan Market (5m-1w Matrix)</button>
+        <button class="rescan-btn" id="rescan-btn-id" style="display:none;" onclick="triggerPremiumScanUI()">🔄 Re-Scan Institutional Assets</button>
     </div>
     
     <div class="signal-grid" id="cards-container"></div>
@@ -165,7 +165,7 @@
         <span class="close-modal" onclick="closeModal()">&times;</span>
         <h2 style="color: var(--gold); margin-top: 0; font-size: 18px; text-transform: uppercase;" id="modal-coin">ANALYSIS</h2>
         <hr style="border-color: rgba(255,255,255,0.1); margin-bottom: 20px;">
-        <h3 style="color: var(--blue-glow); font-size: 14px; margin-bottom:8px;">🧠 V10 Anti-Hunt Algorithm</h3>
+        <h3 style="color: var(--blue-glow); font-size: 14px; margin-bottom:8px;">🧠 V16 Statistical Machine Learning Proxy</h3>
         <p id="modal-logic" style="white-space: pre-line; font-size: 13px; color: #e0e6ed; line-height:1.6; margin-top:0;"></p>
         <h3 style="color: var(--red); font-size: 14px; margin-bottom:8px; margin-top:20px;">⚖️ Institutional Risk Strategy</h3>
         <p id="modal-risk" style="white-space: pre-line; font-size: 13px; color: #ff9999; font-weight: bold; line-height:1.6; margin-top:0;"></p>
@@ -185,6 +185,44 @@
     function triggerPremiumLockScreen() {
         document.getElementById('warning-modal').style.display = 'none';
         document.getElementById('login-container').style.display = 'block';
+    }
+
+    /**
+     * 🔊 NEW FEATURE: Audio Alert Generator via Web Audio API
+     * කිසිදු බාහිර mp3 එකක් නැතුව බ්‍රවුසර් එකෙන්ම පිරිසිදු ඩිජිටල් "Success Ping" එකක් සාදයි.
+     */
+    function playSuccessPingAlert() {
+        try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            
+            // First High note
+            let osc1 = audioCtx.createOscillator();
+            let gain1 = audioCtx.createGain();
+            osc1.type = 'sine';
+            osc1.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5 note
+            gain1.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain1.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+            osc1.connect(gain1);
+            gain1.connect(audioCtx.destination);
+            osc1.start();
+            osc1.stop(audioCtx.currentTime + 0.15);
+
+            // Second Higher Success note (Slight delay for chime effect)
+            setTimeout(() => {
+                let osc2 = audioCtx.createOscillator();
+                let gain2 = audioCtx.createGain();
+                osc2.type = 'sine';
+                osc2.frequency.setValueAtTime(880.00, audioCtx.currentTime); // A5 note
+                gain2.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+                osc2.connect(gain2);
+                gain2.connect(audioCtx.destination);
+                osc2.start();
+                osc2.stop(audioCtx.currentTime + 0.4);
+            }, 80);
+        } catch(e) {
+            console.log("Audio contexts not allowed/supported yet until user interaction.", e);
+        }
     }
 
     function validateLogin() {
@@ -225,7 +263,7 @@
 
         fetch(`${FIREBASE_URL}/live_signals.json`).then(res => res.json()).then(data => {
             if (!data) {
-                document.getElementById('scan-coin-name').innerText = "⏳ SECURE SCANNING... FILTERING FOR HIGH VOLUME COINS WITH WIDE SL PROTECTION.";
+                document.getElementById('scan-coin-name').innerText = "⏳ SCANNING ORDERBOOKS... SYNCHRONIZING MULTI-TIMEFRAME TRENDS.";
                 document.getElementById('rescan-btn-id').style.display = 'block'; return;
             }
             
@@ -239,10 +277,13 @@
                 document.getElementById('gauge-text').innerText = currentProgress + "%";
                 document.getElementById('gauge-pointer').style.transform = `rotate(${-180 + (currentProgress * 1.8)}deg)`;
 
-                if (currentProgress < 25) { 
-                    document.getElementById('scan-coin-name').innerText = "📊 DISCARDING LOW LIQUIDITY RISK COINS..."; 
-                } else if (currentProgress > 25 && renderedCount < rawCoins.length) {
-                    let targetCount = Math.floor((currentProgress - 25) / (75 / rawCoins.length));
+                if (currentProgress < 30) { 
+                    document.getElementById('scan-coin-name').innerText = "📊 SCANNING LIVE BINANCE ORDERBOOKS FOR WHALE ACTIVITY..."; 
+                } else if (currentProgress >= 30 && currentProgress < 65) {
+                    document.getElementById('scan-coin-name').innerText = "🧠 COGNITIVE MATRIX CALCULATION: DEEP 5M TO 1W TIMEFRAME CHECK...";
+                } else if (currentProgress >= 65 && renderedCount < rawCoins.length) {
+                    document.getElementById('scan-coin-name').innerText = "🎯 FILTERING HIGH ACCURACY PROBABILITY POOLS (+15% PNL ONLY)...";
+                    let targetCount = Math.floor((currentProgress - 65) / (35 / rawCoins.length));
                     while (renderedCount < targetCount && renderedCount < rawCoins.length) {
                         renderSingleCard(rawCoins[renderedCount]); renderedCount++;
                     }
@@ -253,8 +294,11 @@
                     while (renderedCount < rawCoins.length) {
                         renderSingleCard(rawCoins[renderedCount]); renderedCount++;
                     }
-                    document.getElementById('scan-coin-name').innerText = "🎯 HIGH-VOLUME SECURE SIGNALS LOADED";
+                    document.getElementById('scan-coin-name').innerText = "💎 V16 INSTITUTIONAL DEEP SIGNALS SECURELY DECODED";
                     document.getElementById('rescan-btn-id').style.display = 'block';
+                    
+                    // 🔔 Trigger Audio Alert exactly when 100% hits and cards show up
+                    playSuccessPingAlert();
                 }
             }, 60); 
         }).catch(() => {
@@ -273,17 +317,21 @@
         const badgeText = isLong ? "BUY / LONG 📈" : "SELL / SHORT 📉";
         const btnClass = isLong ? "trade-btn" : "trade-btn short";
 
+        let bookText = isLong ? "🐋 Whale Buying Volume Dominant" : "🐋 Whale Selling Pressure Dominant";
+        let bookColor = isLong ? "var(--green)" : "var(--red)";
+
         document.getElementById('cards-container').innerHTML += `
             <div class="card">
                 <div class="card-header">
                     <span class="coin-title" style="color:var(--gold)">${coin.pair}</span>
                     <span class="${badgeClass}">${badgeText}</span>
                 </div>
-                <div class="price-row"><span class="label">Timeframe Grid:</span><span class="val" style="color:var(--blue-glow); font-weight:bold;">15m / 1H Pro Matrix</span></div>
+                <div class="price-row"><span class="label">Matrix Validation:</span><span class="val" style="color:var(--blue-glow); font-weight:bold;">5m ➔ 1W Full Matrix Sync</span></div>
+                <div class="price-row"><span class="label">Whale Depth:</span><span class="val" style="color:${bookColor}; font-weight:900; font-size:12px;">${bookText}</span></div>
                 <div class="price-row"><span class="label">Live Entry Price:</span><span class="val" style="color:var(--blue-glow)">$${coin.entry}</span></div>
-                <div class="price-row"><span class="label">Futures Target:</span><span class="val" style="color:var(--green)">$${coin.tp1} <br><span style="font-size:11px; font-weight:bold;">(+${coin.pnl}%)</span></span></div>
-                <div class="price-row"><span class="label">ATR Safe SL:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
-                <div class="price-row"><span class="label">SMC Reliability Matrix:</span><span class="val" style="color:var(--gold)">${coin.accuracy}%</span></div>
+                <div class="price-row"><span class="label">Target Take Profit:</span><span class="val" style="color:var(--green)">$${coin.tp1} <br><span style="font-size:11px; font-weight:bold;">(+${coin.pnl}%)</span></span></div>
+                <div class="price-row"><span class="label">Adaptive Anti-Hunt SL:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
+                <div class="price-row"><span class="label">Statistical Win Probability:</span><span class="val" style="color:var(--gold)">${coin.accuracy}%</span></div>
                 <div class="action-container">
                     <button class="${btnClass}" id="t-btn-${idx}" onclick="engageUserLocalTrade(${idx}, '${cleanSymbol}', ${coin.tp1}, ${coin.sl}, '${coin.side}')">🚀 Take Trade</button>
                     <button class="more-btn" onclick="openModal(${idx})">Logic / විස්තර</button>
@@ -333,7 +381,7 @@
 
     function openModal(index) {
         const data = cryptoDataPool[index];
-        document.getElementById('modal-coin').innerText = data.pair + " SECURE DECODE";
+        document.getElementById('modal-coin').innerText = data.pair + " DEEP MATRIX ANALYSIS";
         document.getElementById('modal-logic').innerText = data.tech_logic;
         document.getElementById('modal-risk').innerText = data.risk_logic;
         document.getElementById('info-modal').style.display = 'flex';
