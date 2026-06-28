@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna V18.1 - Global AI Terminal</title>
+    <title>AlphaSigna V18.2 - Global AI Terminal</title>
     <style>
         :root {
             --primary: #00ffcc;
@@ -59,12 +59,15 @@
         .global-card { border-left: 4px solid var(--primary); }
         .personal-card { border-left: 4px solid var(--accent); }
 
-        /* Scanner */
-        .scanner-section { text-align: center; margin: 30px 0; }
-        .radar { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--border); margin: 0 auto 20px auto; position: relative; overflow: hidden; display: none; background: repeating-radial-gradient(circle, transparent, transparent 10px, rgba(33,38,45,0.5) 11px, rgba(33,38,45,0.5) 12px); }
+        /* 🛰️ Advanced Multi-Coin Scanner Section */
+        .scanner-section { text-align: center; margin: 40px 0; background: rgba(13,17,23,0.4); padding: 25px; border-radius: 12px; border: 1px solid var(--border); }
+        .radar { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--border); margin: 0 auto 15px auto; position: relative; overflow: hidden; display: none; background: repeating-radial-gradient(circle, transparent, transparent 10px, rgba(33,38,45,0.5) 11px, rgba(33,38,45,0.5) 12px); }
         .radar::before { content: ''; position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; background: conic-gradient(from 0deg, transparent 50%, rgba(0, 255, 204, 0.4) 100%); transform-origin: 0 0; animation: scan-rotate 1.5s linear infinite; }
         @keyframes scan-rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
+        /* Live Coin Ticker Text Styling */
+        #coin-ticker { display: none; font-family: 'Courier New', Courier, monospace; font-size: 15px; font-weight: bold; color: var(--primary); margin-bottom: 15px; min-height: 20px; text-shadow: 0 0 8px rgba(0,255,204,0.4); }
+
         /* Signals Card Grid */
         .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 20px; opacity: 0; transition: opacity 0.5s ease; }
         .signal-card { background: var(--card-bg); border-radius: 14px; padding: 24px; border: 1px solid var(--border); position: relative; display: flex; flex-direction: column; justify-content: space-between; }
@@ -95,7 +98,7 @@
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 </head>
 <body>
 
@@ -130,6 +133,7 @@
 
         <div class="scanner-section">
             <div class="radar" id="radar-anim"></div>
+            <div id="coin-ticker">INITIALIZING SCANNER Pipeline...</div>
             <button class="btn" id="scan-btn" style="width: auto; padding: 12px 30px;" onclick="startScan()">🛰️ SCAN REAL-TIME ORDERBOOK</button>
         </div>
 
@@ -154,10 +158,6 @@
         
         let currentSignalData = null;
         let activeUserKey = null;
-
-        let chartInstance = null;
-        let candleSeries = null;
-        let binanceWS = null;
 
         // --- 📡 GLOBAL SYSTEM STATUS LISTENER ---
         db.ref('system_status').on('value', (snapshot) => {
@@ -214,11 +214,15 @@
             });
         }
 
-        // --- 📡 CORE INTEGRATION REFRESHER ---
+        // --- 📡 BACKGROUND DATA LISTENERS ---
         function initCoreListeners() {
+            // Keep background reference of live signals, but do NOT render instantly on login
             db.ref('live_signals').on('value', (s) => { 
                 currentSignalData = s.val(); 
-                if(document.getElementById('signal-container').style.opacity === "1") renderSignals(currentSignalData); 
+                // Only auto-update if the user already has performed a scan and grid is visible
+                if(document.getElementById('signal-container').style.opacity === "1") {
+                    renderSignals(currentSignalData);
+                }
             });
             db.ref('global_stats').on('value', (s) => {
                 const d = s.val(); if(d) { 
@@ -240,19 +244,44 @@
             alert(`⚡ TRADE COMMAND INTEGRATED\nOrders dispatched to terminal pipeline for ${coin}.`);
         }
 
+        // --- 🛰️ HIGH-TECH COIN SCANNER & TICKER ANIMATION ---
         function startScan() {
-            document.getElementById('scan-btn').style.display = 'none';
-            document.getElementById('radar-anim').style.display = 'block';
-            document.getElementById('signal-container').style.opacity = '0';
+            const btn = document.getElementById('scan-btn');
+            const radar = document.getElementById('radar-anim');
+            const ticker = document.getElementById('coin-ticker');
+            const container = document.getElementById('signal-container');
+            
+            btn.style.display = 'none';
+            radar.style.display = 'block';
+            ticker.style.display = 'block';
+            container.style.opacity = '0'; // Hide any previous signals during refresh
+
+            // List of universal top crypto assets to simulate in real-time engine matrix
+            const coinsList = ["BTC/USDT", "ETH/USDT", "SOL/USDT", "BNB/USDT", "XRP/USDT", "ADA/USDT", "AVAX/USDT", "DOT/USDT", "DOGE/USDT", "LINK/USDT", "MATIC/USDT", "NEAR/USDT", "LTC/USDT", "UNI/USDT", "ATOM/USDT", "INJ/USDT", "TIA/USDT", "OP/USDT", "ARB/USDT", "SUI/USDT", "APT/USDT", "ORDI/USDT", "FTM/USDT", "ICP/USDT", "RNDR/USDT"];
+            
+            let tickerCount = 0;
+            // Interval to rotate coin names rapidly every 80ms
+            const tickerInterval = setInterval(() => {
+                const currentCoin = coinsList[tickerCount % coinsList.length];
+                const simulatedVolume = (Math.random() * (95 - 40) + 40).toFixed(1);
+                ticker.innerText = `🛰️ SEARCHING INTERFACE [${currentCoin}] -> DEEP VOLUME: ${simulatedVolume}M/s`;
+                tickerCount++;
+            }, 80);
+
+            // Halt animation and populate data fields after 3.2 seconds
             setTimeout(() => {
-                document.getElementById('radar-anim').style.display = 'none';
-                document.getElementById('scan-btn').style.display = 'inline-block';
-                document.getElementById('scan-btn').innerText = "🔄 RE-SCAN AI DEEP ORDERBOOK";
+                clearInterval(tickerInterval);
+                radar.style.display = 'none';
+                ticker.style.display = 'none';
+                btn.style.display = 'inline-block';
+                btn.innerText = "🔄 RE-SCAN AI DEEP ORDERBOOK";
+                
                 renderSignals(currentSignalData);
-                document.getElementById('signal-container').style.opacity = '1'; 
-            }, 2500);
+                container.style.opacity = '1'; 
+            }, 3200);
         }
 
+        // --- 🎴 SIGNAL INTERFACE MATRIX MODULATOR ---
         function renderSignals(data) {
             const container = document.getElementById('signal-container');
             container.innerHTML = ''; 
@@ -297,7 +326,8 @@
             }
         }
 
-        async function openLiveChart(pair, entry, tp, sl, side) {
+        // --- 📈 TRADINGVIEW ADVANCED EMBEDDED ENGINE (CORS FIXED) ---
+        function openLiveChart(pair, entry, tp, sl, side) {
             document.getElementById('chart-modal').style.display = 'flex';
             document.getElementById('chart-coin-name').innerText = `${pair} Real-Time Terminal`;
             
@@ -305,60 +335,37 @@
             sideBadge.innerText = side;
             sideBadge.className = side === 'LONG' ? 'badge badge-swing' : 'badge badge-scalp';
 
-            if (chartInstance) { chartInstance.remove(); chartInstance = null; }
-            if (binanceWS) { binanceWS.close(); binanceWS = null; }
-
             const chartDiv = document.getElementById('tv-chart');
-            chartInstance = LightweightCharts.createChart(chartDiv, {
-                width: chartDiv.clientWidth,
-                height: chartDiv.clientHeight,
-                layout: { background: { type: 'solid', color: '#010409' }, textColor: '#8b949e' },
-                grid: { vertLines: { color: 'rgba(33,38,45,0.4)' }, horzLines: { color: 'rgba(33,38,45,0.4)' } },
-                crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
-                timeScale: { timeVisible: true, secondsVisible: false },
-                watermark: { color: 'rgba(0, 255, 204, 0.04)', visible: true, text: 'ALPHASIGNA AI', fontSize: 38, horzAlign: 'center', vertAlign: 'center' }
+            chartDiv.innerHTML = ''; // Wipe out any past instances
+
+            // Format pair safely for official widget lookup structure
+            const tvSymbol = "BINANCE:" + pair.replace('/', '');
+
+            // Construct and deploy TradingView Embedded Layout Matrix Object
+            new TradingView.widget({
+                "width": "100%",
+                "height": "100%",
+                "symbol": tvSymbol,
+                "interval": "1", // Premium 1MCandle Feed Tracking
+                "timezone": "Etc/UTC",
+                "theme": "dark",
+                "style": "1",
+                "locale": "en",
+                "toolbar_bg": "#010409",
+                "enable_publishing": false,
+                "hide_side_toolbar": true,
+                "allow_symbol_change": false,
+                "container_id": "tv-chart",
+                "studies": [],
+                "backgroundColor": "#010409",
+                "gridColor": "rgba(33, 38, 45, 0.4)"
             });
-
-            candleSeries = chartInstance.addCandlestickSeries({
-                upColor: '#26a69a', downColor: '#ef5350', borderVisible: false, wickUpColor: '#26a69a', wickDownColor: '#ef5350'
-            });
-
-            candleSeries.createPriceLine({ price: entry, color: '#58a6ff', lineWidth: 2, lineStyle: 2, title: 'ENTRY' });
-            candleSeries.createPriceLine({ price: tp, color: '#26a69a', lineWidth: 2, lineStyle: 2, title: 'TARGET TP' });
-            candleSeries.createPriceLine({ price: sl, color: '#ef5350', lineWidth: 2, lineStyle: 2, title: 'TARGET SL' });
-
-            const symbol = pair.replace('/', '').toLowerCase();
-            try {
-                const res = await fetch(`https://fapi.binance.com/fapi/v1/klines?symbol=${symbol.toUpperCase()}&interval=1m&limit=130`);
-                const data = await res.json();
-                const formattedData = data.map(d => ({
-                    time: d[0] / 1000, open: parseFloat(d[1]), high: parseFloat(d[2]), low: parseFloat(d[3]), close: parseFloat(d[4])
-                }));
-                candleSeries.setData(formattedData);
-            } catch (e) { console.error("History engine failure."); }
-
-            binanceWS = new WebSocket(`wss://fstream.binance.com/ws/${symbol}@kline_1m`);
-            binanceWS.onmessage = (event) => {
-                const msg = JSON.parse(event.data);
-                const k = msg.k;
-                candleSeries.update({
-                    time: k.t / 1000, open: parseFloat(k.o), high: parseFloat(k.h), low: parseFloat(k.l), close: parseFloat(k.c)
-                });
-            };
         }
 
         function closeLiveChart() {
             document.getElementById('chart-modal').style.display = 'none';
-            if (binanceWS) binanceWS.close();
-            if (chartInstance) chartInstance.remove();
+            document.getElementById('tv-chart').innerHTML = ''; // Release system graphics allocation
         }
-
-        window.addEventListener('resize', () => {
-            if(chartInstance && document.getElementById('chart-modal').style.display === 'flex') {
-                const chartDiv = document.getElementById('tv-chart');
-                chartInstance.applyOptions({ width: chartDiv.clientWidth, height: chartDiv.clientHeight });
-            }
-        });
     </script>
 </body>
 </html>
