@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna AI - V9 Macro Terminal</title>
+    <title>AlphaSigna AI - V10 Pro Anti-Hunt</title>
     <style>
         :root {
             --bg-color: #03070d; 
@@ -113,7 +113,7 @@
 
 <div class="login-box" id="login-container">
     <h2 style="margin-top: 0; color: #fff; font-weight: 900;">AlphaSigna AI</h2>
-    <p style="font-size: 11px; color:var(--text-muted); margin-top:-10px; letter-spacing: 2px;">V9 3-MONTH MACRO QUANTUM TERMINAL</p>
+    <p style="font-size: 11px; color:var(--text-muted); margin-top:-10px; letter-spacing: 2px;">V10 PRO ANTI-HUNT MATRIX</p>
     <div class="input-group" style="margin-top: 30px;">
         <label>Terminal Key</label>
         <input type="password" id="access-key" placeholder="••••••••••••">
@@ -125,7 +125,7 @@
 <div class="container" id="main-app">
     <div class="header">
         <h1>AlphaSigna AI</h1>
-        <p>3-MONTH HISTORICAL HISTOGRAM PIPELINE</p>
+        <p>⚡ V10 HIGH-LIQUIDITY SECURE CORE</p>
     </div>
     
     <div class="expiry-badge">
@@ -147,14 +147,14 @@
     </div>
     
     <div class="gauge-section">
-        <div class="scanning-coin" id="scan-coin-name">READY TO INITIALIZE 90-DAY DEEP MACRO SCAN</div>
+        <div class="scanning-coin" id="scan-coin-name">READY TO ACTIVATE LIQUIDITY-CHECK SHIELD</div>
         <div class="meter-container">
             <div class="gauge-bg"></div>
             <div class="gauge-fill" id="gauge-pointer"></div>
             <div class="gauge-percentage" id="gauge-text">0%</div>
         </div>
-        <button class="scan-init-btn" id="start-scan-btn" onclick="triggerPremiumScanUI()">🔍 Scan Live Market</button>
-        <button class="rescan-btn" id="rescan-btn-id" style="display:none;" onclick="triggerPremiumScanUI()">🔄 Re-Scan Live Market</button>
+        <button class="scan-init-btn" id="start-scan-btn" onclick="triggerPremiumScanUI()">🔍 Scan Market ($50M+ Volume)</button>
+        <button class="rescan-btn" id="rescan-btn-id" style="display:none;" onclick="triggerPremiumScanUI()">🔄 Re-Scan Secure Assets</button>
     </div>
     
     <div class="signal-grid" id="cards-container"></div>
@@ -165,9 +165,9 @@
         <span class="close-modal" onclick="closeModal()">&times;</span>
         <h2 style="color: var(--gold); margin-top: 0; font-size: 18px; text-transform: uppercase;" id="modal-coin">ANALYSIS</h2>
         <hr style="border-color: rgba(255,255,255,0.1); margin-bottom: 20px;">
-        <h3 style="color: var(--blue-glow); font-size: 14px; margin-bottom:8px;">🧠 Deep Technical Logic (3-Month Trend)</h3>
+        <h3 style="color: var(--blue-glow); font-size: 14px; margin-bottom:8px;">🧠 V10 Anti-Hunt Algorithm</h3>
         <p id="modal-logic" style="white-space: pre-line; font-size: 13px; color: #e0e6ed; line-height:1.6; margin-top:0;"></p>
-        <h3 style="color: var(--red); font-size: 14px; margin-bottom:8px; margin-top:20px;">⚖️ Risk & Leverage Protocol</h3>
+        <h3 style="color: var(--red); font-size: 14px; margin-bottom:8px; margin-top:20px;">⚖️ Institutional Risk Strategy</h3>
         <p id="modal-risk" style="white-space: pre-line; font-size: 13px; color: #ff9999; font-weight: bold; line-height:1.6; margin-top:0;"></p>
     </div>
 </div>
@@ -193,19 +193,19 @@
 
         fetch(`${FIREBASE_URL}/premium_keys/${key}.json`).then(res => res.json()).then(userData => {
             if (!userData || userData.status !== "active") { 
-                document.getElementById('error-msg').innerText = "❌ INVALID PRESET TERMINAL KEY."; return; 
+                document.getElementById('error-msg').innerText = "❌ INVALID TERMINAL KEY."; return; 
             }
             if(userData.expire_date) {
                 const today = new Date(); const expiryDate = new Date(userData.expire_date);
                 today.setHours(0,0,0,0); expiryDate.setHours(0,0,0,0);
                 if(today > expiryDate) {
-                    document.getElementById('error-msg').innerText = `❌ TERMINAL KEY EXPIRED ON (${userData.expire_date}).`; return;
+                    document.getElementById('error-msg').innerText = `❌ EXPIRED ON (${userData.expire_date}).`; return;
                 }
             }
             loggedInKey = key;
             document.getElementById('login-container').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
-            document.getElementById('key-expiry').innerText = userData.expire_date || "LIFETIME VALIDITY";
+            document.getElementById('key-expiry').innerText = userData.expire_date || "LIFETIME";
             
             let statsObj = userData.stats || { trades: 0, tp: 0, sl: 0 };
             pTrades = statsObj.trades || 0; pTp = statsObj.tp || 0; pSl = statsObj.sl || 0;
@@ -225,7 +225,7 @@
 
         fetch(`${FIREBASE_URL}/live_signals.json`).then(res => res.json()).then(data => {
             if (!data) {
-                document.getElementById('scan-coin-name').innerText = "⏳ ALGO SCANNING... LOOKING FOR 90-DAY DEEP TREND MATCHES.";
+                document.getElementById('scan-coin-name').innerText = "⏳ SECURE SCANNING... FILTERING FOR HIGH VOLUME COINS WITH WIDE SL PROTECTION.";
                 document.getElementById('rescan-btn-id').style.display = 'block'; return;
             }
             
@@ -240,7 +240,7 @@
                 document.getElementById('gauge-pointer').style.transform = `rotate(${-180 + (currentProgress * 1.8)}deg)`;
 
                 if (currentProgress < 25) { 
-                    document.getElementById('scan-coin-name').innerText = "📅 FETCHING 3-MONTH HISTORICAL PRICE MATRICES..."; 
+                    document.getElementById('scan-coin-name').innerText = "📊 DISCARDING LOW LIQUIDITY RISK COINS..."; 
                 } else if (currentProgress > 25 && renderedCount < rawCoins.length) {
                     let targetCount = Math.floor((currentProgress - 25) / (75 / rawCoins.length));
                     while (renderedCount < targetCount && renderedCount < rawCoins.length) {
@@ -253,12 +253,12 @@
                     while (renderedCount < rawCoins.length) {
                         renderSingleCard(rawCoins[renderedCount]); renderedCount++;
                     }
-                    document.getElementById('scan-coin-name').innerText = "🎯 90-DAY MACRO CONFIRMED TARGETS SECURED";
+                    document.getElementById('scan-coin-name').innerText = "🎯 HIGH-VOLUME SECURE SIGNALS LOADED";
                     document.getElementById('rescan-btn-id').style.display = 'block';
                 }
-            }, 65); 
+            }, 60); 
         }).catch(() => {
-            document.getElementById('scan-coin-name').innerText = "⚠️ HUB CONNECTION ERROR.";
+            document.getElementById('scan-coin-name').innerText = "⚠️ CONNECTION FAULT.";
             document.getElementById('rescan-btn-id').style.display = 'block';
         });
     }
@@ -279,10 +279,10 @@
                     <span class="coin-title" style="color:var(--gold)">${coin.pair}</span>
                     <span class="${badgeClass}">${badgeText}</span>
                 </div>
-                <div class="price-row"><span class="label">Historical Analysis:</span><span class="val" style="color:var(--blue-glow); font-weight:bold;">3-Month Macro Match</span></div>
+                <div class="price-row"><span class="label">Timeframe Grid:</span><span class="val" style="color:var(--blue-glow); font-weight:bold;">15m / 1H Pro Matrix</span></div>
                 <div class="price-row"><span class="label">Live Entry Price:</span><span class="val" style="color:var(--blue-glow)">$${coin.entry}</span></div>
                 <div class="price-row"><span class="label">Futures Target:</span><span class="val" style="color:var(--green)">$${coin.tp1} <br><span style="font-size:11px; font-weight:bold;">(+${coin.pnl}%)</span></span></div>
-                <div class="price-row"><span class="label">Safe Stop Loss:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
+                <div class="price-row"><span class="label">ATR Safe SL:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
                 <div class="price-row"><span class="label">SMC Reliability Matrix:</span><span class="val" style="color:var(--gold)">${coin.accuracy}%</span></div>
                 <div class="action-container">
                     <button class="${btnClass}" id="t-btn-${idx}" onclick="engageUserLocalTrade(${idx}, '${cleanSymbol}', ${coin.tp1}, ${coin.sl}, '${coin.side}')">🚀 Take Trade</button>
@@ -316,7 +316,7 @@
                     syncDataToFirebase(); refreshDashboardUI();
                 }
             }).catch(() => {});
-        }, 3000);
+        }, 4000);
     }
 
     function syncDataToFirebase() {
@@ -333,7 +333,7 @@
 
     function openModal(index) {
         const data = cryptoDataPool[index];
-        document.getElementById('modal-coin').innerText = data.pair + " DEEP HISTORICAL ANALYSIS";
+        document.getElementById('modal-coin').innerText = data.pair + " SECURE DECODE";
         document.getElementById('modal-logic').innerText = data.tech_logic;
         document.getElementById('modal-risk').innerText = data.risk_logic;
         document.getElementById('info-modal').style.display = 'flex';
