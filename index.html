@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna V17.3 - Premium AI Matrix</title>
+    <title>AlphaSigna V17.4 - Premium AI Matrix</title>
     <style>
         :root {
             --primary: #00ffcc;
@@ -14,51 +14,31 @@
             --short: #ff1744;
         }
         body {
-            background-color: var(--bg-dark);
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
+            background-color: var(--bg-dark); color: #ffffff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0; padding: 20px;
         }
         
         /* Login Screen */
-        #login-screen {
-            display: flex; flex-direction: column; align-items: center; justify-content: center; height: 85vh;
-        }
-        .login-box {
-            background: var(--card-bg); padding: 40px; border-radius: 15px; border: 1px solid #2a3142;
-            box-shadow: 0 0 25px rgba(0, 255, 204, 0.15); text-align: center; width: 320px;
-        }
-        .login-box input {
-            padding: 15px; width: 80%; border-radius: 8px; border: 1px solid var(--primary);
-            background: #000; color: var(--primary); font-size: 16px; text-transform: uppercase;
-            text-align: center; margin-bottom: 20px; outline: none;
-        }
-        .btn {
-            background: var(--primary); color: #000; padding: 15px 30px; border: none;
-            border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer;
-            transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px; width: 100%;
-        }
+        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 85vh; }
+        .login-box { background: var(--card-bg); padding: 40px; border-radius: 15px; border: 1px solid #2a3142; box-shadow: 0 0 25px rgba(0, 255, 204, 0.15); text-align: center; width: 320px; }
+        .login-box input { padding: 15px; width: 80%; border-radius: 8px; border: 1px solid var(--primary); background: #000; color: var(--primary); font-size: 16px; text-transform: uppercase; text-align: center; margin-bottom: 20px; outline: none; }
+        
+        .btn { background: var(--primary); color: #000; padding: 15px 30px; border: none; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; transition: all 0.3s; text-transform: uppercase; width: 100%; }
         .btn:hover { box-shadow: 0 0 15px var(--primary); transform: scale(1.02); }
-        .btn-trade {
-            background: transparent; border: 1px solid var(--primary); color: var(--primary);
-            margin-top: 15px; padding: 10px;
-        }
+        
+        .btn-trade { background: transparent; border: 1px solid var(--primary); color: var(--primary); margin-top: 15px; padding: 10px; width: 48%; display: inline-block; }
         .btn-trade:hover { background: var(--primary); color: #000; }
+        
+        .btn-chart { background: rgba(0, 255, 204, 0.1); border: 1px solid var(--primary); color: var(--primary); margin-top: 15px; padding: 10px; width: 48%; display: inline-block; float: right; }
+        .btn-chart:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary); }
 
         /* Dashboard & Stats */
         #dashboard { display: none; }
         .header { text-align: center; margin-bottom: 25px; }
         .header h1 { color: var(--primary); margin-bottom: 5px; text-shadow: 0 0 10px rgba(0,255,204,0.3); }
         
-        .stats-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;
-            max-width: 1200px; margin: 0 auto 30px auto;
-        }
-        .stat-card {
-            background: var(--card-bg); border: 1px solid #2a3142; border-radius: 10px;
-            padding: 15px; text-align: center;
-        }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; max-width: 1200px; margin: 0 auto 30px auto; }
+        .stat-card { background: var(--card-bg); border: 1px solid #2a3142; border-radius: 10px; padding: 15px; text-align: center; }
         .stat-card h3 { margin: 0 0 10px 0; font-size: 13px; color: #8b94a3; text-transform: uppercase; letter-spacing: 1px; }
         .stat-value { font-size: 24px; font-weight: bold; color: #fff; }
         .global-card { border-top: 3px solid var(--primary); }
@@ -66,29 +46,16 @@
 
         /* Scanner */
         .scanner-section { text-align: center; margin: 30px 0; }
-        .radar {
-            width: 130px; height: 130px; border-radius: 50%; border: 2px solid #2a3142;
-            margin: 0 auto 20px auto; position: relative; overflow: hidden;
-            background: repeating-radial-gradient(circle, transparent, transparent 15px, #1a232e 16px, #1a232e 17px);
-            display: none;
-        }
-        .radar::before {
-            content: ''; position: absolute; top: 50%; left: 50%; width: 130px; height: 130px;
-            background: conic-gradient(from 0deg, transparent 60%, rgba(0, 255, 204, 0.6) 100%);
-            transform-origin: 0 0; animation: scan-rotate 2s linear infinite;
-        }
+        .radar { width: 130px; height: 130px; border-radius: 50%; border: 2px solid #2a3142; margin: 0 auto 20px auto; position: relative; overflow: hidden; display: none; }
+        .radar::before { content: ''; position: absolute; top: 50%; left: 50%; width: 130px; height: 130px; background: conic-gradient(from 0deg, transparent 60%, rgba(0, 255, 204, 0.6) 100%); transform-origin: 0 0; animation: scan-rotate 2s linear infinite; }
         @keyframes scan-rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         /* Signal Grid */
-        .signal-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px; max-width: 1200px; margin: 0 auto; opacity: 0; transition: opacity 0.5s ease;
-        }
+        .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; opacity: 0; transition: opacity 0.5s ease; }
         .signal-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid #2a3142; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .badge { display: inline-block; padding: 4px 8px; border-radius: 5px; font-size: 11px; font-weight: bold; margin-bottom: 15px; }
         .badge-swing { background: #0d47a1; color: #64b5f6; border: 1px solid #1976d2; }
         .badge-scalp { background: rgba(255, 0, 127, 0.15); color: var(--accent); border: 1px solid var(--accent); }
-        .badge-waiting { background: #424242; color: #bdbdbd; border: 1px solid #616161; }
         
         .coin-title { font-size: 24px; font-weight: bold; margin: 0 0 15px 0; display: flex; justify-content: space-between; }
         .side-long { color: var(--long); text-shadow: 0 0 5px rgba(0,230,118,0.3); }
@@ -96,11 +63,30 @@
         .data-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; border-bottom: 1px solid #2a3142; padding-bottom: 4px; }
         .data-label { color: #8b94a3; }
         .data-value { font-weight: bold; }
-        .ai-logic { margin-top: 15px; font-size: 12px; color: #78909c; background: #0b0e14; padding: 10px; border-radius: 6px; border-left: 3px solid var(--primary); }
+        
+        /* 📈 Live Chart Modal (Popup) */
+        #chart-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(11, 14, 20, 0.95); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(5px);
+        }
+        .chart-container {
+            width: 90%; max-width: 1000px; height: 70vh; background: #000; border: 2px solid var(--primary);
+            border-radius: 15px; padding: 20px; position: relative; box-shadow: 0 0 30px rgba(0, 255, 204, 0.3);
+        }
+        .close-chart {
+            position: absolute; top: 10px; right: 15px; color: var(--short); font-size: 24px; font-weight: bold;
+            cursor: pointer; z-index: 10; background: none; border: none;
+        }
+        .close-chart:hover { color: #fff; }
+        #tv-chart { width: 100%; height: 100%; margin-top: 10px; }
+        .chart-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a3142; padding-bottom: 10px; }
+        .chart-title { font-size: 20px; font-weight: bold; color: var(--primary); }
+
     </style>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
 
@@ -111,33 +97,21 @@
             <input type="password" id="access-key" placeholder="VIP12345" />
             <br>
             <button class="btn" onclick="verifyFirebaseKey()">VERIFY ACCESS</button>
-            <p id="error-msg" style="color: var(--short); display: none; margin-top: 15px; font-weight: bold; font-size: 14px;">⚠️ Access Denied! Invalid or Expired Key.</p>
+            <p id="error-msg" style="color: var(--short); display: none; margin-top: 15px;">⚠️ Access Denied! Invalid Key.</p>
         </div>
     </div>
 
     <div id="dashboard">
         <div class="header">
             <h1>💎 AlphaSigna Live Hub</h1>
-            <p id="user-welcome" style="color: var(--primary); margin: 0; font-size: 14px; font-weight: bold;"></p>
+            <p id="user-welcome" style="color: var(--primary); font-size: 14px; font-weight: bold;"></p>
         </div>
 
         <div class="stats-grid">
-            <div class="stat-card global-card">
-                <h3>Global Total Trades</h3>
-                <div class="stat-value" id="global-total-trades">0</div>
-            </div>
-            <div class="stat-card global-card">
-                <h3>Global Win Rate</h3>
-                <div class="stat-value" id="global-win-rate" style="color: var(--primary);">0%</div>
-            </div>
-            <div class="stat-card personal-card">
-                <h3>My Total Trades</h3>
-                <div class="stat-value" id="user-trades" style="color: #fff;">0</div>
-            </div>
-            <div class="stat-card personal-card">
-                <h3>My Profile (TP / SL)</h3>
-                <div class="stat-value" id="user-pnl-ratio" style="color: var(--long);">0 / 0</div>
-            </div>
+            <div class="stat-card global-card"><h3>Global Total Trades</h3><div class="stat-value" id="global-total-trades">0</div></div>
+            <div class="stat-card global-card"><h3>Global Win Rate</h3><div class="stat-value" id="global-win-rate" style="color: var(--primary);">0%</div></div>
+            <div class="stat-card personal-card"><h3>My Total Trades</h3><div class="stat-value" id="user-trades">0</div></div>
+            <div class="stat-card personal-card"><h3>My Profile (TP / SL)</h3><div class="stat-value" id="user-pnl-ratio" style="color: var(--long);">0 / 0</div></div>
         </div>
 
         <div class="scanner-section">
@@ -148,181 +122,185 @@
         <div class="signal-grid" id="signal-container"></div>
     </div>
 
+    <div id="chart-modal">
+        <div class="chart-container">
+            <button class="close-chart" onclick="closeLiveChart()">✖</button>
+            <div class="chart-header">
+                <span class="chart-title" id="chart-coin-name">BTC/USDT - Live Analysis</span>
+                <span id="chart-side" class="badge"></span>
+            </div>
+            <div id="tv-chart"></div>
+        </div>
+    </div>
+
     <script>
-        const firebaseConfig = {
-            databaseURL: "https://alphasigna-live-d644a-default-rtdb.firebaseio.com/"
-        };
+        const firebaseConfig = { databaseURL: "https://alphasigna-live-d644a-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        
         let currentSignalData = null;
         let activeUserKey = null;
 
-        // --- 🔑 FIREBASE KEY VERIFICATION ---
+        // Chart Variables
+        let chartInstance = null;
+        let candleSeries = null;
+        let binanceWS = null;
+
+        // --- 🔑 LOGIN & LISTENERS ---
         function verifyFirebaseKey() {
             const inputKey = document.getElementById('access-key').value.trim();
-            const errorMsg = document.getElementById('error-msg');
-            
-            if(!inputKey) { errorMsg.style.display = 'block'; return; }
-
+            if(!inputKey) return;
             db.ref('premium_keys/' + inputKey).once('value', (snapshot) => {
                 const userData = snapshot.val();
-                
-                if (userData && userData.status === "active") {
-                    const expiryDate = new Date(userData.expire_date);
-                    const today = new Date();
-
-                    if (expiryDate >= today) {
-                        activeUserKey = inputKey;
-                        errorMsg.style.display = 'none';
-                        document.getElementById('login-screen').style.display = 'none';
-                        document.getElementById('dashboard').style.display = 'block';
-                        
-                        document.getElementById('user-welcome').innerText = `LICENSE USER: ${inputKey.toUpperCase()} (Active Until: ${userData.expire_date})`;
-                        
-                        initListeners();
-                    } else {
-                        errorMsg.innerText = "⚠️ Access Denied! Key has Expired.";
-                        errorMsg.style.display = 'block';
-                    }
+                if (userData && userData.status === "active" && new Date(userData.expire_date) >= new Date()) {
+                    activeUserKey = inputKey;
+                    document.getElementById('login-screen').style.display = 'none';
+                    document.getElementById('dashboard').style.display = 'block';
+                    document.getElementById('user-welcome').innerText = `LICENSE: ${inputKey.toUpperCase()}`;
+                    initListeners();
                 } else {
-                    errorMsg.innerText = "⚠️ Access Denied! Invalid Key or Inactive Profile.";
-                    errorMsg.style.display = 'block';
+                    document.getElementById('error-msg').style.display = 'block';
                 }
             });
         }
 
-        // --- 📡 INITIALIZE DATA LISTENERS ---
         function initListeners() {
-            // 1. Live Signals Listener
-            db.ref('live_signals').on('value', (snapshot) => {
-                currentSignalData = snapshot.val();
-                if(document.getElementById('signal-container').style.opacity === "1") {
-                    renderSignals(currentSignalData);
+            db.ref('live_signals').on('value', (s) => { 
+                currentSignalData = s.val(); 
+                if(document.getElementById('signal-container').style.opacity === "1") renderSignals(currentSignalData); 
+            });
+            db.ref('global_stats').on('value', (s) => {
+                const d = s.val(); if(d) { 
+                    document.getElementById('global-total-trades').innerText = d.total_trades || 0;
+                    document.getElementById('global-win-rate').innerText = d.total_tp + d.total_sl > 0 ? ((d.total_tp / (d.total_tp + d.total_sl)) * 100).toFixed(1) + '%' : '0%';
                 }
             });
-
-            // 2. Global Stats Listener
-            db.ref('global_stats').on('value', (snapshot) => {
-                const gStats = snapshot.val();
-                if(gStats) {
-                    const totalTrades = gStats.total_trades || 0;
-                    const totalTP = gStats.total_tp || 0;
-                    const totalSL = gStats.total_sl || 0;
-                    
-                    document.getElementById('global-total-trades').innerText = totalTrades;
-                    
-                    let winRate = 0;
-                    if((totalTP + totalSL) > 0) {
-                        winRate = ((totalTP / (totalTP + totalSL)) * 100).toFixed(1);
-                    }
-                    document.getElementById('global-win-rate').innerText = winRate + '%';
-                }
-            });
-
-            // 3. Personal Stats Listener
-            db.ref('premium_keys/' + activeUserKey + '/stats').on('value', (snapshot) => {
-                const pStats = snapshot.val();
-                if(pStats) {
-                    document.getElementById('user-trades').innerText = pStats.trades || 0;
-                    document.getElementById('user-pnl-ratio').innerText = `${pStats.tp || 0} TP / ${pStats.sl || 0} SL`;
+            db.ref('premium_keys/' + activeUserKey + '/stats').on('value', (s) => {
+                const d = s.val(); if(d) {
+                    document.getElementById('user-trades').innerText = d.trades || 0;
+                    document.getElementById('user-pnl-ratio').innerText = `${d.tp || 0} TP / ${d.sl || 0} SL`;
                 }
             });
         }
 
-        // --- 📈 TAKE TRADE ACTION (UPDATE FIREBASE) ---
         function takeTrade(coin) {
-            if(!activeUserKey) return;
-            
-            // Increment Global Trades using Firebase Transaction
-            db.ref('global_stats/total_trades').transaction((current_value) => {
-                return (current_value || 0) + 1;
-            });
-
-            // Increment Personal Trades
-            db.ref('premium_keys/' + activeUserKey + '/stats/trades').transaction((current_value) => {
-                return (current_value || 0) + 1;
-            });
-
-            alert(`✅ Trade Execution Initiated for ${coin}!\nYour Personal and Global stats have been updated.`);
+            db.ref('global_stats/total_trades').transaction(v => (v || 0) + 1);
+            db.ref('premium_keys/' + activeUserKey + '/stats/trades').transaction(v => (v || 0) + 1);
+            alert(`✅ Trade Executed for ${coin}!`);
         }
 
-        // --- 🛰️ RADAR ANIMATION ---
         function startScan() {
-            const btn = document.getElementById('scan-btn');
-            const radar = document.getElementById('radar-anim');
-            const container = document.getElementById('signal-container');
-            
-            btn.style.display = 'none';
-            radar.style.display = 'block';
-            container.style.opacity = '0'; 
-
+            document.getElementById('scan-btn').style.display = 'none';
+            document.getElementById('radar-anim').style.display = 'block';
+            document.getElementById('signal-container').style.opacity = '0';
             setTimeout(() => {
-                radar.style.display = 'none';
-                btn.style.display = 'inline-block';
-                btn.innerText = "🔄 RESCAN AI MATRIX";
-                
+                document.getElementById('radar-anim').style.display = 'none';
+                document.getElementById('scan-btn').style.display = 'inline-block';
+                document.getElementById('scan-btn').innerText = "🔄 RESCAN AI MATRIX";
                 renderSignals(currentSignalData);
-                container.style.opacity = '1'; 
+                document.getElementById('signal-container').style.opacity = '1'; 
             }, 3000);
         }
 
-        // --- 🎴 RENDERING CARDS MATRIX ---
+        // --- 🎴 RENDER CARDS ---
         function renderSignals(data) {
             const container = document.getElementById('signal-container');
             container.innerHTML = ''; 
-            if (!data) return;
+            if (!data || data.WAITING) return;
             const currentTime = Math.floor(Date.now() / 1000);
 
             for (const [coin, details] of Object.entries(data)) {
-                if (coin === "WAITING" || details.signal_type === "WAITING ⏳") {
-                    container.innerHTML += `
-                        <div class="signal-card" style="text-align: center; grid-column: 1 / -1; padding: 40px; border: 1px dashed var(--primary);">
-                            <span class="badge badge-waiting">MARKET SCANNING ⏳</span>
-                            <h2 style="color: #9e9e9e;">Processing Live Orderbook Depth...</h2>
-                            <p style="color: #8b94a3; font-size: 14px;">${details.tech_logic}</p>
-                        </div>`;
-                    return;
-                }
-
-                if (details.signal_type.includes("SCALP")) {
-                    if ((currentTime - details.timestamp) > 900) continue; 
-                }
-
+                if (details.signal_type.includes("SCALP") && (currentTime - details.timestamp) > 900) continue; 
                 let badgeClass = details.signal_type.includes("SWING") ? "badge-swing" : "badge-scalp";
                 let sideClass = details.side === "LONG" ? "side-long" : "side-short";
+
+                // Pass variables to chart function correctly
+                const chartArgs = `'${details.pair}', ${details.entry}, ${details.tp1}, ${details.sl}, '${details.side}'`;
 
                 container.innerHTML += `
                     <div class="signal-card">
                         <span class="badge ${badgeClass}">${details.signal_type}</span>
-                        <div class="coin-title">
-                            <span>${details.pair}</span>
-                            <span class="${sideClass}">${details.side}</span>
+                        <div class="coin-title"><span>${details.pair}</span><span class="${sideClass}">${details.side}</span></div>
+                        <div class="data-row"><span class="data-label">Live Entry Price</span><span class="data-value">${details.entry}</span></div>
+                        <div class="data-row"><span class="data-label">Take Profit (TP)</span><span class="data-value" style="color: var(--long);">${details.tp1}</span></div>
+                        <div class="data-row"><span class="data-label">Stop Loss (SL)</span><span class="data-value" style="color: var(--short);">${details.sl}</span></div>
+                        
+                        <div>
+                            <button class="btn btn-trade" onclick="takeTrade('${coin}')">⚡ TAKE TRADE</button>
+                            <button class="btn btn-chart" onclick="openLiveChart(${chartArgs})">📊 LIVE CHART</button>
                         </div>
-                        <div class="data-row">
-                            <span class="data-label">Live Entry Price</span>
-                            <span class="data-value">${details.entry}</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">Take Profit (TP)</span>
-                            <span class="data-value" style="color: var(--long);">${details.tp1}</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">Stop Loss (SL)</span>
-                            <span class="data-value" style="color: var(--short);">${details.sl}</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="data-label">AI Win Prob.</span>
-                            <span class="data-value" style="color: var(--primary);">${details.accuracy}%</span>
-                        </div>
-                        <div class="ai-logic">
-                            <strong>Logic:</strong> ${details.tech_logic}<br>
-                            <strong>Risk:</strong> ${details.risk_logic}
-                        </div>
-                        <button class="btn btn-trade" onclick="takeTrade('${coin}')">⚡ TAKE TRADE</button>
                     </div>`;
             }
         }
+
+        // --- 📈 TRADINGVIEW POPUP LOGIC ---
+        async function openLiveChart(pair, entry, tp, sl, side) {
+            document.getElementById('chart-modal').style.display = 'flex';
+            document.getElementById('chart-coin-name').innerText = `${pair} - Live AI Analysis`;
+            
+            const sideBadge = document.getElementById('chart-side');
+            sideBadge.innerText = side;
+            sideBadge.className = side === 'LONG' ? 'badge badge-swing' : 'badge badge-scalp';
+
+            // Clean old chart
+            if (chartInstance) { chartInstance.remove(); chartInstance = null; }
+            if (binanceWS) { binanceWS.close(); binanceWS = null; }
+
+            // 1. Initialize Chart
+            const chartDiv = document.getElementById('tv-chart');
+            chartInstance = LightweightCharts.createChart(chartDiv, {
+                width: chartDiv.clientWidth,
+                height: chartDiv.clientHeight,
+                layout: { background: { type: 'solid', color: '#0b0e14' }, textColor: '#8b94a3' },
+                grid: { vertLines: { color: '#2a3142' }, horzLines: { color: '#2a3142' } },
+                crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+                timeScale: { timeVisible: true, secondsVisible: false },
+                watermark: { color: 'rgba(0, 255, 204, 0.05)', visible: true, text: 'ALPHASIGNA AI', fontSize: 48, horzAlign: 'center', vertAlign: 'center' }
+            });
+
+            candleSeries = chartInstance.addCandlestickSeries({
+                upColor: '#00e676', downColor: '#ff1744', borderVisible: false, wickUpColor: '#00e676', wickDownColor: '#ff1744'
+            });
+
+            // 2. Draw Entry, TP, SL Lines
+            candleSeries.createPriceLine({ price: entry, color: '#3179f5', lineWidth: 2, lineStyle: 2, title: 'ENTRY' });
+            candleSeries.createPriceLine({ price: tp, color: '#00e676', lineWidth: 2, lineStyle: 2, title: 'TP' });
+            candleSeries.createPriceLine({ price: sl, color: '#ff1744', lineWidth: 2, lineStyle: 2, title: 'SL' });
+
+            // 3. Fetch Historical Data (Last 150 Candles)
+            const symbol = pair.replace('/', '').toLowerCase();
+            try {
+                const res = await fetch(`https://fapi.binance.com/fapi/v1/klines?symbol=${symbol.toUpperCase()}&interval=1m&limit=150`);
+                const data = await res.json();
+                const formattedData = data.map(d => ({
+                    time: d[0] / 1000, open: parseFloat(d[1]), high: parseFloat(d[2]), low: parseFloat(d[3]), close: parseFloat(d[4])
+                }));
+                candleSeries.setData(formattedData);
+            } catch (e) { console.error("Error fetching historical data."); }
+
+            // 4. Connect Binance Live WebSocket
+            binanceWS = new WebSocket(`wss://fstream.binance.com/ws/${symbol}@kline_1m`);
+            binanceWS.onmessage = (event) => {
+                const msg = JSON.parse(event.data);
+                const k = msg.k;
+                candleSeries.update({
+                    time: k.t / 1000, open: parseFloat(k.o), high: parseFloat(k.h), low: parseFloat(k.l), close: parseFloat(k.c)
+                });
+            };
+        }
+
+        function closeLiveChart() {
+            document.getElementById('chart-modal').style.display = 'none';
+            if (binanceWS) binanceWS.close();
+            if (chartInstance) chartInstance.remove();
+        }
+
+        // Handle window resize for chart
+        window.addEventListener('resize', () => {
+            if(chartInstance && document.getElementById('chart-modal').style.display === 'flex') {
+                const chartDiv = document.getElementById('tv-chart');
+                chartInstance.applyOptions({ width: chartDiv.clientWidth, height: chartDiv.clientHeight });
+            }
+        });
     </script>
 </body>
 </html>
