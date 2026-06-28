@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna V18.3 - Global AI Terminal</title>
+    <title>AlphaSigna V18.5 - Omni Network Matrix</title>
     <style>
         :root {
             --primary: #00ffcc;
@@ -46,25 +46,25 @@
         .btn-chart:hover { background: var(--accent); color: #fff; box-shadow: 0 0 15px var(--accent); }
 
         /* Dashboard Setup */
-        #dashboard { display: none; max-width: 1200px; margin: 0 auto; }
+        #dashboard { display: none; max-width: 1400px; margin: 0 auto; }
         .header { text-align: center; margin-bottom: 30px; }
         .header h1 { color: #fff; margin-bottom: 5px; font-size: 28px; font-weight: 800; }
         
-        /* Grid Layouts */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 15px; margin-bottom: 35px; }
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 15px; margin-bottom: 25px; }
         .stat-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; }
         .stat-value { font-size: 26px; font-weight: 700; color: #f0f6fc; }
         .global-card { border-left: 4px solid var(--primary); }
         .personal-card { border-left: 4px solid var(--accent); }
 
-        /* 🌳 CANVAS SCROLLER CONTAINER */
+        /* 🌳 OMNI-DIRECTIONAL 360 CANVAS FIELD */
         .scanner-section { text-align: center; margin: 20px 0; position: relative; }
-        #canvas-container { display: none; width: 100%; max-width: 700px; height: 450px; margin: 0 auto 20px auto; background: #010409; border-radius: 16px; border: 1px solid var(--border); overflow: hidden; position: relative; }
+        #canvas-container { display: none; width: 100%; height: 550px; margin: 0 auto 20px auto; background: #010409; border-radius: 16px; border: 1px solid var(--border); overflow: hidden; position: relative; }
         canvas { width: 100%; height: 100%; display: block; }
-        #scanner-status { position: absolute; bottom: 15px; left: 0; width: 100%; text-align: center; font-family: monospace; font-size: 14px; color: var(--primary); font-weight: bold; letter-spacing: 1px; z-index: 5; }
+        #scanner-status { position: absolute; bottom: 15px; left: 0; width: 100%; text-align: center; font-family: monospace; font-size: 13px; color: var(--primary); font-weight: bold; letter-spacing: 1px; z-index: 5; }
 
         /* Signals Card Grid */
-        .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 20px; opacity: 0; transition: opacity 0.5s ease; }
+        .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 20px; opacity: 0; transition: opacity 0.5s ease; margin-top: 20px; }
         .signal-card { background: var(--card-bg); border-radius: 14px; padding: 24px; border: 1px solid var(--border); position: relative; display: flex; flex-direction: column; justify-content: space-between; }
         
         .badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; }
@@ -85,7 +85,6 @@
         .chart-container { width: 92%; max-width: 1050px; height: 75vh; background: #010409; border: 1px solid var(--border); border-radius: 16px; padding: 24px; position: relative; }
         .close-chart { position: absolute; top: 15px; right: 20px; color: #8b949e; font-size: 26px; cursor: pointer; background: none; border: none; }
         #tv-chart { width: 100%; height: calc(100% - 40px); margin-top: 15px; }
-        .chart-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
     </style>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -153,10 +152,23 @@
         let currentSignalData = null;
         let activeUserKey = null;
 
-        // Canvas Engine Configurations
+        // Interactive Matrix Canvas Variables
         let canvas, ctx, animationFrameId;
         let treeNodes = [], treeEdges = [], marketFruits = [];
-        const cryptoCoins = ["BTC", "ETH", "SOL", "BNB", "XRP", "ADA", "AVAX", "DOT", "DOGE", "LINK", "NEAR", "MATIC"];
+        let scanComplete = false;
+
+        // Extended list of Binance assets to generate a massive omni-directional layout grid look
+        const mainBinanceCoins = [
+            {name: "BTC", trend: "BUY"}, {name: "ETH", trend: "BUY"}, {name: "SOL", trend: "BUY"}, 
+            {name: "BNB", trend: "SELL"}, {name: "XRP", trend: "SELL"}, {name: "ADA", trend: "BUY"},
+            {name: "AVAX", trend: "BUY"}, {name: "DOT", trend: "SELL"}, {name: "DOGE", trend: "BUY"}, 
+            {name: "LINK", trend: "BUY"}, {name: "NEAR", trend: "SELL"}, {name: "MATIC", trend: "BUY"},
+            {name: "SUI", trend: "BUY"}, {name: "APT", trend: "SELL"}, {name: "FET", trend: "BUY"}, 
+            {name: "TAO", trend: "BUY"}, {name: "RNDR", trend: "SELL"}, {name: "FIL", trend: "SELL"}, 
+            {name: "LTC", trend: "BUY"}, {name: "ATOM", trend: "SELL"}, {name: "INJ", trend: "BUY"},
+            {name: "TIA", trend: "BUY"}, {name: "OP", trend: "SELL"}, {name: "ARB", trend: "SELL"},
+            {name: "FTM", trend: "BUY"}, {name: "ICP", trend: "BUY"}, {name: "PEPE", trend: "BUY"}
+        ];
 
         db.ref('system_status').on('value', (snapshot) => {
             const status = snapshot.val();
@@ -215,7 +227,7 @@
             alert(`⚡ TRADE COMMAND INTEGRATED for ${coin}.`);
         }
 
-        // --- 🌳 5-SECOND TREE GROWTH & FRUIT BLOOM ANIMATION ENGINE ---
+        // --- 🌳 ADVANCED 5-SECOND OMNI-DIRECTIONAL 360° ENGINE ---
         function startAdvancedScan() {
             const btn = document.getElementById('scan-btn');
             const container = document.getElementById('canvas-container');
@@ -225,62 +237,73 @@
             btn.style.display = 'none';
             container.style.display = 'block';
             grid.style.opacity = '0';
+            scanComplete = false;
 
             canvas = document.getElementById('treeCanvas');
             ctx = canvas.getContext('2d');
             canvas.width = container.clientWidth;
             canvas.height = container.clientHeight;
 
-            // Reset Animation Matrices
             treeNodes = []; treeEdges = []; marketFruits = [];
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
 
-            // Step 1: Generate Node Coordinates (Tree Structure Mapping)
-            treeNodes.push({ id: 0, x: centerX, y: centerY + 100, currentX: centerX, currentY: centerY + 100, level: 0 }); // Core Seed
+            // Anchor Core Node completely in the center to grow outward symmetrically
+            treeNodes.push({ id: 0, x: centerX, y: centerY, currentX: centerX, currentY: centerY, level: 0 });
             
             let idCounter = 1;
-            function branch(parentId, startX, startY, angle, length, level) {
+            
+            // Generate a 360-degree radical network matrix spreading evenly to all sides
+            function growOmniNetwork(parentId, startX, startY, baseAngle, level) {
                 if (level > 3) return;
-                const endX = startX + Math.cos(angle) * length;
-                const endY = startY + Math.sin(angle) * length;
-                const currentId = idCounter++;
                 
-                treeNodes.push({ id: currentId, x: endX, y: endY, currentX: startX, currentY: startY, level: level });
-                treeEdges.push({ from: parentId, to: currentId, progress: 0 });
+                // Branches count depends on position level for optimal spacing grid
+                const branchesCount = level === 1 ? 6 : 2; 
+                const spread = level === 1 ? (Math.PI * 2) / branchesCount : 0.8; 
 
-                // Create Fruits at branch tips (Level 3 Branches)
-                if (level === 3) {
-                    marketFruits.push({
-                        x: endX, y: endY, radius: 0, targetRadius: Math.floor(Math.random() * 8) + 22,
-                        name: cryptoCoins[currentId % cryptoCoins.length],
-                        price: (Math.random() * (150 - 1) + 1).toFixed(2),
-                        alpha: 0
-                    });
-                }
+                for (let i = 0; i < branchesCount; i++) {
+                    let angle = level === 1 ? baseAngle + (i * spread) : baseAngle + (i === 0 ? -spread/2 : spread/2);
+                    let length = 110 / level; // Adaptive length balancing node maps
+                    
+                    const endX = startX + Math.cos(angle) * length;
+                    const endY = startY + Math.sin(angle) * length;
+                    const currentId = idCounter++;
+                    
+                    treeNodes.push({ id: currentId, x: endX, y: endY, level: level });
+                    treeEdges.push({ from: parentId, to: currentId });
 
-                const subBranches = 2;
-                for (let i = 0; i < subBranches; i++) {
-                    const nextAngle = angle + (Math.random() * 0.8 - 0.4) + (i === 0 ? -0.5 : 0.5);
-                    branch(currentId, endX, endY, nextAngle, length * 0.75, level + 1);
+                    if (level === 3 && marketFruits.length < mainBinanceCoins.length) {
+                        const dynamicCoin = mainBinanceCoins[marketFruits.length];
+                        marketFruits.push({
+                            x: endX, y: endY, baseRatio: 0,
+                            targetRadius: Math.floor(Math.random() * 5) + 20,
+                            name: dynamicCoin.name,
+                            trend: dynamicCoin.trend,
+                            vx: (Math.random() * 0.4 - 0.2),
+                            vy: (Math.random() * 0.4 - 0.2)
+                        });
+                    }
+
+                    growOmniNetwork(currentId, endX, endY, angle, level + 1);
                 }
             }
-            branch(0, centerX, centerY + 100, -Math.PI / 2, 75, 1);
+            
+            // Fire layout seeds from center outward to cover 360 degrees layout
+            growOmniNetwork(0, centerX, centerY, 0, 1);
 
             let startTime = Date.now();
 
-            function animate() {
+            function updateGraphicsPipeline() {
                 let elapsed = Date.now() - startTime;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                // Phase 1: Tree Network Structure Extending (0 to 2.5 seconds)
+                // --- PHASE 1: Omni Extension Expanding (0 to 2.5 seconds) ---
                 if (elapsed <= 2500) {
-                    statusText.innerText = `🛰️ ASSEMBLING H-F MATRIX INTERFACE [MAPPING CRYPTO CHAINS...]`;
+                    statusText.innerText = `🛰️ ASSEMBLING 360° OMNI-MATRIX INTERFACE [MAPPING ALL BINANCE ASSETS...]`;
                     let growthFactor = elapsed / 2500;
                     
-                    // Render Connections extending
                     ctx.strokeStyle = "rgba(0, 255, 204, 0.25)";
-                    ctx.lineWidth = 2;
+                    ctx.lineWidth = 1.2;
                     treeEdges.forEach(edge => {
                         const fromNode = treeNodes.find(n => n.id === edge.from);
                         const toNode = treeNodes.find(n => n.id === edge.to);
@@ -288,75 +311,78 @@
                         let currentX = fromNode.x + (toNode.x - fromNode.x) * growthFactor;
                         let currentY = fromNode.y + (toNode.y - fromNode.y) * growthFactor;
                         
-                        ctx.beginPath();
-                        ctx.moveTo(fromNode.x, fromNode.y);
-                        ctx.lineTo(currentX, currentY);
-                        ctx.stroke();
+                        ctx.beginPath(); ctx.moveTo(fromNode.x, fromNode.y); ctx.lineTo(currentX, currentY); ctx.stroke();
                     });
 
-                    // Draw connecting joint nodes
                     treeNodes.forEach(node => {
                         ctx.fillStyle = "#ffffff";
-                        ctx.beginPath();
-                        ctx.arc(node.x, node.y, 3, 0, Math.PI * 2);
-                        ctx.fill();
+                        ctx.beginPath(); ctx.arc(node.x, node.y, 2, 0, Math.PI * 2); ctx.fill();
                     });
                 } 
-                // Phase 2: Fruit Blooms / Ripening Assets Stage (2.5 to 5.0 seconds)
-                else if (elapsed <= 5000) {
-                    statusText.innerText = `🟢 AI MATRIX PIPELINE ESTABLISHED -> BLOOMING ACTIVE ASSETS`;
-                    let fruitFactor = (elapsed - 2500) / 2500;
+                // --- PHASE 2 & 3: Asset Fruit Blooms & Permanent Floating Waves (2.5 Seconds Onwards) ---
+                else {
+                    statusText.innerText = `🟢 GLOBAL COIN MESH STABILIZED [PAST 20M BUY/SELL TRENDS ENCODED]`;
+                    
+                    if (!scanComplete) {
+                        if (elapsed >= 5000) {
+                            scanComplete = true;
+                            renderSignals(currentSignalData);
+                            grid.style.opacity = '1';
+                        }
+                    }
 
-                    // Keep rendering static complete tree lines
-                    ctx.strokeStyle = "rgba(33, 38, 45, 0.7)";
-                    ctx.lineWidth = 1.5;
+                    let fruitFactor = Math.min((elapsed - 2500) / 2500, 1);
+
+                    // Add shifting physics to outer floating bubble pods
+                    marketFruits.forEach(fruit => {
+                        fruit.x += fruit.vx; fruit.y += fruit.vy;
+                        if (fruit.x < 30 || fruit.x > canvas.width - 30) fruit.vx *= -1;
+                        if (fruit.y < 30 || fruit.y > canvas.height - 30) fruit.vy *= -1;
+                    });
+
+                    // Update grid structure nodes lines
+                    ctx.strokeStyle = "rgba(33, 38, 45, 0.5)";
+                    ctx.lineWidth = 1.2;
                     treeEdges.forEach(edge => {
                         const fromNode = treeNodes.find(n => n.id === edge.from);
                         const toNode = treeNodes.find(n => n.id === edge.to);
                         ctx.beginPath(); ctx.moveTo(fromNode.x, fromNode.y); ctx.lineTo(toNode.x, toNode.y); ctx.stroke();
                     });
 
-                    // Draw fruits ripening/enlarging outwards like real tree pods
+                    // Draw permanent bubbles വട്ടේටම (Green for Buy / Red for Sell)
                     marketFruits.forEach(fruit => {
-                        fruit.radius = fruit.targetRadius * fruitFactor;
-                        fruit.alpha = fruitFactor;
+                        fruit.baseRatio = fruit.targetRadius * fruitFactor;
 
-                        // Create neon outer bubble
-                        ctx.strokeStyle = `rgba(0, 255, 204, ${fruit.alpha})`;
-                        ctx.fillStyle = "rgba(13, 17, 23, 0.95)";
+                        if (fruit.trend === "BUY") {
+                            ctx.strokeStyle = `rgba(0, 230, 118, 0.75)`; 
+                            ctx.fillStyle = "rgba(12, 42, 27, 0.95)";
+                        } else {
+                            ctx.strokeStyle = `rgba(255, 23, 68, 0.75)`; 
+                            ctx.fillStyle = "rgba(44, 13, 20, 0.95)";
+                        }
+                        
                         ctx.lineWidth = 2;
                         ctx.beginPath();
-                        ctx.arc(fruit.x, fruit.y, fruit.radius, 0, Math.PI * 2);
+                        ctx.arc(fruit.x, fruit.y, fruit.baseRatio, 0, Math.PI * 2);
                         ctx.fill();
                         ctx.stroke();
 
-                        // Render text strings inside ripening assets
-                        if (fruit.radius > 15) {
+                        if (fruit.baseRatio > 14) {
                             ctx.fillStyle = "#ffffff";
                             ctx.font = "bold 10px monospace";
                             ctx.textAlign = "center";
-                            ctx.fillText(fruit.name, fruit.x, fruit.y - 2);
+                            ctx.fillText(fruit.name, fruit.x, fruit.y - 3);
 
-                            ctx.fillStyle = "var(--primary)";
-                            ctx.font = "8px monospace";
-                            ctx.fillText(`$${fruit.price}`, fruit.x, fruit.y + 8);
+                            ctx.fillStyle = fruit.trend === "BUY" ? "var(--long)" : "var(--short)";
+                            ctx.font = "7px monospace";
+                            ctx.fillText(fruit.trend, fruit.x, fruit.y + 7);
                         }
                     });
-                } 
-                // Stage Complete Process Integration Trigger
-                else {
-                    cancelAnimationFrame(animationFrameId);
-                    container.style.display = 'none';
-                    btn.style.display = 'inline-block';
-                    btn.innerText = "🔄 RE-SCAN AI DEEP ORDERBOOK";
-                    renderSignals(currentSignalData);
-                    grid.style.opacity = '1';
-                    return;
                 }
 
-                animationFrameId = requestAnimationFrame(animate);
+                animationFrameId = requestAnimationFrame(updateGraphicsPipeline);
             }
-            animate();
+            updateGraphicsPipeline();
         }
 
         function renderSignals(data) {
