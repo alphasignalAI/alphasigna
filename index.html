@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna V17.2 - Premium AI Matrix</title>
+    <title>AlphaSigna V17.3 - Premium AI Matrix</title>
     <style>
         :root {
             --primary: #00ffcc;
@@ -21,110 +21,70 @@
             padding: 20px;
         }
         
-        /* 1. Login Screen */
+        /* Login Screen */
         #login-screen {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 85vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; height: 85vh;
         }
         .login-box {
-            background: var(--card-bg);
-            padding: 40px;
-            border-radius: 15px;
-            border: 1px solid #2a3142;
-            box-shadow: 0 0 25px rgba(0, 255, 204, 0.15);
-            text-align: center;
-            width: 320px;
+            background: var(--card-bg); padding: 40px; border-radius: 15px; border: 1px solid #2a3142;
+            box-shadow: 0 0 25px rgba(0, 255, 204, 0.15); text-align: center; width: 320px;
         }
         .login-box input {
-            padding: 15px;
-            width: 80%;
-            border-radius: 8px;
-            border: 1px solid var(--primary);
-            background: #000;
-            color: var(--primary);
-            font-size: 16px;
-            text-transform: uppercase;
-            text-align: center;
-            margin-bottom: 20px;
-            outline: none;
+            padding: 15px; width: 80%; border-radius: 8px; border: 1px solid var(--primary);
+            background: #000; color: var(--primary); font-size: 16px; text-transform: uppercase;
+            text-align: center; margin-bottom: 20px; outline: none;
         }
         .btn {
-            background: var(--primary);
-            color: #000;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 15px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            background: var(--primary); color: #000; padding: 15px 30px; border: none;
+            border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer;
+            transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px; width: 100%;
         }
         .btn:hover { box-shadow: 0 0 15px var(--primary); transform: scale(1.02); }
+        .btn-trade {
+            background: transparent; border: 1px solid var(--primary); color: var(--primary);
+            margin-top: 15px; padding: 10px;
+        }
+        .btn-trade:hover { background: var(--primary); color: #000; }
 
-        /* 2. Dashboard Header & Stats Row */
+        /* Dashboard & Stats */
         #dashboard { display: none; }
         .header { text-align: center; margin-bottom: 25px; }
         .header h1 { color: var(--primary); margin-bottom: 5px; text-shadow: 0 0 10px rgba(0,255,204,0.3); }
         
-        /* 📊 Stats Grid (Global + Personal) */
         .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
-            max-width: 1200px;
-            margin: 0 auto 30px auto;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;
+            max-width: 1200px; margin: 0 auto 30px auto;
         }
         .stat-card {
-            background: var(--card-bg);
-            border: 1px solid #2a3142;
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-            position: relative;
+            background: var(--card-bg); border: 1px solid #2a3142; border-radius: 10px;
+            padding: 15px; text-align: center;
         }
         .stat-card h3 { margin: 0 0 10px 0; font-size: 13px; color: #8b94a3; text-transform: uppercase; letter-spacing: 1px; }
         .stat-value { font-size: 24px; font-weight: bold; color: #fff; }
         .global-card { border-top: 3px solid var(--primary); }
         .personal-card { border-top: 3px solid var(--accent); }
 
-        /* 🛰️ Radar Scanner Animation */
+        /* Scanner */
         .scanner-section { text-align: center; margin: 30px 0; }
         .radar {
-            width: 130px; height: 130px;
-            border-radius: 50%;
-            border: 2px solid #2a3142;
-            margin: 0 auto 20px auto;
-            position: relative;
-            overflow: hidden;
+            width: 130px; height: 130px; border-radius: 50%; border: 2px solid #2a3142;
+            margin: 0 auto 20px auto; position: relative; overflow: hidden;
             background: repeating-radial-gradient(circle, transparent, transparent 15px, #1a232e 16px, #1a232e 17px);
             display: none;
         }
         .radar::before {
-            content: ''; position: absolute; top: 50%; left: 50%;
-            width: 130px; height: 130px;
+            content: ''; position: absolute; top: 50%; left: 50%; width: 130px; height: 130px;
             background: conic-gradient(from 0deg, transparent 60%, rgba(0, 255, 204, 0.6) 100%);
-            transform-origin: 0 0;
-            animation: scan-rotate 2s linear infinite;
+            transform-origin: 0 0; animation: scan-rotate 2s linear infinite;
         }
         @keyframes scan-rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        /* 🎴 Signal Cards Grid */
+        /* Signal Grid */
         .signal-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-            opacity: 0;
-            transition: opacity 0.5s ease;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px; max-width: 1200px; margin: 0 auto; opacity: 0; transition: opacity 0.5s ease;
         }
         .signal-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid #2a3142; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        
         .badge { display: inline-block; padding: 4px 8px; border-radius: 5px; font-size: 11px; font-weight: bold; margin-bottom: 15px; }
         .badge-swing { background: #0d47a1; color: #64b5f6; border: 1px solid #1976d2; }
         .badge-scalp { background: rgba(255, 0, 127, 0.15); color: var(--accent); border: 1px solid var(--accent); }
@@ -133,11 +93,9 @@
         .coin-title { font-size: 24px; font-weight: bold; margin: 0 0 15px 0; display: flex; justify-content: space-between; }
         .side-long { color: var(--long); text-shadow: 0 0 5px rgba(0,230,118,0.3); }
         .side-short { color: var(--short); text-shadow: 0 0 5px rgba(255,23,68,0.3); }
-        
         .data-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; border-bottom: 1px solid #2a3142; padding-bottom: 4px; }
         .data-label { color: #8b94a3; }
         .data-value { font-weight: bold; }
-        
         .ai-logic { margin-top: 15px; font-size: 12px; color: #78909c; background: #0b0e14; padding: 10px; border-radius: 6px; border-left: 3px solid var(--primary); }
     </style>
     
@@ -152,7 +110,7 @@
             <p style="color: #8b94a3; font-size: 14px; margin-top: 0;">Enter License Key for Premium Matrix</p>
             <input type="password" id="access-key" placeholder="VIP12345" />
             <br>
-            <button class="btn" onclick="verifyFirebaseKey()">Verify Access</button>
+            <button class="btn" onclick="verifyFirebaseKey()">VERIFY ACCESS</button>
             <p id="error-msg" style="color: var(--short); display: none; margin-top: 15px; font-weight: bold; font-size: 14px;">⚠️ Access Denied! Invalid or Expired Key.</p>
         </div>
     </div>
@@ -165,12 +123,12 @@
 
         <div class="stats-grid">
             <div class="stat-card global-card">
-                <h3>Global Active Signals</h3>
-                <div class="stat-value" id="global-signals-count">0</div>
+                <h3>Global Total Trades</h3>
+                <div class="stat-value" id="global-total-trades">0</div>
             </div>
             <div class="stat-card global-card">
-                <h3>Avg Win Rate</h3>
-                <div class="stat-value" style="color: var(--primary);">94.8%</div>
+                <h3>Global Win Rate</h3>
+                <div class="stat-value" id="global-win-rate" style="color: var(--primary);">0%</div>
             </div>
             <div class="stat-card personal-card">
                 <h3>My Total Trades</h3>
@@ -184,7 +142,7 @@
 
         <div class="scanner-section">
             <div class="radar" id="radar-anim"></div>
-            <button class="btn" id="scan-btn" onclick="startScan()">🛰️ SCAN LIVE MARKET</button>
+            <button class="btn" id="scan-btn" style="width: auto;" onclick="startScan()">🛰️ SCAN LIVE MARKET</button>
         </div>
 
         <div class="signal-grid" id="signal-container"></div>
@@ -205,38 +163,24 @@
             const inputKey = document.getElementById('access-key').value.trim();
             const errorMsg = document.getElementById('error-msg');
             
-            if(!inputKey) {
-                errorMsg.style.display = 'block';
-                return;
-            }
+            if(!inputKey) { errorMsg.style.display = 'block'; return; }
 
-            // Firebase එකේ premium_keys/{inputKey} තැනට ගොස් පරීක්ෂා කිරීම
             db.ref('premium_keys/' + inputKey).once('value', (snapshot) => {
                 const userData = snapshot.val();
                 
                 if (userData && userData.status === "active") {
-                    // Expire Date එක පරීක්ෂා කිරීම
                     const expiryDate = new Date(userData.expire_date);
                     const today = new Date();
 
                     if (expiryDate >= today) {
-                        // Success! Login Granted
                         activeUserKey = inputKey;
                         errorMsg.style.display = 'none';
                         document.getElementById('login-screen').style.display = 'none';
                         document.getElementById('dashboard').style.display = 'block';
                         
-                        // User Welcome Text එක දාමු
                         document.getElementById('user-welcome').innerText = `LICENSE USER: ${inputKey.toUpperCase()} (Active Until: ${userData.expire_date})`;
-
-                        // Personal Stats ටික UI එකට ලෝඩ් කිරීම
-                        if(userData.stats) {
-                            document.getElementById('user-trades').innerText = userData.stats.trades || 0;
-                            document.getElementById('user-pnl-ratio').innerText = `${userData.stats.tp || 0} TP / ${userData.stats.sl || 0} SL`;
-                        }
                         
-                        // Live Signal listener එක පණ ගැන්වීම
-                        initSignalListener();
+                        initListeners();
                     } else {
                         errorMsg.innerText = "⚠️ Access Denied! Key has Expired.";
                         errorMsg.style.display = 'block';
@@ -248,26 +192,62 @@
             });
         }
 
-        // --- 📡 LIVE SIGNALS ENGINE ---
-        function initSignalListener() {
+        // --- 📡 INITIALIZE DATA LISTENERS ---
+        function initListeners() {
+            // 1. Live Signals Listener
             db.ref('live_signals').on('value', (snapshot) => {
                 currentSignalData = snapshot.val();
-                
-                // Active Global Signals ගණන මෙතනින් Update වෙනවා
-                if(currentSignalData && !currentSignalData.WAITING) {
-                    document.getElementById('global-signals-count').innerText = Object.keys(currentSignalData).length;
-                } else {
-                    document.getElementById('global-signals-count').innerText = "0";
-                }
-
-                // රේඩාර් එක ස්කෑන් කරලා ඉවර නම් විතරක් සජීවීව UI එක අප්ඩේට් වෙනවා
                 if(document.getElementById('signal-container').style.opacity === "1") {
                     renderSignals(currentSignalData);
                 }
             });
+
+            // 2. Global Stats Listener
+            db.ref('global_stats').on('value', (snapshot) => {
+                const gStats = snapshot.val();
+                if(gStats) {
+                    const totalTrades = gStats.total_trades || 0;
+                    const totalTP = gStats.total_tp || 0;
+                    const totalSL = gStats.total_sl || 0;
+                    
+                    document.getElementById('global-total-trades').innerText = totalTrades;
+                    
+                    let winRate = 0;
+                    if((totalTP + totalSL) > 0) {
+                        winRate = ((totalTP / (totalTP + totalSL)) * 100).toFixed(1);
+                    }
+                    document.getElementById('global-win-rate').innerText = winRate + '%';
+                }
+            });
+
+            // 3. Personal Stats Listener
+            db.ref('premium_keys/' + activeUserKey + '/stats').on('value', (snapshot) => {
+                const pStats = snapshot.val();
+                if(pStats) {
+                    document.getElementById('user-trades').innerText = pStats.trades || 0;
+                    document.getElementById('user-pnl-ratio').innerText = `${pStats.tp || 0} TP / ${pStats.sl || 0} SL`;
+                }
+            });
         }
 
-        // --- 🛰️ RADAR ANIMATION LOGIC ---
+        // --- 📈 TAKE TRADE ACTION (UPDATE FIREBASE) ---
+        function takeTrade(coin) {
+            if(!activeUserKey) return;
+            
+            // Increment Global Trades using Firebase Transaction
+            db.ref('global_stats/total_trades').transaction((current_value) => {
+                return (current_value || 0) + 1;
+            });
+
+            // Increment Personal Trades
+            db.ref('premium_keys/' + activeUserKey + '/stats/trades').transaction((current_value) => {
+                return (current_value || 0) + 1;
+            });
+
+            alert(`✅ Trade Execution Initiated for ${coin}!\nYour Personal and Global stats have been updated.`);
+        }
+
+        // --- 🛰️ RADAR ANIMATION ---
         function startScan() {
             const btn = document.getElementById('scan-btn');
             const radar = document.getElementById('radar-anim');
@@ -284,7 +264,7 @@
                 
                 renderSignals(currentSignalData);
                 container.style.opacity = '1'; 
-            }, 3000); // තත්පර 3ක් රේඩාර් එක කැරකෙනවා
+            }, 3000);
         }
 
         // --- 🎴 RENDERING CARDS MATRIX ---
@@ -305,7 +285,6 @@
                     return;
                 }
 
-                // Scalp Auto-Expiration Filter (විනාඩි 15කට වඩා පරණ නම් පෙන්වන්නේ නැත)
                 if (details.signal_type.includes("SCALP")) {
                     if ((currentTime - details.timestamp) > 900) continue; 
                 }
@@ -340,6 +319,7 @@
                             <strong>Logic:</strong> ${details.tech_logic}<br>
                             <strong>Risk:</strong> ${details.risk_logic}
                         </div>
+                        <button class="btn btn-trade" onclick="takeTrade('${coin}')">⚡ TAKE TRADE</button>
                     </div>`;
             }
         }
