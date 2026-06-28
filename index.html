@@ -3,85 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna V17.4 - Premium AI Matrix</title>
+    <title>AlphaSigna V18.0 - Global AI Terminal</title>
     <style>
         :root {
             --primary: #00ffcc;
-            --bg-dark: #0b0e14;
-            --card-bg: #151a22;
+            --bg-dark: #06090e;
+            --card-bg: #0d1117;
             --accent: #ff007f;
             --long: #00e676;
             --short: #ff1744;
+            --border: #21262d;
         }
         body {
-            background-color: var(--bg-dark); color: #ffffff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0; padding: 20px;
+            background-color: var(--bg-dark); color: #c9d1d9; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 15px;
         }
         
-        /* Login Screen */
-        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 85vh; }
-        .login-box { background: var(--card-bg); padding: 40px; border-radius: 15px; border: 1px solid #2a3142; box-shadow: 0 0 25px rgba(0, 255, 204, 0.15); text-align: center; width: 320px; }
-        .login-box input { padding: 15px; width: 80%; border-radius: 8px; border: 1px solid var(--primary); background: #000; color: var(--primary); font-size: 16px; text-transform: uppercase; text-align: center; margin-bottom: 20px; outline: none; }
+        /* 🚨 System Status Bar */
+        #status-bar {
+            background: rgba(0, 255, 204, 0.1); border: 1px solid var(--primary);
+            color: var(--primary); text-align: center; padding: 10px; border-radius: 8px;
+            font-size: 13px; font-weight: bold; letter-spacing: 2px; margin-bottom: 20px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.1);
+        }
+        .pulse-dot { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 8px var(--primary); animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
+
+        /* 🔑 Login Screen */
+        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh; }
+        .login-box { background: var(--card-bg); padding: 40px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 320px; }
+        .login-box input { padding: 14px; width: 85%; border-radius: 8px; border: 1px solid var(--border); background: #010409; color: var(--primary); font-size: 16px; text-transform: uppercase; text-align: center; margin-bottom: 20px; outline: none; transition: 0.3s; }
+        .login-box input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0, 255, 204, 0.2); }
         
-        .btn { background: var(--primary); color: #000; padding: 15px 30px; border: none; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; transition: all 0.3s; text-transform: uppercase; width: 100%; }
-        .btn:hover { box-shadow: 0 0 15px var(--primary); transform: scale(1.02); }
+        /* Buttons */
+        .btn { background: var(--primary); color: #000; padding: 14px 28px; border: none; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px; width: 100%; }
+        .btn:hover { box-shadow: 0 0 20px var(--primary); transform: translateY(-1px); }
         
-        .btn-trade { background: transparent; border: 1px solid var(--primary); color: var(--primary); margin-top: 15px; padding: 10px; width: 48%; display: inline-block; }
+        .btn-trade { background: transparent; border: 1px solid var(--primary); color: var(--primary); margin-top: 15px; padding: 11px; width: 48%; display: inline-block; border-radius: 6px; font-weight: bold; cursor: pointer; }
         .btn-trade:hover { background: var(--primary); color: #000; }
         
-        .btn-chart { background: rgba(0, 255, 204, 0.1); border: 1px solid var(--primary); color: var(--primary); margin-top: 15px; padding: 10px; width: 48%; display: inline-block; float: right; }
-        .btn-chart:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary); }
+        .btn-chart { background: rgba(255, 0, 127, 0.05); border: 1px solid var(--accent); color: var(--accent); margin-top: 15px; padding: 11px; width: 48%; display: inline-block; float: right; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-chart:hover { background: var(--accent); color: #fff; box-shadow: 0 0 15px var(--accent); }
 
-        /* Dashboard & Stats */
-        #dashboard { display: none; }
-        .header { text-align: center; margin-bottom: 25px; }
-        .header h1 { color: var(--primary); margin-bottom: 5px; text-shadow: 0 0 10px rgba(0,255,204,0.3); }
+        /* Dashboard Setup */
+        #dashboard { display: none; max-width: 1200px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { color: #fff; margin-bottom: 5px; font-size: 28px; font-weight: 800; letter-spacing: 1px; }
         
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; max-width: 1200px; margin: 0 auto 30px auto; }
-        .stat-card { background: var(--card-bg); border: 1px solid #2a3142; border-radius: 10px; padding: 15px; text-align: center; }
-        .stat-card h3 { margin: 0 0 10px 0; font-size: 13px; color: #8b94a3; text-transform: uppercase; letter-spacing: 1px; }
-        .stat-value { font-size: 24px; font-weight: bold; color: #fff; }
-        .global-card { border-top: 3px solid var(--primary); }
-        .personal-card { border-top: 3px solid var(--accent); }
+        /* Grid Layouts */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 15px; margin-bottom: 35px; }
+        .stat-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; position: relative; overflow: hidden; }
+        .stat-card h3 { margin: 0 0 10px 0; font-size: 12px; color: #8b949e; text-transform: uppercase; letter-spacing: 1.5px; }
+        .stat-value { font-size: 26px; font-weight: 700; color: #f0f6fc; }
+        .global-card { border-left: 4px solid var(--primary); }
+        .personal-card { border-left: 4px solid var(--accent); }
 
         /* Scanner */
         .scanner-section { text-align: center; margin: 30px 0; }
-        .radar { width: 130px; height: 130px; border-radius: 50%; border: 2px solid #2a3142; margin: 0 auto 20px auto; position: relative; overflow: hidden; display: none; }
-        .radar::before { content: ''; position: absolute; top: 50%; left: 50%; width: 130px; height: 130px; background: conic-gradient(from 0deg, transparent 60%, rgba(0, 255, 204, 0.6) 100%); transform-origin: 0 0; animation: scan-rotate 2s linear infinite; }
+        .radar { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--border); margin: 0 auto 20px auto; position: relative; overflow: hidden; display: none; background: repeating-radial-gradient(circle, transparent, transparent 10px, rgba(33,38,45,0.5) 11px, rgba(33,38,45,0.5) 12px); }
+        .radar::before { content: ''; position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; background: conic-gradient(from 0deg, transparent 50%, rgba(0, 255, 204, 0.4) 100%); transform-origin: 0 0; animation: scan-rotate 1.5s linear infinite; }
         @keyframes scan-rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        /* Signal Grid */
-        .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; opacity: 0; transition: opacity 0.5s ease; }
-        .signal-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid #2a3142; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .badge { display: inline-block; padding: 4px 8px; border-radius: 5px; font-size: 11px; font-weight: bold; margin-bottom: 15px; }
-        .badge-swing { background: #0d47a1; color: #64b5f6; border: 1px solid #1976d2; }
-        .badge-scalp { background: rgba(255, 0, 127, 0.15); color: var(--accent); border: 1px solid var(--accent); }
+        /* Signals Card Grid */
+        .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 20px; opacity: 0; transition: opacity 0.5s ease; }
+        .signal-card { background: var(--card-bg); border-radius: 14px; padding: 24px; border: 1px solid var(--border); position: relative; display: flex; flex-direction: column; justify-content: space-between; }
+        .signal-card:hover { border-color: #30363d; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
         
-        .coin-title { font-size: 24px; font-weight: bold; margin: 0 0 15px 0; display: flex; justify-content: space-between; }
-        .side-long { color: var(--long); text-shadow: 0 0 5px rgba(0,230,118,0.3); }
-        .side-short { color: var(--short); text-shadow: 0 0 5px rgba(255,23,68,0.3); }
-        .data-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; border-bottom: 1px solid #2a3142; padding-bottom: 4px; }
-        .data-label { color: #8b94a3; }
-        .data-value { font-weight: bold; }
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .badge-swing { background: rgba(56, 139, 253, 0.15); color: #58a6ff; border: 1px solid rgba(56, 139, 253, 0.4); }
+        .badge-scalp { background: rgba(242, 8c, 166, 0.15); color: #f25ca6; border: 1px solid rgba(242, 8c, 166, 0.4); }
         
-        /* 📈 Live Chart Modal (Popup) */
-        #chart-modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(11, 14, 20, 0.95); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(5px);
-        }
-        .chart-container {
-            width: 90%; max-width: 1000px; height: 70vh; background: #000; border: 2px solid var(--primary);
-            border-radius: 15px; padding: 20px; position: relative; box-shadow: 0 0 30px rgba(0, 255, 204, 0.3);
-        }
-        .close-chart {
-            position: absolute; top: 10px; right: 15px; color: var(--short); font-size: 24px; font-weight: bold;
-            cursor: pointer; z-index: 10; background: none; border: none;
-        }
-        .close-chart:hover { color: #fff; }
-        #tv-chart { width: 100%; height: 100%; margin-top: 10px; }
-        .chart-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a3142; padding-bottom: 10px; }
-        .chart-title { font-size: 20px; font-weight: bold; color: var(--primary); }
+        .coin-title { font-size: 24px; font-weight: 700; margin-bottom: 18px; display: flex; justify-content: space-between; color: #fff; }
+        .side-long { color: var(--long); }
+        .side-short { color: var(--short); }
+        .data-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; border-bottom: 1px solid rgba(33,38,45,0.5); padding-bottom: 6px; }
+        .data-label { color: #8b949e; }
+        .data-value { font-weight: 600; color: #f0f6fc; }
+        
+        .fomo-bar { font-size: 12px; color: var(--primary); background: rgba(0,255,204,0.05); padding: 6px 12px; border-radius: 6px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; font-weight: 500; }
 
+        /* 📈 Live Chart Popup */
+        #chart-modal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(1, 4, 9, 0.96); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(6px); }
+        .chart-container { width: 92%; max-width: 1050px; height: 75vh; background: #010409; border: 1px solid var(--border); border-radius: 16px; padding: 24px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
+        .close-chart { position: absolute; top: 15px; right: 20px; color: #8b949e; font-size: 26px; cursor: pointer; background: none; border: none; }
+        .close-chart:hover { color: #fff; }
+        #tv-chart { width: 100%; height: calc(100% - 40px); margin-top: 15px; }
+        .chart-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+        .chart-title { font-size: 20px; font-weight: 700; color: #fff; }
     </style>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -90,33 +99,38 @@
 </head>
 <body>
 
+    <div id="status-bar" style="display: none;">
+        <div class="pulse-dot" id="status-dot"></div>
+        <span id="status-text">HF ENGINE CORE: LOADING...</span>
+    </div>
+
     <div id="login-screen">
         <div class="login-box">
-            <h2 style="color: var(--primary); margin-bottom: 5px;">💎 ALPHASIGNA AI</h2>
-            <p style="color: #8b94a3; font-size: 14px; margin-top: 0;">Enter License Key for Premium Matrix</p>
-            <input type="password" id="access-key" placeholder="VIP12345" />
+            <h2 style="color: #fff; margin-bottom: 5px; font-weight: 800;">ALPHASIGNA AI</h2>
+            <p style="color: #8b949e; font-size: 13px; margin-top: 0; margin-bottom: 25px;">Global High-Frequency Terminal</p>
+            <input type="password" id="access-key" placeholder="ENTER LICENSE KEY" />
             <br>
-            <button class="btn" onclick="verifyFirebaseKey()">VERIFY ACCESS</button>
-            <p id="error-msg" style="color: var(--short); display: none; margin-top: 15px;">⚠️ Access Denied! Invalid Key.</p>
+            <button class="btn" onclick="verifyFirebaseKey()">INITIALIZE MATRIX</button>
+            <p id="error-msg" style="color: var(--short); display: none; margin-top: 15px; font-weight: 600; font-size: 13px;">⚠️ ACCESS DENIED: INVALID OR EXPIRED KEY</p>
         </div>
     </div>
 
     <div id="dashboard">
         <div class="header">
-            <h1>💎 AlphaSigna Live Hub</h1>
-            <p id="user-welcome" style="color: var(--primary); font-size: 14px; font-weight: bold;"></p>
+            <h1>AlphaSigna Intelligence Hub</h1>
+            <p id="user-welcome" style="color: var(--primary); font-size: 13px; font-weight: 700; letter-spacing: 0.5px; margin: 0;"></p>
         </div>
 
         <div class="stats-grid">
             <div class="stat-card global-card"><h3>Global Total Trades</h3><div class="stat-value" id="global-total-trades">0</div></div>
             <div class="stat-card global-card"><h3>Global Win Rate</h3><div class="stat-value" id="global-win-rate" style="color: var(--primary);">0%</div></div>
-            <div class="stat-card personal-card"><h3>My Total Trades</h3><div class="stat-value" id="user-trades">0</div></div>
-            <div class="stat-card personal-card"><h3>My Profile (TP / SL)</h3><div class="stat-value" id="user-pnl-ratio" style="color: var(--long);">0 / 0</div></div>
+            <div class="stat-card personal-card"><h3>My Matrix Trades</h3><div class="stat-value" id="user-trades">0</div></div>
+            <div class="stat-card personal-card"><h3>My Target Performance</h3><div class="stat-value" id="user-pnl-ratio" style="color: var(--long);">0 / 0</div></div>
         </div>
 
         <div class="scanner-section">
             <div class="radar" id="radar-anim"></div>
-            <button class="btn" id="scan-btn" style="width: auto;" onclick="startScan()">🛰️ SCAN LIVE MARKET</button>
+            <button class="btn" id="scan-btn" style="width: auto; padding: 12px 30px;" onclick="startScan()">🛰️ SCAN REAL-TIME ORDERBOOK</button>
         </div>
 
         <div class="signal-grid" id="signal-container"></div>
@@ -126,7 +140,7 @@
         <div class="chart-container">
             <button class="close-chart" onclick="closeLiveChart()">✖</button>
             <div class="chart-header">
-                <span class="chart-title" id="chart-coin-name">BTC/USDT - Live Analysis</span>
+                <span class="chart-title" id="chart-coin-name">BTC/USDT</span>
                 <span id="chart-side" class="badge"></span>
             </div>
             <div id="tv-chart"></div>
@@ -137,33 +151,72 @@
         const firebaseConfig = { databaseURL: "https://alphasigna-live-d644a-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
+        
         let currentSignalData = null;
         let activeUserKey = null;
 
-        // Chart Variables
+        // Chart Object Storage
         let chartInstance = null;
         let candleSeries = null;
         let binanceWS = null;
 
-        // --- 🔑 LOGIN & LISTENERS ---
+        // --- 📡 GLOBAL SYSTEM STATUS LISTENER (Runs immediately) ---
+        db.ref('system_status').on('value', (snapshot) => {
+            const status = snapshot.val();
+            const statusBar = document.getElementById('status-bar');
+            const statusText = document.getElementById('status-text');
+            const statusDot = document.getElementById('status-dot');
+            
+            if(status) {
+                statusBar.style.display = 'flex';
+                statusText.innerText = `SYSTEM STATUS: ${status.message.toUpperCase()}`;
+                if(status.is_paused === true || status.is_paused === "true") {
+                    statusBar.style.border = '1px solid var(--short)';
+                    statusBar.style.color = var(--short);
+                    statusDot.style.background = var(--short);
+                    statusDot.style.boxShadow = '0 0 8px var(--short)';
+                } else {
+                    statusBar.style.border = '1px solid var(--primary)';
+                    statusBar.style.color = var(--primary);
+                    statusDot.style.background = var(--primary);
+                    statusDot.style.boxShadow = '0 0 8px var(--primary)';
+                }
+            }
+        });
+
+        // --- 🔑 FIREBASE DYNAMIC ACCOUNT SYSTEM ---
         function verifyFirebaseKey() {
             const inputKey = document.getElementById('access-key').value.trim();
+            const errorMsg = document.getElementById('error-msg');
             if(!inputKey) return;
+
             db.ref('premium_keys/' + inputKey).once('value', (snapshot) => {
                 const userData = snapshot.val();
-                if (userData && userData.status === "active" && new Date(userData.expire_date) >= new Date()) {
-                    activeUserKey = inputKey;
-                    document.getElementById('login-screen').style.display = 'none';
-                    document.getElementById('dashboard').style.display = 'block';
-                    document.getElementById('user-welcome').innerText = `LICENSE: ${inputKey.toUpperCase()}`;
-                    initListeners();
+                if (userData && userData.status === "active") {
+                    const expiryDate = new Date(userData.expire_date);
+                    const today = new Date();
+
+                    if (expiryDate >= today) {
+                        activeUserKey = inputKey;
+                        errorMsg.style.display = 'none';
+                        document.getElementById('login-screen').style.display = 'none';
+                        document.getElementById('dashboard').style.display = 'block';
+                        document.getElementById('user-welcome').innerText = `LICENSE USER: ${inputKey.toUpperCase()} (EXPIRES: ${userData.expire_date})`;
+                        
+                        initCoreListeners();
+                    } else {
+                        errorMsg.innerText = "⚠️ SYSTEM ERROR: KEY ACCESS EXPIRED";
+                        errorMsg.style.display = 'block';
+                    }
                 } else {
-                    document.getElementById('error-msg').style.display = 'block';
+                    errorMsg.innerText = "⚠️ SYSTEM ERROR: SECURE AUTHENTICATION FAILED";
+                    errorMsg.style.display = 'block';
                 }
             });
         }
 
-        function initListeners() {
+        // --- 📡 CORE INTEGRATION REFRESHER ---
+        function initCoreListeners() {
             db.ref('live_signals').on('value', (s) => { 
                 currentSignalData = s.val(); 
                 if(document.getElementById('signal-container').style.opacity === "1") renderSignals(currentSignalData); 
@@ -182,12 +235,14 @@
             });
         }
 
+        // --- ⚡ WRITE/UPDATE METRIC ON TAKE TRADE ---
         function takeTrade(coin) {
             db.ref('global_stats/total_trades').transaction(v => (v || 0) + 1);
             db.ref('premium_keys/' + activeUserKey + '/stats/trades').transaction(v => (v || 0) + 1);
-            alert(`✅ Trade Executed for ${coin}!`);
+            alert(`⚡ TRADE COMMAND INTEGRATED\nOrders dispatched to terminal pipeline for ${coin}.`);
         }
 
+        // --- 🛰️ RADAR PULSE PROCESSOR ---
         function startScan() {
             document.getElementById('scan-btn').style.display = 'none';
             document.getElementById('radar-anim').style.display = 'block';
@@ -195,17 +250,28 @@
             setTimeout(() => {
                 document.getElementById('radar-anim').style.display = 'none';
                 document.getElementById('scan-btn').style.display = 'inline-block';
-                document.getElementById('scan-btn').innerText = "🔄 RESCAN AI MATRIX";
+                document.getElementById('scan-btn').innerText = "🔄 RE-SCAN AI DEEP ORDERBOOK";
                 renderSignals(currentSignalData);
                 document.getElementById('signal-container').style.opacity = '1'; 
-            }, 3000);
+            }, 2500);
         }
 
-        // --- 🎴 RENDER CARDS ---
+        // --- 🎴 SIGNAL INTERFACE MATRICES ---
         function renderSignals(data) {
             const container = document.getElementById('signal-container');
             container.innerHTML = ''; 
-            if (!data || data.WAITING) return;
+            if (!data) return;
+
+            if (data.WAITING) {
+                container.innerHTML = `
+                    <div class="signal-card" style="text-align: center; grid-column: 1 / -1; padding: 50px; border: 1px dashed var(--primary); background: rgba(0,255,204,0.02);">
+                        <span class="badge badge-swing" style="background:transparent; border-color:var(--primary); color:var(--primary);">COMPILING ENGINE ⏳</span>
+                        <h2 style="color: #fff; font-weight:700;">Scanning Global High-Frequency Liquidity...</h2>
+                        <p style="color: #8b949e; font-size: 14px; max-width:600px; margin:10px auto;">Connecting WebSocket streams across global exchanges to locate optimum micro-trends.</p>
+                    </div>`;
+                return;
+            }
+
             const currentTime = Math.floor(Date.now() / 1000);
 
             for (const [coin, details] of Object.entries(data)) {
@@ -213,18 +279,23 @@
                 let badgeClass = details.signal_type.includes("SWING") ? "badge-swing" : "badge-scalp";
                 let sideClass = details.side === "LONG" ? "side-long" : "side-short";
 
-                // Pass variables to chart function correctly
                 const chartArgs = `'${details.pair}', ${details.entry}, ${details.tp1}, ${details.sl}, '${details.side}'`;
+                
+                // Generating a dynamic simulated trader count for FOMO effect
+                const simulatedTraders = Math.floor(Math.random() * (85 - 30 + 1)) + 30;
 
                 container.innerHTML += `
                     <div class="signal-card">
-                        <span class="badge ${badgeClass}">${details.signal_type}</span>
-                        <div class="coin-title"><span>${details.pair}</span><span class="${sideClass}">${details.side}</span></div>
-                        <div class="data-row"><span class="data-label">Live Entry Price</span><span class="data-value">${details.entry}</span></div>
-                        <div class="data-row"><span class="data-label">Take Profit (TP)</span><span class="data-value" style="color: var(--long);">${details.tp1}</span></div>
-                        <div class="data-row"><span class="data-label">Stop Loss (SL)</span><span class="data-value" style="color: var(--short);">${details.sl}</span></div>
-                        
                         <div>
+                            <span class="badge ${badgeClass}">${details.signal_type}</span>
+                            <div class="coin-title"><span>${details.pair}</span><span class="${sideClass}">${details.side}</span></div>
+                            <div class="data-row"><span class="data-label">AI Target Entry</span><span class="data-value">${details.entry}</span></div>
+                            <div class="data-row"><span class="data-label">Take Profit 01</span><span class="data-value" style="color: var(--long);">${details.tp1}</span></div>
+                            <div class="data-row"><span class="data-label">Stop Target Loss</span><span class="data-value" style="color: var(--short);">${details.sl}</span></div>
+                            <div class="data-row"><span class="data-label">AI Matrix Confidence</span><span class="data-value" style="color: var(--primary);">${details.accuracy}%</span></div>
+                        </div>
+                        <div>
+                            <div class="fomo-bar">🔥 <span>${simulatedTraders}</span> Global Traders executed this setup</div>
                             <button class="btn btn-trade" onclick="takeTrade('${coin}')">⚡ TAKE TRADE</button>
                             <button class="btn btn-chart" onclick="openLiveChart(${chartArgs})">📊 LIVE CHART</button>
                         </div>
@@ -232,52 +303,49 @@
             }
         }
 
-        // --- 📈 TRADINGVIEW POPUP LOGIC ---
+        // --- 📈 TRADINGVIEW + BINANCE REAL-TIME WEBSOCKET PIPELINE ---
         async function openLiveChart(pair, entry, tp, sl, side) {
             document.getElementById('chart-modal').style.display = 'flex';
-            document.getElementById('chart-coin-name').innerText = `${pair} - Live AI Analysis`;
+            document.getElementById('chart-coin-name').innerText = `${pair} Real-Time Terminal`;
             
             const sideBadge = document.getElementById('chart-side');
             sideBadge.innerText = side;
             sideBadge.className = side === 'LONG' ? 'badge badge-swing' : 'badge badge-scalp';
 
-            // Clean old chart
             if (chartInstance) { chartInstance.remove(); chartInstance = null; }
             if (binanceWS) { binanceWS.close(); binanceWS = null; }
 
-            // 1. Initialize Chart
             const chartDiv = document.getElementById('tv-chart');
             chartInstance = LightweightCharts.createChart(chartDiv, {
                 width: chartDiv.clientWidth,
                 height: chartDiv.clientHeight,
-                layout: { background: { type: 'solid', color: '#0b0e14' }, textColor: '#8b94a3' },
-                grid: { vertLines: { color: '#2a3142' }, horzLines: { color: '#2a3142' } },
+                layout: { background: { type: 'solid', color: '#010409' }, textColor: '#8b949e' },
+                grid: { vertLines: { color: 'rgba(33,38,45,0.4)' }, horzLines: { color: 'rgba(33,38,45,0.4)' } },
                 crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
                 timeScale: { timeVisible: true, secondsVisible: false },
-                watermark: { color: 'rgba(0, 255, 204, 0.05)', visible: true, text: 'ALPHASIGNA AI', fontSize: 48, horzAlign: 'center', vertAlign: 'center' }
+                watermark: { color: 'rgba(0, 255, 204, 0.04)', visible: true, text: 'ALPHASIGNA AI', fontSize: 38, horzAlign: 'center', vertAlign: 'center' }
             });
 
             candleSeries = chartInstance.addCandlestickSeries({
-                upColor: '#00e676', downColor: '#ff1744', borderVisible: false, wickUpColor: '#00e676', wickDownColor: '#ff1744'
+                upColor: '#26a69a', downColor: '#ef5350', borderVisible: false, wickUpColor: '#26a69a', wickDownColor: '#ef5350'
             });
 
-            // 2. Draw Entry, TP, SL Lines
-            candleSeries.createPriceLine({ price: entry, color: '#3179f5', lineWidth: 2, lineStyle: 2, title: 'ENTRY' });
-            candleSeries.createPriceLine({ price: tp, color: '#00e676', lineWidth: 2, lineStyle: 2, title: 'TP' });
-            candleSeries.createPriceLine({ price: sl, color: '#ff1744', lineWidth: 2, lineStyle: 2, title: 'SL' });
+            // Target Horizontal Price Indicators
+            candleSeries.createPriceLine({ price: entry, color: '#58a6ff', lineWidth: 2, lineStyle: 2, title: 'ENTRY' });
+            candleSeries.createPriceLine({ price: tp, color: '#26a69a', lineWidth: 2, lineStyle: 2, title: 'TARGET TP' });
+            candleSeries.createPriceLine({ price: sl, color: '#ef5350', lineWidth: 2, lineStyle: 2, title: 'TARGET SL' });
 
-            // 3. Fetch Historical Data (Last 150 Candles)
             const symbol = pair.replace('/', '').toLowerCase();
             try {
-                const res = await fetch(`https://fapi.binance.com/fapi/v1/klines?symbol=${symbol.toUpperCase()}&interval=1m&limit=150`);
+                const res = await fetch(`https://fapi.binance.com/fapi/v1/klines?symbol=${symbol.toUpperCase()}&interval=1m&limit=130`);
                 const data = await res.json();
                 const formattedData = data.map(d => ({
                     time: d[0] / 1000, open: parseFloat(d[1]), high: parseFloat(d[2]), low: parseFloat(d[3]), close: parseFloat(d[4])
                 }));
                 candleSeries.setData(formattedData);
-            } catch (e) { console.error("Error fetching historical data."); }
+            } catch (e) { console.error("History engine failure."); }
 
-            // 4. Connect Binance Live WebSocket
+            // Connecting Global WebSocket Stream
             binanceWS = new WebSocket(`wss://fstream.binance.com/ws/${symbol}@kline_1m`);
             binanceWS.onmessage = (event) => {
                 const msg = JSON.parse(event.data);
@@ -294,7 +362,6 @@
             if (chartInstance) chartInstance.remove();
         }
 
-        // Handle window resize for chart
         window.addEventListener('resize', () => {
             if(chartInstance && document.getElementById('chart-modal').style.display === 'flex') {
                 const chartDiv = document.getElementById('tv-chart');
