@@ -3,92 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna V17.1 - Live AI Signals</title>
+    <title>AlphaSigna V17.2 - Premium AI Matrix</title>
     <style>
+        :root {
+            --primary: #00ffcc;
+            --bg-dark: #0b0e14;
+            --card-bg: #151a22;
+            --accent: #ff007f;
+        }
         body {
-            background-color: #0b0e14;
+            background-color: var(--bg-dark);
             color: #ffffff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
+            overflow-x: hidden;
         }
-        .header {
+        
+        /* 1. Login Screen Styles */
+        #login-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 80vh;
+        }
+        .login-box {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 15px;
+            border: 1px solid #2a3142;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
             text-align: center;
-            margin-bottom: 30px;
         }
-        .header h1 {
-            color: #00ffcc;
+        .login-box input {
+            padding: 15px;
+            width: 250px;
+            border-radius: 8px;
+            border: 1px solid var(--primary);
+            background: #000;
+            color: var(--primary);
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+            outline: none;
+        }
+        .btn {
+            background: var(--primary);
+            color: #000;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
             text-transform: uppercase;
-            letter-spacing: 2px;
         }
+        .btn:hover {
+            box-shadow: 0 0 15px var(--primary);
+            transform: scale(1.05);
+        }
+
+        /* 2. Main Dashboard Styles */
+        #dashboard { display: none; }
+        
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { color: var(--primary); letter-spacing: 2px; text-shadow: 0 0 10px rgba(0,255,204,0.5); }
+        
+        /* Scanner Radar Animation */
+        .scanner-section {
+            text-align: center;
+            margin: 40px 0;
+        }
+        .radar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 2px solid #2a3142;
+            margin: 0 auto 20px auto;
+            position: relative;
+            overflow: hidden;
+            background: repeating-radial-gradient(circle, transparent, transparent 20px, #1a232e 21px, #1a232e 22px);
+            display: none; /* Hidden until scan is clicked */
+        }
+        .radar::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150px;
+            height: 150px;
+            background: conic-gradient(from 0deg, transparent 70%, rgba(0, 255, 204, 0.8) 100%);
+            transform-origin: 0 0;
+            animation: scan-rotate 2s linear infinite;
+        }
+        @keyframes scan-rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Signal Grid Styles */
         .signal-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 20px;
             max-width: 1200px;
             margin: 0 auto;
+            opacity: 0; /* Hidden initially */
+            transition: opacity 1s ease-in-out;
         }
         .signal-card {
-            background: #151a22;
+            background: var(--card-bg);
             border-radius: 12px;
             padding: 20px;
             border: 1px solid #2a3142;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-        .signal-card:hover {
-            transform: translateY(-5px);
-            border-color: #00ffcc;
+        .signal-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.05), transparent);
+            animation: card-shine 3s infinite;
         }
-        .badge {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: bold;
-            margin-bottom: 15px;
+        @keyframes card-shine {
+            0% { left: -100%; }
+            100% { left: 200%; }
         }
+
+        .badge { display: inline-block; padding: 5px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; margin-bottom: 15px; }
         .badge-swing { background: #0d47a1; color: #64b5f6; border: 1px solid #1976d2; }
-        .badge-scalp { background: #ff6f00; color: #ffe082; border: 1px solid #ffa000; }
+        .badge-scalp { background: rgba(255, 0, 127, 0.2); color: var(--accent); border: 1px solid var(--accent); }
         .badge-waiting { background: #424242; color: #bdbdbd; border: 1px solid #616161; }
         
-        .coin-title {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 0 0 15px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .side-long { color: #00e676; }
-        .side-short { color: #ff1744; }
+        .coin-title { font-size: 26px; font-weight: bold; margin: 0 0 15px 0; display: flex; justify-content: space-between; }
+        .side-long { color: #00e676; text-shadow: 0 0 5px #00e676; }
+        .side-short { color: #ff1744; text-shadow: 0 0 5px #ff1744; }
         .side-neutral { color: #9e9e9e; }
         
-        .data-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 14px;
-            border-bottom: 1px solid #2a3142;
-            padding-bottom: 5px;
-        }
+        .data-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 15px; border-bottom: 1px solid #2a3142; padding-bottom: 5px; }
         .data-label { color: #8b94a3; }
         .data-value { font-weight: bold; }
         
-        .ai-logic {
-            margin-top: 15px;
-            font-size: 12px;
-            color: #78909c;
-            background: #1a232e;
-            padding: 10px;
-            border-radius: 6px;
-        }
-        .timestamp {
-            font-size: 11px;
-            color: #546e7a;
-            text-align: right;
-            margin-top: 10px;
-        }
+        .ai-logic { margin-top: 15px; font-size: 12px; color: #78909c; background: #0b0e14; padding: 12px; border-radius: 8px; border-left: 3px solid var(--primary); }
     </style>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -96,68 +157,116 @@
 </head>
 <body>
 
-    <div class="header">
-        <h1>💎 AlphaSigna Live Hub</h1>
-        <p>Advanced Dual-Engine AI Matrix (Swing & Scalp)</p>
+    <div id="login-screen">
+        <div class="login-box">
+            <h2 style="color: var(--primary);">💎 ALPHASIGNA HUB</h2>
+            <p style="color: #8b94a3;">Enter Security Key to Access AI Matrix</p>
+            <input type="password" id="access-key" placeholder="Enter Key..." />
+            <br>
+            <button class="btn" onclick="checkKey()">Verify Access</button>
+            <p id="error-msg" style="color: #ff1744; display: none; margin-top: 15px;">Invalid Key! Access Denied.</p>
+        </div>
     </div>
 
-    <div class="signal-grid" id="signal-container">
+    <div id="dashboard">
+        <div class="header">
+            <h1>💎 AlphaSigna Live Hub</h1>
+            <p>High-Frequency AI Matrix Active</p>
         </div>
 
+        <div class="scanner-section">
+            <div class="radar" id="radar-anim"></div>
+            <button class="btn" id="scan-btn" onclick="startScan()">🛰️ SCAN LIVE MARKET</button>
+        </div>
+
+        <div class="signal-grid" id="signal-container"></div>
+    </div>
+
     <script>
-        // 🚨 මෙතනට ඔයාගේ Firebase Config එක දාන්න 🚨
+        // --- 1. SECURITY LOGIN LOGIC ---
+        function checkKey() {
+            const key = document.getElementById('access-key').value;
+            if (key === "ALPHA2026") { // 🔑 ඔයාට ඕනෙ KEY එක මෙතන වෙනස් කරන්න
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+            } else {
+                document.getElementById('error-msg').style.display = 'block';
+            }
+        }
+
+        // --- 2. FIREBASE & UI LOGIC ---
         const firebaseConfig = {
-            databaseURL: "https://alphasigna-live-d644a-default-rtdb.firebaseio.com/"
+            databaseURL: "https://alphasigna-live-d644a-default-rtdb.firebaseio.com/" // 🚨 ඔයාගේ Firebase URL එක මෙතන තියෙනවා
         };
-        
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
+        let currentSignalData = null; // Backend එකෙන් එන දත්ත මෙතන සේව් වෙනවා
 
+        // Firebase එකෙන් Auto දත්ත එද්දී ඒවා currentSignalData එකට සේව් කරනවා
+        db.ref('live_signals').on('value', (snapshot) => {
+            currentSignalData = snapshot.val();
+            // Scan කරලා ඉවර නම් විතරක් Auto Update එක UI එකට දෙනවා
+            if(document.getElementById('signal-container').style.opacity === "1") {
+                renderSignals(currentSignalData);
+            }
+        });
+
+        // --- 3. SCAN ANIMATION LOGIC ---
+        function startScan() {
+            const btn = document.getElementById('scan-btn');
+            const radar = document.getElementById('radar-anim');
+            const container = document.getElementById('signal-container');
+            
+            // බොත්තම හංගලා රේඩාර් එක පෙන්වීම
+            btn.style.display = 'none';
+            radar.style.display = 'block';
+            container.style.opacity = '0'; 
+
+            // තත්පර 3කට පසු සිග්නල් පෙන්වීම
+            setTimeout(() => {
+                radar.style.display = 'none';
+                btn.style.display = 'inline-block';
+                btn.innerText = "🔄 RESCAN MARKET";
+                
+                renderSignals(currentSignalData);
+                container.style.opacity = '1'; // ලස්සනට Fade වෙලා පෙන්වීම
+            }, 3000);
+        }
+
+        // --- 4. RENDER SIGNALS (V17.2 Logic) ---
         function renderSignals(data) {
             const container = document.getElementById('signal-container');
-            container.innerHTML = ''; // පරණ දත්ත මකන්න
-
+            container.innerHTML = ''; 
             if (!data) return;
-
             const currentTime = Math.floor(Date.now() / 1000);
 
             for (const [coin, details] of Object.entries(data)) {
-                
-                // 1. Waiting State එක පරීක්ෂා කිරීම
                 if (coin === "WAITING" || details.signal_type === "WAITING ⏳") {
-                    const card = `
+                    container.innerHTML += `
                         <div class="signal-card" style="text-align: center; grid-column: 1 / -1; padding: 50px;">
-                            <span class="badge badge-waiting">${details.signal_type}</span>
-                            <h2 class="side-neutral">Analyzing Live Market Data...</h2>
+                            <span class="badge badge-waiting">MARKET SCANNING ⏳</span>
+                            <h2 class="side-neutral">Analyzing Live Volume...</h2>
                             <p style="color: #8b94a3;">${details.tech_logic}</p>
-                        </div>
-                    `;
-                    container.innerHTML += card;
-                    return; // වෙන කාසි නැති නිසා නවත්වනවා
+                        </div>`;
+                    return;
                 }
 
-                // 2. Scalp Auto-Expiration (විනාඩි 15 ට වඩා පරණ නම් මකා දැමේ)
                 if (details.signal_type.includes("SCALP")) {
-                    const signalAge = currentTime - details.timestamp;
-                    if (signalAge > 900) { // තත්පර 900 = විනාඩි 15
-                        continue; // මේ කාසිය UI එකට දාන්නේ නැහැ (Skip)
-                    }
+                    if ((currentTime - details.timestamp) > 900) continue; // විනාඩි 15න් මකා දැමේ
                 }
 
-                // 3. Signal Card එක නිර්මාණය කිරීම
                 let badgeClass = details.signal_type.includes("SWING") ? "badge-swing" : "badge-scalp";
                 let sideClass = details.side === "LONG" ? "side-long" : "side-short";
 
-                const cardHTML = `
+                container.innerHTML += `
                     <div class="signal-card">
                         <span class="badge ${badgeClass}">${details.signal_type}</span>
                         <div class="coin-title">
                             <span>${details.pair}</span>
                             <span class="${sideClass}">${details.side}</span>
                         </div>
-                        
                         <div class="data-row">
-                            <span class="data-label">Entry Price</span>
+                            <span class="data-label">Live Entry Price</span>
                             <span class="data-value">${details.entry}</span>
                         </div>
                         <div class="data-row">
@@ -169,48 +278,16 @@
                             <span class="data-value" style="color: #ff1744;">${details.sl}</span>
                         </div>
                         <div class="data-row">
-                            <span class="data-label">AI Accuracy</span>
-                            <span class="data-value">${details.accuracy}%</span>
+                            <span class="data-label">AI Win Prob.</span>
+                            <span class="data-value" style="color: var(--primary);">${details.accuracy}%</span>
                         </div>
-
                         <div class="ai-logic">
                             <strong>Logic:</strong> ${details.tech_logic}<br>
                             <strong>Risk:</strong> ${details.risk_logic}
                         </div>
-                        
-                        <div class="timestamp">
-                            Updated: ${new Date(details.timestamp * 1000).toLocaleTimeString()}
-                        </div>
-                    </div>
-                `;
-                container.innerHTML += cardHTML;
-            }
-            
-            // කාසි ඔක්කොම Expire වෙලා නම්, Default පණිවිඩයක් පෙන්වීම
-            if(container.innerHTML === '') {
-                 container.innerHTML = `
-                    <div class="signal-card" style="text-align: center; grid-column: 1 / -1;">
-                        <span class="badge badge-waiting">MARKET SCANNING ⏳</span>
-                        <h2 class="side-neutral">Waiting for new setups...</h2>
-                    </div>
-                `;
+                    </div>`;
             }
         }
-
-        // Firebase එකෙන් සජීවීව දත්ත ලබා ගැනීම (Live Listener)
-        const signalsRef = db.ref('live_signals');
-        signalsRef.on('value', (snapshot) => {
-            const data = snapshot.val();
-            renderSignals(data);
-        });
-
-        // සෑම තත්පර 30කට වරක්ම Expire වූ Scalp සිග්නල් මකා දැමීමට UI එක Refresh කිරීම
-        setInterval(() => {
-            signalsRef.once('value').then(snapshot => {
-                renderSignals(snapshot.val());
-            });
-        }, 30000);
-
     </script>
 </body>
 </html>
