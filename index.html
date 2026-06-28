@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna V18.0 - Global AI Terminal</title>
+    <title>AlphaSigna V18.1 - Global AI Terminal</title>
     <style>
         :root {
             --primary: #00ffcc;
@@ -155,12 +155,11 @@
         let currentSignalData = null;
         let activeUserKey = null;
 
-        // Chart Object Storage
         let chartInstance = null;
         let candleSeries = null;
         let binanceWS = null;
 
-        // --- 📡 GLOBAL SYSTEM STATUS LISTENER (Runs immediately) ---
+        // --- 📡 GLOBAL SYSTEM STATUS LISTENER ---
         db.ref('system_status').on('value', (snapshot) => {
             const status = snapshot.val();
             const statusBar = document.getElementById('status-bar');
@@ -171,15 +170,15 @@
                 statusBar.style.display = 'flex';
                 statusText.innerText = `SYSTEM STATUS: ${status.message.toUpperCase()}`;
                 if(status.is_paused === true || status.is_paused === "true") {
-                    statusBar.style.border = '1px solid var(--short)';
-                    statusBar.style.color = var(--short);
-                    statusDot.style.background = var(--short);
-                    statusDot.style.boxShadow = '0 0 8px var(--short)';
+                    statusBar.style.border = '1px solid #ff1744';
+                    statusBar.style.color = '#ff1744';
+                    statusDot.style.background = '#ff1744';
+                    statusDot.style.boxShadow = '0 0 8px #ff1744';
                 } else {
-                    statusBar.style.border = '1px solid var(--primary)';
-                    statusBar.style.color = var(--primary);
-                    statusDot.style.background = var(--primary);
-                    statusDot.style.boxShadow = '0 0 8px var(--primary)';
+                    statusBar.style.border = '1px solid #00ffcc';
+                    statusBar.style.color = '#00ffcc';
+                    statusDot.style.background = '#00ffcc';
+                    statusDot.style.boxShadow = '0 0 8px #00ffcc';
                 }
             }
         });
@@ -235,14 +234,12 @@
             });
         }
 
-        // --- ⚡ WRITE/UPDATE METRIC ON TAKE TRADE ---
         function takeTrade(coin) {
             db.ref('global_stats/total_trades').transaction(v => (v || 0) + 1);
             db.ref('premium_keys/' + activeUserKey + '/stats/trades').transaction(v => (v || 0) + 1);
             alert(`⚡ TRADE COMMAND INTEGRATED\nOrders dispatched to terminal pipeline for ${coin}.`);
         }
 
-        // --- 🛰️ RADAR PULSE PROCESSOR ---
         function startScan() {
             document.getElementById('scan-btn').style.display = 'none';
             document.getElementById('radar-anim').style.display = 'block';
@@ -256,7 +253,6 @@
             }, 2500);
         }
 
-        // --- 🎴 SIGNAL INTERFACE MATRICES ---
         function renderSignals(data) {
             const container = document.getElementById('signal-container');
             container.innerHTML = ''; 
@@ -264,8 +260,8 @@
 
             if (data.WAITING) {
                 container.innerHTML = `
-                    <div class="signal-card" style="text-align: center; grid-column: 1 / -1; padding: 50px; border: 1px dashed var(--primary); background: rgba(0,255,204,0.02);">
-                        <span class="badge badge-swing" style="background:transparent; border-color:var(--primary); color:var(--primary);">COMPILING ENGINE ⏳</span>
+                    <div class="signal-card" style="text-align: center; grid-column: 1 / -1; padding: 50px; border: 1px dashed #00ffcc; background: rgba(0,255,204,0.02);">
+                        <span class="badge badge-swing" style="background:transparent; border-color:#00ffcc; color:#00ffcc;">COMPILING ENGINE ⏳</span>
                         <h2 style="color: #fff; font-weight:700;">Scanning Global High-Frequency Liquidity...</h2>
                         <p style="color: #8b949e; font-size: 14px; max-width:600px; margin:10px auto;">Connecting WebSocket streams across global exchanges to locate optimum micro-trends.</p>
                     </div>`;
@@ -280,8 +276,6 @@
                 let sideClass = details.side === "LONG" ? "side-long" : "side-short";
 
                 const chartArgs = `'${details.pair}', ${details.entry}, ${details.tp1}, ${details.sl}, '${details.side}'`;
-                
-                // Generating a dynamic simulated trader count for FOMO effect
                 const simulatedTraders = Math.floor(Math.random() * (85 - 30 + 1)) + 30;
 
                 container.innerHTML += `
@@ -290,9 +284,9 @@
                             <span class="badge ${badgeClass}">${details.signal_type}</span>
                             <div class="coin-title"><span>${details.pair}</span><span class="${sideClass}">${details.side}</span></div>
                             <div class="data-row"><span class="data-label">AI Target Entry</span><span class="data-value">${details.entry}</span></div>
-                            <div class="data-row"><span class="data-label">Take Profit 01</span><span class="data-value" style="color: var(--long);">${details.tp1}</span></div>
-                            <div class="data-row"><span class="data-label">Stop Target Loss</span><span class="data-value" style="color: var(--short);">${details.sl}</span></div>
-                            <div class="data-row"><span class="data-label">AI Matrix Confidence</span><span class="data-value" style="color: var(--primary);">${details.accuracy}%</span></div>
+                            <div class="data-row"><span class="data-label">Take Profit 01</span><span class="data-value" style="color: #00e676;">${details.tp1}</span></div>
+                            <div class="data-row"><span class="data-label">Stop Target Loss</span><span class="data-value" style="color: #ff1744;">${details.sl}</span></div>
+                            <div class="data-row"><span class="data-label">AI Matrix Confidence</span><span class="data-value" style="color: #00ffcc;">${details.accuracy}%</span></div>
                         </div>
                         <div>
                             <div class="fomo-bar">🔥 <span>${simulatedTraders}</span> Global Traders executed this setup</div>
@@ -303,7 +297,6 @@
             }
         }
 
-        // --- 📈 TRADINGVIEW + BINANCE REAL-TIME WEBSOCKET PIPELINE ---
         async function openLiveChart(pair, entry, tp, sl, side) {
             document.getElementById('chart-modal').style.display = 'flex';
             document.getElementById('chart-coin-name').innerText = `${pair} Real-Time Terminal`;
@@ -330,7 +323,6 @@
                 upColor: '#26a69a', downColor: '#ef5350', borderVisible: false, wickUpColor: '#26a69a', wickDownColor: '#ef5350'
             });
 
-            // Target Horizontal Price Indicators
             candleSeries.createPriceLine({ price: entry, color: '#58a6ff', lineWidth: 2, lineStyle: 2, title: 'ENTRY' });
             candleSeries.createPriceLine({ price: tp, color: '#26a69a', lineWidth: 2, lineStyle: 2, title: 'TARGET TP' });
             candleSeries.createPriceLine({ price: sl, color: '#ef5350', lineWidth: 2, lineStyle: 2, title: 'TARGET SL' });
@@ -345,7 +337,6 @@
                 candleSeries.setData(formattedData);
             } catch (e) { console.error("History engine failure."); }
 
-            // Connecting Global WebSocket Stream
             binanceWS = new WebSocket(`wss://fstream.binance.com/ws/${symbol}@kline_1m`);
             binanceWS.onmessage = (event) => {
                 const msg = JSON.parse(event.data);
