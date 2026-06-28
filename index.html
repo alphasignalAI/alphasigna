@@ -7,16 +7,17 @@
     <style>
         :root {
             --bg-color: #03070d; 
-            --card-bg: rgba(8, 16, 26, 0.6); 
+            --card-bg: rgba(8, 16, 26, 0.65); 
             --gold: #f3ba2f;
             --blue-glow: #00d2ff; 
             --green: #00ff88; 
             --red: #ff4d4d; 
             --text-muted: #8492a6;
+            --border-glow: rgba(0, 210, 255, 0.15);
         }
         body { 
             margin: 0; padding: 20px 15px; 
-            background: radial-gradient(circle at 50% 0%, #0c182b 0%, #03070d 80%);
+            background: radial-gradient(circle at 50% 0%, #061124 0%, #03070d 80%);
             background-attachment: fixed;
             color: white; font-family: 'Segoe UI', Tahoma, sans-serif; 
             display: flex; justify-content: center; align-items: flex-start; 
@@ -44,51 +45,60 @@
         .input-group input:focus { border-color: var(--blue-glow); box-shadow: 0 0 15px rgba(0, 210, 255, 0.3); }
         
         .container { max-width: 1100px; width: 100%; display: none; padding-bottom: 80px; box-sizing: border-box;}
-        .header { text-align: center; margin-bottom: 20px; }
-        .header h1 { font-size: clamp(28px, 5vw, 42px); margin: 0; background: linear-gradient(135deg, #ffffff, var(--blue-glow)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; letter-spacing: 1px; text-shadow: 0 0 20px rgba(0, 210, 255, 0.3);}
+        .header { text-align: center; margin-bottom: 20px; position: relative; }
+        .header h1 { font-size: clamp(32px, 6vw, 46px); margin: 0; background: linear-gradient(135deg, #ffffff, var(--blue-glow)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; letter-spacing: 1px; text-shadow: 0 0 25px rgba(0, 210, 255, 0.35);}
         .header p { color: var(--blue-glow); font-size: 12px; letter-spacing: 2px; margin-top: 5px; font-weight: bold;}
         
-        .expiry-badge { text-align: center; margin-top: -10px; margin-bottom: 25px; font-size: 13px; color: var(--text-muted); font-weight: bold; letter-spacing: 1px;}
+        .live-counter-badge { display: inline-block; background: rgba(0, 255, 136, 0.12); border: 1px solid rgba(0, 255, 136, 0.3); color: var(--green); font-size: 11px; padding: 5px 12px; border-radius: 20px; font-weight: bold; margin-top: 10px; letter-spacing: 1px;}
+        
+        .expiry-badge { text-align: center; margin-top: 5px; margin-bottom: 25px; font-size: 13px; color: var(--text-muted); font-weight: bold; letter-spacing: 1px;}
         .expiry-badge span { color: var(--gold); border: 1px solid rgba(243, 186, 47, 0.3); padding: 4px 10px; border-radius: 6px; background: rgba(243, 186, 47, 0.1); font-family: monospace;}
 
         .section-title { font-size: 12px; color: var(--text-muted); text-align: center; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 2px; font-weight: 800;}
-        .stats-panel { background: rgba(6, 13, 23, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 35px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .stat-item { text-align: center; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.04); display: flex; flex-direction: column; justify-content: center; transition: transform 0.3s, background 0.3s;}
-        .stat-item:hover { background: rgba(255,255,255,0.02); transform: translateY(-2px);}
+        .stats-panel { background: rgba(6, 13, 23, 0.5); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 35px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .stat-item { text-align: center; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03); display: flex; flex-direction: column; justify-content: center; transition: transform 0.3s, border 0.3s;}
+        .stat-item:hover { transform: translateY(-2px); border-color: rgba(243, 186, 47, 0.2); }
         .stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; font-weight: 700; letter-spacing: 0.5px;}
         .stat-value { font-size: 26px; font-weight: 900; color: #fff; font-family: 'Segoe UI', monospace;}
 
         .gauge-section { text-align: center; margin: 40px 0; }
         @keyframes pulseGlow { 0% { text-shadow: 0 0 5px var(--gold); } 50% { text-shadow: 0 0 20px var(--gold); } 100% { text-shadow: 0 0 5px var(--gold); } }
-        .scanning-coin { font-size: 15px; color: var(--gold); font-weight: bold; min-height: 40px; letter-spacing: 1px; text-transform: uppercase; animation: pulseGlow 2s infinite;}
+        .scanning-coin { font-size: 14px; color: var(--gold); font-weight: bold; min-height: 40px; letter-spacing: 1px; text-transform: uppercase; animation: pulseGlow 2s infinite;}
         
         .meter-container { position: relative; width: 240px; height: 120px; margin: 20px auto; overflow: hidden; filter: drop-shadow(0 0 15px rgba(0, 210, 255, 0.3)); }
         .gauge-bg { width: 200px; height: 200px; border-radius: 50%; border: 10px solid #111d2e; position: absolute; top: 0; left: 20px; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); }
         .gauge-fill { width: 200px; height: 200px; border-radius: 50%; border: 10px solid var(--blue-glow); position: absolute; top: 0; left: 20px; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); transform: rotate(-180deg); transform-origin: center center; transition: transform 0.2s linear; }
         .gauge-percentage { position: absolute; bottom: -5px; left: 0; right: 0; font-size: 34px; font-weight: 900; color: #fff; text-shadow: 0 0 15px var(--blue-glow); font-family: monospace;}
 
-        .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 20px; box-sizing: border-box; width: 100%; align-items: stretch;}
-        .card { background: linear-gradient(180deg, rgba(12,24,43,0.8) 0%, rgba(8,16,26,0.95) 100%); backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.1); border-left: 1px solid rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(0,0,0,0.5); border-radius: 16px; padding: 22px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.3s ease;}
-        .card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0, 210, 255, 0.15); border-top: 1px solid rgba(0, 210, 255, 0.3);}
+        .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; box-sizing: border-box; width: 100%; align-items: stretch;}
+        .card { background: linear-gradient(180deg, rgba(10,22,38,0.7) 0%, rgba(6,12,20,0.95) 100%); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease, border-color 0.3s;}
+        .card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0, 210, 255, 0.18); border-color: rgba(0, 210, 255, 0.4);}
         
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px;}
-        .coin-title { font-size: 20px; font-weight: 900; letter-spacing: 0.5px; text-shadow: 0 0 10px rgba(243, 186, 47, 0.4);}
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 14px;}
+        .coin-title { font-size: 22px; font-weight: 900; letter-spacing: 0.5px; text-shadow: 0 0 10px rgba(243, 186, 47, 0.3);}
         
         .badge { padding: 6px 12px; border-radius: 6px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px;}
-        .badge.buy { background: rgba(0, 255, 136, 0.15); color: var(--green); border: 1px solid rgba(0,255,136,0.4); text-shadow: 0 0 5px rgba(0,255,136,0.5);}
-        .badge.sell { background: rgba(255, 77, 77, 0.15); color: var(--red); border: 1px solid rgba(255,77,77,0.4); text-shadow: 0 0 5px rgba(255,77,77,0.5);}
+        .badge.buy { background: rgba(0, 255, 136, 0.12); color: var(--green); border: 1px solid rgba(0,255,136,0.35); text-shadow: 0 0 5px rgba(0,255,136,0.4);}
+        .badge.sell { background: rgba(255, 77, 77, 0.12); color: var(--red); border: 1px solid rgba(255,77,77,0.35); text-shadow: 0 0 5px rgba(255,77,77,0.4);}
         
-        .price-row { display: flex; justify-content: space-between; margin: 12px 0; font-size: 13px; align-items: center;}
+        .price-row { display: flex; justify-content: space-between; margin: 12px 0; font-size: 13px; align-items: center; background: rgba(0,0,0,0.15); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.02);}
         .label { color: var(--text-muted); font-weight: 600;}
-        .val { font-weight: 800; font-family: monospace; font-size: 15px; text-align: right; text-shadow: 0 1px 2px rgba(0,0,0,0.8);}
         
+        /* Copy Feature Styling */
+        .val-clickable { font-weight: 800; font-family: monospace; font-size: 15px; text-align: right; cursor: pointer; position: relative; padding: 2px 6px; border-radius: 4px; transition: background 0.2s;}
+        .val-clickable:hover { background: rgba(255,255,255,0.08); }
+        .val-clickable::after { content: '📋'; font-size: 10px; margin-left: 5px; opacity: 0.3; transition: opacity 0.2s;}
+        .val-clickable:hover::after { opacity: 1; }
+
+        .risk-bar { height: 4px; width: 100%; background: linear-gradient(90deg, var(--blue-glow), var(--gold)); border-radius: 2px; margin-top: 15px; box-shadow: 0 0 8px rgba(0, 210, 255, 0.4); }
+
         .action-container { display: flex; gap: 10px; margin-top: 18px; }
-        .trade-btn { flex: 2; background: linear-gradient(135deg, var(--green) 0%, #00994d 100%); color: #000; border: none; padding: 14px; border-radius: 8px; font-weight: 900; cursor: pointer; font-size: 13px; text-transform: uppercase;}
-        .trade-btn.short { background: linear-gradient(135deg, var(--red) 0%, #cc0000 100%); color: #fff;}
-        .trade-btn:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-1px);}
-        .trade-btn:disabled { background: #111d2e !important; color: var(--text-muted) !important; cursor: not-allowed;}
+        .trade-btn { flex: 2; background: linear-gradient(135deg, var(--green) 0%, #00994d 100%); color: #000; border: none; padding: 14px; border-radius: 8px; font-weight: 900; cursor: pointer; font-size: 13px; text-transform: uppercase; box-shadow: 0 4px 10px rgba(0, 255, 136, 0.2);}
+        .trade-btn.short { background: linear-gradient(135deg, var(--red) 0%, #cc0000 100%); color: #fff; box-shadow: 0 4px 10px rgba(255, 77, 77, 0.2);}
+        .trade-btn:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 6px 15px rgba(255,255,255,0.1); }
+        .trade-btn:disabled { background: #111d2e !important; color: var(--text-muted) !important; cursor: not-allowed; box-shadow: none;}
         
-        .more-btn { flex: 1; background: linear-gradient(135deg, #1a2f4c, #112035); border: 1px solid rgba(243, 186, 47, 0.4); color: var(--gold); padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px;}
+        .more-btn { flex: 1; background: linear-gradient(135deg, #1a2f4c, #112035); border: 1px solid rgba(243, 186, 47, 0.3); color: var(--gold); padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px;}
         .more-btn:hover { background: rgba(243, 186, 47, 0.1); box-shadow: 0 0 10px rgba(243, 186, 47, 0.2);}
 
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 10100; padding: 15px; box-sizing: border-box;}
@@ -126,6 +136,7 @@
     <div class="header">
         <h1>AlphaSigna AI</h1>
         <p>💎 V16.0 DEEP LIQUIDITY INSTITUTIONAL CORE</p>
+        <div class="live-counter-badge" id="live-count-badge-id" style="display:none;">🟢 <span id="active-signals-count">0</span> ACTIVE SIGNALS STREAMING</div>
     </div>
     
     <div class="expiry-badge">
@@ -187,19 +198,19 @@
         document.getElementById('login-container').style.display = 'block';
     }
 
-    /**
-     * 🔊 NEW FEATURE: Audio Alert Generator via Web Audio API
-     * කිසිදු බාහිර mp3 එකක් නැතුව බ්‍රවුසර් එකෙන්ම පිරිසිදු ඩිජිටල් "Success Ping" එකක් සාදයි.
-     */
+    // Copy to clipboard helper function
+    function copyValueToClipboard(valueText) {
+        navigator.clipboard.writeText(valueText);
+        alert(`📋 Copied Price: ${valueText}`);
+    }
+
     function playSuccessPingAlert() {
         try {
             const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            
-            // First High note
             let osc1 = audioCtx.createOscillator();
             let gain1 = audioCtx.createGain();
             osc1.type = 'sine';
-            osc1.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5 note
+            osc1.frequency.setValueAtTime(587.33, audioCtx.currentTime); 
             gain1.gain.setValueAtTime(0.1, audioCtx.currentTime);
             gain1.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
             osc1.connect(gain1);
@@ -207,12 +218,11 @@
             osc1.start();
             osc1.stop(audioCtx.currentTime + 0.15);
 
-            // Second Higher Success note (Slight delay for chime effect)
             setTimeout(() => {
                 let osc2 = audioCtx.createOscillator();
                 let gain2 = audioCtx.createGain();
                 osc2.type = 'sine';
-                osc2.frequency.setValueAtTime(880.00, audioCtx.currentTime); // A5 note
+                osc2.frequency.setValueAtTime(880.00, audioCtx.currentTime); 
                 gain2.gain.setValueAtTime(0.15, audioCtx.currentTime);
                 gain2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
                 osc2.connect(gain2);
@@ -220,9 +230,7 @@
                 osc2.start();
                 osc2.stop(audioCtx.currentTime + 0.4);
             }, 80);
-        } catch(e) {
-            console.log("Audio contexts not allowed/supported yet until user interaction.", e);
-        }
+        } catch(e) {}
     }
 
     function validateLogin() {
@@ -258,6 +266,7 @@
     function triggerPremiumScanUI() {
         document.getElementById('start-scan-btn').style.display = 'none';
         document.getElementById('rescan-btn-id').style.display = 'none';
+        document.getElementById('live-count-badge-id').style.display = 'none';
         document.getElementById('cards-container').innerHTML = '';
         cryptoDataPool = []; currentProgress = 0;
 
@@ -297,7 +306,10 @@
                     document.getElementById('scan-coin-name').innerText = "💎 V16 INSTITUTIONAL DEEP SIGNALS SECURELY DECODED";
                     document.getElementById('rescan-btn-id').style.display = 'block';
                     
-                    // 🔔 Trigger Audio Alert exactly when 100% hits and cards show up
+                    // Show active signal counter badge
+                    document.getElementById('active-signals-count').innerText = rawCoins.length;
+                    document.getElementById('live-count-badge-id').style.display = 'inline-block';
+                    
                     playSuccessPingAlert();
                 }
             }, 60); 
@@ -322,19 +334,22 @@
 
         document.getElementById('cards-container').innerHTML += `
             <div class="card">
-                <div class="card-header">
-                    <span class="coin-title" style="color:var(--gold)">${coin.pair}</span>
-                    <span class="${badgeClass}">${badgeText}</span>
+                <div>
+                    <div class="card-header">
+                        <span class="coin-title" style="color:var(--gold)">${coin.pair}</span>
+                        <span class="${badgeClass}">${badgeText}</span>
+                    </div>
+                    <div class="price-row"><span class="label">Matrix Validation:</span><span class="val" style="color:var(--blue-glow); font-weight:bold;">5m ➔ 1W Full Matrix Sync</span></div>
+                    <div class="price-row"><span class="label">Whale Depth:</span><span class="val" style="color:${bookColor}; font-weight:900; font-size:12px;">${bookText}</span></div>
+                    <div class="price-row"><span class="label">Live Entry Price:</span><span class="val-clickable" style="color:var(--blue-glow)" onclick="copyValueToClipboard('${coin.entry}')">$${coin.entry}</span></div>
+                    <div class="price-row"><span class="label">Target Take Profit:</span><span class="val-clickable" style="color:var(--green)" onclick="copyValueToClipboard('${coin.tp1}')">$${coin.tp1} <span style="font-size:11px; font-weight:bold; display:block;">(+${coin.pnl}%)</span></span></div>
+                    <div class="price-row"><span class="label">Adaptive Anti-Hunt SL:</span><span class="val-clickable" style="color:var(--red)" onclick="copyValueToClipboard('${coin.sl}')">$${coin.sl}</span></div>
+                    <div class="price-row"><span class="label">Statistical Win Prob:</span><span class="val" style="color:var(--gold)">${coin.accuracy}%</span></div>
+                    <div class="risk-bar"></div>
                 </div>
-                <div class="price-row"><span class="label">Matrix Validation:</span><span class="val" style="color:var(--blue-glow); font-weight:bold;">5m ➔ 1W Full Matrix Sync</span></div>
-                <div class="price-row"><span class="label">Whale Depth:</span><span class="val" style="color:${bookColor}; font-weight:900; font-size:12px;">${bookText}</span></div>
-                <div class="price-row"><span class="label">Live Entry Price:</span><span class="val" style="color:var(--blue-glow)">$${coin.entry}</span></div>
-                <div class="price-row"><span class="label">Target Take Profit:</span><span class="val" style="color:var(--green)">$${coin.tp1} <br><span style="font-size:11px; font-weight:bold;">(+${coin.pnl}%)</span></span></div>
-                <div class="price-row"><span class="label">Adaptive Anti-Hunt SL:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
-                <div class="price-row"><span class="label">Statistical Win Probability:</span><span class="val" style="color:var(--gold)">${coin.accuracy}%</span></div>
                 <div class="action-container">
                     <button class="${btnClass}" id="t-btn-${idx}" onclick="engageUserLocalTrade(${idx}, '${cleanSymbol}', ${coin.tp1}, ${coin.sl}, '${coin.side}')">🚀 Take Trade</button>
-                    <button class="more-btn" onclick="openModal(${idx})">Logic / විස්තර</button>
+                    <button class="more-btn" onclick="openModal(${idx})">Logic</button>
                 </div>
             </div>`;
     }
