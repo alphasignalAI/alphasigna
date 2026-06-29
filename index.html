@@ -52,7 +52,7 @@
         /* Dashboard Main Layout */
         #dashboard { display: none; max-width: 1400px; margin: 0 auto; position: relative; }
         
-        /* 🆔 RED NEON USER BADGE (Top Right) - UPDATED FOR MOBILE FIX */
+        /* 🆔 RED NEON USER BADGE (Top Right) - FIXED FOR MOBILE */
         .neon-badge {
             position: absolute; top: 15px; right: 15px; background: rgba(255, 23, 68, 0.05); border: 1px solid var(--short);
             border-radius: 8px; padding: 10px 18px; text-align: right; box-shadow: 0 0 15px rgba(255, 23, 68, 0.3), inset 0 0 8px rgba(255, 23, 68, 0.1); z-index: 100;
@@ -60,7 +60,7 @@
         .neon-badge .username { color: var(--short); font-weight: 900; font-size: 14px; letter-spacing: 1px; text-shadow: 0 0 8px rgba(255, 23, 68, 0.8); margin-bottom: 3px; }
         .neon-badge .expiry { color: #8b949e; font-size: 11px; font-family: monospace; font-weight: bold; letter-spacing: 0.5px; }
 
-        /* HEADER - UPDATED FOR MOBILE FIX */
+        /* HEADER - FIXED FOR MOBILE */
         .header { text-align: center; margin-top: 60px; margin-bottom: 30px; }
         .header h1 { color: #fff; margin-bottom: 5px; font-size: 28px; font-weight: 800; }
         
@@ -145,7 +145,7 @@
         .chart-container { width: 92%; max-width: 1050px; height: 75vh; background: #010409; border: 1px solid var(--border); border-radius: 16px; padding: 24px; position: relative; display: flex; flex-direction: column; }
         .close-btn { position: absolute; top: 15px; right: 20px; color: #8b949e; font-size: 26px; cursor: pointer; background: none; border: none; outline: none; z-index: 10;}
         .close-btn:hover { color: #fff; }
-        /* CHART FIX - min height added */
+        /* CHART HEIGHT FIX FOR MOBILE */
         #tv-chart { flex-grow: 1; width: 100%; margin-top: 15px; position: relative; min-height: 350px;} 
         
         /* AI Logic Modal specific classes */
@@ -527,9 +527,7 @@
             }
         }
 
-        // --- ⚡ LIVE MARKET BINANCE WEBSOCKET TRACKER (NEW UPDATE) ---
-        let activeMarketWatchers = {};
-
+        // --- ⚡ NEW UPDATE: SENDING TRADE TO PYTHON BACKEND VIA FIREBASE ---
         function takeTrade(coinKey) {
             if (!currentSignalData || !currentSignalData[coinKey]) {
                 alert("⚠️ Error: Signal data shifted before execution.");
@@ -539,12 +537,7 @@
             const signal = currentSignalData[coinKey];
             const pairName = signal.pair.replace('/', ''); 
             
-            if (activeMarketWatchers[pairName]) {
-                alert(`⚠️ Already tracking an active trade for ${signal.pair}`);
-                return;
-            }
-
-            alert(`⚡ REAL TRADE COMPILATION: Tracking ${signal.pair} live on Binance order flow...`);
+            alert(`⚡ TRADE INITIATED: Sending ${signal.pair} to Alpha Engine (Python) for background tracking...`);
 
             db.ref('premium_keys/' + activeUserKey).once('value', (snapshot) => {
                 const userData = snapshot.val();
@@ -554,56 +547,27 @@
                 stats.trades = Number(stats.trades) + 1;
                 db.ref('premium_keys/' + activeUserKey + '/stats/trades').set(stats.trades);
 
-                const wsUrl = `wss://fstream.binance.com/ws/${pairName.toLowerCase()}@ticker`;
-                const ws = new WebSocket(wsUrl);
-
-                activeMarketWatchers[pairName] = ws;
-
-                ws.onmessage = function(event) {
-                    const marketData = JSON.parse(event.data);
-                    const currentPrice = parseFloat(marketData.c); 
-
-                    if (signal.side === "LONG") {
-                        if (currentPrice >= parseFloat(signal.tp1)) {
-                            triggerTradeResult(ws, pairName, true, signal.tp1);
-                        } else if (currentPrice <= parseFloat(signal.sl)) {
-                            triggerTradeResult(ws, pairName, false, signal.sl);
-                        }
-                    } 
-                    else if (signal.side === "SHORT") {
-                        if (currentPrice <= parseFloat(signal.tp1)) {
-                            triggerTradeResult(ws, pairName, true, signal.tp1);
-                        } else if (currentPrice >= parseFloat(signal.sl)) {
-                            triggerTradeResult(ws, pairName, false, signal.sl);
-                        }
-                    }
+                const tradeData = {
+                    coin: pairName,
+                    side: signal.side,
+                    entry: parseFloat(signal.entry),
+                    tp: parseFloat(signal.tp1),
+                    sl: parseFloat(signal.sl),
+                    timestamp: Date.now(),
+                    status: "tracking" 
                 };
+
+                db.ref('premium_keys/' + activeUserKey + '/active_trades/' + pairName).set(tradeData)
+                .then(() => {
+                    console.log(`✅ Trade ${pairName} dispatched to Python Backend successfully.`);
+                })
+                .catch((error) => {
+                    console.error("⚠️ Failed to send trade to Backend:", error);
+                });
             });
         }
 
-        function triggerTradeResult(wsInstance, pairName, isWin, hitPrice) {
-            wsInstance.close();
-            delete activeMarketWatchers[pairName];
-
-            db.ref('premium_keys/' + activeUserKey).once('value', (snapshot) => {
-                const userData = snapshot.val();
-                if (!userData) return;
-
-                let stats = userData.stats || { trades: 0, tp: 0, sl: 0 };
-
-                if (isWin) {
-                    stats.tp = Number(stats.tp) + 1;
-                    alert(`🟢 TARGET HIT: ${pairName} hit Take Profit at $${hitPrice}!`);
-                    db.ref('premium_keys/' + activeUserKey + '/stats/tp').set(stats.tp);
-                } else {
-                    stats.sl = Number(stats.sl) + 1;
-                    alert(`🔴 STOP LOSS HIT: ${pairName} protection triggered at $${hitPrice}!`);
-                    db.ref('premium_keys/' + activeUserKey + '/stats/sl').set(stats.sl);
-                }
-            });
-        }
-
-        // --- 📈 ADVANCED LIGHTWEIGHT CHARTS API INTEGRATION (UPDATED FOR FIX) ---
+        // --- 📈 ADVANCED LIGHTWEIGHT CHARTS API INTEGRATION (FIXED URL) ---
         async function openLiveChart(pair, entry, tp, sl, side) {
             document.getElementById('chart-modal').style.display = 'flex';
             document.getElementById('chart-coin-name').innerText = `${pair} Live Analysis`;
@@ -630,7 +594,7 @@
             });
 
             try {
-                // api.binance.com වෙනුවට fapi.binance.com (Futures API) භාවිතා කිරීම
+                // Futures API for reliability
                 const res = await fetch(`https://fapi.binance.com/fapi/v1/klines?symbol=${cleanSymbol}&interval=5m&limit=150`);
                 
                 if (!res.ok) {
@@ -645,7 +609,6 @@
 
                 candlestickSeries.setData(chartData);
                 
-                // අගයන් නිවැරදි සංඛ්‍යා (Numbers) නම් පමණක් Price Lines ඇඳීම
                 if (!isNaN(parseFloat(entry))) {
                     candlestickSeries.createPriceLine({ price: parseFloat(entry), color: '#388bff', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: 'ENTRY' });
                 }
