@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna V18.7 - Live Bubble Matrix</title>
+    <title>AlphaSigna V18.8 - Ultimate Bubble Matrix</title>
     <style>
         :root {
             --primary: #00ffcc;
@@ -53,17 +53,17 @@
         .global-card { border-left: 4px solid var(--primary); }
         .personal-card { border-left: 4px solid var(--accent); }
 
-        /* 🫧 CRYPTO BUBBLES CONTAINER - BUG FIXED */
+        /* 🫧 FORCE-DIRECTED BUBBLE MATRIX */
         .scanner-section { text-align: center; margin: 20px 0; position: relative; }
         #bubble-container { 
-            display: none; width: 100%; height: 550px; margin: 0 auto 20px auto; 
+            display: none; width: 100%; height: 750px; margin: 0 auto 20px auto; 
             background: #010409; border-radius: 16px; border: 1px solid var(--border); 
             position: relative; overflow: hidden;
-            background-image: radial-gradient(circle at 50% 50%, rgba(0, 255, 204, 0.05) 0%, transparent 60%);
+            background-image: radial-gradient(circle at 50% 50%, rgba(0, 255, 204, 0.03) 0%, transparent 70%);
         }
         #scanner-status { position: absolute; bottom: 15px; left: 0; width: 100%; text-align: center; font-family: monospace; font-size: 13px; color: var(--primary); font-weight: bold; z-index: 5; }
 
-        /* Wrapper handles positioning to prevent glitching */
+        /* Wrapper handles exact center positioning for physics */
         .bubble-wrapper {
             position: absolute;
             top: 0; left: 0;
@@ -74,7 +74,6 @@
             z-index: 100;
         }
 
-        /* Inner bubble handles the scale and hover effects */
         .crypto-bubble {
             width: 100%;
             height: 100%;
@@ -86,18 +85,19 @@
             color: white;
             font-family: 'Segoe UI', sans-serif;
             cursor: pointer;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease;
+            box-shadow: inset -5px -5px 15px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.4);
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.25s ease;
             user-select: none;
         }
+        
         .bubble-wrapper:hover .crypto-bubble {
-            transform: scale(1.15);
-            filter: brightness(1.2) drop-shadow(0 0 20px rgba(255,255,255,0.4));
+            transform: scale(1.2);
+            filter: brightness(1.3) drop-shadow(0 0 25px rgba(255,255,255,0.3));
         }
         
-        .bubble-name { font-weight: 800; font-size: 14px; letter-spacing: 0.5px; }
-        .bubble-price { font-size: 11px; opacity: 0.9; margin-top: 2px; }
-        .bubble-percent { font-size: 12px; font-weight: bold; margin-top: 2px; padding: 2px 6px; border-radius: 4px; background: rgba(0,0,0,0.3); }
+        .bubble-name { font-weight: 900; font-size: 15px; letter-spacing: 0.5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+        .bubble-price { font-size: 11px; opacity: 0.95; margin-top: 3px; font-weight: 600; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+        .bubble-percent { font-size: 13px; font-weight: 900; margin-top: 3px; padding: 2px 6px; border-radius: 4px; background: rgba(0,0,0,0.4); text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
 
         /* Signals */
         .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 20px; opacity: 0; transition: opacity 0.5s ease; margin-top: 20px; }
@@ -216,7 +216,7 @@
             alert(`⚡ TRADE COMMAND INTEGRATED for ${coin}.`);
         }
 
-        // --- 🫧 LIVE BINANCE API BUBBLE ENGINE (BUG FIXED) ---
+        // --- 🫧 PHYSICS ENGINE (GRAVITY + COLLISION) ---
         async function startBubbleScan() {
             document.getElementById('scan-btn').style.display = 'none';
             const container = document.getElementById('bubble-container');
@@ -226,7 +226,6 @@
             container.style.display = 'block';
             grid.style.opacity = '0';
             
-            // Clean up previous bubbles
             document.querySelectorAll('.bubble-wrapper').forEach(e => e.remove());
             clearInterval(physicsInterval);
             bubblesArray = [];
@@ -236,101 +235,154 @@
                 const response = await fetch('https://api.binance.com/api/v3/ticker/24hr');
                 const data = await response.json();
                 
-                // Filter top USDT pairs and sort by volume to get the most active ones
-                const usdtPairs = data.filter(c => c.symbol.endsWith('USDT') && parseFloat(c.volume) > 10000000);
+                // Get TOP 80 active pairs for a massive filled look!
+                const usdtPairs = data.filter(c => c.symbol.endsWith('USDT') && parseFloat(c.volume) > 5000000);
                 usdtPairs.sort((a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume));
-                const topCoins = usdtPairs.slice(0, 35); // 35 Bubbles
+                const topCoins = usdtPairs.slice(0, 80); 
 
                 const contWidth = container.clientWidth;
                 const contHeight = container.clientHeight;
+                const centerX = contWidth / 2;
+                const centerY = contHeight / 2;
 
                 topCoins.forEach((coin, index) => {
                     const priceChange = parseFloat(coin.priceChangePercent);
                     const isPositive = priceChange >= 0;
                     
-                    // Bubble size based on price change % (min 60px, max 130px)
+                    // Bubble sizing mechanics
                     const absChange = Math.abs(priceChange);
-                    const size = Math.max(60, Math.min(130, 50 + (absChange * 5)));
+                    const size = Math.max(50, Math.min(140, 45 + (absChange * 4.5))); // Radius = size/2
+                    const radius = size / 2;
                     
-                    // Create Wrapper (For Position Translate)
                     const wrapper = document.createElement('div');
                     wrapper.className = 'bubble-wrapper';
                     wrapper.style.width = `${size}px`;
                     wrapper.style.height = `${size}px`;
 
-                    // Create Inner Bubble (For Scale and Looks)
                     const bubble = document.createElement('div');
                     bubble.className = 'crypto-bubble';
                     
-                    // Colors based on real data
+                    // CryptoBubble specific styling (shiny gradients)
                     if (isPositive) {
-                        bubble.style.background = 'radial-gradient(circle at 30% 30%, #00e676, #008b47)';
+                        bubble.style.background = 'radial-gradient(circle at 35% 35%, #00e676, #00994d, #004d26)';
                         bubble.style.border = '2px solid #00ffcc';
                     } else {
-                        bubble.style.background = 'radial-gradient(circle at 30% 30%, #ff1744, #9b0021)';
+                        bubble.style.background = 'radial-gradient(circle at 35% 35%, #ff1744, #b30021, #660012)';
                         bubble.style.border = '2px solid #ff4d6d';
                     }
 
-                    // Format Data
                     const name = coin.symbol.replace('USDT', '');
                     let displayPrice = parseFloat(coin.lastPrice);
                     displayPrice = displayPrice < 1 ? displayPrice.toFixed(4) : displayPrice.toFixed(2);
                     
+                    // Scale text size based on bubble size
+                    const nameSize = size > 90 ? '18px' : (size > 60 ? '14px' : '10px');
+                    const priceSize = size > 90 ? '13px' : (size > 60 ? '11px' : '9px');
+                    const percentSize = size > 90 ? '14px' : (size > 60 ? '12px' : '10px');
+
                     bubble.innerHTML = `
-                        <span class="bubble-name">${name}</span>
-                        <span class="bubble-price">$${displayPrice}</span>
-                        <span class="bubble-percent">${isPositive ? '+' : ''}${priceChange.toFixed(1)}%</span>
+                        <span class="bubble-name" style="font-size:${nameSize}">${name}</span>
+                        <span class="bubble-price" style="font-size:${priceSize}">$${displayPrice}</span>
+                        <span class="bubble-percent" style="font-size:${percentSize}">${isPositive ? '+' : ''}${priceChange.toFixed(1)}%</span>
                     `;
 
-                    // Append inner bubble to wrapper, wrapper to container
                     wrapper.appendChild(bubble);
                     container.appendChild(wrapper);
 
-                    // Physics State Object
+                    // Physics State Initialization (Spawn randomly around center)
+                    const angle = Math.random() * Math.PI * 2;
+                    const dist = Math.random() * 200;
+                    
                     let bData = {
                         wrapper: wrapper,
-                        x: Math.random() * (contWidth - size),
-                        y: Math.random() * (contHeight - size),
-                        vx: (Math.random() - 0.5) * 1.5,
-                        vy: (Math.random() - 0.5) * 1.5,
+                        x: centerX + Math.cos(angle) * dist,
+                        y: centerY + Math.sin(angle) * dist,
+                        vx: (Math.random() - 0.5) * 5,
+                        vy: (Math.random() - 0.5) * 5,
+                        radius: radius,
                         size: size,
                         isHovered: false
                     };
                     bubblesArray.push(bData);
 
-                    // Hover Pause Logic
+                    // Stop physics forces on this bubble when hovered
                     wrapper.onmouseenter = () => bData.isHovered = true;
                     wrapper.onmouseleave = () => bData.isHovered = false;
 
-                    // Click event for 1 Month Popup Chart
                     bubble.onclick = () => openBubbleChart(coin.symbol, name);
                 });
 
-                statusText.innerText = "🟢 BINANCE LIVE DATA SYNCED. CLICK BUBBLES FOR 1-MONTH CHART.";
+                statusText.innerText = "🟢 GLOBAL MATRIX ACTIVE. DRIVEN BY FORCE-DIRECTED PHYSICS.";
                 
-                // Show Signal Cards after 3 seconds
                 setTimeout(() => {
                     renderSignals(currentSignalData);
                     grid.style.opacity = '1';
                 }, 3000);
 
-                // Start Physics Engine for smooth floating
+                // --- ⚙️ ADVANCED 2D PHYSICS LOOP ---
                 physicsInterval = setInterval(() => {
-                    bubblesArray.forEach(b => {
-                        // Only move if NOT hovered
+                    // Constant weak gravity pulling all towards the exact center
+                    const gravityStr = 0.003;
+                    const dampening = 0.90; // Friction
+
+                    // Apply forces
+                    bubblesArray.forEach((b, i) => {
                         if (!b.isHovered) {
+                            // Gravity
+                            b.vx += (centerX - b.x) * gravityStr;
+                            b.vy += (centerY - b.y) * gravityStr;
+
+                            // Add a tiny random force so they constantly jiggle/float around like live bubbles
+                            b.vx += (Math.random() - 0.5) * 0.2;
+                            b.vy += (Math.random() - 0.5) * 0.2;
+                        }
+
+                        // Collision with other bubbles (Circle packing)
+                        for (let j = i + 1; j < bubblesArray.length; j++) {
+                            let b2 = bubblesArray[j];
+                            let dx = b.x - b2.x;
+                            let dy = b.y - b2.y;
+                            let distance = Math.sqrt(dx * dx + dy * dy);
+                            let minDistance = b.radius + b2.radius + 2; // +2px padding
+
+                            if (distance < minDistance) {
+                                // They are colliding, push them apart
+                                let overlap = minDistance - distance;
+                                let nx = dx / distance;
+                                let ny = dy / distance;
+                                
+                                // Push ratio based on mass (radius) could be done, but equal push is fine
+                                let pushX = nx * overlap * 0.5;
+                                let pushY = ny * overlap * 0.5;
+
+                                if(!b.isHovered) { b.x += pushX; b.y += pushY; }
+                                if(!b2.isHovered) { b2.x -= pushX; b2.y -= pushY; }
+                                
+                                // Dampen collision velocity
+                                b.vx *= 0.8; b.vy *= 0.8;
+                                b2.vx *= 0.8; b2.vy *= 0.8;
+                            }
+                        }
+
+                        // Keep them inside the container box limits
+                        if (b.x - b.radius < 0) { b.x = b.radius; b.vx *= -1; }
+                        if (b.x + b.radius > contWidth) { b.x = contWidth - b.radius; b.vx *= -1; }
+                        if (b.y - b.radius < 0) { b.y = b.radius; b.vy *= -1; }
+                        if (b.y + b.radius > contHeight) { b.y = contHeight - b.radius; b.vy *= -1; }
+
+                        // Apply friction and update position
+                        b.vx *= dampening;
+                        b.vy *= dampening;
+                        
+                        if(!b.isHovered){
                             b.x += b.vx;
                             b.y += b.vy;
-
-                            // Wall Collision Bounce
-                            if(b.x <= 0 || b.x + b.size >= contWidth) b.vx *= -1;
-                            if(b.y <= 0 || b.y + b.size >= contHeight) b.vy *= -1;
                         }
-                        
-                        // Apply position to wrapper
-                        b.wrapper.style.transform = `translate(${b.x}px, ${b.y}px)`;
+
+                        // Translate takes top-left corner, so subtract radius to center the transform
+                        b.wrapper.style.transform = `translate(${b.x - b.radius}px, ${b.y - b.radius}px)`;
                     });
-                }, 16); // ~60fps
+                }, 16); // ~60 FPS
 
             } catch(e) {
                 statusText.innerText = "⚠️ ERROR FETCHING BINANCE DATA.";
@@ -346,14 +398,10 @@
 
             const chartDiv = document.getElementById('tv-chart');
             chartDiv.innerHTML = '';
-            
-            // Format for TradingView (BINANCE:BTCUSDT)
             const tvSymbol = "BINANCE:" + symbol;
 
             new TradingView.widget({
-                "width": "100%", "height": "100%", 
-                "symbol": tvSymbol, 
-                "interval": "D", // "D" = Daily candles, perfect for 1-month view
+                "width": "100%", "height": "100%", "symbol": tvSymbol, "interval": "D",
                 "timezone": "Etc/UTC", "theme": "dark", "style": "1", "locale": "en",
                 "toolbar_bg": "#010409", "enable_publishing": false, "hide_side_toolbar": false,
                 "allow_symbol_change": false, "container_id": "tv-chart", "studies": [],
@@ -366,7 +414,6 @@
             document.getElementById('tv-chart').innerHTML = '';
         }
 
-        // --- SIGNAL RENDERER ---
         function renderSignals(data) {
             const container = document.getElementById('signal-container');
             container.innerHTML = ''; if (!data) return;
