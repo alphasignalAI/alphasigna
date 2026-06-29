@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna V19.2 - Advanced Charting Terminal</title>
+    <title>AlphaSigna V19.3 - VIP Alert Matrix</title>
     <style>
         :root {
             --primary: #00ffcc;
@@ -54,16 +54,8 @@
         
         /* 🆔 RED NEON USER BADGE (Top Right) */
         .neon-badge {
-            position: absolute;
-            top: -10px;
-            right: 0px;
-            background: rgba(255, 23, 68, 0.05);
-            border: 1px solid var(--short);
-            border-radius: 8px; /* Kon 4 raum */
-            padding: 10px 18px;
-            text-align: right;
-            box-shadow: 0 0 15px rgba(255, 23, 68, 0.3), inset 0 0 8px rgba(255, 23, 68, 0.1);
-            z-index: 100;
+            position: absolute; top: -10px; right: 0px; background: rgba(255, 23, 68, 0.05); border: 1px solid var(--short);
+            border-radius: 8px; padding: 10px 18px; text-align: right; box-shadow: 0 0 15px rgba(255, 23, 68, 0.3), inset 0 0 8px rgba(255, 23, 68, 0.1); z-index: 100;
         }
         .neon-badge .username { color: var(--short); font-weight: 900; font-size: 14px; letter-spacing: 1px; text-shadow: 0 0 8px rgba(255, 23, 68, 0.8); margin-bottom: 3px; }
         .neon-badge .expiry { color: #8b949e; font-size: 11px; font-family: monospace; font-weight: bold; letter-spacing: 0.5px; }
@@ -82,8 +74,7 @@
         #network-container { 
             display: none; width: 100%; height: 950px; margin: 0 auto 20px auto; 
             background: #010409; border-radius: 16px; border: 1px solid var(--border); 
-            position: relative; overflow: hidden;
-            background-image: radial-gradient(circle at 50% 50%, rgba(0, 255, 204, 0.05) 0%, transparent 70%);
+            position: relative; overflow: hidden; background-image: radial-gradient(circle at 50% 50%, rgba(0, 255, 204, 0.05) 0%, transparent 70%);
         }
         
         #network-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
@@ -116,13 +107,32 @@
         .node-percent { font-size: 10px; font-weight: 900; margin-top: 2px; padding: 2px 5px; border-radius: 4px; background: rgba(0,0,0,0.5); }
         .btc-title { font-size: 16px; font-weight: 900; text-shadow: 2px 2px 4px rgba(0,0,0,0.9); }
 
-        /* Signals Grid Setup */
+        /* 🚀 Signals Grid & NORMAL Cards */
         .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 20px; opacity: 0; transition: opacity 0.5s ease; margin-top: 20px; }
-        .signal-card { background: var(--card-bg); border-radius: 14px; padding: 24px; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; }
+        .signal-card { background: var(--card-bg); border-radius: 14px; padding: 24px; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s; }
+        
+        /* ⭐ GOLD NEON VIP CARD STYLES */
+        @keyframes gold-pulse {
+            0% { box-shadow: 0 0 20px rgba(247, 147, 26, 0.4), inset 0 0 10px rgba(247, 147, 26, 0.1); }
+            50% { box-shadow: 0 0 35px rgba(247, 147, 26, 0.9), inset 0 0 20px rgba(247, 147, 26, 0.3); }
+            100% { box-shadow: 0 0 20px rgba(247, 147, 26, 0.4), inset 0 0 10px rgba(247, 147, 26, 0.1); }
+        }
+        .neon-gold-card {
+            border: 2px solid var(--btc-gold) !important;
+            animation: gold-pulse 2s infinite;
+            background: linear-gradient(180deg, rgba(247, 147, 26, 0.1) 0%, var(--card-bg) 40%) !important;
+        }
+        .premium-tag {
+            background: linear-gradient(45deg, #f7931a, #ffd000); color: #000; font-weight: 900; padding: 4px 10px;
+            border-radius: 6px; font-size: 11px; margin-left: 10px; box-shadow: 0 0 10px rgba(247, 147, 26, 0.8);
+            animation: blink 1.5s infinite; letter-spacing: 0.5px;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+
         .badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; }
         .badge-swing { background: rgba(56, 139, 253, 0.15); color: #58a6ff; border: 1px solid rgba(56, 139, 253, 0.4); }
         .badge-scalp { background: rgba(242, 8c, 166, 0.15); color: #f25ca6; border: 1px solid rgba(242, 8c, 166, 0.4); }
-        .coin-title { font-size: 24px; font-weight: 700; margin-bottom: 18px; display: flex; justify-content: space-between; color: #fff; }
+        .coin-title { font-size: 24px; font-weight: 700; margin-bottom: 18px; display: flex; justify-content: space-between; color: #fff; align-items: center;}
         .side-long { color: var(--long); }
         .side-short { color: var(--short); }
         .data-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; border-bottom: 1px solid rgba(33,38,45,0.5); padding-bottom: 6px; }
@@ -241,7 +251,7 @@
             }
         });
 
-        // 🔑 Login Function WITH Neon Badge Data Fetch
+        // 🔑 Login Function
         function verifyFirebaseKey() {
             const inputKey = document.getElementById('access-key').value.trim();
             if(!inputKey) return;
@@ -253,7 +263,6 @@
                     document.getElementById('login-screen').style.display = 'none';
                     document.getElementById('dashboard').style.display = 'block';
                     
-                    // Update Neon Badge
                     document.getElementById('user-badge').style.display = 'block';
                     document.getElementById('user-welcome-text').innerText = `USER: ${inputKey.toUpperCase()}`;
                     document.getElementById('user-expiry-text').innerText = `EXPIRES: ${userData.expire_date || 'N/A'}`;
@@ -277,7 +286,6 @@
                 if (!keysData) return;
 
                 let globalTrades = 0; let globalTP = 0; let globalSL = 0;
-
                 for (const key in keysData) {
                     if (keysData[key].stats) {
                         globalTrades += Number(keysData[key].stats.trades || 0);
@@ -285,7 +293,6 @@
                         globalSL += Number(keysData[key].stats.sl || 0);
                     }
                 }
-
                 let globalWinRate = 0;
                 if ((globalTP + globalSL) > 0) {
                     globalWinRate = Math.round((globalTP / (globalTP + globalSL)) * 100);
@@ -321,10 +328,7 @@
             nodesArray = []; edgesArray = []; particlesArray = []; hoveredNodeId = null;
 
             for(let i = 0; i < 200; i++) {
-                particlesArray.push({
-                    x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-                    size: Math.random() * 2.5, speedY: (Math.random() * 0.4) + 0.1, alpha: Math.random() * 0.5 + 0.1
-                });
+                particlesArray.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, size: Math.random() * 2.5, speedY: (Math.random() * 0.4) + 0.1, alpha: Math.random() * 0.5 + 0.1 });
             }
 
             try {
@@ -357,15 +361,12 @@
                 btcWrapper.appendChild(btcNodeEl); container.appendChild(btcWrapper);
                 nodesArray.push({ id: 0, baseX: centerX, baseY: centerY, x: centerX, y: centerY, angle: 0, dist: 0, size: btcSize, wrapper: btcWrapper });
                 
-                btcWrapper.onmouseenter = () => { hoveredNodeId = 0; };
-                btcWrapper.onmouseleave = () => { hoveredNodeId = null; };
+                btcWrapper.onmouseenter = () => { hoveredNodeId = 0; }; btcWrapper.onmouseleave = () => { hoveredNodeId = null; };
                 btcNodeEl.onclick = () => openLiveChart('BTC/USDT', btcDisplayPrice, btcDisplayPrice*1.05, btcDisplayPrice*0.95, 'ANALYSIS');
 
                 const rings = [
-                    { count: 6, radius: 110, speed: 0.003, dir: 1 },
-                    { count: 12, radius: 210, speed: 0.002, dir: -1 },
-                    { count: 20, radius: 310, speed: 0.0015, dir: 1 },
-                    { count: 28, radius: 410, speed: 0.001, dir: -1 }
+                    { count: 6, radius: 110, speed: 0.003, dir: 1 }, { count: 12, radius: 210, speed: 0.002, dir: -1 },
+                    { count: 20, radius: 310, speed: 0.0015, dir: 1 }, { count: 28, radius: 410, speed: 0.001, dir: -1 }
                 ];
 
                 let coinIndex = 0; let nodeId = 1;
@@ -381,27 +382,21 @@
                         const angle = (Math.PI * 2 / ring.count) * i;
 
                         const wrapper = document.createElement('div');
-                        wrapper.className = 'node-wrapper';
-                        wrapper.style.width = `${size}px`; wrapper.style.height = `${size}px`;
+                        wrapper.className = 'node-wrapper'; wrapper.style.width = `${size}px`; wrapper.style.height = `${size}px`;
 
                         const nodeEl = document.createElement('div');
-                        nodeEl.className = 'crypto-node';
-                        nodeEl.style.width = '100%'; nodeEl.style.height = '100%';
+                        nodeEl.className = 'crypto-node'; nodeEl.style.width = '100%'; nodeEl.style.height = '100%';
                         
                         if (isPositive) {
-                            nodeEl.style.background = 'radial-gradient(circle at 30% 30%, #00e676, #008b47)';
-                            nodeEl.style.border = '2px solid #00ffcc';
+                            nodeEl.style.background = 'radial-gradient(circle at 30% 30%, #00e676, #008b47)'; nodeEl.style.border = '2px solid #00ffcc';
                         } else {
-                            nodeEl.style.background = 'radial-gradient(circle at 30% 30%, #ff1744, #9b0021)';
-                            nodeEl.style.border = '2px solid #ff4d6d';
+                            nodeEl.style.background = 'radial-gradient(circle at 30% 30%, #ff1744, #9b0021)'; nodeEl.style.border = '2px solid #ff4d6d';
                         }
 
-                        const name = coin.symbol.replace('USDT', '');
-                        let displayPrice = parseFloat(coin.lastPrice);
-                        displayPrice = displayPrice < 1 ? displayPrice.toFixed(4) : displayPrice.toFixed(2);
+                        let displayPrice = parseFloat(coin.lastPrice); displayPrice = displayPrice < 1 ? displayPrice.toFixed(4) : displayPrice.toFixed(2);
                         
                         nodeEl.innerHTML = `
-                            <span class="node-name">${name}</span>
+                            <span class="node-name">${coin.symbol.replace('USDT', '')}</span>
                             <span class="node-price">$${displayPrice}</span>
                             <span class="node-percent">${isPositive ? '+' : ''}${priceChange.toFixed(1)}%</span>
                         `;
@@ -413,9 +408,8 @@
                         });
                         
                         const currentId = nodeId;
-                        wrapper.onmouseenter = () => { hoveredNodeId = currentId; };
-                        wrapper.onmouseleave = () => { hoveredNodeId = null; };
-                        nodeEl.onclick = () => openLiveChart(`${name}/USDT`, displayPrice, displayPrice*1.02, displayPrice*0.98, 'ANALYSIS');
+                        wrapper.onmouseenter = () => { hoveredNodeId = currentId; }; wrapper.onmouseleave = () => { hoveredNodeId = null; };
+                        nodeEl.onclick = () => openLiveChart(`${coin.symbol.replace('USDT', '')}/USDT`, displayPrice, displayPrice*1.02, displayPrice*0.98, 'ANALYSIS');
 
                         if(ringIdx === 0) edgesArray.push({ from: 0, to: nodeId });
                         else if (ringIdx === 1) edgesArray.push({ from: 1 + Math.floor(i / 2), to: nodeId });
@@ -433,27 +427,17 @@
                 setTimeout(() => { renderSignals(currentSignalData); grid.style.opacity = '1'; }, 2000);
 
                 function drawNetworkAnimation() {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    globalTime += 1;
-
+                    ctx.clearRect(0, 0, canvas.width, canvas.height); globalTime += 1;
                     particlesArray.forEach(p => {
-                        p.y -= p.speedY; 
-                        if(p.y < 0) { p.y = canvas.height; p.x = Math.random() * canvas.width; }
-                        ctx.fillStyle = `rgba(0, 255, 204, ${p.alpha})`;
-                        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
+                        p.y -= p.speedY; if(p.y < 0) { p.y = canvas.height; p.x = Math.random() * canvas.width; }
+                        ctx.fillStyle = `rgba(0, 255, 204, ${p.alpha})`; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
                     });
 
                     nodesArray.forEach(node => {
-                        if(node.id === 0) {
-                            node.wrapper.style.transform = `translate(${node.x - (node.size/2)}px, ${node.y - (node.size/2)}px)`;
-                            return;
-                        }
+                        if(node.id === 0) { node.wrapper.style.transform = `translate(${node.x - (node.size/2)}px, ${node.y - (node.size/2)}px)`; return; }
                         const currentAngle = node.baseAngle + (globalTime * node.speed * node.dir);
-                        const wobble = Math.sin(globalTime * 0.02 + node.wobbleOffset) * 12;
-                        const dist = node.baseDist + wobble;
-
-                        node.x = centerX + Math.cos(currentAngle) * dist;
-                        node.y = centerY + Math.sin(currentAngle) * dist;
+                        const dist = node.baseDist + (Math.sin(globalTime * 0.02 + node.wobbleOffset) * 12);
+                        node.x = centerX + Math.cos(currentAngle) * dist; node.y = centerY + Math.sin(currentAngle) * dist;
                         node.wrapper.style.transform = `translate(${node.x - (node.size/2)}px, ${node.y - (node.size/2)}px)`;
                     });
 
@@ -462,32 +446,22 @@
                         if(n1 && n2) {
                             let isHighlighted = false; let alpha = 0.22;
                             if (hoveredNodeId !== null) {
-                                if (edge.from === hoveredNodeId || edge.to === hoveredNodeId) {
-                                    isHighlighted = true; alpha = 0.95;
-                                } else { alpha = 0.02; }
+                                if (edge.from === hoveredNodeId || edge.to === hoveredNodeId) { isHighlighted = true; alpha = 0.95; } 
+                                else { alpha = 0.02; }
                             }
-                            
                             ctx.strokeStyle = isHighlighted ? `rgba(0, 255, 204, ${alpha})` : (edge.from === 0 ? `rgba(247, 147, 26, ${alpha})` : `rgba(0, 255, 204, ${alpha})`);
                             ctx.lineWidth = isHighlighted ? 2.5 : 1.1;
-                            
-                            if (isHighlighted) { ctx.shadowBlur = 15; ctx.shadowColor = edge.from === 0 ? "#f7931a" : "#00ffcc"; } 
-                            else { ctx.shadowBlur = 0; }
-
+                            if (isHighlighted) { ctx.shadowBlur = 15; ctx.shadowColor = edge.from === 0 ? "#f7931a" : "#00ffcc"; } else { ctx.shadowBlur = 0; }
                             ctx.beginPath(); ctx.moveTo(n1.x, n1.y); ctx.lineTo(n2.x, n2.y); ctx.stroke();
                         }
                     });
-                    
-                    ctx.shadowBlur = 0;
-                    renderFrameId = requestAnimationFrame(drawNetworkAnimation);
+                    ctx.shadowBlur = 0; renderFrameId = requestAnimationFrame(drawNetworkAnimation);
                 }
                 drawNetworkAnimation();
 
-            } catch(e) {
-                statusText.innerText = "⚠️ SYSTEM FAULT INTERRUPTED PIPELINE STREAM.";
-            }
+            } catch(e) { statusText.innerText = "⚠️ SYSTEM FAULT INTERRUPTED PIPELINE STREAM."; }
         }
 
-        // --- 🧠 AI LOGIC MODAL ---
         function openAiLogicModal(techLogic, riskLogic) {
             document.getElementById('logic-modal').style.display = 'flex';
             document.getElementById('tech-logic-field').innerText = techLogic || "INDICATOR BOUNDARIES EXCEEDED OVERFLOW PIPELINE METRICS.";
@@ -495,7 +469,7 @@
         }
         function closeAiLogicModal() { document.getElementById('logic-modal').style.display = 'none'; }
 
-        // --- 📊 RENDER SIGNALS CARDS ---
+        // --- 📊 RENDER SIGNALS CARDS (UPDATED WITH GOLD NEON LOGIC) ---
         function renderSignals(data) {
             const container = document.getElementById('signal-container');
             container.innerHTML = ''; if (!data) return;
@@ -505,11 +479,14 @@
                 return;
             }
 
-            const currentTime = Math.floor(Date.now() / 1000);
             for (const [coin, details] of Object.entries(data)) {
-                if (details.signal_type.includes("SCALP") && (currentTime - details.timestamp) > 900) continue; 
                 let badgeClass = details.signal_type.includes("SWING") ? "badge-swing" : "badge-scalp";
                 let sideClass = details.side === "LONG" ? "side-long" : "side-short";
+
+                // ⭐ Check if this is a High Accuracy WhatsApp Signal (>= 85 Score)
+                const isPremiumAlert = details.accuracy >= 85;
+                const cardCssClass = isPremiumAlert ? "signal-card neon-gold-card" : "signal-card";
+                const premiumBadgeHtml = isPremiumAlert ? `<span class="premium-tag">⭐ VIP ALERT</span>` : "";
 
                 const formattedTech = (details.tech_logic || "INDICATOR THRESHOLDS ACTIVE").replace(/'/g, "\\'");
                 const formattedRisk = (details.risk_logic || "RISK MATRIX VALIDATED").replace(/'/g, "\\'");
@@ -517,10 +494,19 @@
                 const logicArgs = `'${formattedTech}', '${formattedRisk}'`;
 
                 container.innerHTML += `
-                    <div class="signal-card">
+                    <div class="${cardCssClass}">
                         <div>
-                            <span class="badge ${badgeClass}">${details.signal_type}</span>
-                            <div class="coin-title"><span>${details.pair}</span><span class="${sideClass}">${details.side}</span></div>
+                            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                                <span class="badge" style="margin-bottom: 0;">${details.signal_type}</span>
+                                ${premiumBadgeHtml}
+                            </div>
+                            <div class="coin-title">
+                                <span>${details.pair}</span>
+                                <div style="display: flex; flex-direction: column; text-align: right;">
+                                    <span class="${sideClass}">${details.side}</span>
+                                    <span style="font-size: 11px; color: #8b949e; font-weight: normal; margin-top: 2px;">ACCURACY: ${details.accuracy}%</span>
+                                </div>
+                            </div>
                             <div class="data-row"><span class="data-label">Target Entry</span><span class="data-value">${details.entry}</span></div>
                             <div class="data-row"><span class="data-label">Take Profit</span><span class="data-value" style="color: #00e676;">${details.tp1}</span></div>
                             <div class="data-row"><span class="data-label">Stop Loss</span><span class="data-value" style="color: #ff1744;">${details.sl}</span></div>
