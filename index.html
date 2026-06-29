@@ -52,15 +52,16 @@
         /* Dashboard Main Layout */
         #dashboard { display: none; max-width: 1400px; margin: 0 auto; position: relative; }
         
-        /* 🆔 RED NEON USER BADGE (Top Right) */
+        /* 🆔 RED NEON USER BADGE (Top Right) - UPDATED FOR MOBILE FIX */
         .neon-badge {
-            position: absolute; top: -10px; right: 0px; background: rgba(255, 23, 68, 0.05); border: 1px solid var(--short);
+            position: absolute; top: 15px; right: 15px; background: rgba(255, 23, 68, 0.05); border: 1px solid var(--short);
             border-radius: 8px; padding: 10px 18px; text-align: right; box-shadow: 0 0 15px rgba(255, 23, 68, 0.3), inset 0 0 8px rgba(255, 23, 68, 0.1); z-index: 100;
         }
         .neon-badge .username { color: var(--short); font-weight: 900; font-size: 14px; letter-spacing: 1px; text-shadow: 0 0 8px rgba(255, 23, 68, 0.8); margin-bottom: 3px; }
         .neon-badge .expiry { color: #8b949e; font-size: 11px; font-family: monospace; font-weight: bold; letter-spacing: 0.5px; }
 
-        .header { text-align: center; margin-bottom: 30px; }
+        /* HEADER - UPDATED FOR MOBILE FIX */
+        .header { text-align: center; margin-top: 60px; margin-bottom: 30px; }
         .header h1 { color: #fff; margin-bottom: 5px; font-size: 28px; font-weight: 800; }
         
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 15px; margin-bottom: 25px; }
@@ -144,7 +145,8 @@
         .chart-container { width: 92%; max-width: 1050px; height: 75vh; background: #010409; border: 1px solid var(--border); border-radius: 16px; padding: 24px; position: relative; display: flex; flex-direction: column; }
         .close-btn { position: absolute; top: 15px; right: 20px; color: #8b949e; font-size: 26px; cursor: pointer; background: none; border: none; outline: none; z-index: 10;}
         .close-btn:hover { color: #fff; }
-        #tv-chart { flex-grow: 1; width: 100%; margin-top: 15px; position: relative;}
+        /* CHART FIX - min height added */
+        #tv-chart { flex-grow: 1; width: 100%; margin-top: 15px; position: relative; min-height: 350px;} 
         
         /* AI Logic Modal specific classes */
         .logic-box-container { max-width: 550px; width: 90%; background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 30px; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
@@ -601,7 +603,7 @@
             });
         }
 
-        // --- 📈 ADVANCED LIGHTWEIGHT CHARTS API INTEGRATION ---
+        // --- 📈 ADVANCED LIGHTWEIGHT CHARTS API INTEGRATION (UPDATED FOR FIX) ---
         async function openLiveChart(pair, entry, tp, sl, side) {
             document.getElementById('chart-modal').style.display = 'flex';
             document.getElementById('chart-coin-name').innerText = `${pair} Live Analysis`;
@@ -620,6 +622,7 @@
                 crosshair: { mode: LightweightCharts.CrosshairMode.Normal, },
                 timeScale: { timeVisible: true, secondsVisible: false, }
             });
+            
             activeChart.resize(chartDiv.clientWidth, chartDiv.clientHeight);
 
             const candlestickSeries = activeChart.addCandlestickSeries({
@@ -627,7 +630,13 @@
             });
 
             try {
-                const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${cleanSymbol}&interval=5m&limit=150`);
+                // api.binance.com වෙනුවට fapi.binance.com (Futures API) භාවිතා කිරීම
+                const res = await fetch(`https://fapi.binance.com/fapi/v1/klines?symbol=${cleanSymbol}&interval=5m&limit=150`);
+                
+                if (!res.ok) {
+                    throw new Error(`Binance API Blocked (${res.status})`);
+                }
+
                 const klineData = await res.json();
                 
                 const chartData = klineData.map(d => ({
@@ -636,9 +645,16 @@
 
                 candlestickSeries.setData(chartData);
                 
-                candlestickSeries.createPriceLine({ price: parseFloat(entry), color: '#388bff', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: 'ENTRY', });
-                candlestickSeries.createPriceLine({ price: parseFloat(tp), color: '#00e676', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: 'TP', });
-                candlestickSeries.createPriceLine({ price: parseFloat(sl), color: '#ff1744', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: 'SL', });
+                // අගයන් නිවැරදි සංඛ්‍යා (Numbers) නම් පමණක් Price Lines ඇඳීම
+                if (!isNaN(parseFloat(entry))) {
+                    candlestickSeries.createPriceLine({ price: parseFloat(entry), color: '#388bff', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: 'ENTRY' });
+                }
+                if (!isNaN(parseFloat(tp))) {
+                    candlestickSeries.createPriceLine({ price: parseFloat(tp), color: '#00e676', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: 'TP' });
+                }
+                if (!isNaN(parseFloat(sl))) {
+                    candlestickSeries.createPriceLine({ price: parseFloat(sl), color: '#ff1744', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: 'SL' });
+                }
 
                 loadingText.style.display = 'none';
 
@@ -649,7 +665,9 @@
                 });
 
             } catch (error) {
-                loadingText.innerText = '⚠️ ERROR FETCHING MARKET DATA';
+                console.error("Chart Error:", error);
+                loadingText.innerText = `⚠️ ERROR: ${error.message}`;
+                loadingText.style.color = '#ff1744';
             }
         }
 
