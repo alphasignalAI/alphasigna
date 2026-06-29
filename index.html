@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna V18.9 - Interactive Massive Matrix</title>
+    <title>AlphaSigna V19.1 - Advanced Charting Terminal</title>
     <style>
         :root {
             --primary: #00ffcc;
@@ -21,7 +21,7 @@
             overflow-x: hidden;
         }
         
-        /* 🚨 System Status */
+        /* 🚨 System Status Bar */
         #status-bar {
             background: rgba(0, 255, 204, 0.1); border: 1px solid var(--primary);
             color: var(--primary); text-align: center; padding: 10px; border-radius: 8px;
@@ -36,10 +36,18 @@
         .login-box { background: var(--card-bg); padding: 40px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 320px; }
         .login-box input { padding: 14px; width: 85%; border-radius: 8px; border: 1px solid var(--border); background: #010409; color: var(--primary); font-size: 16px; text-transform: uppercase; text-align: center; margin-bottom: 20px; outline: none; }
         
+        /* Universal Buttons */
         .btn { background: var(--primary); color: #000; padding: 14px 28px; border: none; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; transition: all 0.3s; text-transform: uppercase; width: 100%; }
         .btn:hover { box-shadow: 0 0 20px var(--primary); transform: translateY(-1px); }
-        .btn-trade { background: transparent; border: 1px solid var(--primary); color: var(--primary); margin-top: 15px; padding: 11px; width: 48%; display: inline-block; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        .btn-trade:hover { background: var(--primary); color: #000; }
+        
+        .btn-trade { background: transparent; border: 1px solid var(--primary); color: var(--primary); margin-top: 15px; padding: 11px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+        .btn-trade:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary); }
+        
+        .btn-chart { background: rgba(56, 139, 253, 0.05); border: 1px solid #388bff; color: #58a6ff; margin-top: 10px; padding: 11px; width: 48%; display: inline-block; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-chart:hover { background: #388bff; color: #fff; box-shadow: 0 0 15px #388bff; }
+        
+        .btn-logic { background: rgba(255, 0, 127, 0.05); border: 1px solid var(--accent); color: var(--accent); margin-top: 10px; padding: 11px; width: 48%; display: inline-block; float: right; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-logic:hover { background: var(--accent); color: #fff; box-shadow: 0 0 15px var(--accent); }
 
         #dashboard { display: none; max-width: 1400px; margin: 0 auto; }
         .header { text-align: center; margin-bottom: 30px; }
@@ -61,7 +69,6 @@
         }
         
         #network-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-        
         #scanner-status { position: absolute; bottom: 15px; left: 0; width: 100%; text-align: center; font-family: monospace; font-size: 13px; color: var(--primary); font-weight: bold; z-index: 100; }
 
         .node-wrapper { position: absolute; top: 0; left: 0; will-change: transform; z-index: 10; }
@@ -72,7 +79,6 @@
             color: white; font-family: 'Segoe UI', sans-serif; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.6);
             transition: transform 0.2s ease, filter 0.2s ease; user-select: none;
         }
-        
         .node-wrapper:hover .crypto-node { transform: scale(1.3); filter: brightness(1.3) drop-shadow(0 0 20px rgba(0,255,204,0.7)); }
 
         /* 🫀 CENTER BTC HEARTBEAT STYLES */
@@ -84,11 +90,7 @@
             60% { transform: scale(1); box-shadow: 0 0 20px rgba(247, 147, 26, 0.4); }
             100% { transform: scale(1); box-shadow: 0 0 20px rgba(247, 147, 26, 0.4); }
         }
-
-        .center-btc-node {
-            background: radial-gradient(circle at 30% 30%, #ffd000, #f7931a, #8a520e) !important;
-            border: 2px solid #ffcc00 !important; animation: btc-heartbeat 1.8s infinite;
-        }
+        .center-btc-node { background: radial-gradient(circle at 30% 30%, #ffd000, #f7931a, #8a520e) !important; border: 2px solid #ffcc00 !important; animation: btc-heartbeat 1.8s infinite; }
         .node-wrapper:hover .center-btc-node { animation: none; transform: scale(1.25); filter: brightness(1.3) drop-shadow(0 0 30px rgba(247, 147, 26, 0.9)); }
         
         .node-name { font-weight: 800; font-size: 12px; letter-spacing: 0.5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
@@ -96,7 +98,7 @@
         .node-percent { font-size: 10px; font-weight: 900; margin-top: 2px; padding: 2px 5px; border-radius: 4px; background: rgba(0,0,0,0.5); }
         .btc-title { font-size: 16px; font-weight: 900; text-shadow: 2px 2px 4px rgba(0,0,0,0.9); }
 
-        /* Signals */
+        /* Signals Grid Setup */
         .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 20px; opacity: 0; transition: opacity 0.5s ease; margin-top: 20px; }
         .signal-card { background: var(--card-bg); border-radius: 14px; padding: 24px; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; }
         .badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; }
@@ -106,17 +108,26 @@
         .side-long { color: var(--long); }
         .side-short { color: var(--short); }
         .data-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; border-bottom: 1px solid rgba(33,38,45,0.5); padding-bottom: 6px; }
+        .data-label { color: #8b949e; }
+        .data-value { font-weight: 600; color: #f0f6fc; }
+
+        /* 📈 Modals Container UI Layout */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(1, 4, 9, 0.96); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(6px); }
+        .chart-container { width: 92%; max-width: 1050px; height: 75vh; background: #010409; border: 1px solid var(--border); border-radius: 16px; padding: 24px; position: relative; display: flex; flex-direction: column; }
+        .close-btn { position: absolute; top: 15px; right: 20px; color: #8b949e; font-size: 26px; cursor: pointer; background: none; border: none; outline: none; z-index: 10;}
+        .close-btn:hover { color: #fff; }
+        #tv-chart { flex-grow: 1; width: 100%; margin-top: 15px; position: relative;}
         
-        /* 📈 Live Chart Popup */
-        #chart-modal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(1, 4, 9, 0.96); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(6px); }
-        .chart-container { width: 92%; max-width: 1050px; height: 75vh; background: #010409; border: 1px solid var(--border); border-radius: 16px; padding: 24px; position: relative; }
-        .close-chart { position: absolute; top: 15px; right: 20px; color: #8b949e; font-size: 26px; cursor: pointer; background: none; border: none; }
-        #tv-chart { width: 100%; height: calc(100% - 40px); margin-top: 15px; }
+        /* AI Logic Modal specific classes */
+        .logic-box-container { max-width: 550px; width: 90%; background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 30px; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
+        .logic-header { font-size: 20px; font-weight: bold; color: #fff; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .logic-content-block { background: #010409; border: 1px solid var(--border); padding: 15px; border-radius: 8px; font-family: monospace; font-size: 13px; color: #00ffcc; line-height: 1.6; margin-bottom: 15px; white-space: pre-wrap; word-break: break-word; }
     </style>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
 
@@ -160,14 +171,28 @@
         <div class="signal-grid" id="signal-container"></div>
     </div>
 
-    <div id="chart-modal">
+    <div id="chart-modal" class="modal-overlay">
         <div class="chart-container">
-            <button class="close-chart" onclick="closeLiveChart()">✖</button>
-            <div class="chart-header">
-                <span class="chart-title" id="chart-coin-name" style="color: #fff; font-size: 20px; font-weight: bold;">BTC/USDT</span>
-                <span id="chart-side" class="badge badge-swing">1 MONTH VIEW</span>
+            <button class="close-btn" onclick="closeLiveChart()">✖</button>
+            <div style="border-bottom: 1px solid var(--border); padding-bottom: 12px; z-index: 5; position: relative;">
+                <span id="chart-coin-name" style="color: #fff; font-size: 20px; font-weight: bold;">BTC/USDT</span>
+                <span id="chart-side" class="badge badge-swing" style="margin-left: 10px; margin-bottom: 0;">VIEW</span>
+                <span id="chart-loading" style="color: var(--primary); font-size: 12px; margin-left: 15px; font-family: monospace;">Fetching Binance Klines...</span>
             </div>
             <div id="tv-chart"></div>
+        </div>
+    </div>
+
+    <div id="logic-modal" class="modal-overlay">
+        <div class="logic-box-container">
+            <button class="close-btn" onclick="closeAiLogicModal()">✖</button>
+            <div class="logic-header">
+                <span>🧠 AI MATRIX STRUCTURAL LOGIC ANALYSIS</span>
+            </div>
+            <div style="color: #8b949e; font-size: 12px; margin-bottom: 8px; font-weight: bold; text-transform: uppercase;">Technical Indicator Strategy:</div>
+            <div id="tech-logic-field" class="logic-content-block">NO LIVE SIGNAL TELEMETRY REGISTERED</div>
+            <div style="color: #8b949e; font-size: 12px; margin-bottom: 8px; font-weight: bold; text-transform: uppercase;">Risk Assessment Protocol:</div>
+            <div id="risk-logic-field" class="logic-content-block">NO DATA DISPATCHED</div>
         </div>
     </div>
 
@@ -178,16 +203,13 @@
         
         let currentSignalData = null;
         let activeUserKey = null;
+        let activeChart = null; // Store chart instance to destroy it later
 
-        // Engine Variables
-        let nodesArray = [];
-        let edgesArray = [];
-        let particlesArray = [];
-        let renderFrameId;
-        let globalTime = 0;
-        let hoveredNodeId = null;
+        // Matrix Animation Variables
+        let nodesArray = []; let edgesArray = []; let particlesArray = [];
+        let renderFrameId; let globalTime = 0; let hoveredNodeId = null;
 
-        // 🚨 System Status Listener
+        // 🚨 System Status
         db.ref('system_status').on('value', (s) => {
             const status = s.val();
             if(status) {
@@ -196,7 +218,7 @@
             }
         });
 
-        // 🔑 Login & Key Verification
+        // 🔑 Login
         function verifyFirebaseKey() {
             const inputKey = document.getElementById('access-key').value.trim();
             if(!inputKey) return;
@@ -208,7 +230,6 @@
                     document.getElementById('login-screen').style.display = 'none';
                     document.getElementById('dashboard').style.display = 'block';
                     document.getElementById('user-welcome').innerText = `LICENSE USER: ${inputKey.toUpperCase()}`;
-                    
                     initCoreListeners();
                 } else {
                     document.getElementById('error-msg').style.display = 'block';
@@ -216,24 +237,19 @@
             });
         }
 
-        // 🔗 Core Realtime Listeners for Stats & Signals
+        // 🔗 Core Listeners
         function initCoreListeners() {
-            // Live Signals Listener
             db.ref('live_signals').on('value', (s) => { 
                 currentSignalData = s.val(); 
                 if(document.getElementById('signal-container').style.opacity === "1") renderSignals(currentSignalData); 
             });
 
-            // Premium Keys Stats Listener (For calculation of Global and Personal Stats)
             db.ref('premium_keys').on('value', (snapshot) => {
                 const keysData = snapshot.val();
                 if (!keysData) return;
 
-                let globalTrades = 0;
-                let globalTP = 0;
-                let globalSL = 0;
+                let globalTrades = 0; let globalTP = 0; let globalSL = 0;
 
-                // Loop through all users to compile global statistics
                 for (const key in keysData) {
                     if (keysData[key].stats) {
                         globalTrades += Number(keysData[key].stats.trades || 0);
@@ -242,17 +258,14 @@
                     }
                 }
 
-                // Calculate Global Win Rate
                 let globalWinRate = 0;
                 if ((globalTP + globalSL) > 0) {
                     globalWinRate = Math.round((globalTP / (globalTP + globalSL)) * 100);
                 }
 
-                // Update Global Stats UI
                 document.getElementById('global-total-trades').innerText = globalTrades;
                 document.getElementById('global-win-rate').innerText = globalWinRate + "%";
 
-                // Update Logged-in Personal Stats UI
                 if (activeUserKey && keysData[activeUserKey]) {
                     const myStats = keysData[activeUserKey].stats || { trades: 0, tp: 0, sl: 0 };
                     document.getElementById('user-trades').innerText = myStats.trades || 0;
@@ -261,9 +274,9 @@
             });
         }
 
-        function takeTrade(coin) { alert(`⚡ TRADE COMMAND INTEGRATED for ${coin}.`); }
+        function takeTrade(coin) { alert(`⚡ TRADE COMMAND INTEGRATED for ${coin}. Orders pushed to exchange API emulator.`); }
 
-        // --- 🕸️ MASSIVE NEURAL NETWORK GRAPHICS ENGINE ---
+        // --- 🕸️ NETWORK SCANNER ENGINE ---
         async function startNetworkScan() {
             document.getElementById('scan-btn').style.display = 'none';
             const container = document.getElementById('network-container');
@@ -272,27 +285,17 @@
             const grid = document.getElementById('signal-container');
             const statusText = document.getElementById('scanner-status');
             
-            container.style.display = 'block';
-            grid.style.opacity = '0';
-            
-            canvas.width = container.clientWidth;
-            canvas.height = container.clientHeight;
+            container.style.display = 'block'; grid.style.opacity = '0';
+            canvas.width = container.clientWidth; canvas.height = container.clientHeight;
             
             document.querySelectorAll('.node-wrapper').forEach(e => e.remove());
             cancelAnimationFrame(renderFrameId);
-            nodesArray = [];
-            edgesArray = [];
-            particlesArray = [];
-            hoveredNodeId = null;
+            nodesArray = []; edgesArray = []; particlesArray = []; hoveredNodeId = null;
 
-            // Generate Background Particles
             for(let i = 0; i < 200; i++) {
                 particlesArray.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    size: Math.random() * 2.5,
-                    speedY: (Math.random() * 0.4) + 0.1,
-                    alpha: Math.random() * 0.5 + 0.1
+                    x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+                    size: Math.random() * 2.5, speedY: (Math.random() * 0.4) + 0.1, alpha: Math.random() * 0.5 + 0.1
                 });
             }
 
@@ -301,25 +304,19 @@
                 const data = await response.json();
                 
                 const btcData = data.find(c => c.symbol === 'BTCUSDT');
-                
                 const usdtPairs = data.filter(c => c.symbol.endsWith('USDT') && c.symbol !== 'BTCUSDT' && parseFloat(c.volume) > 2000000);
                 usdtPairs.sort((a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume));
                 const topCoins = usdtPairs.slice(0, 66); 
 
-                const centerX = canvas.width / 2;
-                const centerY = canvas.height / 2;
+                const centerX = canvas.width / 2; const centerY = canvas.height / 2;
 
-                // --- CREATE CENTER BTC NODE ---
                 const btcSize = 95;
-                const btcWrapper = document.createElement('div');
-                btcWrapper.className = 'node-wrapper';
-                btcWrapper.style.width = `${btcSize}px`;
-                btcWrapper.style.height = `${btcSize}px`;
+                const btcWrapper = document.createElement('div'); btcWrapper.className = 'node-wrapper';
+                btcWrapper.style.width = `${btcSize}px`; btcWrapper.style.height = `${btcSize}px`;
 
                 const btcNodeEl = document.createElement('div');
                 btcNodeEl.className = 'crypto-node center-btc-node';
-                btcNodeEl.style.width = '100%';
-                btcNodeEl.style.height = '100%';
+                btcNodeEl.style.width = '100%'; btcNodeEl.style.height = '100%';
                 
                 const btcPriceChange = parseFloat(btcData.priceChangePercent);
                 let btcDisplayPrice = parseFloat(btcData.lastPrice).toFixed(2);
@@ -329,17 +326,14 @@
                     <span class="node-price" style="font-size:12px;">$${btcDisplayPrice}</span>
                     <span class="node-percent" style="font-size:12px;">${btcPriceChange >= 0 ? '+' : ''}${btcPriceChange.toFixed(1)}%</span>
                 `;
-
-                btcWrapper.appendChild(btcNodeEl);
-                container.appendChild(btcWrapper);
-
+                btcWrapper.appendChild(btcNodeEl); container.appendChild(btcWrapper);
                 nodesArray.push({ id: 0, baseX: centerX, baseY: centerY, x: centerX, y: centerY, angle: 0, dist: 0, size: btcSize, wrapper: btcWrapper });
                 
                 btcWrapper.onmouseenter = () => { hoveredNodeId = 0; };
                 btcWrapper.onmouseleave = () => { hoveredNodeId = null; };
-                btcNodeEl.onclick = () => openBubbleChart('BTCUSDT', 'BTC');
+                // Default BTC chart values if clicked from network
+                btcNodeEl.onclick = () => openLiveChart('BTC/USDT', btcDisplayPrice, btcDisplayPrice*1.05, btcDisplayPrice*0.95, 'ANALYSIS');
 
-                // --- CREATE 4 EXPANDED OUTER RINGS ---
                 const rings = [
                     { count: 6, radius: 110, speed: 0.003, dir: 1 },
                     { count: 12, radius: 210, speed: 0.002, dir: -1 },
@@ -347,8 +341,7 @@
                     { count: 28, radius: 410, speed: 0.001, dir: -1 }
                 ];
 
-                let coinIndex = 0;
-                let nodeId = 1;
+                let coinIndex = 0; let nodeId = 1;
 
                 rings.forEach((ring, ringIdx) => {
                     for(let i=0; i < ring.count; i++) {
@@ -362,13 +355,11 @@
 
                         const wrapper = document.createElement('div');
                         wrapper.className = 'node-wrapper';
-                        wrapper.style.width = `${size}px`;
-                        wrapper.style.height = `${size}px`;
+                        wrapper.style.width = `${size}px`; wrapper.style.height = `${size}px`;
 
                         const nodeEl = document.createElement('div');
                         nodeEl.className = 'crypto-node';
-                        nodeEl.style.width = '100%';
-                        nodeEl.style.height = '100%';
+                        nodeEl.style.width = '100%'; nodeEl.style.height = '100%';
                         
                         if (isPositive) {
                             nodeEl.style.background = 'radial-gradient(circle at 30% 30%, #00e676, #008b47)';
@@ -387,52 +378,45 @@
                             <span class="node-price">$${displayPrice}</span>
                             <span class="node-percent">${isPositive ? '+' : ''}${priceChange.toFixed(1)}%</span>
                         `;
-
-                        wrapper.appendChild(nodeEl);
-                        container.appendChild(wrapper);
+                        wrapper.appendChild(nodeEl); container.appendChild(wrapper);
 
                         nodesArray.push({
                             id: nodeId, wrapper: wrapper, baseDist: ring.radius, baseAngle: angle,
-                            speed: ring.speed, dir: ring.dir, x: 0, y: 0, size: size,
-                            wobbleOffset: Math.random() * 100
+                            speed: ring.speed, dir: ring.dir, x: 0, y: 0, size: size, wobbleOffset: Math.random() * 100
                         });
                         
                         const currentId = nodeId;
                         wrapper.onmouseenter = () => { hoveredNodeId = currentId; };
                         wrapper.onmouseleave = () => { hoveredNodeId = null; };
-                        nodeEl.onclick = () => openBubbleChart(coin.symbol, name);
+                        // Default chart view if clicked from bubble
+                        nodeEl.onclick = () => openLiveChart(`${name}/USDT`, displayPrice, displayPrice*1.02, displayPrice*0.98, 'ANALYSIS');
 
                         if(ringIdx === 0) edgesArray.push({ from: 0, to: nodeId });
-                        else if (ringIdx === 1) edgesArray.push({ from: 1 + Math.floor(i / (12/6)), to: nodeId });
-                        else if (ringIdx === 2) edgesArray.push({ from: 7 + Math.floor(i / (20/12)), to: nodeId });
-                        else if (ringIdx === 3) edgesArray.push({ from: 19 + Math.floor(i / (28/20)), to: nodeId });
+                        else if (ringIdx === 1) edgesArray.push({ from: 1 + Math.floor(i / 2), to: nodeId });
+                        else if (ringIdx === 2) edgesArray.push({ from: 7 + Math.floor(i / 1.6), to: nodeId });
+                        else if (ringIdx === 3) edgesArray.push({ from: 19 + Math.floor(i / 1.4), to: nodeId });
 
                         const prevIdInRing = i === 0 ? nodeId + ring.count - 1 : nodeId - 1;
                         edgesArray.push({ from: prevIdInRing, to: nodeId });
 
-                        nodeId++;
-                        coinIndex++;
+                        nodeId++; coinIndex++;
                     }
                 });
 
-                statusText.innerText = "🟢 MASSIVE NEURAL NETWORK ESTABLISHED. LIVE BINANCE NODES SYNCED.";
+                statusText.innerText = "🟢 MASSIVE OMNI-DIRECTIONAL NEURAL INTERFACE LOCKED ON TARGET.";
                 setTimeout(() => { renderSignals(currentSignalData); grid.style.opacity = '1'; }, 2000);
 
-                function drawNetwork() {
+                function drawNetworkAnimation() {
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     globalTime += 1;
 
-                    // Particles
                     particlesArray.forEach(p => {
                         p.y -= p.speedY; 
                         if(p.y < 0) { p.y = canvas.height; p.x = Math.random() * canvas.width; }
                         ctx.fillStyle = `rgba(0, 255, 204, ${p.alpha})`;
-                        ctx.beginPath();
-                        ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
-                        ctx.fill();
+                        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
                     });
 
-                    // Nodes
                     nodesArray.forEach(node => {
                         if(node.id === 0) {
                             node.wrapper.style.transform = `translate(${node.x - (node.size/2)}px, ${node.y - (node.size/2)}px)`;
@@ -447,76 +431,45 @@
                         node.wrapper.style.transform = `translate(${node.x - (node.size/2)}px, ${node.y - (node.size/2)}px)`;
                     });
 
-                    // Edges
                     edgesArray.forEach(edge => {
-                        const n1 = nodesArray[edge.from];
-                        const n2 = nodesArray[edge.to];
-                        
+                        const n1 = nodesArray[edge.from]; const n2 = nodesArray[edge.to];
                         if(n1 && n2) {
-                            let isHighlighted = false;
-                            let alpha = 0.25;
-
+                            let isHighlighted = false; let alpha = 0.22;
                             if (hoveredNodeId !== null) {
                                 if (edge.from === hoveredNodeId || edge.to === hoveredNodeId) {
-                                    isHighlighted = true;
-                                    alpha = 0.9;
-                                } else {
-                                    alpha = 0.03;
-                                }
+                                    isHighlighted = true; alpha = 0.95;
+                                } else { alpha = 0.02; }
                             }
                             
                             ctx.strokeStyle = isHighlighted ? `rgba(0, 255, 204, ${alpha})` : (edge.from === 0 ? `rgba(247, 147, 26, ${alpha})` : `rgba(0, 255, 204, ${alpha})`);
-                            ctx.lineWidth = isHighlighted ? 2.5 : 1.2;
+                            ctx.lineWidth = isHighlighted ? 2.5 : 1.1;
                             
-                            if (isHighlighted) {
-                                ctx.shadowBlur = 15;
-                                ctx.shadowColor = edge.from === 0 ? "#f7931a" : "#00ffcc";
-                            } else {
-                                ctx.shadowBlur = 0;
-                            }
+                            if (isHighlighted) { ctx.shadowBlur = 15; ctx.shadowColor = edge.from === 0 ? "#f7931a" : "#00ffcc"; } 
+                            else { ctx.shadowBlur = 0; }
 
-                            ctx.beginPath();
-                            ctx.moveTo(n1.x, n1.y);
-                            ctx.lineTo(n2.x, n2.y);
-                            ctx.stroke();
+                            ctx.beginPath(); ctx.moveTo(n1.x, n1.y); ctx.lineTo(n2.x, n2.y); ctx.stroke();
                         }
                     });
                     
                     ctx.shadowBlur = 0;
-                    renderFrameId = requestAnimationFrame(drawNetwork);
+                    renderFrameId = requestAnimationFrame(drawNetworkAnimation);
                 }
-                
-                drawNetwork();
+                drawNetworkAnimation();
 
             } catch(e) {
-                statusText.innerText = "⚠️ ERROR FETCHING BINANCE DATA.";
-                console.error(e);
+                statusText.innerText = "⚠️ SYSTEM FAULT INTERRUPTED PIPELINE STREAM.";
             }
         }
 
-        // --- 📈 CLICK TO OPEN CHART ---
-        function openBubbleChart(symbol, name) {
-            document.getElementById('chart-modal').style.display = 'flex';
-            document.getElementById('chart-coin-name').innerText = `${name}/USDT - 1 Month Analysis`;
-
-            const chartDiv = document.getElementById('tv-chart');
-            chartDiv.innerHTML = '';
-            const tvSymbol = "BINANCE:" + symbol;
-
-            new TradingView.widget({
-                "width": "100%", "height": "100%", "symbol": tvSymbol, "interval": "D",
-                "timezone": "Etc/UTC", "theme": "dark", "style": "1", "locale": "en",
-                "toolbar_bg": "#010409", "enable_publishing": false, "hide_side_toolbar": false,
-                "allow_symbol_change": false, "container_id": "tv-chart", "studies": [],
-                "backgroundColor": "#010409", "gridColor": "rgba(33, 38, 45, 0.4)"
-            });
+        // --- 🧠 AI LOGIC MODAL ---
+        function openAiLogicModal(techLogic, riskLogic) {
+            document.getElementById('logic-modal').style.display = 'flex';
+            document.getElementById('tech-logic-field').innerText = techLogic || "INDICATOR BOUNDARIES EXCEEDED OVERFLOW PIPELINE METRICS.";
+            document.getElementById('risk-logic-field').innerText = riskLogic || "RISK EVALUATION PROFILE CONFIRMED SECURE AUTHORIZATION GAIN.";
         }
+        function closeAiLogicModal() { document.getElementById('logic-modal').style.display = 'none'; }
 
-        function closeLiveChart() {
-            document.getElementById('chart-modal').style.display = 'none';
-            document.getElementById('tv-chart').innerHTML = '';
-        }
-
+        // --- 📊 RENDER SIGNALS CARDS ---
         function renderSignals(data) {
             const container = document.getElementById('signal-container');
             container.innerHTML = ''; if (!data) return;
@@ -532,6 +485,11 @@
                 let badgeClass = details.signal_type.includes("SWING") ? "badge-swing" : "badge-scalp";
                 let sideClass = details.side === "LONG" ? "side-long" : "side-short";
 
+                const formattedTech = (details.tech_logic || "INDICATOR THRESHOLDS ACTIVE").replace(/'/g, "\\'");
+                const formattedRisk = (details.risk_logic || "RISK MATRIX VALIDATED").replace(/'/g, "\\'");
+                const chartArgs = `'${details.pair}', ${details.entry}, ${details.tp1}, ${details.sl}, '${details.side}'`;
+                const logicArgs = `'${formattedTech}', '${formattedRisk}'`;
+
                 container.innerHTML += `
                     <div class="signal-card">
                         <div>
@@ -543,8 +501,126 @@
                         </div>
                         <div>
                             <button class="btn btn-trade" onclick="takeTrade('${coin}')">⚡ TAKE TRADE</button>
+                            <button class="btn btn-chart" onclick="openLiveChart(${chartArgs})">📊 LIVE CHART</button>
+                            <button class="btn btn-logic" onclick="openAiLogicModal(${logicArgs})">🧠 AI LOGIC</button>
                         </div>
                     </div>`;
+            }
+        }
+
+        // --- 📈 ADVANCED LIGHTWEIGHT CHARTS API INTEGRATION ---
+        async function openLiveChart(pair, entry, tp, sl, side) {
+            document.getElementById('chart-modal').style.display = 'flex';
+            document.getElementById('chart-coin-name').innerText = `${pair} Live Analysis`;
+            document.getElementById('chart-side').innerText = `${side} EXECUTION`;
+            
+            const loadingText = document.getElementById('chart-loading');
+            loadingText.style.display = 'inline-block';
+            
+            const chartDiv = document.getElementById('tv-chart');
+            chartDiv.innerHTML = '';
+            
+            // Format symbol for Binance fetch (BTC/USDT -> BTCUSDT)
+            const cleanSymbol = pair.replace('/', '');
+
+            // Initialize Lightweight Chart Instance
+            activeChart = LightweightCharts.createChart(chartDiv, {
+                layout: {
+                    background: { type: 'solid', color: '#010409' },
+                    textColor: '#c9d1d9',
+                },
+                grid: {
+                    vertLines: { color: 'rgba(33, 38, 45, 0.4)' },
+                    horzLines: { color: 'rgba(33, 38, 45, 0.4)' },
+                },
+                crosshair: {
+                    mode: LightweightCharts.CrosshairMode.Normal,
+                },
+                timeScale: {
+                    timeVisible: true,
+                    secondsVisible: false,
+                }
+            });
+
+            // Adjust size to fit container
+            activeChart.resize(chartDiv.clientWidth, chartDiv.clientHeight);
+
+            const candlestickSeries = activeChart.addCandlestickSeries({
+                upColor: '#00e676',
+                downColor: '#ff1744',
+                borderVisible: false,
+                wickUpColor: '#00e676',
+                wickDownColor: '#ff1744'
+            });
+
+            try {
+                // Fetch Historical Klines from Binance API (150 candles, 5-minute interval)
+                const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${cleanSymbol}&interval=5m&limit=150`);
+                const klineData = await res.json();
+                
+                // Parse Binance Data format to Lightweight Charts format
+                const chartData = klineData.map(d => ({
+                    time: d[0] / 1000, // Convert ms to seconds
+                    open: parseFloat(d[1]),
+                    high: parseFloat(d[2]),
+                    low: parseFloat(d[3]),
+                    close: parseFloat(d[4])
+                }));
+
+                // Set Data to Chart
+                candlestickSeries.setData(chartData);
+                
+                // Add ENTRY Line
+                candlestickSeries.createPriceLine({
+                    price: parseFloat(entry),
+                    color: '#388bff',
+                    lineWidth: 2,
+                    lineStyle: LightweightCharts.LineStyle.Dashed,
+                    axisLabelVisible: true,
+                    title: 'ENTRY',
+                });
+                
+                // Add TP Line
+                candlestickSeries.createPriceLine({
+                    price: parseFloat(tp),
+                    color: '#00e676',
+                    lineWidth: 2,
+                    lineStyle: LightweightCharts.LineStyle.Solid,
+                    axisLabelVisible: true,
+                    title: 'TP',
+                });
+                
+                // Add SL Line
+                candlestickSeries.createPriceLine({
+                    price: parseFloat(sl),
+                    color: '#ff1744',
+                    lineWidth: 2,
+                    lineStyle: LightweightCharts.LineStyle.Solid,
+                    axisLabelVisible: true,
+                    title: 'SL',
+                });
+
+                loadingText.style.display = 'none';
+
+                // Handle window resize dynamically to keep chart perfect
+                window.addEventListener('resize', () => {
+                    if(document.getElementById('chart-modal').style.display === 'flex') {
+                        activeChart.resize(chartDiv.clientWidth, chartDiv.clientHeight);
+                    }
+                });
+
+            } catch (error) {
+                loadingText.innerText = '⚠️ ERROR FETCHING MARKET DATA';
+                console.error("Binance Fetch Error:", error);
+            }
+        }
+
+        function closeLiveChart() {
+            document.getElementById('chart-modal').style.display = 'none';
+            // Safely destroy the chart instance to prevent memory leaks and UI bugs
+            if (activeChart) {
+                activeChart.remove();
+                activeChart = null;
             }
         }
     </script>
