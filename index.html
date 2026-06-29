@@ -108,7 +108,7 @@
         .btc-title { font-size: 16px; font-weight: 900; text-shadow: 2px 2px 4px rgba(0,0,0,0.9); }
 
         /* 🚀 Signals Grid & NORMAL Cards */
-        .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 20px; opacity: 0; transition: opacity 0.5s ease; margin-top: 20px; }
+        .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 20px; opacity: 1; transition: opacity 0.5s ease; margin-top: 20px; }
         .signal-card { background: var(--card-bg); border-radius: 14px; padding: 24px; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s; }
         
         /* ⭐ GOLD NEON VIP CARD STYLES */
@@ -131,7 +131,7 @@
 
         .badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; }
         .badge-swing { background: rgba(56, 139, 253, 0.15); color: #58a6ff; border: 1px solid rgba(56, 139, 253, 0.4); }
-        .badge-scalp { background: rgba(242, 8c, 166, 0.15); color: #f25ca6; border: 1px solid rgba(242, 8c, 166, 0.4); }
+        .badge-scalp { background: rgba(242, 140, 166, 0.15); color: #f25ca6; border: 1px solid rgba(242, 140, 166, 0.4); }
         .coin-title { font-size: 24px; font-weight: 700; margin-bottom: 18px; display: flex; justify-content: space-between; color: #fff; align-items: center;}
         .side-long { color: var(--long); }
         .side-short { color: var(--short); }
@@ -201,7 +201,12 @@
             <button class="btn" id="scan-btn" style="width: auto; padding: 12px 30px;" onclick="startNetworkScan()">🛰️ SCAN REAL-TIME ORDERBOOK</button>
         </div>
 
-        <div class="signal-grid" id="signal-container"></div>
+        <div class="signal-grid" id="signal-container">
+            <div class="signal-card" style="text-align: center; grid-column: 1 / -1; padding: 50px;">
+                <h2 style="color: #8b949e;">Awaiting Real-Time Stream Initialization...</h2>
+                <p style="color: #555;">Click the scanner button above to load network matrix or wait for real-time hooks.</p>
+            </div>
+        </div>
     </div>
 
     <div id="chart-modal" class="modal-overlay">
@@ -276,9 +281,10 @@
 
         // 🔗 Core Listeners
         function initCoreListeners() {
+            // Real-time signals synchronization hook
             db.ref('live_signals').on('value', (s) => { 
                 currentSignalData = s.val(); 
-                if(document.getElementById('signal-container').style.opacity === "1") renderSignals(currentSignalData); 
+                renderSignals(currentSignalData); 
             });
 
             db.ref('premium_keys').on('value', (snapshot) => {
@@ -317,10 +323,9 @@
             const container = document.getElementById('network-container');
             const canvas = document.getElementById('network-canvas');
             const ctx = canvas.getContext('2d');
-            const grid = document.getElementById('signal-container');
             const statusText = document.getElementById('scanner-status');
             
-            container.style.display = 'block'; grid.style.opacity = '0';
+            container.style.display = 'block';
             canvas.width = container.clientWidth; canvas.height = container.clientHeight;
             
             document.querySelectorAll('.node-wrapper').forEach(e => e.remove());
@@ -424,7 +429,6 @@
                 });
 
                 statusText.innerText = "🟢 MASSIVE OMNI-DIRECTIONAL NEURAL INTERFACE LOCKED ON TARGET.";
-                setTimeout(() => { renderSignals(currentSignalData); grid.style.opacity = '1'; }, 2000);
 
                 function drawNetworkAnimation() {
                     ctx.clearRect(0, 0, canvas.width, canvas.height); globalTime += 1;
@@ -469,27 +473,35 @@
         }
         function closeAiLogicModal() { document.getElementById('logic-modal').style.display = 'none'; }
 
-        // --- 📊 RENDER SIGNALS CARDS (UPDATED WITH GOLD NEON LOGIC) ---
+        // --- 📊 RENDER LIVE SIGNAL CARDS ---
         function renderSignals(data) {
             const container = document.getElementById('signal-container');
-            container.innerHTML = ''; if (!data) return;
-
-            if (data.WAITING) {
-                container.innerHTML = `<div class="signal-card" style="text-align: center; grid-column: 1 / -1; padding: 50px;"><h2 style="color: #fff;">Scanning Global High-Frequency Liquidity...</h2></div>`;
+            container.innerHTML = ''; 
+            
+            // වැදගත්: Data නැතිනම් හෝ empty object එකක් ආවොත් loading message එකක් පෙන්වන්න
+            if (!data || Object.keys(data).length === 0) {
+                container.innerHTML = `
+                    <div class="signal-card" style="text-align: center; grid-column: 1 / -1; padding: 50px;">
+                        <h2 style="color: #fff;">🛰️ Live Alpha Engine Scanning...</h2>
+                        <p style="color: #8b949e;">Python core එකෙන් signals generate වෙනකම් බලා සිටී. (No active signals in DB)</p>
+                    </div>`;
                 return;
             }
 
-            for (const [coin, details] of Object.entries(data)) {
+            // Python Object එක loop කරලා active market signals ටික හදනවා
+            for (const [coinKey, details] of Object.entries(data)) {
                 let badgeClass = details.signal_type.includes("SWING") ? "badge-swing" : "badge-scalp";
                 let sideClass = details.side === "LONG" ? "side-long" : "side-short";
 
-                // ⭐ Check if this is a High Accuracy WhatsApp Signal (>= 85 Score)
+                // Accuracy එක 85 ට වඩා වැඩි නම් VIP Gold Alert එක දානවා
                 const isPremiumAlert = details.accuracy >= 85;
                 const cardCssClass = isPremiumAlert ? "signal-card neon-gold-card" : "signal-card";
                 const premiumBadgeHtml = isPremiumAlert ? `<span class="premium-tag">⭐ VIP ALERT</span>` : "";
 
-                const formattedTech = (details.tech_logic || "INDICATOR THRESHOLDS ACTIVE").replace(/'/g, "\\'");
-                const formattedRisk = (details.risk_logic || "RISK MATRIX VALIDATED").replace(/'/g, "\\'");
+                // Escape strings JavaScript crashing වැළැක්වීමට
+                const formattedTech = (details.tech_logic || "🧠 Telemetry Active").replace(/'/g, "\\'");
+                const formattedRisk = (details.risk_logic || "⚖️ Risk Managed").replace(/'/g, "\\'");
+                
                 const chartArgs = `'${details.pair}', ${details.entry}, ${details.tp1}, ${details.sl}, '${details.side}'`;
                 const logicArgs = `'${formattedTech}', '${formattedRisk}'`;
 
@@ -497,7 +509,7 @@
                     <div class="${cardCssClass}">
                         <div>
                             <div style="display: flex; align-items: center; margin-bottom: 15px;">
-                                <span class="badge" style="margin-bottom: 0;">${details.signal_type}</span>
+                                <span class="badge ${badgeClass}" style="margin-bottom: 0;">${details.signal_type}</span>
                                 ${premiumBadgeHtml}
                             </div>
                             <div class="coin-title">
@@ -512,7 +524,7 @@
                             <div class="data-row"><span class="data-label">Stop Loss</span><span class="data-value" style="color: #ff1744;">${details.sl}</span></div>
                         </div>
                         <div>
-                            <button class="btn btn-trade" onclick="takeTrade('${coin}')">⚡ TAKE TRADE</button>
+                            <button class="btn btn-trade" onclick="takeTrade('${coinKey}')">⚡ TAKE TRADE</button>
                             <button class="btn btn-chart" onclick="openLiveChart(${chartArgs})">📊 LIVE CHART</button>
                             <button class="btn btn-logic" onclick="openAiLogicModal(${logicArgs})">🧠 AI LOGIC</button>
                         </div>
