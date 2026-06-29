@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna V18.9 - Interactive Matrix Core</title>
+    <title>AlphaSigna V18.9 - Interactive Massive Matrix</title>
     <style>
         :root {
             --primary: #00ffcc;
@@ -53,10 +53,10 @@
         .global-card { border-left: 4px solid var(--primary); }
         .personal-card { border-left: 4px solid var(--accent); }
 
-        /* 🕸️ NEURAL NETWORK MATRIX CONTAINER */
+        /* 🕸️ MASSIVE NEURAL NETWORK MATRIX CONTAINER */
         .scanner-section { text-align: center; margin: 20px 0; position: relative; }
         #network-container { 
-            display: none; width: 100%; height: 800px; margin: 0 auto 20px auto; 
+            display: none; width: 100%; height: 950px; margin: 0 auto 20px auto; 
             background: #010409; border-radius: 16px; border: 1px solid var(--border); 
             position: relative; overflow: hidden;
             background-image: radial-gradient(circle at 50% 50%, rgba(0, 255, 204, 0.05) 0%, transparent 70%);
@@ -90,7 +90,7 @@
         }
         
         .node-wrapper:hover .crypto-node {
-            transform: scale(1.25);
+            transform: scale(1.3);
             filter: brightness(1.3) drop-shadow(0 0 20px rgba(0,255,204,0.7));
         }
 
@@ -111,15 +111,17 @@
         }
         
         .node-wrapper:hover .center-btc-node {
-            animation: none; /* Pause heartbeat on hover for smooth scaling */
+            animation: none;
             transform: scale(1.25);
             filter: brightness(1.3) drop-shadow(0 0 30px rgba(247, 147, 26, 0.9));
         }
         
-        .node-name { font-weight: 800; font-size: 13px; letter-spacing: 0.5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
-        .node-price { font-size: 10px; opacity: 0.9; margin-top: 2px; font-weight: 600; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
-        .node-percent { font-size: 11px; font-weight: 900; margin-top: 2px; padding: 2px 5px; border-radius: 4px; background: rgba(0,0,0,0.5); }
+        .node-name { font-weight: 800; font-size: 12px; letter-spacing: 0.5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+        .node-price { font-size: 9px; opacity: 0.9; margin-top: 2px; font-weight: 600; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+        .node-percent { font-size: 10px; font-weight: 900; margin-top: 2px; padding: 2px 5px; border-radius: 4px; background: rgba(0,0,0,0.5); }
         .btc-title { font-size: 16px; font-weight: 900; text-shadow: 2px 2px 4px rgba(0,0,0,0.9); }
+        .btc-price { font-size: 12px; }
+        .btc-percent { font-size: 12px; }
 
         /* Signals */
         .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 20px; opacity: 0; transition: opacity 0.5s ease; margin-top: 20px; }
@@ -210,7 +212,7 @@
         let particlesArray = [];
         let renderFrameId;
         let globalTime = 0;
-        let hoveredNodeId = null; // Track Interactive Hover
+        let hoveredNodeId = null;
 
         db.ref('system_status').on('value', (s) => {
             const status = s.val();
@@ -243,7 +245,7 @@
 
         function takeTrade(coin) { alert(`⚡ TRADE COMMAND INTEGRATED for ${coin}.`); }
 
-        // --- 🕸️ NEURAL NETWORK GRAPHICS ENGINE WITH PARTICLES & HOVER ---
+        // --- 🕸️ MASSIVE NEURAL NETWORK GRAPHICS ENGINE ---
         async function startNetworkScan() {
             document.getElementById('scan-btn').style.display = 'none';
             const container = document.getElementById('network-container');
@@ -266,13 +268,13 @@
             hoveredNodeId = null;
 
             // Generate Background Particles
-            for(let i = 0; i < 150; i++) {
+            for(let i = 0; i < 200; i++) {
                 particlesArray.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
-                    size: Math.random() * 2,
-                    speedY: (Math.random() * 0.5) + 0.1,
-                    alpha: Math.random() * 0.6 + 0.1
+                    size: Math.random() * 2.5,
+                    speedY: (Math.random() * 0.4) + 0.1,
+                    alpha: Math.random() * 0.5 + 0.1
                 });
             }
 
@@ -281,19 +283,19 @@
                 const response = await fetch('https://api.binance.com/api/v3/ticker/24hr');
                 const data = await response.json();
                 
-                // Separate BTC for the center
+                // Separate BTC
                 const btcData = data.find(c => c.symbol === 'BTCUSDT');
                 
-                // Get other top coins excluding BTC
-                const usdtPairs = data.filter(c => c.symbol.endsWith('USDT') && c.symbol !== 'BTCUSDT' && parseFloat(c.volume) > 5000000);
+                // Top 66 Coins for 4 massive rings
+                const usdtPairs = data.filter(c => c.symbol.endsWith('USDT') && c.symbol !== 'BTCUSDT' && parseFloat(c.volume) > 2000000);
                 usdtPairs.sort((a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume));
-                const topCoins = usdtPairs.slice(0, 36); 
+                const topCoins = usdtPairs.slice(0, 66); 
 
                 const centerX = canvas.width / 2;
                 const centerY = canvas.height / 2;
 
                 // --- CREATE CENTER BTC NODE ---
-                const btcSize = 90;
+                const btcSize = 95;
                 const btcWrapper = document.createElement('div');
                 btcWrapper.className = 'node-wrapper';
                 btcWrapper.style.width = `${btcSize}px`;
@@ -309,26 +311,25 @@
                 
                 btcNodeEl.innerHTML = `
                     <span class="node-name btc-title">BTC</span>
-                    <span class="node-price" style="font-size:12px;">$${btcDisplayPrice}</span>
-                    <span class="node-percent" style="font-size:12px;">${btcPriceChange >= 0 ? '+' : ''}${btcPriceChange.toFixed(1)}%</span>
+                    <span class="node-price btc-price">$${btcDisplayPrice}</span>
+                    <span class="node-percent btc-percent">${btcPriceChange >= 0 ? '+' : ''}${btcPriceChange.toFixed(1)}%</span>
                 `;
 
                 btcWrapper.appendChild(btcNodeEl);
                 container.appendChild(btcWrapper);
 
-                // Add BTC to Nodes Array as ID: 0
-                const btcDataObj = { id: 0, baseX: centerX, baseY: centerY, x: centerX, y: centerY, angle: 0, dist: 0, size: btcSize, wrapper: btcWrapper };
-                nodesArray.push(btcDataObj);
+                nodesArray.push({ id: 0, baseX: centerX, baseY: centerY, x: centerX, y: centerY, angle: 0, dist: 0, size: btcSize, wrapper: btcWrapper });
                 
                 btcWrapper.onmouseenter = () => { hoveredNodeId = 0; };
                 btcWrapper.onmouseleave = () => { hoveredNodeId = null; };
                 btcNodeEl.onclick = () => openBubbleChart('BTCUSDT', 'BTC');
 
-                // --- CREATE OUTER RINGS ---
+                // --- CREATE 4 EXPANDED OUTER RINGS ---
                 const rings = [
-                    { count: 6, radius: 140, speed: 0.003, dir: 1 },
-                    { count: 12, radius: 270, speed: 0.002, dir: -1 },
-                    { count: 18, radius: 400, speed: 0.0015, dir: 1 }
+                    { count: 6, radius: 110, speed: 0.003, dir: 1 },
+                    { count: 12, radius: 210, speed: 0.002, dir: -1 },
+                    { count: 20, radius: 310, speed: 0.0015, dir: 1 },
+                    { count: 28, radius: 410, speed: 0.001, dir: -1 }
                 ];
 
                 let coinIndex = 0;
@@ -341,7 +342,7 @@
                         const coin = topCoins[coinIndex];
                         const priceChange = parseFloat(coin.priceChangePercent);
                         const isPositive = priceChange >= 0;
-                        const size = Math.max(55, Math.min(80, 45 + (Math.abs(priceChange) * 3)));
+                        const size = Math.max(45, Math.min(75, 40 + (Math.abs(priceChange) * 2)));
                         const angle = (Math.PI * 2 / ring.count) * i;
 
                         const wrapper = document.createElement('div');
@@ -375,23 +376,22 @@
                         wrapper.appendChild(nodeEl);
                         container.appendChild(wrapper);
 
-                        // Save to Engine array
                         nodesArray.push({
                             id: nodeId, wrapper: wrapper, baseDist: ring.radius, baseAngle: angle,
                             speed: ring.speed, dir: ring.dir, x: 0, y: 0, size: size,
                             wobbleOffset: Math.random() * 100
                         });
                         
-                        // Hover Interaction Logic
                         const currentId = nodeId;
                         wrapper.onmouseenter = () => { hoveredNodeId = currentId; };
                         wrapper.onmouseleave = () => { hoveredNodeId = null; };
                         nodeEl.onclick = () => openBubbleChart(coin.symbol, name);
 
-                        // Connections
+                        // Safe Edge Connections
                         if(ringIdx === 0) edgesArray.push({ from: 0, to: nodeId });
-                        else if (ringIdx === 1) edgesArray.push({ from: 1 + Math.floor(i / 2), to: nodeId });
-                        else if (ringIdx === 2) edgesArray.push({ from: 7 + Math.floor(i / 1.5), to: nodeId });
+                        else if (ringIdx === 1) edgesArray.push({ from: 1 + Math.floor(i / (12/6)), to: nodeId });
+                        else if (ringIdx === 2) edgesArray.push({ from: 7 + Math.floor(i / (20/12)), to: nodeId });
+                        else if (ringIdx === 3) edgesArray.push({ from: 19 + Math.floor(i / (28/20)), to: nodeId });
 
                         const prevIdInRing = i === 0 ? nodeId + ring.count - 1 : nodeId - 1;
                         edgesArray.push({ from: prevIdInRing, to: nodeId });
@@ -401,7 +401,7 @@
                     }
                 });
 
-                statusText.innerText = "🟢 NEURAL NETWORK ESTABLISHED. LIVE BINANCE NODES SYNCED.";
+                statusText.innerText = "🟢 MASSIVE NEURAL NETWORK ESTABLISHED. LIVE BINANCE NODES SYNCED.";
                 setTimeout(() => { renderSignals(currentSignalData); grid.style.opacity = '1'; }, 2000);
 
                 // --- ⚙️ Render Loop ---
@@ -409,9 +409,9 @@
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     globalTime += 1;
 
-                    // 1. Draw Background Particles
+                    // Particles
                     particlesArray.forEach(p => {
-                        p.y -= p.speedY; // Float upwards
+                        p.y -= p.speedY; 
                         if(p.y < 0) { p.y = canvas.height; p.x = Math.random() * canvas.width; }
                         
                         ctx.fillStyle = `rgba(0, 255, 204, ${p.alpha})`;
@@ -420,16 +420,15 @@
                         ctx.fill();
                     });
 
-                    // 2. Calculate node positions
+                    // Nodes
                     nodesArray.forEach(node => {
                         if(node.id === 0) {
-                            // BTC Node stays center
                             node.wrapper.style.transform = `translate(${node.x - (node.size/2)}px, ${node.y - (node.size/2)}px)`;
                             return;
                         }
 
                         const currentAngle = node.baseAngle + (globalTime * node.speed * node.dir);
-                        const wobble = Math.sin(globalTime * 0.02 + node.wobbleOffset) * 15;
+                        const wobble = Math.sin(globalTime * 0.02 + node.wobbleOffset) * 12;
                         const dist = node.baseDist + wobble;
 
                         node.x = centerX + Math.cos(currentAngle) * dist;
@@ -437,28 +436,22 @@
                         node.wrapper.style.transform = `translate(${node.x - (node.size/2)}px, ${node.y - (node.size/2)}px)`;
                     });
 
-                    // 3. Draw Interactive glowing edges
+                    // Edges
                     edgesArray.forEach(edge => {
                         const n1 = nodesArray[edge.from];
                         const n2 = nodesArray[edge.to];
                         
                         if(n1 && n2) {
-                            const dx = n1.x - n2.x; const dy = n1.y - n2.y;
-                            const dist = Math.sqrt(dx*dx + dy*dy);
-                            
-                            // Interaction Logic
                             let isHighlighted = false;
                             let alpha = 0.25;
 
                             if (hoveredNodeId !== null) {
                                 if (edge.from === hoveredNodeId || edge.to === hoveredNodeId) {
                                     isHighlighted = true;
-                                    alpha = 0.9; // Full glow for connected
+                                    alpha = 0.9;
                                 } else {
-                                    alpha = 0.03; // Dim others heavily
+                                    alpha = 0.03;
                                 }
-                            } else {
-                                if(dist > 260) alpha = 0.05; // Fade distant lines normally
                             }
                             
                             ctx.strokeStyle = isHighlighted ? `rgba(0, 255, 204, ${alpha})` : (edge.from === 0 ? `rgba(247, 147, 26, ${alpha})` : `rgba(0, 255, 204, ${alpha})`);
@@ -478,7 +471,7 @@
                         }
                     });
                     
-                    ctx.shadowBlur = 0; // Reset
+                    ctx.shadowBlur = 0;
                     renderFrameId = requestAnimationFrame(drawNetwork);
                 }
                 
