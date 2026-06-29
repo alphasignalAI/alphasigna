@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna V19.1 - Advanced Charting Terminal</title>
+    <title>AlphaSigna V19.2 - Advanced Charting Terminal</title>
     <style>
         :root {
             --primary: #00ffcc;
@@ -49,7 +49,25 @@
         .btn-logic { background: rgba(255, 0, 127, 0.05); border: 1px solid var(--accent); color: var(--accent); margin-top: 10px; padding: 11px; width: 48%; display: inline-block; float: right; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-logic:hover { background: var(--accent); color: #fff; box-shadow: 0 0 15px var(--accent); }
 
-        #dashboard { display: none; max-width: 1400px; margin: 0 auto; }
+        /* Dashboard Main Layout */
+        #dashboard { display: none; max-width: 1400px; margin: 0 auto; position: relative; }
+        
+        /* 🆔 RED NEON USER BADGE (Top Right) */
+        .neon-badge {
+            position: absolute;
+            top: -10px;
+            right: 0px;
+            background: rgba(255, 23, 68, 0.05);
+            border: 1px solid var(--short);
+            border-radius: 8px; /* Kon 4 raum */
+            padding: 10px 18px;
+            text-align: right;
+            box-shadow: 0 0 15px rgba(255, 23, 68, 0.3), inset 0 0 8px rgba(255, 23, 68, 0.1);
+            z-index: 100;
+        }
+        .neon-badge .username { color: var(--short); font-weight: 900; font-size: 14px; letter-spacing: 1px; text-shadow: 0 0 8px rgba(255, 23, 68, 0.8); margin-bottom: 3px; }
+        .neon-badge .expiry { color: #8b949e; font-size: 11px; font-family: monospace; font-weight: bold; letter-spacing: 0.5px; }
+
         .header { text-align: center; margin-bottom: 30px; }
         .header h1 { color: #fff; margin-bottom: 5px; font-size: 28px; font-weight: 800; }
         
@@ -148,9 +166,14 @@
     </div>
 
     <div id="dashboard">
+        <div id="user-badge" class="neon-badge" style="display: none;">
+            <div id="user-welcome-text" class="username">USER: UNKNOWN</div>
+            <div id="user-expiry-text" class="expiry">EXP: N/A</div>
+        </div>
+
         <div class="header">
             <h1>AlphaSigna Intelligence Hub</h1>
-            <p id="user-welcome" style="color: var(--primary); font-size: 13px; font-weight: 700; margin: 0;"></p>
+            <p style="color: #8b949e; font-size: 13px; font-weight: 700; margin: 0;">GLOBAL HIGH-FREQUENCY TERMINAL</p>
         </div>
 
         <div class="stats-grid">
@@ -203,7 +226,7 @@
         
         let currentSignalData = null;
         let activeUserKey = null;
-        let activeChart = null; // Store chart instance to destroy it later
+        let activeChart = null; 
 
         // Matrix Animation Variables
         let nodesArray = []; let edgesArray = []; let particlesArray = [];
@@ -218,7 +241,7 @@
             }
         });
 
-        // 🔑 Login
+        // 🔑 Login Function WITH Neon Badge Data Fetch
         function verifyFirebaseKey() {
             const inputKey = document.getElementById('access-key').value.trim();
             if(!inputKey) return;
@@ -229,7 +252,12 @@
                     activeUserKey = inputKey;
                     document.getElementById('login-screen').style.display = 'none';
                     document.getElementById('dashboard').style.display = 'block';
-                    document.getElementById('user-welcome').innerText = `LICENSE USER: ${inputKey.toUpperCase()}`;
+                    
+                    // Update Neon Badge
+                    document.getElementById('user-badge').style.display = 'block';
+                    document.getElementById('user-welcome-text').innerText = `USER: ${inputKey.toUpperCase()}`;
+                    document.getElementById('user-expiry-text').innerText = `EXPIRES: ${userData.expire_date || 'N/A'}`;
+
                     initCoreListeners();
                 } else {
                     document.getElementById('error-msg').style.display = 'block';
@@ -331,7 +359,6 @@
                 
                 btcWrapper.onmouseenter = () => { hoveredNodeId = 0; };
                 btcWrapper.onmouseleave = () => { hoveredNodeId = null; };
-                // Default BTC chart values if clicked from network
                 btcNodeEl.onclick = () => openLiveChart('BTC/USDT', btcDisplayPrice, btcDisplayPrice*1.05, btcDisplayPrice*0.95, 'ANALYSIS');
 
                 const rings = [
@@ -388,7 +415,6 @@
                         const currentId = nodeId;
                         wrapper.onmouseenter = () => { hoveredNodeId = currentId; };
                         wrapper.onmouseleave = () => { hoveredNodeId = null; };
-                        // Default chart view if clicked from bubble
                         nodeEl.onclick = () => openLiveChart(`${name}/USDT`, displayPrice, displayPrice*1.02, displayPrice*0.98, 'ANALYSIS');
 
                         if(ringIdx === 0) edgesArray.push({ from: 0, to: nodeId });
@@ -519,90 +545,36 @@
             
             const chartDiv = document.getElementById('tv-chart');
             chartDiv.innerHTML = '';
-            
-            // Format symbol for Binance fetch (BTC/USDT -> BTCUSDT)
             const cleanSymbol = pair.replace('/', '');
 
-            // Initialize Lightweight Chart Instance
             activeChart = LightweightCharts.createChart(chartDiv, {
-                layout: {
-                    background: { type: 'solid', color: '#010409' },
-                    textColor: '#c9d1d9',
-                },
-                grid: {
-                    vertLines: { color: 'rgba(33, 38, 45, 0.4)' },
-                    horzLines: { color: 'rgba(33, 38, 45, 0.4)' },
-                },
-                crosshair: {
-                    mode: LightweightCharts.CrosshairMode.Normal,
-                },
-                timeScale: {
-                    timeVisible: true,
-                    secondsVisible: false,
-                }
+                layout: { background: { type: 'solid', color: '#010409' }, textColor: '#c9d1d9', },
+                grid: { vertLines: { color: 'rgba(33, 38, 45, 0.4)' }, horzLines: { color: 'rgba(33, 38, 45, 0.4)' }, },
+                crosshair: { mode: LightweightCharts.CrosshairMode.Normal, },
+                timeScale: { timeVisible: true, secondsVisible: false, }
             });
-
-            // Adjust size to fit container
             activeChart.resize(chartDiv.clientWidth, chartDiv.clientHeight);
 
             const candlestickSeries = activeChart.addCandlestickSeries({
-                upColor: '#00e676',
-                downColor: '#ff1744',
-                borderVisible: false,
-                wickUpColor: '#00e676',
-                wickDownColor: '#ff1744'
+                upColor: '#00e676', downColor: '#ff1744', borderVisible: false, wickUpColor: '#00e676', wickDownColor: '#ff1744'
             });
 
             try {
-                // Fetch Historical Klines from Binance API (150 candles, 5-minute interval)
                 const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${cleanSymbol}&interval=5m&limit=150`);
                 const klineData = await res.json();
                 
-                // Parse Binance Data format to Lightweight Charts format
                 const chartData = klineData.map(d => ({
-                    time: d[0] / 1000, // Convert ms to seconds
-                    open: parseFloat(d[1]),
-                    high: parseFloat(d[2]),
-                    low: parseFloat(d[3]),
-                    close: parseFloat(d[4])
+                    time: d[0] / 1000, open: parseFloat(d[1]), high: parseFloat(d[2]), low: parseFloat(d[3]), close: parseFloat(d[4])
                 }));
 
-                // Set Data to Chart
                 candlestickSeries.setData(chartData);
                 
-                // Add ENTRY Line
-                candlestickSeries.createPriceLine({
-                    price: parseFloat(entry),
-                    color: '#388bff',
-                    lineWidth: 2,
-                    lineStyle: LightweightCharts.LineStyle.Dashed,
-                    axisLabelVisible: true,
-                    title: 'ENTRY',
-                });
-                
-                // Add TP Line
-                candlestickSeries.createPriceLine({
-                    price: parseFloat(tp),
-                    color: '#00e676',
-                    lineWidth: 2,
-                    lineStyle: LightweightCharts.LineStyle.Solid,
-                    axisLabelVisible: true,
-                    title: 'TP',
-                });
-                
-                // Add SL Line
-                candlestickSeries.createPriceLine({
-                    price: parseFloat(sl),
-                    color: '#ff1744',
-                    lineWidth: 2,
-                    lineStyle: LightweightCharts.LineStyle.Solid,
-                    axisLabelVisible: true,
-                    title: 'SL',
-                });
+                candlestickSeries.createPriceLine({ price: parseFloat(entry), color: '#388bff', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: 'ENTRY', });
+                candlestickSeries.createPriceLine({ price: parseFloat(tp), color: '#00e676', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: 'TP', });
+                candlestickSeries.createPriceLine({ price: parseFloat(sl), color: '#ff1744', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: 'SL', });
 
                 loadingText.style.display = 'none';
 
-                // Handle window resize dynamically to keep chart perfect
                 window.addEventListener('resize', () => {
                     if(document.getElementById('chart-modal').style.display === 'flex') {
                         activeChart.resize(chartDiv.clientWidth, chartDiv.clientHeight);
@@ -611,17 +583,12 @@
 
             } catch (error) {
                 loadingText.innerText = '⚠️ ERROR FETCHING MARKET DATA';
-                console.error("Binance Fetch Error:", error);
             }
         }
 
         function closeLiveChart() {
             document.getElementById('chart-modal').style.display = 'none';
-            // Safely destroy the chart instance to prevent memory leaks and UI bugs
-            if (activeChart) {
-                activeChart.remove();
-                activeChart = null;
-            }
+            if (activeChart) { activeChart.remove(); activeChart = null; }
         }
     </script>
 </body>
