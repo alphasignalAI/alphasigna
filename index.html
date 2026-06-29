@@ -281,7 +281,6 @@
 
         // 🔗 Core Listeners
         function initCoreListeners() {
-            // Real-time signals synchronization hook
             db.ref('live_signals').on('value', (s) => { 
                 currentSignalData = s.val(); 
                 renderSignals(currentSignalData); 
@@ -314,8 +313,6 @@
                 }
             });
         }
-
-        function takeTrade(coin) { alert(`⚡ TRADE COMMAND INTEGRATED for ${coin}. Orders pushed to exchange API emulator.`); }
 
         // --- 🕸️ NETWORK SCANNER ENGINE ---
         async function startNetworkScan() {
@@ -478,7 +475,6 @@
             const container = document.getElementById('signal-container');
             container.innerHTML = ''; 
             
-            // වැදගත්: Data නැතිනම් හෝ empty object එකක් ආවොත් loading message එකක් පෙන්වන්න
             if (!data || Object.keys(data).length === 0) {
                 container.innerHTML = `
                     <div class="signal-card" style="text-align: center; grid-column: 1 / -1; padding: 50px;">
@@ -488,17 +484,14 @@
                 return;
             }
 
-            // Python Object එක loop කරලා active market signals ටික හදනවා
             for (const [coinKey, details] of Object.entries(data)) {
                 let badgeClass = details.signal_type.includes("SWING") ? "badge-swing" : "badge-scalp";
                 let sideClass = details.side === "LONG" ? "side-long" : "side-short";
 
-                // Accuracy එක 85 ට වඩා වැඩි නම් VIP Gold Alert එක දානවා
                 const isPremiumAlert = details.accuracy >= 85;
                 const cardCssClass = isPremiumAlert ? "signal-card neon-gold-card" : "signal-card";
                 const premiumBadgeHtml = isPremiumAlert ? `<span class="premium-tag">⭐ VIP ALERT</span>` : "";
 
-                // Escape strings JavaScript crashing වැළැක්වීමට
                 const formattedTech = (details.tech_logic || "🧠 Telemetry Active").replace(/'/g, "\\'");
                 const formattedRisk = (details.risk_logic || "⚖️ Risk Managed").replace(/'/g, "\\'");
                 
@@ -530,6 +523,82 @@
                         </div>
                     </div>`;
             }
+        }
+
+        // --- ⚡ LIVE MARKET BINANCE WEBSOCKET TRACKER (NEW UPDATE) ---
+        let activeMarketWatchers = {};
+
+        function takeTrade(coinKey) {
+            if (!currentSignalData || !currentSignalData[coinKey]) {
+                alert("⚠️ Error: Signal data shifted before execution.");
+                return;
+            }
+
+            const signal = currentSignalData[coinKey];
+            const pairName = signal.pair.replace('/', ''); 
+            
+            if (activeMarketWatchers[pairName]) {
+                alert(`⚠️ Already tracking an active trade for ${signal.pair}`);
+                return;
+            }
+
+            alert(`⚡ REAL TRADE COMPILATION: Tracking ${signal.pair} live on Binance order flow...`);
+
+            db.ref('premium_keys/' + activeUserKey).once('value', (snapshot) => {
+                const userData = snapshot.val();
+                if (!userData) return;
+
+                let stats = userData.stats || { trades: 0, tp: 0, sl: 0, status: "active" };
+                stats.trades = Number(stats.trades) + 1;
+                db.ref('premium_keys/' + activeUserKey + '/stats/trades').set(stats.trades);
+
+                const wsUrl = `wss://fstream.binance.com/ws/${pairName.toLowerCase()}@ticker`;
+                const ws = new WebSocket(wsUrl);
+
+                activeMarketWatchers[pairName] = ws;
+
+                ws.onmessage = function(event) {
+                    const marketData = JSON.parse(event.data);
+                    const currentPrice = parseFloat(marketData.c); 
+
+                    if (signal.side === "LONG") {
+                        if (currentPrice >= parseFloat(signal.tp1)) {
+                            triggerTradeResult(ws, pairName, true, signal.tp1);
+                        } else if (currentPrice <= parseFloat(signal.sl)) {
+                            triggerTradeResult(ws, pairName, false, signal.sl);
+                        }
+                    } 
+                    else if (signal.side === "SHORT") {
+                        if (currentPrice <= parseFloat(signal.tp1)) {
+                            triggerTradeResult(ws, pairName, true, signal.tp1);
+                        } else if (currentPrice >= parseFloat(signal.sl)) {
+                            triggerTradeResult(ws, pairName, false, signal.sl);
+                        }
+                    }
+                };
+            });
+        }
+
+        function triggerTradeResult(wsInstance, pairName, isWin, hitPrice) {
+            wsInstance.close();
+            delete activeMarketWatchers[pairName];
+
+            db.ref('premium_keys/' + activeUserKey).once('value', (snapshot) => {
+                const userData = snapshot.val();
+                if (!userData) return;
+
+                let stats = userData.stats || { trades: 0, tp: 0, sl: 0 };
+
+                if (isWin) {
+                    stats.tp = Number(stats.tp) + 1;
+                    alert(`🟢 TARGET HIT: ${pairName} hit Take Profit at $${hitPrice}!`);
+                    db.ref('premium_keys/' + activeUserKey + '/stats/tp').set(stats.tp);
+                } else {
+                    stats.sl = Number(stats.sl) + 1;
+                    alert(`🔴 STOP LOSS HIT: ${pairName} protection triggered at $${hitPrice}!`);
+                    db.ref('premium_keys/' + activeUserKey + '/stats/sl').set(stats.sl);
+                }
+            });
         }
 
         // --- 📈 ADVANCED LIGHTWEIGHT CHARTS API INTEGRATION ---
