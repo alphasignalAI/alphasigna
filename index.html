@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna V18.9 - Neural Network Matrix</title>
+    <title>AlphaSigna V18.9 - Interactive Matrix Core</title>
     <style>
         :root {
             --primary: #00ffcc;
@@ -13,6 +13,7 @@
             --long: #00e676;
             --short: #ff1744;
             --border: #21262d;
+            --btc-gold: #f7931a;
         }
         body {
             background-color: var(--bg-dark); color: #c9d1d9; 
@@ -58,7 +59,7 @@
             display: none; width: 100%; height: 800px; margin: 0 auto 20px auto; 
             background: #010409; border-radius: 16px; border: 1px solid var(--border); 
             position: relative; overflow: hidden;
-            background-image: radial-gradient(circle at 50% 50%, rgba(0, 255, 204, 0.04) 0%, transparent 60%);
+            background-image: radial-gradient(circle at 50% 50%, rgba(0, 255, 204, 0.05) 0%, transparent 70%);
         }
         
         #network-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
@@ -90,12 +91,35 @@
         
         .node-wrapper:hover .crypto-node {
             transform: scale(1.25);
-            filter: brightness(1.3) drop-shadow(0 0 20px rgba(0,255,204,0.5));
+            filter: brightness(1.3) drop-shadow(0 0 20px rgba(0,255,204,0.7));
+        }
+
+        /* 🫀 CENTER BTC HEARTBEAT STYLES */
+        @keyframes btc-heartbeat {
+            0% { transform: scale(1); box-shadow: 0 0 20px rgba(247, 147, 26, 0.4); }
+            15% { transform: scale(1.15); box-shadow: 0 0 40px rgba(247, 147, 26, 0.8), 0 0 10px rgba(255, 255, 255, 0.5); }
+            30% { transform: scale(1); box-shadow: 0 0 20px rgba(247, 147, 26, 0.4); }
+            45% { transform: scale(1.08); box-shadow: 0 0 30px rgba(247, 147, 26, 0.6); }
+            60% { transform: scale(1); box-shadow: 0 0 20px rgba(247, 147, 26, 0.4); }
+            100% { transform: scale(1); box-shadow: 0 0 20px rgba(247, 147, 26, 0.4); }
+        }
+
+        .center-btc-node {
+            background: radial-gradient(circle at 30% 30%, #ffd000, #f7931a, #8a520e) !important;
+            border: 2px solid #ffcc00 !important;
+            animation: btc-heartbeat 1.8s infinite;
+        }
+        
+        .node-wrapper:hover .center-btc-node {
+            animation: none; /* Pause heartbeat on hover for smooth scaling */
+            transform: scale(1.25);
+            filter: brightness(1.3) drop-shadow(0 0 30px rgba(247, 147, 26, 0.9));
         }
         
         .node-name { font-weight: 800; font-size: 13px; letter-spacing: 0.5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
         .node-price { font-size: 10px; opacity: 0.9; margin-top: 2px; font-weight: 600; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
         .node-percent { font-size: 11px; font-weight: 900; margin-top: 2px; padding: 2px 5px; border-radius: 4px; background: rgba(0,0,0,0.5); }
+        .btc-title { font-size: 16px; font-weight: 900; text-shadow: 2px 2px 4px rgba(0,0,0,0.9); }
 
         /* Signals */
         .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 20px; opacity: 0; transition: opacity 0.5s ease; margin-top: 20px; }
@@ -183,8 +207,10 @@
         // Engine Variables
         let nodesArray = [];
         let edgesArray = [];
+        let particlesArray = [];
         let renderFrameId;
         let globalTime = 0;
+        let hoveredNodeId = null; // Track Interactive Hover
 
         db.ref('system_status').on('value', (s) => {
             const status = s.val();
@@ -217,7 +243,7 @@
 
         function takeTrade(coin) { alert(`⚡ TRADE COMMAND INTEGRATED for ${coin}.`); }
 
-        // --- 🕸️ NEURAL NETWORK GRAPHICS ENGINE ---
+        // --- 🕸️ NEURAL NETWORK GRAPHICS ENGINE WITH PARTICLES & HOVER ---
         async function startNetworkScan() {
             document.getElementById('scan-btn').style.display = 'none';
             const container = document.getElementById('network-container');
@@ -229,38 +255,80 @@
             container.style.display = 'block';
             grid.style.opacity = '0';
             
-            // Sync Canvas Resolution
             canvas.width = container.clientWidth;
             canvas.height = container.clientHeight;
             
-            // Clean up
             document.querySelectorAll('.node-wrapper').forEach(e => e.remove());
             cancelAnimationFrame(renderFrameId);
             nodesArray = [];
             edgesArray = [];
+            particlesArray = [];
+            hoveredNodeId = null;
+
+            // Generate Background Particles
+            for(let i = 0; i < 150; i++) {
+                particlesArray.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2,
+                    speedY: (Math.random() * 0.5) + 0.1,
+                    alpha: Math.random() * 0.6 + 0.1
+                });
+            }
 
             try {
                 // Fetch Data
                 const response = await fetch('https://api.binance.com/api/v3/ticker/24hr');
                 const data = await response.json();
                 
-                const usdtPairs = data.filter(c => c.symbol.endsWith('USDT') && parseFloat(c.volume) > 5000000);
-                usdtPairs.sort((a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume));
+                // Separate BTC for the center
+                const btcData = data.find(c => c.symbol === 'BTCUSDT');
                 
-                // We use 36 Coins to make 3 perfect rings (6 + 12 + 18)
+                // Get other top coins excluding BTC
+                const usdtPairs = data.filter(c => c.symbol.endsWith('USDT') && c.symbol !== 'BTCUSDT' && parseFloat(c.volume) > 5000000);
+                usdtPairs.sort((a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume));
                 const topCoins = usdtPairs.slice(0, 36); 
 
                 const centerX = canvas.width / 2;
                 const centerY = canvas.height / 2;
 
-                // Create Core Central Node (Hidden Div, just for math)
-                nodesArray.push({ id: 0, baseX: centerX, baseY: centerY, x: centerX, y: centerY, angle: 0, dist: 0, size: 0, wrapper: null });
+                // --- CREATE CENTER BTC NODE ---
+                const btcSize = 90;
+                const btcWrapper = document.createElement('div');
+                btcWrapper.className = 'node-wrapper';
+                btcWrapper.style.width = `${btcSize}px`;
+                btcWrapper.style.height = `${btcSize}px`;
 
-                // Distribute nodes in Rings
+                const btcNodeEl = document.createElement('div');
+                btcNodeEl.className = 'crypto-node center-btc-node';
+                btcNodeEl.style.width = '100%';
+                btcNodeEl.style.height = '100%';
+                
+                const btcPriceChange = parseFloat(btcData.priceChangePercent);
+                let btcDisplayPrice = parseFloat(btcData.lastPrice).toFixed(2);
+                
+                btcNodeEl.innerHTML = `
+                    <span class="node-name btc-title">BTC</span>
+                    <span class="node-price" style="font-size:12px;">$${btcDisplayPrice}</span>
+                    <span class="node-percent" style="font-size:12px;">${btcPriceChange >= 0 ? '+' : ''}${btcPriceChange.toFixed(1)}%</span>
+                `;
+
+                btcWrapper.appendChild(btcNodeEl);
+                container.appendChild(btcWrapper);
+
+                // Add BTC to Nodes Array as ID: 0
+                const btcDataObj = { id: 0, baseX: centerX, baseY: centerY, x: centerX, y: centerY, angle: 0, dist: 0, size: btcSize, wrapper: btcWrapper };
+                nodesArray.push(btcDataObj);
+                
+                btcWrapper.onmouseenter = () => { hoveredNodeId = 0; };
+                btcWrapper.onmouseleave = () => { hoveredNodeId = null; };
+                btcNodeEl.onclick = () => openBubbleChart('BTCUSDT', 'BTC');
+
+                // --- CREATE OUTER RINGS ---
                 const rings = [
-                    { count: 6, radius: 130, speed: 0.003, dir: 1 },
-                    { count: 12, radius: 260, speed: 0.002, dir: -1 },
-                    { count: 18, radius: 390, speed: 0.0015, dir: 1 }
+                    { count: 6, radius: 140, speed: 0.003, dir: 1 },
+                    { count: 12, radius: 270, speed: 0.002, dir: -1 },
+                    { count: 18, radius: 400, speed: 0.0015, dir: 1 }
                 ];
 
                 let coinIndex = 0;
@@ -273,12 +341,9 @@
                         const coin = topCoins[coinIndex];
                         const priceChange = parseFloat(coin.priceChangePercent);
                         const isPositive = priceChange >= 0;
-                        
-                        // Node size based on market impact
-                        const size = Math.max(55, Math.min(90, 50 + (Math.abs(priceChange) * 3)));
+                        const size = Math.max(55, Math.min(80, 45 + (Math.abs(priceChange) * 3)));
                         const angle = (Math.PI * 2 / ring.count) * i;
 
-                        // Create HTML Element for the Coin
                         const wrapper = document.createElement('div');
                         wrapper.className = 'node-wrapper';
                         wrapper.style.width = `${size}px`;
@@ -312,36 +377,22 @@
 
                         // Save to Engine array
                         nodesArray.push({
-                            id: nodeId,
-                            wrapper: wrapper,
-                            baseDist: ring.radius,
-                            baseAngle: angle,
-                            speed: ring.speed,
-                            dir: ring.dir,
-                            x: 0, y: 0,
-                            size: size,
+                            id: nodeId, wrapper: wrapper, baseDist: ring.radius, baseAngle: angle,
+                            speed: ring.speed, dir: ring.dir, x: 0, y: 0, size: size,
                             wobbleOffset: Math.random() * 100
                         });
                         
+                        // Hover Interaction Logic
+                        const currentId = nodeId;
+                        wrapper.onmouseenter = () => { hoveredNodeId = currentId; };
+                        wrapper.onmouseleave = () => { hoveredNodeId = null; };
                         nodeEl.onclick = () => openBubbleChart(coin.symbol, name);
 
-                        // Network Line Connections (Edges)
-                        // Connect Ring 1 to Core
-                        if(ringIdx === 0) {
-                            edgesArray.push({ from: 0, to: nodeId });
-                        }
-                        // Connect Ring 2 to Ring 1
-                        else if (ringIdx === 1) {
-                            const parentId = 1 + Math.floor(i / (12/6)); // Math to connect gracefully
-                            edgesArray.push({ from: parentId, to: nodeId });
-                        }
-                        // Connect Ring 3 to Ring 2
-                        else if (ringIdx === 2) {
-                            const parentId = (1+6) + Math.floor(i / (18/12));
-                            edgesArray.push({ from: parentId, to: nodeId });
-                        }
+                        // Connections
+                        if(ringIdx === 0) edgesArray.push({ from: 0, to: nodeId });
+                        else if (ringIdx === 1) edgesArray.push({ from: 1 + Math.floor(i / 2), to: nodeId });
+                        else if (ringIdx === 2) edgesArray.push({ from: 7 + Math.floor(i / 1.5), to: nodeId });
 
-                        // Also connect adjacent nodes in the same ring to make a web
                         const prevIdInRing = i === 0 ? nodeId + ring.count - 1 : nodeId - 1;
                         edgesArray.push({ from: prevIdInRing, to: nodeId });
 
@@ -353,60 +404,81 @@
                 statusText.innerText = "🟢 NEURAL NETWORK ESTABLISHED. LIVE BINANCE NODES SYNCED.";
                 setTimeout(() => { renderSignals(currentSignalData); grid.style.opacity = '1'; }, 2000);
 
-                // --- Render Loop ---
+                // --- ⚙️ Render Loop ---
                 function drawNetwork() {
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     globalTime += 1;
 
-                    // 1. Calculate new node positions
-                    nodesArray.forEach(node => {
-                        if(node.id === 0) return; // Center stays
+                    // 1. Draw Background Particles
+                    particlesArray.forEach(p => {
+                        p.y -= p.speedY; // Float upwards
+                        if(p.y < 0) { p.y = canvas.height; p.x = Math.random() * canvas.width; }
+                        
+                        ctx.fillStyle = `rgba(0, 255, 204, ${p.alpha})`;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+                        ctx.fill();
+                    });
 
-                        // Slow constellation rotation + slight natural wobble
+                    // 2. Calculate node positions
+                    nodesArray.forEach(node => {
+                        if(node.id === 0) {
+                            // BTC Node stays center
+                            node.wrapper.style.transform = `translate(${node.x - (node.size/2)}px, ${node.y - (node.size/2)}px)`;
+                            return;
+                        }
+
                         const currentAngle = node.baseAngle + (globalTime * node.speed * node.dir);
                         const wobble = Math.sin(globalTime * 0.02 + node.wobbleOffset) * 15;
                         const dist = node.baseDist + wobble;
 
                         node.x = centerX + Math.cos(currentAngle) * dist;
                         node.y = centerY + Math.sin(currentAngle) * dist;
-
-                        // Move the HTML div
                         node.wrapper.style.transform = `translate(${node.x - (node.size/2)}px, ${node.y - (node.size/2)}px)`;
                     });
 
-                    // 2. Draw glowing edges (Lines)
-                    ctx.lineWidth = 1.5;
+                    // 3. Draw Interactive glowing edges
                     edgesArray.forEach(edge => {
                         const n1 = nodesArray[edge.from];
                         const n2 = nodesArray[edge.to];
                         
                         if(n1 && n2) {
-                            // Calculate distance for opacity (fade lines that are too long)
-                            const dx = n1.x - n2.x;
-                            const dy = n1.y - n2.y;
+                            const dx = n1.x - n2.x; const dy = n1.y - n2.y;
                             const dist = Math.sqrt(dx*dx + dy*dy);
                             
-                            let alpha = 0.3;
-                            if(dist > 250) alpha = 0.05; // Fade out far connections
+                            // Interaction Logic
+                            let isHighlighted = false;
+                            let alpha = 0.25;
+
+                            if (hoveredNodeId !== null) {
+                                if (edge.from === hoveredNodeId || edge.to === hoveredNodeId) {
+                                    isHighlighted = true;
+                                    alpha = 0.9; // Full glow for connected
+                                } else {
+                                    alpha = 0.03; // Dim others heavily
+                                }
+                            } else {
+                                if(dist > 260) alpha = 0.05; // Fade distant lines normally
+                            }
                             
-                            ctx.strokeStyle = `rgba(0, 255, 204, ${alpha})`;
+                            ctx.strokeStyle = isHighlighted ? `rgba(0, 255, 204, ${alpha})` : (edge.from === 0 ? `rgba(247, 147, 26, ${alpha})` : `rgba(0, 255, 204, ${alpha})`);
+                            ctx.lineWidth = isHighlighted ? 2.5 : 1.2;
+                            
+                            if (isHighlighted) {
+                                ctx.shadowBlur = 15;
+                                ctx.shadowColor = edge.from === 0 ? "#f7931a" : "#00ffcc";
+                            } else {
+                                ctx.shadowBlur = 0;
+                            }
+
                             ctx.beginPath();
                             ctx.moveTo(n1.x, n1.y);
                             ctx.lineTo(n2.x, n2.y);
                             ctx.stroke();
                         }
                     });
-
-                    // Draw core glowing center dot
-                    const c = nodesArray[0];
-                    ctx.shadowBlur = 20;
-                    ctx.shadowColor = "#00ffcc";
-                    ctx.fillStyle = "#00ffcc";
-                    ctx.beginPath();
-                    ctx.arc(c.x, c.y, 6, 0, Math.PI*2);
-                    ctx.fill();
+                    
                     ctx.shadowBlur = 0; // Reset
-
                     renderFrameId = requestAnimationFrame(drawNetwork);
                 }
                 
