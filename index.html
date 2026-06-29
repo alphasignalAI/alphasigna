@@ -40,8 +40,6 @@
         .btn:hover { box-shadow: 0 0 20px var(--primary); transform: translateY(-1px); }
         .btn-trade { background: transparent; border: 1px solid var(--primary); color: var(--primary); margin-top: 15px; padding: 11px; width: 48%; display: inline-block; border-radius: 6px; font-weight: bold; cursor: pointer; }
         .btn-trade:hover { background: var(--primary); color: #000; }
-        .btn-chart { background: rgba(255, 0, 127, 0.05); border: 1px solid var(--accent); color: var(--accent); margin-top: 15px; padding: 11px; width: 48%; display: inline-block; float: right; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        .btn-chart:hover { background: var(--accent); color: #fff; box-shadow: 0 0 15px var(--accent); }
 
         #dashboard { display: none; max-width: 1400px; margin: 0 auto; }
         .header { text-align: center; margin-bottom: 30px; }
@@ -66,33 +64,16 @@
         
         #scanner-status { position: absolute; bottom: 15px; left: 0; width: 100%; text-align: center; font-family: monospace; font-size: 13px; color: var(--primary); font-weight: bold; z-index: 100; }
 
-        /* Nodes (Coins) Wrapper */
-        .node-wrapper {
-            position: absolute;
-            top: 0; left: 0;
-            will-change: transform;
-            z-index: 10;
-        }
+        .node-wrapper { position: absolute; top: 0; left: 0; will-change: transform; z-index: 10; }
         .node-wrapper:hover { z-index: 50; }
 
         .crypto-node {
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-family: 'Segoe UI', sans-serif;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.6);
-            transition: transform 0.2s ease, filter 0.2s ease;
-            user-select: none;
+            border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: white; font-family: 'Segoe UI', sans-serif; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+            transition: transform 0.2s ease, filter 0.2s ease; user-select: none;
         }
         
-        .node-wrapper:hover .crypto-node {
-            transform: scale(1.3);
-            filter: brightness(1.3) drop-shadow(0 0 20px rgba(0,255,204,0.7));
-        }
+        .node-wrapper:hover .crypto-node { transform: scale(1.3); filter: brightness(1.3) drop-shadow(0 0 20px rgba(0,255,204,0.7)); }
 
         /* 🫀 CENTER BTC HEARTBEAT STYLES */
         @keyframes btc-heartbeat {
@@ -106,22 +87,14 @@
 
         .center-btc-node {
             background: radial-gradient(circle at 30% 30%, #ffd000, #f7931a, #8a520e) !important;
-            border: 2px solid #ffcc00 !important;
-            animation: btc-heartbeat 1.8s infinite;
+            border: 2px solid #ffcc00 !important; animation: btc-heartbeat 1.8s infinite;
         }
-        
-        .node-wrapper:hover .center-btc-node {
-            animation: none;
-            transform: scale(1.25);
-            filter: brightness(1.3) drop-shadow(0 0 30px rgba(247, 147, 26, 0.9));
-        }
+        .node-wrapper:hover .center-btc-node { animation: none; transform: scale(1.25); filter: brightness(1.3) drop-shadow(0 0 30px rgba(247, 147, 26, 0.9)); }
         
         .node-name { font-weight: 800; font-size: 12px; letter-spacing: 0.5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
         .node-price { font-size: 9px; opacity: 0.9; margin-top: 2px; font-weight: 600; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
         .node-percent { font-size: 10px; font-weight: 900; margin-top: 2px; padding: 2px 5px; border-radius: 4px; background: rgba(0,0,0,0.5); }
         .btc-title { font-size: 16px; font-weight: 900; text-shadow: 2px 2px 4px rgba(0,0,0,0.9); }
-        .btc-price { font-size: 12px; }
-        .btc-percent { font-size: 12px; }
 
         /* Signals */
         .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 20px; opacity: 0; transition: opacity 0.5s ease; margin-top: 20px; }
@@ -214,6 +187,7 @@
         let globalTime = 0;
         let hoveredNodeId = null;
 
+        // 🚨 System Status Listener
         db.ref('system_status').on('value', (s) => {
             const status = s.val();
             if(status) {
@@ -222,9 +196,11 @@
             }
         });
 
+        // 🔑 Login & Key Verification
         function verifyFirebaseKey() {
             const inputKey = document.getElementById('access-key').value.trim();
             if(!inputKey) return;
+            
             db.ref('premium_keys/' + inputKey).once('value', (s) => {
                 const userData = s.val();
                 if (userData && userData.status === "active") {
@@ -232,6 +208,7 @@
                     document.getElementById('login-screen').style.display = 'none';
                     document.getElementById('dashboard').style.display = 'block';
                     document.getElementById('user-welcome').innerText = `LICENSE USER: ${inputKey.toUpperCase()}`;
+                    
                     initCoreListeners();
                 } else {
                     document.getElementById('error-msg').style.display = 'block';
@@ -239,8 +216,49 @@
             });
         }
 
+        // 🔗 Core Realtime Listeners for Stats & Signals
         function initCoreListeners() {
-            db.ref('live_signals').on('value', (s) => { currentSignalData = s.val(); if(document.getElementById('signal-container').style.opacity === "1") renderSignals(currentSignalData); });
+            // Live Signals Listener
+            db.ref('live_signals').on('value', (s) => { 
+                currentSignalData = s.val(); 
+                if(document.getElementById('signal-container').style.opacity === "1") renderSignals(currentSignalData); 
+            });
+
+            // Premium Keys Stats Listener (For calculation of Global and Personal Stats)
+            db.ref('premium_keys').on('value', (snapshot) => {
+                const keysData = snapshot.val();
+                if (!keysData) return;
+
+                let globalTrades = 0;
+                let globalTP = 0;
+                let globalSL = 0;
+
+                // Loop through all users to compile global statistics
+                for (const key in keysData) {
+                    if (keysData[key].stats) {
+                        globalTrades += Number(keysData[key].stats.trades || 0);
+                        globalTP += Number(keysData[key].stats.tp || 0);
+                        globalSL += Number(keysData[key].stats.sl || 0);
+                    }
+                }
+
+                // Calculate Global Win Rate
+                let globalWinRate = 0;
+                if ((globalTP + globalSL) > 0) {
+                    globalWinRate = Math.round((globalTP / (globalTP + globalSL)) * 100);
+                }
+
+                // Update Global Stats UI
+                document.getElementById('global-total-trades').innerText = globalTrades;
+                document.getElementById('global-win-rate').innerText = globalWinRate + "%";
+
+                // Update Logged-in Personal Stats UI
+                if (activeUserKey && keysData[activeUserKey]) {
+                    const myStats = keysData[activeUserKey].stats || { trades: 0, tp: 0, sl: 0 };
+                    document.getElementById('user-trades').innerText = myStats.trades || 0;
+                    document.getElementById('user-pnl-ratio').innerText = `${myStats.tp || 0} / ${myStats.sl || 0}`;
+                }
+            });
         }
 
         function takeTrade(coin) { alert(`⚡ TRADE COMMAND INTEGRATED for ${coin}.`); }
@@ -279,14 +297,11 @@
             }
 
             try {
-                // Fetch Data
                 const response = await fetch('https://api.binance.com/api/v3/ticker/24hr');
                 const data = await response.json();
                 
-                // Separate BTC
                 const btcData = data.find(c => c.symbol === 'BTCUSDT');
                 
-                // Top 66 Coins for 4 massive rings
                 const usdtPairs = data.filter(c => c.symbol.endsWith('USDT') && c.symbol !== 'BTCUSDT' && parseFloat(c.volume) > 2000000);
                 usdtPairs.sort((a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume));
                 const topCoins = usdtPairs.slice(0, 66); 
@@ -311,8 +326,8 @@
                 
                 btcNodeEl.innerHTML = `
                     <span class="node-name btc-title">BTC</span>
-                    <span class="node-price btc-price">$${btcDisplayPrice}</span>
-                    <span class="node-percent btc-percent">${btcPriceChange >= 0 ? '+' : ''}${btcPriceChange.toFixed(1)}%</span>
+                    <span class="node-price" style="font-size:12px;">$${btcDisplayPrice}</span>
+                    <span class="node-percent" style="font-size:12px;">${btcPriceChange >= 0 ? '+' : ''}${btcPriceChange.toFixed(1)}%</span>
                 `;
 
                 btcWrapper.appendChild(btcNodeEl);
@@ -387,7 +402,6 @@
                         wrapper.onmouseleave = () => { hoveredNodeId = null; };
                         nodeEl.onclick = () => openBubbleChart(coin.symbol, name);
 
-                        // Safe Edge Connections
                         if(ringIdx === 0) edgesArray.push({ from: 0, to: nodeId });
                         else if (ringIdx === 1) edgesArray.push({ from: 1 + Math.floor(i / (12/6)), to: nodeId });
                         else if (ringIdx === 2) edgesArray.push({ from: 7 + Math.floor(i / (20/12)), to: nodeId });
@@ -404,7 +418,6 @@
                 statusText.innerText = "🟢 MASSIVE NEURAL NETWORK ESTABLISHED. LIVE BINANCE NODES SYNCED.";
                 setTimeout(() => { renderSignals(currentSignalData); grid.style.opacity = '1'; }, 2000);
 
-                // --- ⚙️ Render Loop ---
                 function drawNetwork() {
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     globalTime += 1;
@@ -413,7 +426,6 @@
                     particlesArray.forEach(p => {
                         p.y -= p.speedY; 
                         if(p.y < 0) { p.y = canvas.height; p.x = Math.random() * canvas.width; }
-                        
                         ctx.fillStyle = `rgba(0, 255, 204, ${p.alpha})`;
                         ctx.beginPath();
                         ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
@@ -426,7 +438,6 @@
                             node.wrapper.style.transform = `translate(${node.x - (node.size/2)}px, ${node.y - (node.size/2)}px)`;
                             return;
                         }
-
                         const currentAngle = node.baseAngle + (globalTime * node.speed * node.dir);
                         const wobble = Math.sin(globalTime * 0.02 + node.wobbleOffset) * 12;
                         const dist = node.baseDist + wobble;
@@ -483,11 +494,10 @@
             }
         }
 
-        // --- 📈 CLICK TO OPEN 1-MONTH CHART (TRADINGVIEW) ---
+        // --- 📈 CLICK TO OPEN CHART ---
         function openBubbleChart(symbol, name) {
             document.getElementById('chart-modal').style.display = 'flex';
             document.getElementById('chart-coin-name').innerText = `${name}/USDT - 1 Month Analysis`;
-            document.getElementById('chart-side').innerText = "DAILY TIMEFRAME";
 
             const chartDiv = document.getElementById('tv-chart');
             chartDiv.innerHTML = '';
