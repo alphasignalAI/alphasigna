@@ -3,154 +3,1088 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna Quantum Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>AlphaSigna Quantum Trading OS</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Inter & JetBrains Mono) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        cyber: {
+                            bg: '#06070d',
+                            card: '#0f111e',
+                            border: '#1e2238',
+                            pink: '#f43f5e',
+                            purple: '#a855f7',
+                            blue: '#3b82f6',
+                            green: '#10b981',
+                            gold: '#fbbf24',
+                            glow: 'rgba(168, 85, 247, 0.15)',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --bg-color: #0b0c16;
-            --card-bg: #121424;
-            --neon-pink: #f43f5e;
-            --neon-purple: #a855f7;
-            --neon-blue: #3b82f6;
-            --neon-green: #10b981;
-            --text-main: #f3f4f6;
-            --text-muted: #6b7280;
-            --border-color: #1e2235;
-        }
-
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            background-image: radial-gradient(circle at 50% 0%, #1e1b4b 0%, var(--bg-color) 70%);
-            min-height: 100vh;
+            background-color: #06070d;
+            background-image: radial-gradient(circle at 50% 0%, #17153b 0%, #06070d 70%);
         }
-
-        .navbar {
-            background-color: rgba(18, 20, 36, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-color);
+        .neon-glow-pink {
+            box-shadow: 0 0 20px rgba(244, 63, 94, 0.2);
         }
-
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .neon-glow-purple {
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
         }
-
-        .card:hover {
-            border-color: var(--neon-purple);
-            box-shadow: 0 0 30px rgba(168, 85, 247, 0.15);
-            transform: translateY(-2px);
+        .neon-glow-gold {
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.2);
         }
-
-        /* Neon Glow Text and Badges */
-        .text-entry { color: #fbbf24; font-weight: 700; text-shadow: 0 0 10px rgba(251, 191, 36, 0.2); }
-        .text-tp { color: var(--neon-green); font-weight: 700; text-shadow: 0 0 10px rgba(16, 185, 129, 0.2); }
-        .text-sl { color: var(--neon-pink); font-weight: 700; text-shadow: 0 0 10px rgba(244, 63, 94, 0.2); }
-
-        .badge-long {
-            background: linear-gradient(135deg, #059669, #10b981);
-            color: #fff; font-weight: 600; letter-spacing: 0.5px;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        .glass-panel {
+            background: rgba(15, 17, 30, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(30, 34, 56, 0.6);
         }
-
-        .badge-short {
-            background: linear-gradient(135deg, #dc2626, #f43f5e);
-            color: #fff; font-weight: 600; letter-spacing: 0.5px;
-            box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3);
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
         }
-
-        .stats-card {
-            background: #16192e;
-            border-left: 4px solid var(--neon-blue);
+        ::-webkit-scrollbar-track {
+            background: #06070d;
         }
-
-        .user-card {
-            background: #16192e;
-            border-left: 4px solid var(--neon-purple);
+        ::-webkit-scrollbar-thumb {
+            background: #1e2238;
+            border-radius: 3px;
         }
-
-        .quantum-glow {
-            border: 1px solid rgba(168, 85, 247, 0.4) !important;
-            background: linear-gradient(180deg, var(--card-bg) 0%, #18132b 100%) !important;
-            box-shadow: 0 0 25px rgba(168, 85, 247, 0.15) !important;
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a855f7;
         }
-
-        .accuracy-bar {
-            height: 6px; background-color: #1e2235; border-radius: 10px; overflow: hidden;
-        }
-        .accuracy-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--neon-pink) 0%, var(--neon-purple) 100%);
-            box-shadow: 0 0 10px var(--neon-purple);
-        }
-
-        .status-dot {
-            width: 8px; height: 8px; background-color: var(--neon-green);
-            border-radius: 50%; display: inline-block;
-            box-shadow: 0 0 8px var(--neon-green);
-            animation: blink 2s infinite;
-        }
-        @keyframes blink { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
     </style>
 </head>
-<body>
+<body class="text-gray-100 antialiased min-h-screen flex flex-col font-sans">
 
-    <nav class="navbar navbar-dark sticky-top py-3">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                <i class="fa-solid fa-chart-line text-purple me-2 fs-4" style="color: var(--neon-purple);"></i>
-                <span class="fw-bold tracking-wider" style="letter-spacing: 1px; font-size: 1.1rem;">ALPHASIGNA <span style="color: var(--neon-pink);">PRO</span></span>
-            </a>
-            <div class="d-flex align-items-center bg-dark px-3 py-1 rounded-pill" style="--bs-bg-opacity: 0.4; border: 1px solid var(--border-color);">
-                <span class="status-dot committees-dot me-2"></span>
-                <span class="text-muted small fw-semibold" id="system-status" style="font-size: 0.75rem;">MATRIX LOADING...</span>
+    <!-- Top Navigation Bar -->
+    <header class="glass-panel sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="relative">
+                <div class="absolute -inset-1 bg-gradient-to-r from-cyber-pink to-cyber-purple rounded-full blur opacity-75"></div>
+                <div class="relative bg-cyber-bg p-2 rounded-full">
+                    <i class="fa-solid fa-brain-circuit text-xl text-cyber-purple"></i>
+                </div>
+            </div>
+            <div>
+                <h1 class="text-lg font-extrabold tracking-wider bg-gradient-to-r from-white via-cyber-purple to-cyber-pink bg-clip-text text-transparent">
+                    ALPHASIGNA <span class="text-xs bg-cyber-pink text-white px-2 py-0.5 rounded-full ml-1 font-semibold">TRADING OS V32.0</span>
+                </h1>
+                <p class="text-[10px] text-gray-500 tracking-widest uppercase">Decision Intelligence Ecosystem</p>
             </div>
         </div>
-    </nav>
 
-    <div class="container my-5">
+        <div class="flex items-center gap-4">
+            <!-- Firebase Connection Status -->
+            <div class="flex items-center gap-2 bg-black/40 px-3 py-1.5 rounded-full border border-cyber-border/50">
+                <span class="w-2.5 h-2.5 rounded-full bg-cyber-green animate-pulse shadow-[0_0_8px_#10b981]"></span>
+                <span class="text-[10px] font-mono text-cyber-green font-semibold" id="system-status">QUANTUM CORE ACTIVE</span>
+            </div>
+            
+            <!-- Custom API Key Setup button -->
+            <button onclick="toggleApiKeyModal()" class="text-xs bg-cyber-border/40 hover:bg-cyber-purple/20 border border-cyber-border hover:border-cyber-purple/50 px-3 py-1.5 rounded-lg transition-all duration-300 flex items-center gap-2 text-gray-300">
+                <i class="fa-solid fa-key"></i>
+                <span>Gemini API Key</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace Layout -->
+    <div class="flex flex-col lg:flex-row flex-1 overflow-hidden">
         
-        <div class="d-flex align-items-center mb-3">
-            <div style="width: 3px; height: 16px; background-color: var(--neon-blue); margin-right: 8px; border-radius: 2px;"></div>
-            <span class="fw-semibold small text-uppercase tracking-wider" style="color: var(--text-muted); font-size: 0.75rem;">Global Performance Matrix</span>
-        </div>
-        <div class="row g-3 mb-5" id="global-stats-container">
-            <div class="col-12 text-center text-muted small">Accessing cloud intelligence statistics...</div>
-        </div>
+        <!-- Sidebar Navigation Menu -->
+        <aside class="w-full lg:w-64 glass-panel border-r border-cyber-border/40 flex flex-col justify-between p-4 lg:sticky lg:top-20">
+            <div class="space-y-1">
+                <span class="text-[10px] text-gray-500 tracking-wider font-bold uppercase block px-3 mb-2">OS MODULES</span>
+                
+                <button onclick="switchTab('dashboard')" class="tab-btn active w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:bg-cyber-purple/10 hover:text-white text-gray-400 [&.active]:bg-gradient-to-r [&.active]:from-cyber-purple/20 [&.active]:to-cyber-blue/10 [&.active]:border-l-4 [&.active]:border-cyber-purple [&.active]:text-white">
+                    <i class="fa-solid fa-grid-2 text-cyber-purple w-5"></i>
+                    <span>Dashboard</span>
+                </button>
 
-        <div class="d-flex align-items-center mb-3">
-            <div style="width: 3px; height: 16px; background-color: var(--neon-purple); margin-right: 8px; border-radius: 2px;"></div>
-            <span class="fw-semibold small text-uppercase tracking-wider" style="color: var(--text-muted); font-size: 0.75rem;">Active Trading Nodes</span>
-        </div>
-        <div class="row g-3 mb-5" id="users-container">
-            <div class="col-12 text-center text-muted small">Scanning active accounts...</div>
-        </div>
+                <button onclick="switchTab('signals')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:bg-cyber-purple/10 hover:text-white text-gray-400 [&.active]:bg-gradient-to-r [&.active]:from-cyber-purple/20 [&.active]:to-cyber-blue/10 [&.active]:border-l-4 [&.active]:border-cyber-purple [&.active]:text-white">
+                    <i class="fa-solid fa-satellite-dish text-cyber-pink w-5"></i>
+                    <span>Live Signals</span>
+                </button>
 
-        <div class="d-flex align-items-center mb-3">
-            <div style="width: 3px; height: 16px; background-color: var(--neon-pink); margin-right: 8px; border-radius: 2px;"></div>
-            <span class="fw-semibold small text-uppercase tracking-wider" style="color: var(--text-muted); font-size: 0.75rem;">Live Market Stream</span>
-        </div>
-        <div class="row g-4" id="signals-container">
-            <div class="col-12 text-center py-5">
-                <div class="spinner-border text-light" style="width: 1.5rem; height: 1.5rem;" role="status"></div>
-                <p class="text-muted small mt-3">Listening to Level 2 Orderbooks...</p>
+                <button onclick="switchTab('heatmap')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:bg-cyber-purple/10 hover:text-white text-gray-400 [&.active]:bg-gradient-to-r [&.active]:from-cyber-purple/20 [&.active]:to-cyber-blue/10 [&.active]:border-l-4 [&.active]:border-cyber-purple [&.active]:text-white">
+                    <i class="fa-solid fa-fire text-cyber-gold w-5"></i>
+                    <span>Market Scanner</span>
+                </button>
+
+                <button onclick="switchTab('smc')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:bg-cyber-purple/10 hover:text-white text-gray-400 [&.active]:bg-gradient-to-r [&.active]:from-cyber-purple/20 [&.active]:to-cyber-blue/10 [&.active]:border-l-4 [&.active]:border-cyber-purple [&.active]:text-white">
+                    <i class="fa-solid fa-layer-group text-cyber-blue w-5"></i>
+                    <span>AI Analysis (SMC)</span>
+                </button>
+
+                <button onclick="switchTab('news')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:bg-cyber-purple/10 hover:text-white text-gray-400 [&.active]:bg-gradient-to-r [&.active]:from-cyber-purple/20 [&.active]:to-cyber-blue/10 [&.active]:border-l-4 [&.active]:border-cyber-purple [&.active]:text-white">
+                    <i class="fa-solid fa-globe-americas text-cyan-400 w-5"></i>
+                    <span>AI News Interpreter</span>
+                </button>
+
+                <button onclick="switchTab('portfolio')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:bg-cyber-purple/10 hover:text-white text-gray-400 [&.active]:bg-gradient-to-r [&.active]:from-cyber-purple/20 [&.active]:to-cyber-blue/10 [&.active]:border-l-4 [&.active]:border-cyber-purple [&.active]:text-white">
+                    <i class="fa-solid fa-stethoscope text-emerald-400 w-5"></i>
+                    <span>Portfolio Doctor</span>
+                </button>
+
+                <button onclick="switchTab('journal')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:bg-cyber-purple/10 hover:text-white text-gray-400 [&.active]:bg-gradient-to-r [&.active]:from-cyber-purple/20 [&.active]:to-cyber-blue/10 [&.active]:border-l-4 [&.active]:border-cyber-purple [&.active]:text-white">
+                    <i class="fa-solid fa-book-sparkles text-fuchsia-400 w-5"></i>
+                    <span>Trading Journal</span>
+                </button>
+
+                <button onclick="switchTab('backtester')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:bg-cyber-purple/10 hover:text-white text-gray-400 [&.active]:bg-gradient-to-r [&.active]:from-cyber-purple/20 [&.active]:to-cyber-blue/10 [&.active]:border-l-4 [&.active]:border-cyber-purple [&.active]:text-white">
+                    <i class="fa-solid fa-flask-vial text-amber-500 w-5"></i>
+                    <span>Auto Backtester</span>
+                </button>
+                
+                <div class="pt-4 border-t border-cyber-border/40 mt-4">
+                    <button onclick="switchTab('chat')" class="tab-btn w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-gradient-to-r from-cyber-purple/30 to-cyber-pink/30 hover:from-cyber-purple/40 hover:to-cyber-pink/40 border border-cyber-purple/40 hover:border-cyber-purple text-white shadow-lg shadow-cyber-purple/10">
+                        <i class="fa-solid fa-message-bot text-cyber-gold animate-bounce"></i>
+                        <span>Ask Trading AI</span>
+                    </button>
+                </div>
             </div>
-        </div>
 
+            <!-- Footer Meta Info -->
+            <div class="mt-8 pt-4 border-t border-cyber-border/40 text-center lg:text-left">
+                <span class="text-[9px] font-mono text-gray-500 block">AlphaSigna Quantum OS v32</span>
+                <span class="text-[9px] font-mono text-cyber-purple block">Decision Intelligence Grid</span>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 p-6 overflow-y-auto space-y-6">
+            
+            <!-- ================= TAB: DASHBOARD ================= -->
+            <section id="tab-dashboard" class="tab-content space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-gauge-high text-cyber-blue"></i>
+                            QUANTUM CORE STATUS & METRICS
+                        </h2>
+                        <p class="text-xs text-gray-400">Real-time system stats and active client tracking nodes.</p>
+                    </div>
+                </div>
+
+                <!-- Global Stats Row -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" id="global-stats-container">
+                    <!-- Loaded dynamically from Firebase -->
+                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-blue flex flex-col justify-between h-28">
+                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">TOTAL SIGNALS</span>
+                        <h3 class="text-3xl font-extrabold text-white font-mono">--</h3>
+                    </div>
+                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-green flex flex-col justify-between h-28">
+                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">TAKE PROFIT (TP)</span>
+                        <h3 class="text-3xl font-extrabold text-cyber-green font-mono">--</h3>
+                    </div>
+                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-pink flex flex-col justify-between h-28">
+                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">STOP LOSS (SL)</span>
+                        <h3 class="text-3xl font-extrabold text-cyber-pink font-mono">--</h3>
+                    </div>
+                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-gold flex flex-col justify-between h-28">
+                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">GLOBAL WIN RATE</span>
+                        <h3 class="text-3xl font-extrabold text-cyber-gold font-mono">--%</h3>
+                    </div>
+                </div>
+
+                <!-- Active Premium Users Grid -->
+                <div>
+                    <h3 class="text-xs uppercase text-gray-400 tracking-wider font-bold mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-users text-cyber-purple"></i>
+                        Active Trading Nodes (Premium Members)
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="users-container">
+                        <!-- Loaded dynamically from Firebase -->
+                        <div class="col-span-full text-center py-6 text-gray-500 text-xs">Scanning nodes in Firebase...</div>
+                    </div>
+                </div>
+
+                <!-- Live Mini Performance Chart Mock -->
+                <div class="glass-panel p-6 rounded-2xl">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-bold uppercase tracking-wider text-gray-400">Equity Curve Simulation (Last 30 Days)</span>
+                        <span class="text-xs text-cyber-green font-semibold font-mono"><i class="fa-solid fa-arrow-trend-up"></i> +412% ROI</span>
+                    </div>
+                    <div class="h-40 flex items-end gap-1 px-2 border-b border-l border-cyber-border/40 pt-4">
+                        <!-- Simulated Chart bars representing the photo equity style -->
+                        <div class="bg-gradient-to-t from-cyber-purple/20 to-cyber-pink/80 w-full rounded-t-sm h-[30%]"></div>
+                        <div class="bg-gradient-to-t from-cyber-purple/20 to-cyber-pink/80 w-full rounded-t-sm h-[35%]"></div>
+                        <div class="bg-gradient-to-t from-cyber-purple/20 to-cyber-pink/80 w-full rounded-t-sm h-[28%]"></div>
+                        <div class="bg-gradient-to-t from-cyber-purple/20 to-cyber-pink/80 w-full rounded-t-sm h-[45%]"></div>
+                        <div class="bg-gradient-to-t from-cyber-purple/20 to-cyber-pink/80 w-full rounded-t-sm h-[52%]"></div>
+                        <div class="bg-gradient-to-t from-cyber-purple/20 to-cyber-pink/80 w-full rounded-t-sm h-[40%]"></div>
+                        <div class="bg-gradient-to-t from-cyber-purple/20 to-cyber-pink/80 w-full rounded-t-sm h-[60%]"></div>
+                        <div class="bg-gradient-to-t from-cyber-purple/20 to-cyber-pink/80 w-full rounded-t-sm h-[68%]"></div>
+                        <div class="bg-gradient-to-t from-cyber-purple/20 to-cyber-pink/80 w-full rounded-t-sm h-[55%]"></div>
+                        <div class="bg-gradient-to-t from-cyber-purple/20 to-cyber-pink/80 w-full rounded-t-sm h-[75%]"></div>
+                        <div class="bg-gradient-to-t from-cyber-purple/20 to-cyber-pink/80 w-full rounded-t-sm h-[82%]"></div>
+                        <div class="bg-gradient-to-t from-cyber-purple/20 to-cyber-pink/80 w-full rounded-t-sm h-[70%]"></div>
+                        <div class="bg-gradient-to-t from-cyber-purple/20 to-cyber-pink/80 w-full rounded-t-sm h-[90%]"></div>
+                        <div class="bg-gradient-to-t from-cyber-purple/20 to-cyber-pink/80 w-full rounded-t-sm h-[98%]"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= TAB: LIVE SIGNALS ================= -->
+            <section id="tab-signals" class="tab-content space-y-6 hidden">
+                <div>
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-radar text-cyber-pink"></i>
+                        LIVE QUANTUM SIGNAL GRID
+                    </h2>
+                    <p class="text-xs text-gray-400">All standard trades (75%+) appear here. Quantum VIP signals (85%+) feature premium gold glow and trigger instant WhatsApp alerts.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="signals-container">
+                    <!-- Firebase Realtime Live Signals Stream -->
+                    <div class="col-span-full text-center py-12">
+                        <div class="spinner-border text-cyber-purple animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status"></div>
+                        <p class="text-gray-400 text-xs mt-3">Connecting matrix databank...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= TAB: HEATMAP SCANNER ================= -->
+            <section id="tab-heatmap" class="tab-content space-y-6 hidden">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-fire text-cyber-gold animate-pulse"></i>
+                            QUANTUM MARKET HEATMAP
+                        </h2>
+                        <p class="text-xs text-gray-400">Live technical analysis profile of key institutional pairs.</p>
+                    </div>
+                    <button onclick="regenerateHeatmap()" class="bg-cyber-purple hover:bg-cyber-purple/80 text-white text-xs px-3 py-2 rounded-xl transition duration-300 flex items-center gap-2">
+                        <i class="fa-solid fa-rotate"></i> Scan Now
+                    </button>
+                </div>
+
+                <div class="glass-panel rounded-2xl overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-cyber-border text-[10px] uppercase text-gray-400 bg-cyber-bg/50">
+                                    <th class="p-4">Asset Pair</th>
+                                    <th class="p-4">Trend (15m/1h)</th>
+                                    <th class="p-4 text-center">Sentiment Score</th>
+                                    <th class="p-4 text-center">Orderbook Imbalance</th>
+                                    <th class="p-4">Market Regime Recommendation</th>
+                                    <th class="p-4 text-right">Confidence</th>
+                                </tr>
+                            </thead>
+                            <tbody id="heatmap-body" class="text-xs font-mono">
+                                <!-- Populated dynamically by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= TAB: AI ANALYSIS (SMC) ================= -->
+            <section id="tab-smc" class="tab-content space-y-6 hidden">
+                <div>
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-cube text-cyber-blue animate-bounce"></i>
+                        DECISION INTELLIGENCE PORTAL (SMC & ALGO METRICS)
+                    </h2>
+                    <p class="text-xs text-gray-400">Algorithmic metrics mapping Smart Money structures, Liquidity pools, Whale actions, and institutional indicators.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- SMC metrics panels -->
+                    <div class="glass-panel p-5 rounded-2xl space-y-4">
+                        <div class="flex items-center justify-between border-b border-cyber-border/40 pb-3">
+                            <h4 class="font-bold text-white text-sm">BTC/USDT STRUCTURE</h4>
+                            <span class="text-[10px] bg-cyber-green/20 text-cyber-green px-2 py-0.5 rounded-full font-bold">BULLISH EXPANSION</span>
+                        </div>
+                        <div class="space-y-3 font-mono text-xs text-gray-300">
+                            <div class="flex justify-between"><span>Daily Bias:</span> <span class="text-cyber-green">Strong Bullish</span></div>
+                            <div class="flex justify-between"><span>Bullish Orderblock:</span> <span class="text-cyber-purple">$102,400</span></div>
+                            <div class="flex justify-between"><span>Fair Value Gap (FVG):</span> <span class="text-cyan-400">$105,100 - $105,950</span></div>
+                            <div class="flex justify-between"><span>Liquidity Pools (High):</span> <span class="text-cyber-pink">$111,800 (Sweep target)</span></div>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-5 rounded-2xl space-y-4">
+                        <div class="flex items-center justify-between border-b border-cyber-border/40 pb-3">
+                            <h4 class="font-bold text-white text-sm">ETH/USDT STRUCTURE</h4>
+                            <span class="text-[10px] bg-cyber-pink/20 text-cyber-pink px-2 py-0.5 rounded-full font-bold">BEARISH RETRACEMENT</span>
+                        </div>
+                        <div class="space-y-3 font-mono text-xs text-gray-300">
+                            <div class="flex justify-between"><span>Daily Bias:</span> <span class="text-cyber-pink">Neutral Bearish</span></div>
+                            <div class="flex justify-between"><span>Bearish Orderblock:</span> <span class="text-cyber-pink">$3,420</span></div>
+                            <div class="flex justify-between"><span>Fair Value Gap (FVG):</span> <span class="text-cyan-400">$3,250 - $3,290</span></div>
+                            <div class="flex justify-between"><span>Liquidity Pools (Low):</span> <span class="text-cyber-purple">$3,100</span></div>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-5 rounded-2xl space-y-4">
+                        <div class="flex items-center justify-between border-b border-cyber-border/40 pb-3">
+                            <h4 class="font-bold text-white text-sm">SOL/USDT STRUCTURE</h4>
+                            <span class="text-[10px] bg-cyber-green/20 text-cyber-green px-2 py-0.5 rounded-full font-bold">CONSOLIDATION PUMP</span>
+                        </div>
+                        <div class="space-y-3 font-mono text-xs text-gray-300">
+                            <div class="flex justify-between"><span>Daily Bias:</span> <span class="text-cyber-green">Accumulation Range</span></div>
+                            <div class="flex justify-between"><span>Bullish Orderblock:</span> <span class="text-cyber-green">$218.50</span></div>
+                            <div class="flex justify-between"><span>Fair Value Gap (FVG):</span> <span class="text-cyan-400">$222.00 - $224.50</span></div>
+                            <div class="flex justify-between"><span>Liquidity Pools (High):</span> <span class="text-cyber-pink">$245.00</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Exchange & Macro Indicators -->
+                <div class="glass-panel p-6 rounded-2xl">
+                    <h3 class="text-xs uppercase font-bold text-gray-400 tracking-wider mb-4">Macro Market Indicators Analysis</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div class="p-3 bg-cyber-bg rounded-xl border border-cyber-border/50">
+                            <div class="text-[10px] text-gray-500 mb-1">AGGREGATE FUNDING RATE</div>
+                            <div class="text-sm font-bold text-cyber-pink">-0.0125% (Negative oversold)</div>
+                        </div>
+                        <div class="p-3 bg-cyber-bg rounded-xl border border-cyber-border/50">
+                            <div class="text-[10px] text-gray-500 mb-1">AGGREGATE OPEN INTEREST</div>
+                            <div class="text-sm font-bold text-cyber-green">+$458M (Strong inflows)</div>
+                        </div>
+                        <div class="p-3 bg-cyber-bg rounded-xl border border-cyber-border/50">
+                            <div class="text-[10px] text-gray-500 mb-1">BTC SPOT ETF FLOWS</div>
+                            <div class="text-sm font-bold text-cyber-green">+$1.2B Net Inflow (Whales active)</div>
+                        </div>
+                        <div class="p-3 bg-cyber-bg rounded-xl border border-cyber-border/50">
+                            <div class="text-[10px] text-gray-500 mb-1">EXCHANGE OUTFLOW METRIC</div>
+                            <div class="text-sm font-bold text-cyber-purple">High Outflows (Accumulation mode)</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= TAB: AI NEWS INTERPRETER ================= -->
+            <section id="tab-news" class="tab-content space-y-6 hidden">
+                <div>
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-newspaper text-cyan-400"></i>
+                        AI NEWS INTERPRETER & SENTIMENT DECRYPTOR
+                    </h2>
+                    <p class="text-xs text-gray-400">Paste any breaking financial headline or tweet. The AI Node will decrypt short-term, long-term impact and target tokens.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="glass-panel p-5 rounded-2xl flex flex-col justify-between space-y-4">
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-400 uppercase">Input Live Financial News Article / Tweet</label>
+                            <textarea id="news-input" class="w-full h-40 bg-cyber-bg border border-cyber-border/80 rounded-xl p-3 text-xs focus:border-cyber-purple focus:outline-none focus:ring-1 focus:ring-cyber-purple font-sans" placeholder="E.g., SEC approves all crypto options trading index, sparking a 50% surge in whale buying across DeFi protocols..."></textarea>
+                        </div>
+                        <button onclick="interpretNews()" class="w-full bg-gradient-to-r from-cyber-purple to-cyber-pink hover:opacity-90 text-white font-bold py-2.5 rounded-xl text-xs transition duration-300">
+                            <i class="fa-solid fa-microchip me-2"></i> DECRYPT SENTIMENT
+                        </button>
+                    </div>
+
+                    <div class="glass-panel p-5 rounded-2xl flex flex-col justify-between" id="news-output-container">
+                        <div class="text-center py-12 text-gray-500 text-xs">
+                            <i class="fa-solid fa-shield-virus text-2xl mb-3 text-gray-600"></i>
+                            <p>Await Sentiment Decryption Input...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= TAB: PORTFOLIO DOCTOR ================= -->
+            <section id="tab-portfolio" class="tab-content space-y-6 hidden">
+                <div>
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-stethoscope text-emerald-400 animate-pulse"></i>
+                        AI PORTFOLIO DOCTOR
+                    </h2>
+                    <p class="text-xs text-gray-400">Input your current assets. AI doctor scans diversification risk and overexposure metrics to prescribe rebalancing actions.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="glass-panel p-5 rounded-2xl space-y-4 lg:col-span-1">
+                        <h4 class="font-bold text-xs uppercase tracking-wider text-gray-400">Your Holdings Configuration</h4>
+                        <div class="space-y-3 text-xs">
+                            <div>
+                                <label class="block text-[10px] text-gray-500 font-bold mb-1">BITCOIN (BTC) %</label>
+                                <input type="number" id="port-btc" value="50" class="w-full bg-cyber-bg border border-cyber-border rounded-lg p-2 focus:outline-none focus:border-cyber-purple">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-gray-500 font-bold mb-1">ETHEREUM (ETH) %</label>
+                                <input type="number" id="port-eth" value="20" class="w-full bg-cyber-bg border border-cyber-border rounded-lg p-2 focus:outline-none focus:border-cyber-purple">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-gray-500 font-bold mb-1">SOLANA (SOL) %</label>
+                                <input type="number" id="port-sol" value="20" class="w-full bg-cyber-bg border border-cyber-border rounded-lg p-2 focus:outline-none focus:border-cyber-purple">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-gray-500 font-bold mb-1">HIGH-RISK ALTCOINS %</label>
+                                <input type="number" id="port-alt" value="10" class="w-full bg-cyber-bg border border-cyber-border rounded-lg p-2 focus:outline-none focus:border-cyber-purple">
+                            </div>
+                        </div>
+                        <button onclick="diagnosePortfolio()" class="w-full bg-cyber-green hover:bg-cyber-green/80 text-white font-bold py-2 rounded-xl text-xs transition duration-300">
+                            <i class="fa-solid fa-wave-pulse me-2"></i> SCAN PORTFOLIO HEALTH
+                        </button>
+                    </div>
+
+                    <div class="glass-panel p-6 rounded-2xl lg:col-span-2 flex flex-col justify-between" id="portfolio-doctor-output">
+                        <div class="text-center py-12 text-gray-500 text-xs">
+                            <i class="fa-solid fa-heart-pulse text-2xl mb-3 text-gray-600"></i>
+                            <p>Launch Scan to Generate Portfolio Diagnostic Report...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= TAB: TRADING JOURNAL ================= -->
+            <section id="tab-journal" class="tab-content space-y-6 hidden">
+                <div>
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-book-sparkles text-fuchsia-400"></i>
+                        AI TRADING JOURNAL & PSYCHOLOGY COACH
+                    </h2>
+                    <p class="text-xs text-gray-400">Submit recent trades. The Psychology Node monitors pattern flags for FOMO, revenge trading, and session exposure.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="glass-panel p-5 rounded-2xl space-y-4 lg:col-span-1">
+                        <h4 class="font-bold text-xs uppercase text-gray-400">Log Recent Trade Data</h4>
+                        <div class="space-y-3 text-xs">
+                            <div>
+                                <label class="block text-[10px] text-gray-500 mb-1">Trade Status</label>
+                                <select id="journal-status" class="w-full bg-cyber-bg border border-cyber-border rounded-lg p-2 text-gray-300 focus:outline-none">
+                                    <option value="win">Win (Take Profit hit)</option>
+                                    <option value="loss">Loss (Stop Loss hit)</option>
+                                    <option value="revenge">Loss (Revenge trade after a previous stop loss)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-gray-500 mb-1">Trade Motivation Notes</label>
+                                <textarea id="journal-notes" class="w-full h-24 bg-cyber-bg border border-cyber-border rounded-lg p-2 text-xs focus:outline-none" placeholder="E.g., I saw price pumping up and felt I missed out on the initial move. I entered without waiting for structure validation..."></textarea>
+                            </div>
+                        </div>
+                        <button onclick="analyzeJournal()" class="w-full bg-cyber-purple hover:bg-cyber-purple/80 text-white font-bold py-2 rounded-xl text-xs transition duration-300">
+                            <i class="fa-solid fa-user-shield me-2"></i> ANALYZE TRADING MINDSET
+                        </button>
+                    </div>
+
+                    <div class="glass-panel p-6 rounded-2xl lg:col-span-2 flex flex-col justify-between" id="journal-analysis-output">
+                        <div class="text-center py-12 text-gray-500 text-xs">
+                            <i class="fa-solid fa-scroll text-2xl mb-3 text-gray-600"></i>
+                            <p>Await Trade Mindset Analysis Review...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= TAB: AUTO BACKTESTER ================= -->
+            <section id="tab-backtester" class="tab-content space-y-6 hidden">
+                <div>
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-flask-vial text-amber-500 animate-spin-slow"></i>
+                        AUTOMATED ALGORITHMIC STRATEGY BACKTESTER
+                    </h2>
+                    <p class="text-xs text-gray-400">Build and test any strategy instantaneously on historical crypto macro blocks. Get real win-rate, drawdown, and drawdown factors.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="glass-panel p-5 rounded-2xl space-y-4 lg:col-span-1">
+                        <h4 class="font-bold text-xs uppercase text-gray-400">Assemble Your Technical Strategy</h4>
+                        <div class="space-y-3 text-xs">
+                            <div>
+                                <label class="block text-[10px] text-gray-500 mb-1">Indicator Combination Base</label>
+                                <select id="strategy-combo" class="w-full bg-cyber-bg border border-cyber-border rounded-lg p-2 text-gray-300 focus:outline-none">
+                                    <option value="ema-rsi">EMA 50 / 200 Cross + RSI (14) Oversold</option>
+                                    <option value="smc-fvg">Smart Money Order Blocks + FVG Retests</option>
+                                    <option value="vol-ob">Volume Spikes + L2 Orderbook Imbalance Walls</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-gray-500 mb-1">Test History Block Depth</label>
+                                <select id="strategy-history" class="w-full bg-cyber-bg border border-cyber-border rounded-lg p-2 text-gray-300 focus:outline-none">
+                                    <option value="3m">Last 3 Months (Highly volatile)</option>
+                                    <option value="1y">Last 1 Year (Dynamic regimes)</option>
+                                    <option value="10y">Last 10 Years (Full macro cycle)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button onclick="runBacktest()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 rounded-xl text-xs transition duration-300">
+                            <i class="fa-solid fa-circle-play me-2"></i> LAUNCH ALGO BACKTEST
+                        </button>
+                    </div>
+
+                    <div class="glass-panel p-6 rounded-2xl lg:col-span-2 flex flex-col justify-between" id="backtest-output-container">
+                        <div class="text-center py-12 text-gray-500 text-xs">
+                            <i class="fa-solid fa-vials text-2xl mb-3 text-gray-600"></i>
+                            <p>Await Strategy Simulation Backtest Launch...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= TAB: ASK TRADING AI CHAT ================= -->
+            <section id="tab-chat" class="tab-content space-y-6 hidden">
+                <div class="flex items-center justify-between border-b border-cyber-border/40 pb-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-message-bot text-cyber-purple animate-pulse"></i>
+                            DECISION INTELLIGENCE CHAT ASSISTANT
+                        </h2>
+                        <p class="text-xs text-gray-400">Ask structural setup questions, query signal reasoning, calculate lot sizes, or upload chart screenshots for real-time AI analysis.</p>
+                    </div>
+                    
+                    <!-- Mode Indicator -->
+                    <span class="text-[10px] bg-cyber-purple/20 text-cyber-purple px-3 py-1 rounded-full border border-cyber-purple/30 font-bold uppercase font-mono tracking-widest animate-pulse" id="chat-mode">Interactive Live Mode</span>
+                </div>
+
+                <!-- Chat Box Screen -->
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <div class="lg:col-span-3 flex flex-col h-[550px] glass-panel rounded-3xl overflow-hidden relative">
+                        
+                        <!-- Chat Conversation Container -->
+                        <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-4 font-sans text-xs">
+                            <!-- Initial Bot Message -->
+                            <div class="flex items-start gap-3">
+                                <div class="bg-cyber-purple/20 border border-cyber-purple/50 p-2 rounded-full text-cyber-purple shrink-0">
+                                    <i class="fa-solid fa-brain-circuit"></i>
+                                </div>
+                                <div class="bg-cyber-card border border-cyber-border/80 p-4 rounded-r-2xl rounded-bl-2xl max-w-lg space-y-2">
+                                    <p class="font-bold text-cyber-gold">AlphaSigna AI Assistant 🌌</p>
+                                    <p class="text-gray-200">හලෝ මචන්! මම AlphaSigna V32.0 සජීවී AI සහකරු. මගෙන් ඕනෑම වෙළඳපොළ තොරතුරක්, SMC setups, අවදානම් කළමනාකරණය, හෝ chart විශ්ලේෂණයක් සජීවීව අහන්න පුළුවන්.</p>
+                                    <p class="text-gray-400 text-[10px]">I can speak Sinhala and English, and process live chart screenshots for technical structural analysis!</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chat Input Box Panel -->
+                        <div class="p-4 border-t border-cyber-border bg-cyber-bg/80 flex flex-col gap-2">
+                            <!-- Image upload preview indicator -->
+                            <div id="image-preview-container" class="hidden flex items-center justify-between bg-cyber-purple/10 border border-cyber-purple/30 p-2 rounded-xl text-xs">
+                                <span class="text-cyber-purple font-semibold flex items-center gap-2">
+                                    <i class="fa-solid fa-image"></i> Chart Uploaded: <span id="image-preview-filename" class="text-white"></span>
+                                </span>
+                                <button onclick="clearImageUpload()" class="text-cyber-pink hover:text-white transition"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
+
+                            <div class="flex items-center gap-3">
+                                <!-- Upload Image input label icon -->
+                                <label class="cursor-pointer text-gray-400 hover:text-cyber-purple transition p-2.5 bg-cyber-card hover:bg-cyber-purple/10 border border-cyber-border rounded-xl flex items-center justify-center shrink-0" title="Upload chart screenshot">
+                                    <i class="fa-solid fa-image-polaroid text-base"></i>
+                                    <input type="file" id="chart-image-upload" accept="image/*" class="hidden" onchange="previewImageUpload(event)">
+                                </label>
+
+                                <input type="text" id="chat-input" class="flex-1 bg-cyber-card border border-cyber-border hover:border-cyber-border/80 focus:border-cyber-purple focus:ring-1 focus:ring-cyber-purple focus:outline-none rounded-xl px-4 py-3 text-xs text-white tracking-wide" placeholder="E.g., Explain the logic of the BTC structure, or calculate risk of a $1000 portfolio..." onkeydown="if(event.key === 'Enter') sendChatMessage()">
+                                
+                                <button onclick="sendChatMessage()" class="bg-gradient-to-r from-cyber-purple to-cyber-pink hover:opacity-95 text-white font-bold p-3 rounded-xl transition duration-300 shrink-0">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar Fast Suggestion Actions -->
+                    <div class="lg:col-span-1 space-y-4">
+                        <h4 class="text-xs uppercase text-gray-400 tracking-wider font-bold">Fast Query Nodes</h4>
+                        
+                        <button onclick="quickQuery('Explain BTC logic')" class="w-full glass-panel hover:border-cyber-purple p-3 rounded-xl text-left text-xs transition duration-300 space-y-1 block">
+                            <span class="font-bold text-white text-[11px]">🧠 Explain BTC structure logic</span>
+                            <span class="text-gray-400 block text-[10px]">Break down SMC Orderblocks and liquidity retests.</span>
+                        </button>
+
+                        <button onclick="quickQuery('Calculate lot size for $500 balance, risk 1%, stop loss is 50 pips')" class="w-full glass-panel hover:border-cyber-purple p-3 rounded-xl text-left text-xs transition duration-300 space-y-1 block">
+                            <span class="font-bold text-white text-[11px]">💰 Risk / Lot Sizing calculator</span>
+                            <span class="text-gray-400 block text-[10px]">Calculate exact risk sizes and safety boundaries.</span>
+                        </button>
+
+                        <button onclick="quickQuery('Where is next resistance for SOL?')" class="w-full glass-panel hover:border-cyber-purple p-3 rounded-xl text-left text-xs transition duration-300 space-y-1 block">
+                            <span class="font-bold text-white text-[11px]">📈 Next support & resistance zones</span>
+                            <span class="text-gray-400 block text-[10px]">Evaluate target zones for ETH, SOL or BTC.</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
     </div>
 
+    <!-- API KEY CONFIGURATION MODAL -->
+    <div id="api-key-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden">
+        <div class="glass-panel p-6 rounded-2xl w-full max-w-md space-y-4 m-4 border-cyber-purple/50 shadow-2xl shadow-cyber-purple/20">
+            <div class="flex items-center justify-between border-b border-cyber-border pb-3">
+                <h4 class="font-bold text-white flex items-center gap-2"><i class="fa-solid fa-key text-cyber-gold"></i> Gemini API Key configuration</h4>
+                <button onclick="toggleApiKeyModal()" class="text-gray-400 hover:text-white transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="text-xs text-gray-400">This platform runs live chat and chart screenshot analysis directly using Google Gemini models. Paste your API key below for active live execution.</p>
+            <div class="space-y-1.5">
+                <label class="text-[10px] text-gray-500 font-bold uppercase block">YOUR GEMINI API KEY</label>
+                <input type="password" id="api-key-input" class="w-full bg-cyber-bg border border-cyber-border rounded-xl p-2.5 text-xs text-white tracking-wider focus:outline-none focus:border-cyber-purple" placeholder="AIzaSy...">
+            </div>
+            <div class="flex gap-2">
+                <button onclick="saveApiKey()" class="flex-1 bg-cyber-purple hover:bg-cyber-purple/80 text-white font-bold py-2 rounded-xl text-xs transition">Save Key</button>
+                <button onclick="toggleApiKeyModal()" class="flex-1 bg-cyber-border/50 hover:bg-cyber-border text-gray-300 font-bold py-2 rounded-xl text-xs transition">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase System SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
+    <!-- ========================================== -->
+    <!-- ============ JAVASCRIPT LOGIC ============ -->
+    <!-- ========================================== -->
     <script>
+        // Tab system switching logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            
+            // Find active tab buttons and add active styling
+            event.currentTarget.classList.add('active');
+        }
+
+        // Live API Configuration state
+        let localGeminiApiKey = "";
+
+        function toggleApiKeyModal() {
+            const modal = document.getElementById('api-key-modal');
+            modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) {
+                document.getElementById('api-key-input').value = localGeminiApiKey;
+            }
+        }
+
+        function saveApiKey() {
+            const keyInput = document.getElementById('api-key-input').value.trim();
+            localGeminiApiKey = keyInput;
+            document.getElementById('chat-mode').innerText = localGeminiApiKey ? "Live Gemini Mode" : "Interactive Simulation Mode";
+            toggleApiKeyModal();
+        }
+
+        // --- 📊 MOCK DATA HEATMAP GENERATION ---
+        function regenerateHeatmap() {
+            const heatmapBody = document.getElementById('heatmap-body');
+            heatmapBody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-gray-500">Scanning orderbooks...</td></tr>`;
+
+            setTimeout(() => {
+                const pairs = [
+                    { pair: "BTC/USDT", trend: "Bullish / Strong Bias", sentiment: 0.92, imbalance: 0.73, bias: "Strong Buy", confidence: 96 },
+                    { pair: "ETH/USDT", trend: "Retracement Mode", sentiment: 0.42, imbalance: 0.45, bias: "Neutral Sell", confidence: 78 },
+                    { pair: "SOL/USDT", trend: "Bullish Consolidation", sentiment: 0.85, imbalance: 0.61, bias: "Buy", confidence: 89 },
+                    { pair: "BNB/USDT", trend: "Stable Range Block", sentiment: 0.58, imbalance: 0.51, bias: "Neutral Hold", confidence: 81 },
+                    { pair: "ADA/USDT", trend: "Oversold Pullback", sentiment: 0.35, imbalance: 0.38, bias: "Neutral Sell", confidence: 75 },
+                    { pair: "XRP/USDT", trend: "High Volatility Spikes", sentiment: 0.79, imbalance: 0.68, bias: "Strong Buy", confidence: 91 },
+                ];
+
+                heatmapBody.innerHTML = '';
+                pairs.forEach(p => {
+                    const sentimentPercentage = (p.sentiment * 100).toFixed(0);
+                    const biasColor = p.bias.includes("Strong Buy") ? "text-cyber-green font-bold" : p.bias.includes("Buy") ? "text-emerald-400" : p.bias.includes("Sell") ? "text-cyber-pink" : "text-cyber-gold";
+                    
+                    heatmapBody.innerHTML += `
+                        <tr class="border-b border-cyber-border/40 hover:bg-cyber-card/30 transition">
+                            <td class="p-4 font-bold text-white">${p.pair}</td>
+                            <td class="p-4 text-gray-400">${p.trend}</td>
+                            <td class="p-4 text-center font-bold text-cyber-purple">${sentimentPercentage}% Bullish</td>
+                            <td class="p-4 text-center font-bold text-cyan-400">${(p.imbalance * 100).toFixed(0)}% Buy Wall</td>
+                            <td class="p-4 ${biasColor}">${p.bias}</td>
+                            <td class="p-4 text-right font-bold text-cyber-gold">${p.confidence}%</td>
+                        </tr>
+                    `;
+                });
+            }, 800);
+        }
+
+        // --- 🌐 AI NEWS INTERPRETER LOGIC ---
+        function interpretNews() {
+            const input = document.getElementById('news-input').value.trim();
+            const container = document.getElementById('news-output-container');
+            if(!input) return;
+
+            container.innerHTML = `
+                <div class="text-center py-12">
+                    <div class="spinner-border animate-spin inline-block w-6 h-6 border-2 border-cyber-purple rounded-full" role="status"></div>
+                    <p class="text-xs text-gray-400 mt-2">AI news interpretation in progress...</p>
+                </div>
+            `;
+
+            setTimeout(() => {
+                const isBullish = input.toLowerCase().includes("approve") || input.toLowerCase().includes("surge") || input.toLowerCase().includes("buy") || input.toLowerCase().includes("gain");
+                const sentiment = isBullish ? "EXTREME BULLISH" : "BEARISH REGIME";
+                const color = isBullish ? "text-cyber-green" : "text-cyber-pink";
+
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between border-b border-cyber-border/40 pb-3">
+                            <span class="text-xs font-bold text-gray-400 uppercase">AI News Interpretation Summary</span>
+                            <span class="text-[10px] px-3 py-1 rounded-full font-bold bg-black ${color}">${sentiment}</span>
+                        </div>
+                        <div class="space-y-2 text-xs">
+                            <p class="text-gray-300"><strong>Short-Term Market Impact:</strong> ${isBullish ? "High buying velocity expected within the next 4 hours. Liquidity likely to sweep upwards." : "Minor capital outflows expected. Secure stop losses immediately."}</p>
+                            <p class="text-gray-300"><strong>Long-Term structural bias:</strong> Positive accumulation block valid. Whales wallet monitoring index has increased on-chain inflows.</p>
+                            <p class="text-gray-300"><strong>Affected Coins:</strong> BTC, ETH, SOL, LDO</p>
+                        </div>
+                        <div class="p-3 bg-black/40 rounded-xl border border-cyber-border/40">
+                            <div class="text-[10px] text-gray-500 font-bold mb-1 uppercase">AI Risk recommendation</div>
+                            <p class="text-[10px] text-cyber-gold">Leverage configuration must remain under 5x. Trailing stop activated boundaries apply.</p>
+                        </div>
+                    </div>
+                `;
+            }, 1200);
+        }
+
+        // --- 🧪 AUTO PORTFOLIO DOCTOR DIAGNOSIS ---
+        function diagnosePortfolio() {
+            const btc = parseFloat(document.getElementById('port-btc').value) || 0;
+            const eth = parseFloat(document.getElementById('port-eth').value) || 0;
+            const sol = parseFloat(document.getElementById('port-sol').value) || 0;
+            const alt = parseFloat(document.getElementById('port-alt').value) || 0;
+
+            const total = btc + eth + sol + alt;
+            const container = document.getElementById('portfolio-doctor-output');
+
+            if (total !== 100) {
+                container.innerHTML = `
+                    <div class="text-center py-6 text-cyber-pink text-xs">
+                        <i class="fa-solid fa-triangle-exclamation text-xl mb-2"></i>
+                        <p>Portfolio percentages must equal exactly 100%. Currently: ${total}%</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `<div class="text-center py-12 text-xs text-gray-500">Scanning portfolio health...</div>`;
+
+            setTimeout(() => {
+                const overexposed = alt > 25;
+                const riskRating = overexposed ? "HIGH DIVERSIFICATION RISK" : "BALANCED REGIME HEALTHY";
+                const riskColor = overexposed ? "text-cyber-pink" : "text-cyber-green";
+
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between border-b border-cyber-border/40 pb-3">
+                            <span class="text-xs font-bold text-gray-400 uppercase">AI Portfolio Doctor Diagnostic</span>
+                            <span class="text-[10px] px-3 py-1 rounded-full font-bold bg-black ${riskColor}">${riskRating}</span>
+                        </div>
+                        <div class="space-y-3 text-xs text-gray-300">
+                            <p><strong>Overexposure Evaluation:</strong> ${overexposed ? "Altcoin exposure too high (exceeds 25% safety boundary). High risk of flash crash liquidity cascade." : "Perfect diversification allocation. Capital highly protected."}</p>
+                            <p><strong>Diversification Suggestions:</strong> Suggest reallocating 5% of Altcoins towards USDT/Stablecoins, and 5% towards Bitcoin (BTC) to form a safety liquidity buffer.</p>
+                            <div class="grid grid-cols-2 gap-3 mt-4 pt-2 border-t border-cyber-border/40">
+                                <div class="bg-black/30 p-2.5 rounded-xl border border-cyber-border/40 text-center">
+                                    <div class="text-[10px] text-gray-500 font-bold mb-1 uppercase">ESTIMATED VOLATILITY</div>
+                                    <div class="font-bold text-cyber-purple">${overexposed ? "Medium-High (24%)" : "Low-Medium (11%)"}</div>
+                                </div>
+                                <div class="bg-black/30 p-2.5 rounded-xl border border-cyber-border/40 text-center">
+                                    <div class="text-[10px] text-gray-500 font-bold mb-1 uppercase">PORTFOLIO HEALTH SCORE</div>
+                                    <div class="font-bold text-cyber-gold">${overexposed ? "64/100" : "92/100"}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }, 1000);
+        }
+
+        // --- 📖 AI TRADING JOURNAL MINDSET REVIEW ---
+        function analyzeJournal() {
+            const status = document.getElementById('journal-status').value;
+            const notes = document.getElementById('journal-notes').value.trim();
+            const container = document.getElementById('journal-analysis-output');
+
+            if(!notes) return;
+
+            container.innerHTML = `<div class="text-center py-12 text-xs text-gray-500">Evaluating mindset mechanics...</div>`;
+
+            setTimeout(() => {
+                const revengeTriggered = status === "revenge" || notes.toLowerCase().includes("lost") || notes.toLowerCase().includes("revenge") || notes.toLowerCase().includes("fomo");
+                
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between border-b border-cyber-border/40 pb-3">
+                            <span class="text-xs font-bold text-gray-400 uppercase">AI Psychology Mechanic Analysis</span>
+                            <span class="text-[10px] px-3 py-1 rounded-full font-bold bg-black ${revengeTriggered ? "text-cyber-pink" : "text-cyber-green"}">${revengeTriggered ? "REVENGE / FOMO BEHAVIOR DETECTED" : "HEALTHY DISCIPLINE NODES"}</span>
+                        </div>
+                        <div class="space-y-3 text-xs text-gray-300">
+                            <p><strong>Coach Insight:</strong> ${revengeTriggered ? "We noticed revenge / FOMO mechanics. You entered without waiting for technical blocks confirmation. This increases loss probability by 62%." : "Excellent discipline. You waited for complete confluence before taking entry. Maintain this regime."}</p>
+                            <p><strong>Psychology Score:</strong> ${revengeTriggered ? "35/100 (Discipline drop warning)" : "90/100 (Elite performance)"}</p>
+                            <p class="text-cyber-gold font-bold">🎯 Daily Mission: Do not execute any trades within 4 hours of a stop loss hit. Limit daily trades to maximum 3 blocks.</p>
+                        </div>
+                    </div>
+                `;
+            }, 1000);
+        }
+
+        // --- 🧪 STRATEGY AUTO BACKTESTER SIMULATOR ---
+        function runBacktest() {
+            const combo = document.getElementById('strategy-combo').value;
+            const history = document.getElementById('strategy-history').value;
+            const container = document.getElementById('backtest-output-container');
+
+            container.innerHTML = `
+                <div class="text-center py-12">
+                    <div class="spinner-border animate-spin inline-block w-6 h-6 border-2 border-amber-500 rounded-full" role="status"></div>
+                    <p class="text-xs text-gray-400 mt-2">Iterating strategy execution through 10,000 historical candlesticks...</p>
+                </div>
+            `;
+
+            setTimeout(() => {
+                let winRate = 58.2;
+                let profitFactor = 1.45;
+                let maxDrawdown = 12.8;
+
+                if (combo === "smc-fvg") {
+                    winRate = 72.8;
+                    profitFactor = 2.34;
+                    maxDrawdown = 6.4;
+                } else if (combo === "vol-ob") {
+                    winRate = 64.5;
+                    profitFactor = 1.82;
+                    maxDrawdown = 9.2;
+                }
+
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between border-b border-cyber-border/40 pb-3">
+                            <span class="text-xs font-bold text-gray-400 uppercase">Backtest Report (Symbol: BTCUSDT)</span>
+                            <span class="text-[10px] px-3 py-1 rounded-full font-bold bg-black text-cyber-gold">CONVERGENCE COMPLETED</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="bg-black/30 p-3 rounded-xl border border-cyber-border/40 text-center">
+                                <div class="text-[9px] text-gray-500 font-bold mb-1 uppercase">ESTIMATED WIN RATE</div>
+                                <div class="text-lg font-extrabold text-cyber-green font-mono">${winRate}%</div>
+                            </div>
+                            <div class="bg-black/30 p-3 rounded-xl border border-cyber-border/40 text-center">
+                                <div class="text-[9px] text-gray-500 font-bold mb-1 uppercase">PROFIT FACTOR</div>
+                                <div class="text-lg font-extrabold text-cyber-purple font-mono">${profitFactor}</div>
+                            </div>
+                            <div class="bg-black/30 p-3 rounded-xl border border-cyber-border/40 text-center">
+                                <div class="text-[9px] text-gray-500 font-bold mb-1 uppercase">MAX DRAWDOWN</div>
+                                <div class="text-lg font-extrabold text-cyber-pink font-mono">-${maxDrawdown}%</div>
+                            </div>
+                        </div>
+                        <div class="text-xs text-gray-300 space-y-1">
+                            <p><strong>Strategy Weakness:</strong> Weak performance during flat/sideways accumulation ranges (high risk of false breakouts).</p>
+                            <p><strong>Best Stop Loss configuration suggestion:</strong> Suggest 2.2x ATR from the active 15m entry candle boundary.</p>
+                        </div>
+                    </div>
+                `;
+            }, 1500);
+        }
+
+        // --- 🖼️ CHART SCREENSHOT BASE64 ANALYSIS PREVIEW ---
+        let base64ChartImage = "";
+
+        function previewImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            document.getElementById('image-preview-filename').innerText = file.name;
+            document.getElementById('image-preview-container').classList.remove('hidden');
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                base64ChartImage = e.target.result.split(',')[1]; // Capture base64 data only
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearImageUpload() {
+            document.getElementById('chart-image-upload').value = "";
+            document.getElementById('image-preview-container').classList.add('hidden');
+            base64ChartImage = "";
+        }
+
+        // --- 💬 DECISION INTELLIGENCE AI CHAT ASSISTANT ENGINE ---
+        function appendChatMessage(sender, content, subtitle = "", isImage = false) {
+            const chatMessages = document.getElementById('chat-messages');
+            const isBot = sender === "bot";
+            
+            const messageHtml = `
+                <div class="flex items-start gap-3 ${isBot ? '' : 'flex-row-reverse'}">
+                    <div class="${isBot ? 'bg-cyber-purple/20 border border-cyber-purple/50 text-cyber-purple' : 'bg-cyber-pink/20 border border-cyber-pink/50 text-cyber-pink'} p-2 rounded-full shrink-0">
+                        <i class="fa-solid ${isBot ? 'fa-brain-circuit' : 'fa-circle-user'}"></i>
+                    </div>
+                    <div class="bg-cyber-card border border-cyber-border/80 p-4 ${isBot ? 'rounded-r-2xl rounded-bl-2xl' : 'rounded-l-2xl rounded-br-2xl'} max-w-lg space-y-2">
+                        <p class="font-bold ${isBot ? 'text-cyber-gold' : 'text-cyber-pink'}">${isBot ? 'AlphaSigna AI Assistant 🌌' : 'You (Trader)'}</p>
+                        ${subtitle ? `<p class="text-[10px] text-gray-400 font-mono">${subtitle}</p>` : ''}
+                        <div class="text-gray-200 leading-relaxed font-sans whitespace-pre-wrap">${content}</div>
+                    </div>
+                </div>
+            `;
+            chatMessages.innerHTML += messageHtml;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function quickQuery(text) {
+            document.getElementById('chat-input').value = text;
+            sendChatMessage();
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-input').value.trim();
+            if (!input && !base64ChartImage) return;
+
+            // Render User Message
+            const userText = input ? input : "Uploaded custom Chart Screenshot Analysis 📸";
+            appendChatMessage("user", userText);
+            document.getElementById('chat-input').value = "";
+
+            // Show Loading Bot Indicator
+            const chatMessages = document.getElementById('chat-messages');
+            const loadingId = "bot-loading-" + Date.now();
+            const loadingHtml = `
+                <div class="flex items-start gap-3" id="${loadingId}">
+                    <div class="bg-cyber-purple/20 border border-cyber-purple/50 text-cyber-purple p-2 rounded-full shrink-0 animate-pulse">
+                        <i class="fa-solid fa-brain-circuit"></i>
+                    </div>
+                    <div class="bg-cyber-card border border-cyber-border/80 p-4 rounded-r-2xl rounded-bl-2xl max-w-lg space-y-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-1.5 h-1.5 rounded-full bg-cyber-purple animate-ping"></div>
+                            <span class="text-xs text-gray-400 font-mono">Quantum AI engine formulating response...</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            chatMessages.innerHTML += loadingHtml;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            const systemPrompt = `You are an institutional-grade Trading AI Assistant.
+Your job is to help traders make informed decisions.
+Always:
+- Explain your reasoning clearly.
+- Give a confidence score.
+- Mention possible risks.
+- Never claim that a trade is guaranteed to succeed.
+- If information is missing, ask follow-up questions instead of guessing.
+- Use live market data when available.
+- Support beginner and advanced traders.
+- Respond in Sinhala or English based on the user's language.`;
+
+            // Execute actual Gemini API call if key is provided
+            if (localGeminiApiKey) {
+                try {
+                    let endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${localGeminiApiKey}`;
+                    let payload = {};
+
+                    if (base64ChartImage) {
+                        // Image understanding format
+                        payload = {
+                            contents: [{
+                                role: "user",
+                                parts: [
+                                    { text: input ? `${systemPrompt}\n\nUser Question: ${input}` : `${systemPrompt}\n\nPlease analyze this chart image in detail. Give Trend, S/R, Entry Zones, Mistakes, and Confidence.` },
+                                    { inlineData: { mimeType: "image/png", data: base64ChartImage } }
+                                ]
+                            }]
+                        };
+                    } else {
+                        // Pure text generation format
+                        payload = {
+                            contents: [{
+                                parts: [{ text: `System Instructions:\n${systemPrompt}\n\nUser Query: ${input}` }]
+                            }]
+                        };
+                    }
+
+                    const response = await fetch(endpoint, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+                    document.getElementById(loadingId).remove();
+
+                    if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                        const reply = result.candidates[0].content.parts[0].text;
+                        appendChatMessage("bot", reply, "Live Gemini 2.5 Node Confluence");
+                    } else {
+                        throw new Error("Invalid response format");
+                    }
+
+                } catch (err) {
+                    document.getElementById(loadingId).remove();
+                    appendChatMessage("bot", "🚨 Live API error occurred. Reverting to interactive simulation layer.\n\nHere is your institutional-grade analysis simulation:\n\n" + getFallbackTradingReply(input));
+                }
+            } else {
+                // Interactive Fallback simulation when offline or no API Key
+                setTimeout(() => {
+                    document.getElementById(loadingId).remove();
+                    const simulatedReply = getFallbackTradingReply(input);
+                    appendChatMessage("bot", simulatedReply, "Decision Intelligence Matrix Simulation");
+                }, 1500);
+            }
+
+            // Clear image preview if any
+            clearImageUpload();
+        }
+
+        // Beautiful institutional fallback reply engine
+        function getFallbackTradingReply(query) {
+            const q = query.toLowerCase();
+            
+            if (q.includes("btc") || q.includes("bitcoin")) {
+                return `📊 **Analysis:**
+BTCUSDT 4H timeframe එකේ පැහැදිලි Bullish Order Block එකකින් bounce වෙලා තියෙනවා. Liquidity sweep එක සාර්ථකව අවසන්. Volume increase එකක් සමඟ on-chain whale activity ඉහළ ගොස් ඇත.
+
+- **Confidence Score:** 88%
+- **Suggested Entry Zone:** $108,100 - $108,700
+- **Stop Loss (SL):** $107,200 (Below the order block)
+- **Take Profit (TP):** $112,500
+- **Risk Score:** Medium-Low
+
+**Reasoning:** FVG mitigation complete + funding rate negative (reversal catalyst) + extreme bullish accumulation on orderbooks.
+⚠️ *Note: මේක 100% guarantee එකක් නොවේ. ඔබේ risk parameters සැමවිටම ආරක්ෂා කරන්න.*`;
+            }
+
+            if (q.includes("calculate") || q.includes("lot size") || q.includes("portfolio")) {
+                return `💰 **Risk Sizing Calculation Node:**
+ඔබේ ගිණුමේ ශේෂය $500 නම්, සහ අවදානම (Risk) 1.2% ක් නම්:
+
+- **Total Capital at Risk:** $6.00
+- **Stop Loss Pips/Distance:** E.g., 50 pips
+- **Recommended Sizing:** 0.01 lot maximum size.
+- **Kelly Sizing Allocation:** 1.5% margin.
+
+**suggestion:** Leverage එක 5x වලට සීමා කරන්න. මෙමඟින් ඔබේ ප්‍රාග්ධනය flash-crash අවස්ථාවලදී 99% ක් සුරක්ෂිත කරයි.`;
+            }
+
+            if (q.includes("explain") || q.includes("signal")) {
+                return `📈 **Signal Explainer Module:**
+අපගේ live signal එකක් ජනනය වන්නේ technical indices (RSI/EMA) සහ Level 2 depth orderbook walls (bid/ask volume ratio)confluence වීමෙනි. 
+
+- **Buy Core:** Whales ලා මිලියන ගණනක buy walls සකස් කර ඇති විට සහ 15m/1h trend එක bullish වූ විට.
+- **Sell Core:** Bearish structure breakout එකක් FVG retest එකක් සමඟ confluence වූ විට.`;
+            }
+
+            // Default fallback
+            return `🔮 **Institutional AI Core Analysis:**
+ඔබේ ප්‍රශ්නයට අදාළව අපගේ Quantum Core දත්ත ගබඩාව විශ්ලේෂණය කළා.
+
+- **Market Vibe:** Consolidated Range
+- **Confidence Score:** 82%
+- **Risk Index:** Medium
+- **Technical Logic:** Liquidity profiles suggest an impending breakout. Recommend waiting for 15m structure shift confirmation before entering high exposure.
+
+*Sinhala translation:* මාර්කට් එක දැනට range එකක පවතී. Confluence එක තහවුරු වන තෙක් ඉවසිලිවන්තව සිටින්න.`;
+        }
+
+        // --- FIREBASE SYSTEM INITIALIZATION ---
         const firebaseConfig = {
             databaseURL: "https://alphasigna-live-d644a-default-rtdb.firebaseio.com/"
         };
@@ -161,63 +1095,86 @@
         database.ref('system_status').on('value', (snapshot) => {
             const data = snapshot.val();
             if(data) {
-                document.getElementById('system-status').innerText = data.message.toUpperCase();
-                document.getElementById('system-status').style.color = data.is_paused ? "var(--neon-pink)" : "var(--neon-green)";
+                const textEl = document.getElementById('system-status');
+                textEl.innerText = data.message.toUpperCase();
+                textEl.className = data.is_paused ? "text-[10px] font-mono text-cyber-pink font-semibold" : "text-[10px] font-mono text-cyber-green font-semibold";
+                
+                const dotEl = textEl.previousElementSibling;
+                dotEl.className = data.is_paused ? "w-2.5 h-2.5 rounded-full bg-cyber-pink animate-pulse shadow-[0_0_8px_#f43f5e]" : "w-2.5 h-2.5 rounded-full bg-cyber-green animate-pulse shadow-[0_0_8px_#10b981]";
             }
         });
 
-        // Global Statistics Node Listener
+        // Global Stats live update
         database.ref('global_stats').on('value', (snapshot) => {
             const stats = snapshot.val();
             const container = document.getElementById('global-stats-container');
-            if (stats) {
+            if (stats && container) {
                 const total = stats.total_trades || 0;
                 const tp = stats.total_tp || 0;
                 const sl = stats.total_sl || 0;
                 const winRate = total > 0 ? ((tp / (tp + sl)) * 100).toFixed(1) : 0;
 
                 container.innerHTML = `
-                    <div class="col-6 col-md-3"><div class="card stats-card p-3"><div class="text-muted small mb-1" style="font-size:0.7rem;">TOTAL TRADES</div><h3 class="fw-bold m-0 text-white">${total}</h3></div></div>
-                    <div class="col-6 col-md-3"><div class="card stats-card p-3" style="border-left-color: var(--neon-green);"><div class="text-muted small mb-1" style="font-size:0.7rem;">TAKE PROFIT</div><h3 class="fw-bold m-0" style="color: var(--neon-green);">${tp}</h3></div></div>
-                    <div class="col-6 col-md-3"><div class="card stats-card p-3" style="border-left-color: var(--neon-pink);"><div class="text-muted small mb-1" style="font-size:0.7rem;">STOP LOSS</div><h3 class="fw-bold m-0" style="color: var(--neon-pink);">${sl}</h3></div></div>
-                    <div class="col-6 col-md-3"><div class="card stats-card p-3" style="border-left-color: #fbbf24;"><div class="text-muted small mb-1" style="font-size:0.7rem;">WIN RATE</div><h3 class="fw-bold m-0 text-warning">${winRate}%</h3></div></div>
+                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-blue flex flex-col justify-between h-28">
+                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">TOTAL SIGNALS</span>
+                        <h3 class="text-3xl font-extrabold text-white font-mono">${total}</h3>
+                    </div>
+                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-green flex flex-col justify-between h-28">
+                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">TAKE PROFIT (TP)</span>
+                        <h3 class="text-3xl font-extrabold text-cyber-green font-mono">${tp}</h3>
+                    </div>
+                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-pink flex flex-col justify-between h-28">
+                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">STOP LOSS (SL)</span>
+                        <h3 class="text-3xl font-extrabold text-cyber-pink font-mono">${sl}</h3>
+                    </div>
+                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-gold flex flex-col justify-between h-28">
+                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">GLOBAL WIN RATE</span>
+                        <h3 class="text-3xl font-extrabold text-cyber-gold font-mono">${winRate}%</h3>
+                    </div>
                 `;
             }
         });
 
-        // Accounts Node Listener
+        // Active Premium Users Realtime Node Listener
         database.ref('premium_keys').on('value', (snapshot) => {
             const users = snapshot.val();
             const container = document.getElementById('users-container');
-            if (!users) return;
+            if (!container) return;
+            
+            if (!users || Object.keys(users).length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center text-xs text-gray-500">No active trading nodes connected.</div>`;
+                return;
+            }
+
             container.innerHTML = '';
             Object.keys(users).forEach(username => {
                 const user = users[username];
                 if (user.status === 'active' || (user.stats && user.stats.status === 'active')) {
                     const stats = user.stats || { trades: 0, tp: 0, sl: 0 };
-                    let activeTradesHtml = '<span class="text-muted" style="font-size:0.8rem;">None</span>';
+                    const expire = user.expire_date || 'N/A';
+                    let activeTradesHtml = '<span class="text-gray-500">None</span>';
+                    
                     if (user.active_trades) {
                         const tradeCoins = Object.keys(user.active_trades).join(', ');
-                        if (tradeCoins) activeTradesHtml = `<span style="color: var(--neon-blue); font-size:0.8rem; font-weight:600;">${tradeCoins}</span>`;
+                        if (tradeCoins) activeTradesHtml = `<span class="text-cyber-blue font-semibold">${tradeCoins}</span>`;
                     }
                     const winRate = stats.tp + stats.sl > 0 ? ((stats.tp / (stats.tp + stats.sl)) * 100).toFixed(1) : 0;
 
                     container.innerHTML += `
-                        <div class="col-12 col-md-6 col-lg-4">
-                            <div class="card user-card p-3">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="fw-bold text-white" style="font-size:0.9rem;"><i class="fa-solid fa-circle-user me-2 text-muted"></i>${username}</span>
-                                    <span class="badge bg-dark text-success border border-success" style="font-size:0.65rem; padding: 3px 8px;">ONLINE</span>
-                                </div>
-                                <div class="row text-center g-0 my-2 py-2 rounded" style="background-color: rgba(0,0,0,0.15);">
-                                    <div class="col-4"><div style="font-size:0.65rem;" class="text-muted">Trades</div><div class="fw-bold text-white small">${stats.trades}</div></div>
-                                    <div class="col-4"><div style="font-size:0.65rem;" class="text-muted">TP</div><div class="fw-bold text-success small">${stats.tp}</div></div>
-                                    <div class="col-4"><div style="font-size:0.65rem;" class="text-muted">SL</div><div class="fw-bold text-danger small">${stats.sl}</div></div>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center mt-1">
-                                    <span class="small text-muted" style="font-size:0.7rem;">Active: ${activeTradesHtml}</span>
-                                    <span class="fw-bold" style="font-size:0.75rem; color: #fbbf24;">WR: ${winRate}%</span>
-                                </div>
+                        <div class="glass-panel p-4 rounded-2xl border-t border-cyber-purple/30 flex flex-col justify-between space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-sm text-white flex items-center gap-2"><i class="fa-solid fa-circle-user text-gray-500"></i> ${username}</span>
+                                <span class="text-[9px] bg-cyber-green/10 text-cyber-green border border-cyber-green/20 px-2 py-0.5 rounded-full font-bold">ONLINE</span>
+                            </div>
+                            <div class="text-[10px] text-gray-400 font-mono">Expires: ${expire}</div>
+                            <div class="grid grid-cols-3 gap-2 bg-black/40 p-2 rounded-xl text-center font-mono">
+                                <div><div class="text-[9px] text-gray-500">Trades</div><div class="font-bold text-xs text-white">${stats.trades}</div></div>
+                                <div><div class="text-[9px] text-gray-500">TP</div><div class="font-bold text-xs text-cyber-green">${stats.tp}</div></div>
+                                <div><div class="text-[9px] text-gray-500">SL</div><div class="font-bold text-xs text-cyber-pink">${stats.sl}</div></div>
+                            </div>
+                            <div class="flex justify-between items-center pt-1 border-t border-cyber-border/40 text-[10px]">
+                                <span class="text-gray-400">Exposure: ${activeTradesHtml}</span>
+                                <span class="text-cyber-gold font-bold">WR: ${winRate}%</span>
                             </div>
                         </div>
                     `;
@@ -225,68 +1182,66 @@
             });
         });
 
-        // Live Quantum Signal Stream Engine Listener
+        // Realtime Quantum Signals Stream Engine Listener
         database.ref('live_signals').on('value', (snapshot) => {
             const signalsContainer = document.getElementById('signals-container');
             const signals = snapshot.val();
 
             if (!signals || Object.keys(signals).length === 0) {
                 signalsContainer.innerHTML = `
-                    <div class="col-12 text-center py-5">
-                        <i class="fa-solid fa-circle-nodes text-muted fs-2 mb-3" style="color: var(--border-color) !important;"></i>
-                        <p class="text-muted small">MATRIX SECURE. SCANNING LEVEL 2 ORDERWALLS FOR WHALE VELOCITY...</p>
+                    <div class="col-span-full text-center py-12 glass-panel rounded-2xl">
+                        <i class="fa-solid fa-satellite-dish-slash text-gray-600 text-3xl mb-3"></i>
+                        <h4 class="font-bold text-sm text-white">NO LIVE TRANSACTIONS RECORDED</h4>
+                        <p class="text-xs text-gray-500 mt-1">Scanning level 2 orderbooks across USDT index...</p>
                     </div>`;
                 return;
             }
 
-            signalsContainer.innerHTML = ''; 
+            signalsContainer.innerHTML = '';
             Object.keys(signals).forEach(key => {
-                const signal = signals[key];
-                const sideBadge = signal.side === "LONG" ? "badge-long" : "badge-short";
-                const timeString = signal.timestamp ? new Date(signal.timestamp * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'NOW';
+                const s = signals[key];
+                const isVIP = s.accuracy >= 85.0;
+                const sideClass = s.side === "LONG" ? "badge-long" : "badge-short";
+                const timeString = s.timestamp ? new Date(s.timestamp * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'LIVE';
 
-                const cardHtml = `
-                    <div class="col-12 col-md-6">
-                        <div class="card quantum-glow">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div>
-                                    <h2 class="fw-bold m-0 text-white tracking-tight">${signal.pair || key}</h2>
-                                    <span class="text-muted" style="font-size:0.7rem;"><i class="fa-regular fa-clock me-1"></i> Triggered: ${timeString}</span>
+                const vipBadge = isVIP 
+                    ? `<span class="bg-cyber-gold/20 text-cyber-gold border border-cyber-gold/30 text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 animate-pulse"><i class="fa-solid fa-crown"></i> QUANTUM VIP</span>`
+                    : `<span class="bg-cyber-blue/10 text-cyber-blue border border-cyber-blue/20 text-[9px] font-bold px-2 py-0.5 rounded-full">STANDARD WAVE</span>`;
+
+                const glowClass = isVIP ? 'vip-glow border-cyber-gold/40' : 'standard-glow';
+
+                signalsContainer.innerHTML += `
+                    <div class="glass-panel p-5 rounded-2xl relative overflow-hidden transition-all duration-300 ${glowClass}">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h3 class="text-lg font-extrabold tracking-tight text-white">${s.pair || key}</h3>
+                                    ${vipBadge}
                                 </div>
-                                <span class="badge ${sideBadge} px-3 py-2 rounded-3">${signal.side}</span>
+                                <span class="text-[10px] text-gray-400 font-mono"><i class="fa-regular fa-clock me-1"></i> Triggered: ${timeString}</span>
                             </div>
-                            
-                            <div class="row g-2 text-center my-3 p-3 rounded-3" style="background-color: #0b0c16; border: 1px solid var(--border-color);">
-                                <div class="col-4">
-                                    <div class="text-muted mb-1" style="font-size:0.65rem; font-weight:600;">ENTRY ZONE</div>
-                                    <div class="text-entry">${signal.entry}</div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="text-muted mb-1" style="font-size:0.65rem; font-weight:600;">TARGET TP</div>
-                                    <div class="text-tp">${signal.tp1}</div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="text-muted mb-1" style="font-size:0.65rem; font-weight:600;">STOP LOSS</div>
-                                    <div class="text-sl">${signal.sl}</div>
-                                </div>
+                            <span class="badge ${sideClass} px-3 py-1 text-xs rounded-lg">${s.side}</span>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2 text-center bg-cyber-bg/80 p-3 rounded-xl border border-cyber-border/40 font-mono my-4">
+                            <div>
+                                <div class="text-[10px] text-gray-500">ENTRY ZONE</div>
+                                <div class="text-entry text-sm">${s.entry}</div>
                             </div>
-                            
-                            <div class="mb-2">
-                                <div class="d-flex justify-content-between small text-muted mb-1" style="font-size:0.7rem;">
-                                    <span>AI Probability Confluence</span>
-                                    <span style="color: var(--neon-purple);" class="fw-bold">${signal.accuracy}%</span>
-                                </div>
-                                <div class="accuracy-bar"><div class="accuracy-fill" style="width: ${signal.accuracy}%"></div></div>
+                            <div>
+                                <div class="text-[10px] text-gray-500">TARGET TP</div>
+                                <div class="text-tp text-sm">${s.tp1}</div>
                             </div>
-                            <div class="text-muted mt-2 pt-1 small border-top border-dark" style="font-size:0.7rem; color: var(--text-muted) !important;">
-                                <strong>Logic Matrix:</strong> ${signal.tech_logic || "Algorithmic Regime Expansion Locked."}
+                            <div>
+                                <div class="text-[10px] text-gray-500">STOP LOSS</div>
+                                <div class="text-sl text-sm">${s.sl}</div>
                             </div>
                         </div>
-                    </div>
-                `;
-                signalsContainer.innerHTML += cardHtml;
-            });
-        });
-    </script>
-</body>
-</html>
+
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-[10px] text-gray-500">
+                                <span>AI Confluence Probability</span>
+                                <span class="text-cyber-purple font-bold">${s.accuracy}%</span>
+                            </div>
+                            <div class="accuracy-bar">
+                                <div class="accuracy-fill" style="width: ${s.accuracy}%; background: ${isVIP ? 'linear-gradient(90deg, #fbbf24, #f5
