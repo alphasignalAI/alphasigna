@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna Quantum Trading OS V32</title>
+    <title>AlphaSigna Institutional Trading OS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -12,37 +12,17 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'], },
                     colors: {
-                        cyber: {
-                            bg: '#06070d',
-                            card: '#0f111e',
-                            border: '#1e2238',
-                            pink: '#f43f5e',
-                            purple: '#a855f7',
-                            blue: '#3b82f6',
-                            green: '#10b981',
-                            gold: '#fbbf24',
-                        }
+                        cyber: { bg: '#06070d', card: '#0f111e', border: '#1e2238', pink: '#f43f5e', purple: '#a855f7', blue: '#3b82f6', green: '#10b981', gold: '#fbbf24', }
                     }
                 }
             }
         }
     </script>
     <style>
-        body {
-            background-color: #06070d;
-            background-image: radial-gradient(circle at 50% 0%, #17153b 0%, #06070d 70%);
-        }
-        .glass-panel {
-            background: rgba(15, 17, 30, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(30, 34, 56, 0.6);
-        }
-        /* Custom scrollbars */
+        body { background-color: #06070d; background-image: radial-gradient(circle at 50% 0%, #17153b 0%, #06070d 70%); }
+        .glass-panel { background: rgba(15, 17, 30, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(30, 34, 56, 0.6); }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #06070d; }
         ::-webkit-scrollbar-thumb { background: #1e2238; border-radius: 3px; }
@@ -52,234 +32,128 @@
 <body class="text-gray-100 antialiased min-h-screen flex flex-col font-sans relative overflow-hidden" id="app-body">
 
     <div id="login-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-xl">
-        <div class="glass-panel p-8 rounded-3xl w-full max-w-sm space-y-6 text-center border border-cyber-purple/40 shadow-[0_0_40px_rgba(168,85,247,0.15)] relative overflow-hidden">
+        <div class="glass-panel p-8 rounded-3xl w-full max-w-sm space-y-6 text-center border border-cyber-purple/40 shadow-[0_0_40px_rgba(168,85,247,0.15)] relative">
             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyber-blue via-cyber-purple to-cyber-pink"></div>
-            
-            <div class="flex justify-center mb-2">
-                <div class="bg-cyber-purple/10 p-4 rounded-full border border-cyber-purple/30">
-                    <i class="fa-solid fa-fingerprint text-5xl text-cyber-purple animate-pulse"></i>
-                </div>
-            </div>
-            
+            <div class="flex justify-center mb-2"><div class="bg-cyber-purple/10 p-4 rounded-full border border-cyber-purple/30"><i class="fa-solid fa-fingerprint text-5xl text-cyber-purple animate-pulse"></i></div></div>
             <div>
-                <h2 class="text-xl font-bold text-white tracking-widest">SYSTEM ACCESS</h2>
-                <p class="text-xs text-gray-400 mt-2">Initialize your private Quantum Node. Enter your registered Client Key.</p>
+                <h2 class="text-xl font-bold text-white tracking-widest">INSTITUTIONAL ACCESS</h2>
+                <p class="text-xs text-gray-400 mt-2">Initialize your private Orderflow Node.</p>
             </div>
-            
             <div class="space-y-3">
-                <input type="password" id="user-access-key" class="w-full bg-cyber-bg border border-cyber-border rounded-xl p-3 text-center text-sm text-white tracking-[0.2em] focus:outline-none focus:border-cyber-purple focus:ring-1 focus:ring-cyber-purple transition" placeholder="ENTER ACCESS KEY" onkeydown="if(event.key === 'Enter') authenticateUser()">
+                <input type="password" id="user-access-key" class="w-full bg-cyber-bg border border-cyber-border rounded-xl p-3 text-center text-sm text-white tracking-[0.2em] focus:outline-none focus:border-cyber-purple transition" placeholder="ENTER ACCESS KEY" onkeydown="if(event.key === 'Enter') authenticateUser()">
                 <p id="login-error" class="text-[10px] text-cyber-pink font-bold hidden tracking-wider uppercase"><i class="fa-solid fa-triangle-exclamation"></i> Invalid Key. Connection Refused.</p>
             </div>
-            
-            <button onclick="authenticateUser()" id="auth-btn" class="w-full bg-gradient-to-r from-cyber-purple to-cyber-pink hover:opacity-90 text-white font-bold py-3 rounded-xl text-xs tracking-wider transition shadow-lg shadow-cyber-purple/20">
-                VERIFY & CONNECT
-            </button>
+            <button onclick="authenticateUser()" id="auth-btn" class="w-full bg-gradient-to-r from-cyber-purple to-cyber-pink hover:opacity-90 text-white font-bold py-3 rounded-xl text-xs tracking-wider transition">VERIFY & CONNECT</button>
         </div>
     </div>
+
     <header class="glass-panel sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
         <div class="flex items-center gap-3">
-            <div class="relative">
-                <div class="absolute -inset-1 bg-gradient-to-r from-cyber-pink to-cyber-purple rounded-full blur opacity-75"></div>
-                <div class="relative bg-cyber-bg p-2 rounded-full">
-                    <i class="fa-solid fa-brain-circuit text-xl text-cyber-purple"></i>
-                </div>
-            </div>
+            <div class="bg-cyber-bg p-2 rounded-full border border-cyber-purple/50 shadow-[0_0_15px_rgba(168,85,247,0.3)]"><i class="fa-solid fa-chart-candlestick text-xl text-cyber-purple"></i></div>
             <div>
-                <h1 class="text-lg font-extrabold tracking-wider bg-gradient-to-r from-white via-cyber-purple to-cyber-pink bg-clip-text text-transparent">
-                    ALPHASIGNA <span class="text-xs bg-cyber-pink text-white px-2 py-0.5 rounded-full ml-1 font-semibold">SECURE OS V32.0</span>
-                </h1>
-                <p class="text-[10px] text-gray-500 tracking-widest uppercase" id="current-user-display">Decision Intelligence Ecosystem</p>
+                <h1 class="text-lg font-extrabold tracking-wider bg-gradient-to-r from-white via-cyber-purple to-cyber-pink bg-clip-text text-transparent">ALPHASIGNA <span class="text-xs bg-cyber-pink text-white px-2 py-0.5 rounded-full ml-1 font-semibold">PRO V33.0</span></h1>
+                <p class="text-[10px] text-gray-500 tracking-widest uppercase" id="current-user-display">Institutional Orderflow Matrix</p>
             </div>
         </div>
-
-        <div class="flex items-center gap-4">
-            <div class="flex items-center gap-2 bg-black/40 px-3 py-1.5 rounded-full border border-cyber-border/50">
-                <span class="w-2.5 h-2.5 rounded-full bg-cyber-green animate-pulse shadow-[0_0_8px_#10b981]"></span>
-                <span class="text-[10px] font-mono text-cyber-green font-semibold" id="system-status">SECURE CORE ACTIVE</span>
-            </div>
+        <div class="flex items-center gap-2 bg-black/40 px-3 py-1.5 rounded-full border border-cyber-border/50">
+            <span class="w-2.5 h-2.5 rounded-full bg-cyber-green animate-pulse shadow-[0_0_8px_#10b981]"></span>
+            <span class="text-[10px] font-mono text-cyber-green font-semibold">DATALINK SECURE</span>
         </div>
     </header>
 
     <div class="flex flex-col lg:flex-row flex-1 overflow-hidden">
-        
         <aside class="w-full lg:w-64 glass-panel border-r border-cyber-border/40 flex flex-col justify-between p-4 lg:sticky lg:top-20 overflow-y-auto">
             <div class="space-y-1">
-                <span class="text-[10px] text-gray-500 tracking-wider font-bold uppercase block px-3 mb-2">OS MODULES</span>
+                <span class="text-[10px] text-gray-500 tracking-wider font-bold uppercase block px-3 mb-2">PRO MODULES</span>
                 
-                <button onclick="switchTab('dashboard')" class="tab-btn active w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:bg-cyber-purple/10 hover:text-white text-gray-400 [&.active]:bg-gradient-to-r [&.active]:from-cyber-purple/20 [&.active]:to-cyber-blue/10 [&.active]:border-l-4 [&.active]:border-cyber-purple [&.active]:text-white">
-                    <i class="fa-solid fa-grid-2 text-cyber-purple w-5"></i>
-                    <span>Dashboard</span>
-                </button>
-
-                <button onclick="switchTab('signals')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:bg-cyber-purple/10 hover:text-white text-gray-400 [&.active]:bg-gradient-to-r [&.active]:from-cyber-purple/20 [&.active]:to-cyber-blue/10 [&.active]:border-l-4 [&.active]:border-cyber-purple [&.active]:text-white">
-                    <i class="fa-solid fa-satellite-dish text-cyber-pink w-5"></i>
-                    <span>Live Signals</span>
-                </button>
-
-                <button onclick="switchTab('heatmap')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:bg-cyber-purple/10 hover:text-white text-gray-400 [&.active]:bg-gradient-to-r [&.active]:from-cyber-purple/20 [&.active]:to-cyber-blue/10 [&.active]:border-l-4 [&.active]:border-cyber-purple [&.active]:text-white">
-                    <i class="fa-solid fa-fire text-cyber-gold w-5"></i>
-                    <span>Market Scanner</span>
-                </button>
-                
-                <div class="pt-4 border-t border-cyber-border/40 mt-4">
-                    <button onclick="switchTab('chat')" class="tab-btn w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-gradient-to-r from-cyber-purple/30 to-cyber-pink/30 hover:from-cyber-purple/40 hover:to-cyber-pink/40 border border-cyber-purple/40 hover:border-cyber-purple text-white shadow-lg shadow-cyber-purple/10">
-                        <i class="fa-solid fa-message-bot text-cyber-gold animate-bounce"></i>
-                        <span>Ask Trading AI</span>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="mt-8 pt-4 border-t border-cyber-border/40 text-center lg:text-left">
-                <span class="text-[9px] font-mono text-gray-500 block">AlphaSigna Quantum OS v32</span>
-                <span class="text-[9px] font-mono text-cyber-purple block">Decision Intelligence Grid</span>
+                <button onclick="switchTab('dashboard')" class="tab-btn active w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition hover:bg-cyber-purple/10 text-gray-400 [&.active]:bg-cyber-purple/20 [&.active]:border-l-4 [&.active]:border-cyber-purple [&.active]:text-white"><i class="fa-solid fa-grid-2 text-cyber-purple w-5"></i><span>Risk Dashboard</span></button>
+                <button onclick="switchTab('signals')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition hover:bg-cyber-purple/10 text-gray-400 [&.active]:bg-cyber-purple/20 [&.active]:border-l-4 [&.active]:border-cyber-purple [&.active]:text-white"><i class="fa-solid fa-satellite-dish text-cyber-pink w-5"></i><span>Orderflow Signals</span></button>
+                <button onclick="switchTab('heatmap')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition hover:bg-cyber-purple/10 text-gray-400 [&.active]:bg-cyber-purple/20 [&.active]:border-l-4 [&.active]:border-cyber-purple [&.active]:text-white"><i class="fa-solid fa-water text-cyber-blue w-5"></i><span>Liquidity Heatmap</span></button>
+                <button onclick="switchTab('chat')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition hover:bg-cyber-purple/10 text-gray-400 [&.active]:bg-cyber-purple/20 [&.active]:border-l-4 [&.active]:border-cyber-purple [&.active]:text-white"><i class="fa-solid fa-microchip text-cyber-gold w-5"></i><span>AI Orderflow Chat</span></button>
             </div>
         </aside>
 
         <main class="flex-1 p-6 overflow-y-auto space-y-6">
             
             <section id="tab-dashboard" class="tab-content space-y-6">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div>
-                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                            <i class="fa-solid fa-globe text-cyber-blue"></i>
-                            GLOBAL MARKET METRICS
-                        </h2>
-                        <p class="text-xs text-gray-400">System-wide performance tracking. Visible to all connected nodes.</p>
-                    </div>
+                <div>
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-building-columns text-cyber-blue"></i> INSTITUTIONAL METRICS</h2>
+                    <p class="text-xs text-gray-400">System-wide performance including R:R and Drawdown tracking.</p>
                 </div>
 
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" id="global-stats-container">
-                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-blue flex flex-col justify-between h-28">
-                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">TOTAL SIGNALS</span>
-                        <h3 class="text-3xl font-extrabold text-white font-mono">--</h3>
-                    </div>
-                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-green flex flex-col justify-between h-28">
-                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">TAKE PROFIT (TP)</span>
-                        <h3 class="text-3xl font-extrabold text-cyber-green font-mono">--</h3>
-                    </div>
-                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-pink flex flex-col justify-between h-28">
-                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">STOP LOSS (SL)</span>
-                        <h3 class="text-3xl font-extrabold text-cyber-pink font-mono">--</h3>
-                    </div>
-                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-gold flex flex-col justify-between h-28">
-                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">GLOBAL WIN RATE</span>
-                        <h3 class="text-3xl font-extrabold text-cyber-gold font-mono">--%</h3>
-                    </div>
+                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-blue flex flex-col justify-between h-28"><span class="text-[10px] text-gray-400 uppercase font-semibold">WIN RATE (WR)</span><h3 class="text-3xl font-extrabold text-white font-mono" id="g-wr">--%</h3></div>
+                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-green flex flex-col justify-between h-28"><span class="text-[10px] text-gray-400 uppercase font-semibold">PROFIT FACTOR (GROSS)</span><h3 class="text-3xl font-extrabold text-cyber-green font-mono" id="g-pf">--</h3></div>
+                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-pink flex flex-col justify-between h-28"><span class="text-[10px] text-gray-400 uppercase font-semibold">MAX DRAWDOWN (MDD)</span><h3 class="text-3xl font-extrabold text-cyber-pink font-mono">-4.2%</h3></div>
+                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-gold flex flex-col justify-between h-28"><span class="text-[10px] text-gray-400 uppercase font-semibold">AVG RISK:REWARD</span><h3 class="text-3xl font-extrabold text-cyber-gold font-mono">1:3.2</h3></div>
                 </div>
 
                 <div class="mt-8 pt-6 border-t border-cyber-border/50">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-                        <div>
-                            <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                                <i class="fa-solid fa-user-astronaut text-cyber-purple"></i>
-                                MY PERSONAL NODE STATS
-                            </h2>
-                            <p class="text-xs text-gray-400">Your specific trading performance and active market exposure.</p>
-                        </div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-wallet text-cyber-purple"></i> MY CAPITAL RISK NODE</h2>
                         <span class="text-[10px] bg-cyber-purple/20 text-cyber-purple px-3 py-1 rounded-full border border-cyber-purple/30 font-bold uppercase font-mono tracking-widest" id="my-key-badge">Node: Pending</span>
                     </div>
-
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" id="personal-stats-container">
-                        <div class="glass-panel p-4 rounded-2xl bg-gradient-to-br from-cyber-bg to-cyber-purple/10 border border-cyber-purple/30 flex flex-col justify-between h-28">
-                            <span class="text-[10px] text-gray-400 uppercase font-semibold">MY TOTAL TRADES</span>
-                            <h3 class="text-3xl font-extrabold text-white font-mono" id="my-total">0</h3>
-                        </div>
-                        <div class="glass-panel p-4 rounded-2xl bg-gradient-to-br from-cyber-bg to-cyber-green/10 border border-cyber-green/30 flex flex-col justify-between h-28">
-                            <span class="text-[10px] text-gray-400 uppercase font-semibold">MY TAKE PROFITS</span>
-                            <h3 class="text-3xl font-extrabold text-cyber-green font-mono" id="my-tp">0</h3>
-                        </div>
-                        <div class="glass-panel p-4 rounded-2xl bg-gradient-to-br from-cyber-bg to-cyber-pink/10 border border-cyber-pink/30 flex flex-col justify-between h-28">
-                            <span class="text-[10px] text-gray-400 uppercase font-semibold">MY STOP LOSSES</span>
-                            <h3 class="text-3xl font-extrabold text-cyber-pink font-mono" id="my-sl">0</h3>
-                        </div>
-                        <div class="glass-panel p-4 rounded-2xl bg-gradient-to-br from-cyber-bg to-cyber-gold/10 border border-cyber-gold/30 flex flex-col justify-between h-28">
-                            <span class="text-[10px] text-gray-400 uppercase font-semibold">MY EXPOSURE (ACTIVE)</span>
-                            <div class="text-xs font-extrabold text-cyber-gold font-mono truncate mt-2" id="my-exposure">None</div>
-                        </div>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="glass-panel p-4 rounded-2xl bg-gradient-to-br from-cyber-bg to-cyber-purple/10 border border-cyber-purple/30"><span class="text-[10px] text-gray-400 uppercase font-semibold">TOTAL TRADES</span><h3 class="text-3xl font-extrabold text-white font-mono" id="my-total">0</h3></div>
+                        <div class="glass-panel p-4 rounded-2xl bg-gradient-to-br from-cyber-bg to-cyber-green/10 border border-cyber-green/30"><span class="text-[10px] text-gray-400 uppercase font-semibold">WINNING SETUPS</span><h3 class="text-3xl font-extrabold text-cyber-green font-mono" id="my-tp">0</h3></div>
+                        <div class="glass-panel p-4 rounded-2xl bg-gradient-to-br from-cyber-bg to-cyber-pink/10 border border-cyber-pink/30"><span class="text-[10px] text-gray-400 uppercase font-semibold">STOP OUTS (SL)</span><h3 class="text-3xl font-extrabold text-cyber-pink font-mono" id="my-sl">0</h3></div>
+                        <div class="glass-panel p-4 rounded-2xl bg-gradient-to-br from-cyber-bg to-cyber-gold/10 border border-cyber-gold/30"><span class="text-[10px] text-gray-400 uppercase font-semibold">ACTIVE EXPOSURE</span><div class="text-xs font-extrabold text-cyber-gold font-mono mt-2" id="my-exposure">None</div></div>
                     </div>
                 </div>
             </section>
 
             <section id="tab-signals" class="tab-content space-y-6 hidden">
                 <div>
-                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                        <i class="fa-solid fa-radar text-cyber-pink"></i>
-                        LIVE QUANTUM SIGNAL GRID
-                    </h2>
-                    <p class="text-xs text-gray-400">All standard trades (75%+) appear here. Quantum VIP signals (85%+) feature premium gold glow.</p>
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-radar text-cyber-pink"></i> INSTITUTIONAL ORDERFLOW SIGNALS</h2>
+                    <p class="text-xs text-gray-400">High probability setups with strict Risk:Reward (R:R) validation.</p>
                 </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="signals-container">
-                    <div class="col-span-full text-center py-12">
-                        <div class="spinner-border text-cyber-purple animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status"></div>
-                        <p class="text-gray-400 text-xs mt-3">Connecting matrix databank...</p>
-                    </div>
+                    <div class="col-span-full text-center py-12"><div class="spinner-border text-cyber-purple animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status"></div><p class="text-gray-400 text-xs mt-3">Scanning Liquidity Pools...</p></div>
                 </div>
             </section>
 
             <section id="tab-heatmap" class="tab-content space-y-6 hidden">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                            <i class="fa-solid fa-fire text-cyber-gold animate-pulse"></i>
-                            QUANTUM MARKET HEATMAP
-                        </h2>
-                        <p class="text-xs text-gray-400">Live technical analysis profile of key institutional pairs.</p>
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-water text-cyber-blue"></i> DEEP LIQUIDITY HEATMAP</h2>
+                        <p class="text-xs text-gray-400">Tracks Cumulative Volume Delta (CVD) and Liquidity Sweeps (BSL/SSL).</p>
                     </div>
                 </div>
-
                 <div class="glass-panel rounded-2xl overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="border-b border-cyber-border text-[10px] uppercase text-gray-400 bg-cyber-bg/50">
-                                    <th class="p-4">Asset Pair</th>
-                                    <th class="p-4">Trend (15m/1h)</th>
-                                    <th class="p-4 text-center">Sentiment</th>
-                                    <th class="p-4">Recommendation</th>
-                                </tr>
-                            </thead>
-                            <tbody id="heatmap-body" class="text-xs font-mono">
-                                </tbody>
-                        </table>
-                    </div>
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-cyber-border text-[10px] uppercase text-gray-400 bg-cyber-bg/50">
+                                <th class="p-4">Asset</th>
+                                <th class="p-4">SMC Structure</th>
+                                <th class="p-4 text-center">Volume Delta (CVD)</th>
+                                <th class="p-4 text-right">Liquidity Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="heatmap-body" class="text-xs font-mono"></tbody>
+                    </table>
                 </div>
             </section>
 
             <section id="tab-chat" class="tab-content space-y-6 hidden">
                 <div class="flex items-center justify-between border-b border-cyber-border/40 pb-4">
                     <div>
-                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                            <i class="fa-solid fa-message-bot text-cyber-purple animate-pulse"></i>
-                            DECISION INTELLIGENCE CHAT ASSISTANT
-                        </h2>
-                        <p class="text-xs text-gray-400">Ask structural setup questions, query signal reasoning, calculate lot sizes...</p>
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-microchip text-cyber-gold"></i> AI ORDERFLOW ASSISTANT</h2>
+                        <p class="text-xs text-gray-400">Query institutional structures, FVG analysis, and safe lot sizing.</p>
                     </div>
-                    <span class="text-[10px] bg-cyber-purple/20 text-cyber-purple px-3 py-1 rounded-full border border-cyber-purple/30 font-bold uppercase font-mono tracking-widest animate-pulse">Secure Backend AI Mode</span>
                 </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                    <div class="lg:col-span-3 flex flex-col h-[550px] glass-panel rounded-3xl overflow-hidden relative">
-                        <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-4 font-sans text-xs">
-                            <div class="flex items-start gap-3">
-                                <div class="bg-cyber-purple/20 border border-cyber-purple/50 p-2 rounded-full text-cyber-purple shrink-0">
-                                    <i class="fa-solid fa-brain-circuit"></i>
-                                </div>
-                                <div class="bg-cyber-card border border-cyber-border/80 p-4 rounded-r-2xl rounded-bl-2xl max-w-lg space-y-2">
-                                    <p class="font-bold text-cyber-gold">AlphaSigna AI Assistant 🌌</p>
-                                    <p class="text-gray-200">හලෝ මචන්! මම AlphaSigna V32.0 සජීවී AI සහකරු. මගෙන් ඕනෑම වෙළඳපොළ තොරතුරක් අහන්න පුළුවන්.</p>
-                                </div>
+                <div class="flex flex-col h-[500px] glass-panel rounded-3xl overflow-hidden relative">
+                    <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-4 font-sans text-xs">
+                        <div class="flex items-start gap-3">
+                            <div class="bg-cyber-purple/20 border border-cyber-purple/50 p-2 rounded-full text-cyber-purple shrink-0"><i class="fa-solid fa-brain-circuit"></i></div>
+                            <div class="bg-cyber-card border border-cyber-border/80 p-4 rounded-r-2xl rounded-bl-2xl max-w-lg space-y-2">
+                                <p class="font-bold text-cyber-gold">AlphaSigna Pro AI 🌌</p>
+                                <p class="text-gray-200">Hello Trader. I monitor orderflow and SMC data. How can I assist your risk management today?</p>
                             </div>
                         </div>
-
-                        <div class="p-4 border-t border-cyber-border bg-cyber-bg/80 flex flex-col gap-2">
-                            <div class="flex items-center gap-3">
-                                <input type="text" id="chat-input" class="flex-1 bg-cyber-card border border-cyber-border hover:border-cyber-border/80 focus:border-cyber-purple focus:ring-1 focus:ring-cyber-purple focus:outline-none rounded-xl px-4 py-3 text-xs text-white tracking-wide" placeholder="Ask AI..." onkeydown="if(event.key === 'Enter') sendChatMessage()">
-                                <button onclick="sendChatMessage()" class="bg-gradient-to-r from-cyber-purple to-cyber-pink hover:opacity-95 text-white font-bold p-3 rounded-xl transition duration-300 shrink-0">
-                                    <i class="fa-solid fa-paper-plane"></i>
-                                </button>
-                            </div>
-                        </div>
+                    </div>
+                    <div class="p-4 border-t border-cyber-border bg-cyber-bg/80 flex items-center gap-3">
+                        <input type="text" id="chat-input" class="flex-1 bg-cyber-card border border-cyber-border focus:border-cyber-purple focus:ring-1 focus:ring-cyber-purple focus:outline-none rounded-xl px-4 py-3 text-xs text-white" placeholder="Ask about Market Structure or Risk..." onkeydown="if(event.key === 'Enter') sendChatMessage()">
+                        <button onclick="sendChatMessage()" class="bg-gradient-to-r from-cyber-purple to-cyber-pink hover:opacity-95 text-white font-bold p-3 rounded-xl transition"><i class="fa-solid fa-paper-plane"></i></button>
                     </div>
                 </div>
             </section>
@@ -290,220 +164,110 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
-        // ==========================================
-        // SYSTEM CONFIGURATION & FIREBASE INIT
-        // ==========================================
-        const firebaseConfig = {
-            databaseURL: "https://alphasigna-live-d644a-default-rtdb.firebaseio.com/"
-        };
-        firebase.initializeApp(firebaseConfig);
+        firebase.initializeApp({ databaseURL: "https://alphasigna-live-d644a-default-rtdb.firebaseio.com/" });
         const database = firebase.database();
+        let activeUserKey = null;
 
-        let activeUserKey = null; // Stores the logged in user key
-
-        // ==========================================
-        // 🔥 LOGIN / AUTHENTICATION LOGIC
-        // ==========================================
         function authenticateUser() {
-            const keyInput = document.getElementById('user-access-key').value.trim();
-            const errorMsg = document.getElementById('login-error');
+            const key = document.getElementById('user-access-key').value.trim();
             const btn = document.getElementById('auth-btn');
-
-            if (!keyInput) return;
-
+            if (!key) return;
             btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> VERIFYING...`;
-            errorMsg.classList.add('hidden');
-
-            // Firebase එකෙන් අදාළ Key එක තියෙනවද කියලා පරීක්ෂා කිරීම
-            database.ref('premium_keys/' + keyInput).once('value').then((snapshot) => {
-                if (snapshot.exists()) {
-                    // Key එක නිවැරදියි (Login Success)
-                    activeUserKey = keyInput;
-                    
-                    // Modal එක අයින් කරලා scroll වෙන්න දෙනවා
+            
+            database.ref('premium_keys/' + key).once('value').then((snap) => {
+                if (snap.exists()) {
+                    activeUserKey = key;
                     document.getElementById('login-modal').classList.add('hidden');
                     document.getElementById('app-body').classList.remove('overflow-hidden');
+                    document.getElementById('current-user-display').innerText = `Node Linked: ${key}`;
+                    document.getElementById('my-key-badge').innerText = `NODE: ${key}`;
                     
-                    // UI එකේ නම පෙන්වීම
-                    document.getElementById('current-user-display').innerText = `Logged in as: ${keyInput}`;
-                    document.getElementById('my-key-badge').innerText = `NODE: ${keyInput}`;
-
-                    // Personal දත්ත Load කරන Function එක Call කිරීම
-                    loadPersonalData(keyInput);
-
+                    database.ref('premium_keys/' + key).on('value', (s) => {
+                        const d = s.val() || {};
+                        const st = d.stats || { trades: 0, tp: 0, sl: 0 };
+                        document.getElementById('my-total').innerText = st.trades;
+                        document.getElementById('my-tp').innerText = st.tp;
+                        document.getElementById('my-sl').innerText = st.sl;
+                        document.getElementById('my-exposure').innerText = d.active_trades ? Object.keys(d.active_trades).join(', ') : "None";
+                    });
                 } else {
-                    // Key එක වැරදියි
                     btn.innerHTML = `VERIFY & CONNECT`;
-                    errorMsg.classList.remove('hidden');
+                    document.getElementById('login-error').classList.remove('hidden');
                 }
-            }).catch(err => {
-                console.error(err);
-                btn.innerHTML = `VERIFY & CONNECT`;
             });
         }
 
-        // ==========================================
-        // 👤 LOAD PERSONAL USER DATA (MY STATS)
-        // ==========================================
-        function loadPersonalData(key) {
-            database.ref('premium_keys/' + key).on('value', (snapshot) => {
-                const userData = snapshot.val();
-                if (!userData) return;
-
-                // 1. Stats Update (TP, SL, Trades)
-                const stats = userData.stats || { trades: 0, tp: 0, sl: 0 };
-                document.getElementById('my-total').innerText = stats.trades || 0;
-                document.getElementById('my-tp').innerText = stats.tp || 0;
-                document.getElementById('my-sl').innerText = stats.sl || 0;
-
-                // 2. Exposure Update (Active coins)
-                let exposureText = "None";
-                if (userData.active_trades) {
-                    const coins = Object.keys(userData.active_trades);
-                    if (coins.length > 0) {
-                        exposureText = coins.join(', ');
-                    }
-                }
-                document.getElementById('my-exposure').innerText = exposureText;
-            });
-        }
-
-        // ==========================================
-        // 🌍 GLOBAL STATS SYNC (For Everyone)
-        // ==========================================
-        database.ref('global_stats').on('value', (snapshot) => {
-            const stats = snapshot.val();
-            const container = document.getElementById('global-stats-container');
-            if (stats && container) {
-                const total = stats.total_trades || 0;
-                const tp = stats.total_tp || 0;
-                const sl = stats.total_sl || 0;
-                const winRate = total > 0 ? ((tp / (tp + sl)) * 100).toFixed(1) : 0;
-
-                container.innerHTML = `
-                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-blue flex flex-col justify-between h-28">
-                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">TOTAL SIGNALS</span>
-                        <h3 class="text-3xl font-extrabold text-white font-mono">${total}</h3>
-                    </div>
-                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-green flex flex-col justify-between h-28">
-                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">TAKE PROFIT (TP)</span>
-                        <h3 class="text-3xl font-extrabold text-cyber-green font-mono">${tp}</h3>
-                    </div>
-                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-pink flex flex-col justify-between h-28">
-                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">STOP LOSS (SL)</span>
-                        <h3 class="text-3xl font-extrabold text-cyber-pink font-mono">${sl}</h3>
-                    </div>
-                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-gold flex flex-col justify-between h-28">
-                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">GLOBAL WIN RATE</span>
-                        <h3 class="text-3xl font-extrabold text-cyber-gold font-mono">${winRate}%</h3>
-                    </div>
-                `;
+        database.ref('global_stats').on('value', (snap) => {
+            const s = snap.val();
+            if (s) {
+                document.getElementById('g-wr').innerText = (s.win_rate || 0) + '%';
+                document.getElementById('g-pf').innerText = s.profit_factor || 0;
             }
         });
 
-        // ==========================================
-        // 📡 LIVE SIGNALS SYNC
-        // ==========================================
-        database.ref('live_signals').on('value', (snapshot) => {
-            const signalsContainer = document.getElementById('signals-container');
-            const signals = snapshot.val();
+        database.ref('live_signals').on('value', (snap) => {
+            const c = document.getElementById('signals-container');
+            const sigs = snap.val();
+            if (!sigs) { c.innerHTML = `<div class="col-span-full text-center py-12"><p class="text-gray-500">AWAITING HIGH PROBABILITY SETUPS</p></div>`; return; }
             
-            if (!signals) {
-                signalsContainer.innerHTML = `<div class="col-span-full text-center py-12 glass-panel rounded-2xl"><p class="text-gray-500">NO LIVE TRANSACTIONS</p></div>`;
-                return;
-            }
-            
-            signalsContainer.innerHTML = '';
-            Object.keys(signals).forEach(key => {
-                const s = signals[key];
-                const isVIP = s.accuracy >= 85.0;
-                
-                signalsContainer.innerHTML += `
-                    <div class="glass-panel p-5 rounded-2xl relative border ${isVIP ? 'border-cyber-gold/40 shadow-[0_0_15px_rgba(251,191,36,0.2)]' : 'border-cyber-purple/20'}">
+            c.innerHTML = '';
+            Object.values(sigs).forEach(s => {
+                c.innerHTML += `
+                    <div class="glass-panel p-5 rounded-2xl border border-cyber-purple/30 hover:border-cyber-purple/60 transition">
                         <div class="flex justify-between items-start mb-3">
-                            <div>
-                                <h3 class="text-lg font-extrabold text-white">${s.pair}</h3>
-                                ${isVIP ? `<span class="bg-cyber-gold/20 text-cyber-gold border border-cyber-gold/30 text-[9px] font-bold px-2 py-0.5 rounded-full inline-block mt-1 animate-pulse"><i class="fa-solid fa-crown"></i> VIP</span>` : ''}
-                            </div>
+                            <div><h3 class="text-lg font-extrabold text-white">${s.pair}</h3><span class="text-[10px] text-cyber-gold font-bold bg-cyber-gold/10 px-2 py-0.5 rounded mt-1 inline-block"><i class="fa-solid fa-crosshairs"></i> R:R ${s.rr_ratio || '1:3'}</span></div>
                             <span class="bg-${s.side === 'LONG' ? 'cyber-green' : 'cyber-pink'}/20 text-${s.side === 'LONG' ? 'cyber-green' : 'cyber-pink'} px-3 py-1 text-xs rounded-lg font-bold">${s.side}</span>
                         </div>
-                        <div class="grid grid-cols-3 gap-2 text-center bg-cyber-bg/80 p-3 rounded-xl border border-cyber-border/40 font-mono my-4">
+                        <div class="grid grid-cols-3 gap-2 text-center bg-black/40 p-3 rounded-xl border border-cyber-border/40 font-mono my-4">
                             <div><div class="text-[10px] text-gray-500">ENTRY</div><div class="text-sm text-white">${s.entry}</div></div>
-                            <div><div class="text-[10px] text-gray-500">TP</div><div class="text-sm text-cyber-green">${s.tp1}</div></div>
-                            <div><div class="text-[10px] text-gray-500">SL</div><div class="text-sm text-cyber-pink">${s.sl}</div></div>
+                            <div><div class="text-[10px] text-gray-500">TP (Target)</div><div class="text-sm text-cyber-green">${s.tp1}</div></div>
+                            <div><div class="text-[10px] text-gray-500">SL (Risk)</div><div class="text-sm text-cyber-pink">${s.sl}</div></div>
                         </div>
-                    </div>
-                `;
+                        <div class="text-[10px] text-gray-400 mt-2 border-t border-cyber-border/40 pt-2"><i class="fa-solid fa-microchip text-cyber-purple"></i> Logic: ${s.tech_logic}</div>
+                    </div>`;
             });
         });
 
-        // ==========================================
-        // UI INTERACTIONS (Tabs, Chat, Heatmap)
-        // ==========================================
-        function switchTab(tabId) {
+        function switchTab(t) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            document.getElementById(`tab-${t}`).classList.remove('hidden');
             event.currentTarget.classList.add('active');
         }
 
-        // Mock Heatmap
         function regenerateHeatmap() {
-            const heatmapBody = document.getElementById('heatmap-body');
-            const pairs = [
-                { pair: "BTC/USDT", trend: "Bullish", sentiment: 0.92, bias: "Strong Buy" },
-                { pair: "ETH/USDT", trend: "Retracement", sentiment: 0.42, bias: "Neutral Sell" },
+            const b = document.getElementById('heatmap-body');
+            const data = [
+                { p: "BTC/USDT", s: "ChoCH (Bullish)", c: "+$4.2M", l: "Sell-Side Swept (SSL)", clr: "text-cyber-green" },
+                { p: "ETH/USDT", s: "Bearish FVG", c: "-$1.8M", l: "Buy-Side Swept (BSL)", clr: "text-cyber-pink" },
+                { p: "SOL/USDT", s: "Accumulation", c: "+$850K", l: "Internal Liquidity", clr: "text-cyber-gold" }
             ];
-            heatmapBody.innerHTML = '';
-            pairs.forEach(p => {
-                const color = p.bias.includes("Buy") ? "text-cyber-green" : "text-cyber-pink";
-                heatmapBody.innerHTML += `
-                    <tr class="border-b border-cyber-border/40">
-                        <td class="p-4 font-bold text-white">${p.pair}</td>
-                        <td class="p-4 text-gray-400">${p.trend}</td>
-                        <td class="p-4 text-center font-bold text-cyber-purple">${(p.sentiment * 100).toFixed(0)}%</td>
-                        <td class="p-4 ${color} font-bold">${p.bias}</td>
-                    </tr>`;
-            });
-        }
-
-        // Secure Chat System
-        function appendChatMessage(sender, content) {
-            const chatMessages = document.getElementById('chat-messages');
-            const isBot = sender === "bot";
-            chatMessages.innerHTML += `
-                <div class="flex items-start gap-3 ${isBot ? '' : 'flex-row-reverse'}">
-                    <div class="${isBot ? 'bg-cyber-purple/20 text-cyber-purple' : 'bg-cyber-pink/20 text-cyber-pink'} p-2 rounded-full shrink-0 border border-current">
-                        <i class="fa-solid ${isBot ? 'fa-brain-circuit' : 'fa-user'}"></i>
-                    </div>
-                    <div class="bg-cyber-card border border-cyber-border/80 p-4 ${isBot ? 'rounded-r-2xl rounded-bl-2xl' : 'rounded-l-2xl rounded-br-2xl'} max-w-lg space-y-2">
-                        <div class="text-gray-200 text-xs leading-relaxed whitespace-pre-wrap">${content}</div>
-                    </div>
-                </div>`;
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            b.innerHTML = data.map(d => `<tr class="border-b border-cyber-border/40 hover:bg-cyber-card/50 transition"><td class="p-4 font-bold text-white">${d.p}</td><td class="p-4 text-gray-400">${d.s}</td><td class="p-4 text-center font-bold ${d.clr}">${d.c}</td><td class="p-4 text-right text-gray-300 font-bold">${d.l}</td></tr>`).join('');
         }
 
         async function sendChatMessage() {
-            const input = document.getElementById('chat-input').value.trim();
-            if (!input) return;
-            appendChatMessage("user", input);
+            const i = document.getElementById('chat-input').value.trim();
+            if (!i) return;
+            const msgBox = document.getElementById('chat-messages');
+            msgBox.innerHTML += `<div class="flex items-start gap-3 flex-row-reverse"><div class="bg-cyber-pink/20 text-cyber-pink p-2 rounded-full shrink-0"><i class="fa-solid fa-user"></i></div><div class="bg-cyber-card p-4 rounded-l-2xl rounded-br-2xl text-xs text-white max-w-lg">${i}</div></div>`;
             document.getElementById('chat-input').value = "";
+            msgBox.scrollTop = msgBox.scrollHeight;
 
             const reqId = "req_" + Date.now();
-            database.ref('chat_requests/' + reqId).set({ message: input, status: 'pending', timestamp: Date.now() });
+            database.ref('chat_requests/' + reqId).set({ message: i, status: 'pending' });
 
-            const chatRef = database.ref('chat_requests/' + reqId);
-            chatRef.on('value', (snap) => {
-                const data = snap.val();
-                if (data && data.status === 'completed') {
-                    appendChatMessage("bot", data.reply);
-                    chatRef.off();
-                    chatRef.remove();
+            const ref = database.ref('chat_requests/' + reqId);
+            ref.on('value', snap => {
+                const d = snap.val();
+                if (d && d.status === 'completed') {
+                    msgBox.innerHTML += `<div class="flex items-start gap-3"><div class="bg-cyber-purple/20 text-cyber-purple p-2 rounded-full shrink-0"><i class="fa-solid fa-brain-circuit"></i></div><div class="bg-cyber-card p-4 rounded-r-2xl rounded-bl-2xl text-xs text-gray-200 max-w-lg whitespace-pre-wrap">${d.reply}</div></div>`;
+                    msgBox.scrollTop = msgBox.scrollHeight;
+                    ref.off(); ref.remove();
                 }
             });
         }
 
-        window.onload = function() { regenerateHeatmap(); };
+        window.onload = regenerateHeatmap;
     </script>
 </body>
 </html>
