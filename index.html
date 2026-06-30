@@ -14,7 +14,7 @@
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'], },
                     colors: {
-                        cyber: { bg: '#06070d', card: '#0f111e', border: '#1e2238', pink: '#f43f5e', purple: '#a855f7', blue: '#3b82f6', green: '#10b981', gold: '#fbbf24', }
+                        cyber: { bg: '#06070d', card: '#0f111e', border: '#1e2238', pink: '#f43f5e', purple: '#a855f7', blue: '#3b82f6', gold: '#fbbf24', green: '#10b981' }
                     }
                 }
             }
@@ -99,6 +99,14 @@
                         <div class="glass-panel p-4 rounded-2xl bg-gradient-to-br from-cyber-bg to-cyber-pink/10 border border-cyber-pink/30"><span class="text-[10px] text-gray-400 uppercase font-semibold">STOP OUTS (SL)</span><h3 class="text-3xl font-extrabold text-cyber-pink font-mono" id="my-sl">0</h3></div>
                         <div class="glass-panel p-4 rounded-2xl bg-gradient-to-br from-cyber-bg to-cyber-gold/10 border border-cyber-gold/30"><span class="text-[10px] text-gray-400 uppercase font-semibold">ACTIVE EXPOSURE</span><div class="text-xs font-extrabold text-cyber-gold font-mono mt-2" id="my-exposure">None</div></div>
                     </div>
+                </div>
+
+                <div class="mt-8 pt-6 border-t border-cyber-border/50">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-chart-candlestick text-cyber-blue"></i> LIVE MARKET MATRIX</h2>
+                        <span class="text-[10px] text-gray-400 font-mono tracking-widest">BTC/USDT REAL-TIME</span>
+                    </div>
+                    <div class="glass-panel p-2 rounded-2xl border border-cyber-purple/30 h-[500px] w-full" id="tradingview_chart"></div>
                 </div>
             </section>
 
@@ -200,8 +208,28 @@
         database.ref('global_stats').on('value', (snap) => {
             const s = snap.val();
             if (s) {
-                document.getElementById('g-wr').innerText = (s.win_rate || 0) + '%';
-                document.getElementById('g-pf').innerText = s.profit_factor || 0;
+                const total = s.total_trades || 0;
+                const tp = s.total_tp || 0;
+                const sl = s.total_sl || 0;
+                
+                let calcWinRate = 0;
+                if (s.win_rate) {
+                    calcWinRate = s.win_rate;
+                } else if (total > 0) {
+                    calcWinRate = ((tp / total) * 100).toFixed(1);
+                }
+
+                let calcProfitFactor = 0;
+                if (s.profit_factor) {
+                    calcProfitFactor = s.profit_factor;
+                } else if (sl > 0) {
+                    calcProfitFactor = ((tp * 3) / (sl * 1)).toFixed(2);
+                } else if (tp > 0) {
+                    calcProfitFactor = "MAX";
+                }
+
+                document.getElementById('g-wr').innerText = calcWinRate + '%';
+                document.getElementById('g-pf').innerText = calcProfitFactor;
             }
         });
 
@@ -232,7 +260,7 @@
             document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(`tab-${t}`).classList.remove('hidden');
-            event.currentTarget.classList.add('active');
+            if(event && event.currentTarget) event.currentTarget.classList.add('active');
         }
 
         function regenerateHeatmap() {
@@ -266,6 +294,35 @@
                 }
             });
         }
+
+        // Load TradingView Widget External Library
+        const tvScript = document.createElement('script');
+        tvScript.src = "https://s3.tradingview.com/tv.js";
+        tvScript.onload = function() {
+            new TradingView.widget({
+                "autosize": true,
+                "symbol": "BINANCE:BTCUSDT",
+                "interval": "15",
+                "timezone": "Etc/UTC",
+                "theme": "dark",
+                "style": "1",
+                "locale": "en",
+                "enable_publishing": false,
+                "backgroundColor": "#0f111e",
+                "gridColor": "#1e2238",
+                "hide_top_toolbar": false,
+                "hide_legend": false,
+                "save_image": false,
+                "container_id": "tradingview_chart",
+                "upColor": "#a855f7",        
+                "downColor": "#f43f5e",      
+                "borderUpColor": "#a855f7",  
+                "borderDownColor": "#f43f5e",
+                "wickUpColor": "#a855f7",    
+                "wickDownColor": "#f43f5e"   
+            });
+        };
+        document.body.appendChild(tvScript);
 
         window.onload = regenerateHeatmap;
     </script>
