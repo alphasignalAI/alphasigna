@@ -153,6 +153,18 @@
                         <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">TOTAL SIGNALS</span>
                         <h3 class="text-3xl font-extrabold text-white font-mono">--</h3>
                     </div>
+                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-green flex flex-col justify-between h-28">
+                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">TAKE PROFIT (TP)</span>
+                        <h3 class="text-3xl font-extrabold text-cyber-green font-mono">--</h3>
+                    </div>
+                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-pink flex flex-col justify-between h-28">
+                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">STOP LOSS (SL)</span>
+                        <h3 class="text-3xl font-extrabold text-cyber-pink font-mono">--</h3>
+                    </div>
+                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-gold flex flex-col justify-between h-28">
+                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">GLOBAL WIN RATE</span>
+                        <h3 class="text-3xl font-extrabold text-cyber-gold font-mono">--%</h3>
+                    </div>
                 </div>
 
                 <div>
@@ -671,7 +683,9 @@
             setTimeout(() => { container.innerHTML = `<div class="space-y-4"><div class="flex items-center justify-between border-b border-cyber-border/40 pb-3"><span class="text-xs font-bold text-gray-400 uppercase">Backtest Report</span><span class="text-[10px] px-3 py-1 rounded-full font-bold bg-black text-cyber-gold">COMPLETED</span></div><div class="grid grid-cols-3 gap-3 text-center"><div class="bg-black/30 p-3 rounded-xl border border-cyber-border/40"><div class="text-[9px] text-gray-500 font-bold mb-1">WIN RATE</div><div class="text-lg font-extrabold text-cyber-green font-mono">72.8%</div></div></div></div>`; }, 1500);
         }
 
-        // Firebase Syncs
+        // ==========================================
+        // 🔥 1. GLOBAL STATS REAL-TIME SYNC
+        // ==========================================
         database.ref('global_stats').on('value', (snapshot) => {
             const stats = snapshot.val();
             const container = document.getElementById('global-stats-container');
@@ -682,35 +696,109 @@
                 const winRate = total > 0 ? ((tp / (tp + sl)) * 100).toFixed(1) : 0;
 
                 container.innerHTML = `
-                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-blue flex flex-col justify-between h-28"><span class="text-xs text-gray-400 uppercase font-semibold">TOTAL SIGNALS</span><h3 class="text-3xl font-extrabold text-white font-mono">${total}</h3></div>
-                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-green flex flex-col justify-between h-28"><span class="text-xs text-gray-400 uppercase font-semibold">TAKE PROFIT (TP)</span><h3 class="text-3xl font-extrabold text-cyber-green font-mono">${tp}</h3></div>
-                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-pink flex flex-col justify-between h-28"><span class="text-xs text-gray-400 uppercase font-semibold">STOP LOSS (SL)</span><h3 class="text-3xl font-extrabold text-cyber-pink font-mono">${sl}</h3></div>
-                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-gold flex flex-col justify-between h-28"><span class="text-xs text-gray-400 uppercase font-semibold">GLOBAL WIN RATE</span><h3 class="text-3xl font-extrabold text-cyber-gold font-mono">${winRate}%</h3></div>
+                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-blue flex flex-col justify-between h-28">
+                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">TOTAL SIGNALS</span>
+                        <h3 class="text-3xl font-extrabold text-white font-mono">${total}</h3>
+                    </div>
+                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-green flex flex-col justify-between h-28">
+                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">TAKE PROFIT (TP)</span>
+                        <h3 class="text-3xl font-extrabold text-cyber-green font-mono">${tp}</h3>
+                    </div>
+                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-pink flex flex-col justify-between h-28">
+                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">STOP LOSS (SL)</span>
+                        <h3 class="text-3xl font-extrabold text-cyber-pink font-mono">${sl}</h3>
+                    </div>
+                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-gold flex flex-col justify-between h-28">
+                        <span class="text-xs text-gray-400 uppercase tracking-wider font-semibold">GLOBAL WIN RATE</span>
+                        <h3 class="text-3xl font-extrabold text-cyber-gold font-mono">${winRate}%</h3>
+                    </div>
                 `;
             }
         });
 
+        // ==========================================
+        // 👥 2. ACTIVE PREMIUM USERS REAL-TIME SYNC
+        // ==========================================
+        database.ref('premium_keys').on('value', (snapshot) => {
+            const users = snapshot.val();
+            const container = document.getElementById('users-container');
+            if (!container) return;
+            
+            if (!users || Object.keys(users).length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center text-xs text-gray-500">No active trading nodes connected.</div>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            Object.keys(users).forEach(username => {
+                const user = users[username];
+                if (user.status === 'active' || (user.stats && user.stats.status === 'active')) {
+                    const stats = user.stats || { trades: 0, tp: 0, sl: 0 };
+                    const expire = user.expire_date || 'N/A';
+                    let activeTradesHtml = '<span class="text-gray-500">None</span>';
+                    
+                    if (user.active_trades) {
+                        const tradeCoins = Object.keys(user.active_trades).join(', ');
+                        if (tradeCoins) activeTradesHtml = `<span class="text-cyber-blue font-semibold">${tradeCoins}</span>`;
+                    }
+                    const winRate = stats.tp + stats.sl > 0 ? ((stats.tp / (stats.tp + stats.sl)) * 100).toFixed(1) : 0;
+
+                    container.innerHTML += `
+                        <div class="glass-panel p-4 rounded-2xl border-t border-cyber-purple/30 flex flex-col justify-between space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-sm text-white flex items-center gap-2"><i class="fa-solid fa-circle-user text-gray-500"></i> ${username}</span>
+                                <span class="text-[9px] bg-cyber-green/10 text-cyber-green border border-cyber-green/20 px-2 py-0.5 rounded-full font-bold">ONLINE</span>
+                            </div>
+                            <div class="text-[10px] text-gray-400 font-mono">Expires: ${expire}</div>
+                            <div class="grid grid-cols-3 gap-2 bg-black/40 p-2 rounded-xl text-center font-mono">
+                                <div><div class="text-[9px] text-gray-500">Trades</div><div class="font-bold text-xs text-white">${stats.trades}</div></div>
+                                <div><div class="text-[9px] text-gray-500">TP</div><div class="font-bold text-xs text-cyber-green">${stats.tp}</div></div>
+                                <div><div class="text-[9px] text-gray-500">SL</div><div class="font-bold text-xs text-cyber-pink">${stats.sl}</div></div>
+                            </div>
+                            <div class="flex justify-between items-center pt-1 border-t border-cyber-border/40 text-[10px]">
+                                <span class="text-gray-400 truncate max-w-[120px]">Exposure: ${activeTradesHtml}</span>
+                                <span class="text-cyber-gold font-bold">WR: ${winRate}%</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+        });
+
+        // ==========================================
+        // 📡 3. LIVE SIGNALS REAL-TIME SYNC
+        // ==========================================
         database.ref('live_signals').on('value', (snapshot) => {
             const signalsContainer = document.getElementById('signals-container');
             const signals = snapshot.val();
+            
             if (!signals) {
                 signalsContainer.innerHTML = `<div class="col-span-full text-center py-12 glass-panel rounded-2xl"><p class="text-gray-500">NO LIVE TRANSACTIONS</p></div>`;
                 return;
             }
+            
             signalsContainer.innerHTML = '';
             Object.keys(signals).forEach(key => {
                 const s = signals[key];
                 const isVIP = s.accuracy >= 85.0;
+                
                 signalsContainer.innerHTML += `
                     <div class="glass-panel p-5 rounded-2xl relative border ${isVIP ? 'border-cyber-gold/40 shadow-[0_0_15px_rgba(251,191,36,0.2)]' : 'border-cyber-purple/20'}">
                         <div class="flex justify-between items-start mb-3">
-                            <div><h3 class="text-lg font-extrabold text-white">${s.pair}</h3></div>
+                            <div>
+                                <h3 class="text-lg font-extrabold text-white">${s.pair}</h3>
+                                ${isVIP ? `<span class="bg-cyber-gold/20 text-cyber-gold border border-cyber-gold/30 text-[9px] font-bold px-2 py-0.5 rounded-full inline-block mt-1 animate-pulse"><i class="fa-solid fa-crown"></i> VIP</span>` : ''}
+                            </div>
                             <span class="bg-${s.side === 'LONG' ? 'cyber-green' : 'cyber-pink'}/20 text-${s.side === 'LONG' ? 'cyber-green' : 'cyber-pink'} px-3 py-1 text-xs rounded-lg font-bold">${s.side}</span>
                         </div>
                         <div class="grid grid-cols-3 gap-2 text-center bg-cyber-bg/80 p-3 rounded-xl border border-cyber-border/40 font-mono my-4">
                             <div><div class="text-[10px] text-gray-500">ENTRY</div><div class="text-sm text-white">${s.entry}</div></div>
                             <div><div class="text-[10px] text-gray-500">TP</div><div class="text-sm text-cyber-green">${s.tp1}</div></div>
                             <div><div class="text-[10px] text-gray-500">SL</div><div class="text-sm text-cyber-pink">${s.sl}</div></div>
+                        </div>
+                        <div class="flex justify-between items-center text-[10px] text-gray-400 mt-2 border-t border-cyber-border/40 pt-2">
+                            <span>Score: <strong class="text-cyber-purple">${s.accuracy}%</strong></span>
+                            <span>Logic: ${s.tech_logic ? s.tech_logic.substring(0, 30) + '...' : 'Matrix Active'}</span>
                         </div>
                     </div>
                 `;
