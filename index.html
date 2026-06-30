@@ -3,37 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna Ultimate Quantum Hub</title>
+    <title>AlphaSigna Quantum Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
+        :root {
+            --bg-color: #0b0c16;
+            --card-bg: #121424;
+            --neon-pink: #f43f5e;
+            --neon-purple: #a855f7;
+            --neon-blue: #3b82f6;
+            --neon-green: #10b981;
+            --text-main: #f3f4f6;
+            --text-muted: #6b7280;
+            --border-color: #1e2235;
+        }
+
         body {
-            background-color: #050505;
-            color: #eaecef;
-            font-family: 'Consolas', 'Courier New', monospace;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            background-image: radial-gradient(circle at 50% 0%, #1e1b4b 0%, var(--bg-color) 70%);
+            min-height: 100vh;
         }
-        .navbar { background-color: #0a0a0a; border-bottom: 1px solid #1f2937; }
+
+        .navbar {
+            background-color: rgba(18, 20, 36, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
         .card {
-            background-color: #0f1219;
-            border: 1px solid #1f2937;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            transition: all 0.3s ease;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .stats-card { background: linear-gradient(145deg, #0f1219, #1a1f2b); border-left: 4px solid #3b82f6; }
-        .user-card { border-left: 4px solid #a855f7; }
-        .badge-long { background-color: #0ecb81; color: #000; font-weight: bold; }
-        .badge-short { background-color: #f6465d; color: #fff; font-weight: bold; }
-        .text-entry { color: #f0b90b; font-weight: bold; }
-        .text-tp { color: #0ecb81; font-weight: bold; }
-        .text-sl { color: #f6465d; font-weight: bold; }
-        .quantum-glow { border: 1px solid #a855f7 !important; box-shadow: 0 0 20px rgba(168, 85, 247, 0.25) !important; }
+
+        .card:hover {
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* Neon Glow Text and Badges */
+        .text-entry { color: #fbbf24; font-weight: 700; text-shadow: 0 0 10px rgba(251, 191, 36, 0.2); }
+        .text-tp { color: var(--neon-green); font-weight: 700; text-shadow: 0 0 10px rgba(16, 185, 129, 0.2); }
+        .text-sl { color: var(--neon-pink); font-weight: 700; text-shadow: 0 0 10px rgba(244, 63, 94, 0.2); }
+
+        .badge-long {
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: #fff; font-weight: 600; letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .badge-short {
+            background: linear-gradient(135deg, #dc2626, #f43f5e);
+            color: #fff; font-weight: 600; letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3);
+        }
+
+        .stats-card {
+            background: #16192e;
+            border-left: 4px solid var(--neon-blue);
+        }
+
+        .user-card {
+            background: #16192e;
+            border-left: 4px solid var(--neon-purple);
+        }
+
+        .quantum-glow {
+            border: 1px solid rgba(168, 85, 247, 0.4) !important;
+            background: linear-gradient(180deg, var(--card-bg) 0%, #18132b 100%) !important;
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.15) !important;
+        }
+
+        .accuracy-bar {
+            height: 6px; background-color: #1e2235; border-radius: 10px; overflow: hidden;
+        }
+        .accuracy-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-pink) 0%, var(--neon-purple) 100%);
+            box-shadow: 0 0 10px var(--neon-purple);
+        }
+
         .status-dot {
-            width: 10px; height: 10px; background-color: #0ecb81;
+            width: 8px; height: 8px; background-color: var(--neon-green);
             border-radius: 50%; display: inline-block;
-            animation: blink 1.5s infinite;
+            box-shadow: 0 0 8px var(--neon-green);
+            animation: blink 2s infinite;
         }
-        @keyframes blink { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
+        @keyframes blink { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -41,35 +106,42 @@
     <nav class="navbar navbar-dark sticky-top py-3">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="#">
-                <i class="fa-solid fa-microchip text-primary me-2 fs-3"></i>
-                <span class="fw-bold tracking-wider" style="letter-spacing: 2px;">ALPHASIGNA <span class="text-primary">V31.0</span></span>
+                <i class="fa-solid fa-chart-line text-purple me-2 fs-4" style="color: var(--neon-purple);"></i>
+                <span class="fw-bold tracking-wider" style="letter-spacing: 1px; font-size: 1.1rem;">ALPHASIGNA <span style="color: var(--neon-pink);">PRO</span></span>
             </a>
-            <div class="d-flex align-items-center">
-                <span class="status-dot me-2"></span>
-                <span class="text-success small fw-bold" id="system-status">CONNECTING...</span>
+            <div class="d-flex align-items-center bg-dark px-3 py-1 rounded-pill" style="--bs-bg-opacity: 0.4; border: 1px solid var(--border-color);">
+                <span class="status-dot committees-dot me-2"></span>
+                <span class="text-muted small fw-semibold" id="system-status" style="font-size: 0.75rem;">MATRIX LOADING...</span>
             </div>
         </div>
     </nav>
 
     <div class="container my-5">
         
-        <h5 class="text-muted mb-3"><i class="fa-solid fa-globe text-primary me-2"></i>GLOBAL PERFORMANCE MATRIX</h5>
+        <div class="d-flex align-items-center mb-3">
+            <div style="width: 3px; height: 16px; background-color: var(--neon-blue); margin-right: 8px; border-radius: 2px;"></div>
+            <span class="fw-semibold small text-uppercase tracking-wider" style="color: var(--text-muted); font-size: 0.75rem;">Global Performance Matrix</span>
+        </div>
         <div class="row g-3 mb-5" id="global-stats-container">
-            <div class="col-12 text-center text-muted small">Loading Global Stats...</div>
+            <div class="col-12 text-center text-muted small">Accessing cloud intelligence statistics...</div>
         </div>
 
-        <h5 class="text-muted mb-3"><i class="fa-solid fa-users text-purple me-2" style="color: #a855f7;"></i>ACTIVE PREMIUM NODES</h5>
+        <div class="d-flex align-items-center mb-3">
+            <div style="width: 3px; height: 16px; background-color: var(--neon-purple); margin-right: 8px; border-radius: 2px;"></div>
+            <span class="fw-semibold small text-uppercase tracking-wider" style="color: var(--text-muted); font-size: 0.75rem;">Active Trading Nodes</span>
+        </div>
         <div class="row g-3 mb-5" id="users-container">
-            <div class="col-12 text-center text-muted small">Loading User Data...</div>
+            <div class="col-12 text-center text-muted small">Scanning active accounts...</div>
         </div>
 
-        <h5 class="text-muted mb-3"><i class="fa-solid fa-radar text-success me-2"></i>LIVE QUANTUM SIGNALS</h5>
+        <div class="d-flex align-items-center mb-3">
+            <div style="width: 3px; height: 16px; background-color: var(--neon-pink); margin-right: 8px; border-radius: 2px;"></div>
+            <span class="fw-semibold small text-uppercase tracking-wider" style="color: var(--text-muted); font-size: 0.75rem;">Live Market Stream</span>
+        </div>
         <div class="row g-4" id="signals-container">
             <div class="col-12 text-center py-5">
-                <div class="spinner-grow text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-                <p class="text-muted mt-3" style="letter-spacing: 1px;">SYNCING WITH QUANTUM DATABANK...</p>
+                <div class="spinner-border text-light" style="width: 1.5rem; height: 1.5rem;" role="status"></div>
+                <p class="text-muted small mt-3">Listening to Level 2 Orderbooks...</p>
             </div>
         </div>
 
@@ -79,24 +151,22 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
-        // ⚙️ FIREBASE CONFIGURATION
         const firebaseConfig = {
             databaseURL: "https://alphasigna-live-d644a-default-rtdb.firebaseio.com/"
         };
-
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // 🟢 System Status
+        // System Health Node Listener
         database.ref('system_status').on('value', (snapshot) => {
             const data = snapshot.val();
             if(data) {
                 document.getElementById('system-status').innerText = data.message.toUpperCase();
-                document.getElementById('system-status').className = data.is_paused ? "text-warning small fw-bold" : "text-success small fw-bold";
+                document.getElementById('system-status').style.color = data.is_paused ? "var(--neon-pink)" : "var(--neon-green)";
             }
         });
 
-        // 📊 Global Stats
+        // Global Statistics Node Listener
         database.ref('global_stats').on('value', (snapshot) => {
             const stats = snapshot.val();
             const container = document.getElementById('global-stats-container');
@@ -107,77 +177,46 @@
                 const winRate = total > 0 ? ((tp / (tp + sl)) * 100).toFixed(1) : 0;
 
                 container.innerHTML = `
-                    <div class="col-6 col-md-3">
-                        <div class="card stats-card p-3 text-center h-100">
-                            <div class="text-muted small mb-1">TOTAL TRADES</div>
-                            <h3 class="text-white m-0">${total}</h3>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <div class="card stats-card p-3 text-center h-100" style="border-left-color: #0ecb81;">
-                            <div class="text-muted small mb-1">TAKE PROFITS (TP)</div>
-                            <h3 class="text-success m-0">${tp}</h3>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <div class="card stats-card p-3 text-center h-100" style="border-left-color: #f6465d;">
-                            <div class="text-muted small mb-1">STOP LOSS (SL)</div>
-                            <h3 class="text-danger m-0">${sl}</h3>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <div class="card stats-card p-3 text-center h-100" style="border-left-color: #f0b90b;">
-                            <div class="text-muted small mb-1">WIN RATE</div>
-                            <h3 class="text-warning m-0">${winRate}%</h3>
-                        </div>
-                    </div>
+                    <div class="col-6 col-md-3"><div class="card stats-card p-3"><div class="text-muted small mb-1" style="font-size:0.7rem;">TOTAL TRADES</div><h3 class="fw-bold m-0 text-white">${total}</h3></div></div>
+                    <div class="col-6 col-md-3"><div class="card stats-card p-3" style="border-left-color: var(--neon-green);"><div class="text-muted small mb-1" style="font-size:0.7rem;">TAKE PROFIT</div><h3 class="fw-bold m-0" style="color: var(--neon-green);">${tp}</h3></div></div>
+                    <div class="col-6 col-md-3"><div class="card stats-card p-3" style="border-left-color: var(--neon-pink);"><div class="text-muted small mb-1" style="font-size:0.7rem;">STOP LOSS</div><h3 class="fw-bold m-0" style="color: var(--neon-pink);">${sl}</h3></div></div>
+                    <div class="col-6 col-md-3"><div class="card stats-card p-3" style="border-left-color: #fbbf24;"><div class="text-muted small mb-1" style="font-size:0.7rem;">WIN RATE</div><h3 class="fw-bold m-0 text-warning">${winRate}%</h3></div></div>
                 `;
             }
         });
 
-        // 👥 Premium Users
+        // Accounts Node Listener
         database.ref('premium_keys').on('value', (snapshot) => {
             const users = snapshot.val();
             const container = document.getElementById('users-container');
-            
-            if (!users || Object.keys(users).length === 0) {
-                container.innerHTML = `<div class="col-12 text-muted small">No active premium users found.</div>`;
-                return;
-            }
-
+            if (!users) return;
             container.innerHTML = '';
             Object.keys(users).forEach(username => {
                 const user = users[username];
                 if (user.status === 'active' || (user.stats && user.stats.status === 'active')) {
                     const stats = user.stats || { trades: 0, tp: 0, sl: 0 };
-                    const expire = user.expire_date || 'N/A';
-                    
-                    let activeTradesHtml = '<span class="text-muted small">None</span>';
+                    let activeTradesHtml = '<span class="text-muted" style="font-size:0.8rem;">None</span>';
                     if (user.active_trades) {
                         const tradeCoins = Object.keys(user.active_trades).join(', ');
-                        if (tradeCoins) activeTradesHtml = `<span class="text-info small">${tradeCoins}</span>`;
+                        if (tradeCoins) activeTradesHtml = `<span style="color: var(--neon-blue); font-size:0.8rem; font-weight:600;">${tradeCoins}</span>`;
                     }
-
                     const winRate = stats.tp + stats.sl > 0 ? ((stats.tp / (stats.tp + stats.sl)) * 100).toFixed(1) : 0;
 
                     container.innerHTML += `
                         <div class="col-12 col-md-6 col-lg-4">
-                            <div class="card user-card p-3 h-100">
+                            <div class="card user-card p-3">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h5 class="text-white m-0"><i class="fa-solid fa-user-astronaut me-2 text-secondary"></i>${username}</h5>
-                                    <span class="badge bg-success">ACTIVE</span>
+                                    <span class="fw-bold text-white" style="font-size:0.9rem;"><i class="fa-solid fa-circle-user me-2 text-muted"></i>${username}</span>
+                                    <span class="badge bg-dark text-success border border-success" style="font-size:0.65rem; padding: 3px 8px;">ONLINE</span>
                                 </div>
-                                <div class="text-muted" style="font-size: 0.75rem; border-bottom: 1px solid #1f2937; padding-bottom: 8px; margin-bottom: 8px;">
-                                    Valid till: ${expire}
+                                <div class="row text-center g-0 my-2 py-2 rounded" style="background-color: rgba(0,0,0,0.15);">
+                                    <div class="col-4"><div style="font-size:0.65rem;" class="text-muted">Trades</div><div class="fw-bold text-white small">${stats.trades}</div></div>
+                                    <div class="col-4"><div style="font-size:0.65rem;" class="text-muted">TP</div><div class="fw-bold text-success small">${stats.tp}</div></div>
+                                    <div class="col-4"><div style="font-size:0.65rem;" class="text-muted">SL</div><div class="fw-bold text-danger small">${stats.sl}</div></div>
                                 </div>
-                                <div class="row text-center g-1 mb-2">
-                                    <div class="col-4"><div class="small text-muted">Trades</div><div class="text-white">${stats.trades}</div></div>
-                                    <div class="col-4"><div class="small text-muted">TP</div><div class="text-success">${stats.tp}</div></div>
-                                    <div class="col-4"><div class="small text-muted">SL</div><div class="text-danger">${stats.sl}</div></div>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center mt-2 pt-2" style="border-top: 1px solid #1f2937;">
-                                    <span class="small text-muted">Active: ${activeTradesHtml}</span>
-                                    <span class="small text-warning fw-bold">WR: ${winRate}%</span>
+                                <div class="d-flex justify-content-between align-items-center mt-1">
+                                    <span class="small text-muted" style="font-size:0.7rem;">Active: ${activeTradesHtml}</span>
+                                    <span class="fw-bold" style="font-size:0.75rem; color: #fbbf24;">WR: ${winRate}%</span>
                                 </div>
                             </div>
                         </div>
@@ -186,7 +225,7 @@
             });
         });
 
-        // 📡 Live Signals (Quantum)
+        // Live Quantum Signal Stream Engine Listener
         database.ref('live_signals').on('value', (snapshot) => {
             const signalsContainer = document.getElementById('signals-container');
             const signals = snapshot.val();
@@ -194,8 +233,8 @@
             if (!signals || Object.keys(signals).length === 0) {
                 signalsContainer.innerHTML = `
                     <div class="col-12 text-center py-5">
-                        <i class="fa-solid fa-shield-halved text-muted fs-1 mb-3"></i>
-                        <p class="text-muted" style="letter-spacing: 1px;">MARKET NEUTRAL. NO INSTITUTIONAL ACTIVITY DETECTED.</p>
+                        <i class="fa-solid fa-circle-nodes text-muted fs-2 mb-3" style="color: var(--border-color) !important;"></i>
+                        <p class="text-muted small">MATRIX SECURE. SCANNING LEVEL 2 ORDERWALLS FOR WHALE VELOCITY...</p>
                     </div>`;
                 return;
             }
@@ -204,41 +243,43 @@
             Object.keys(signals).forEach(key => {
                 const signal = signals[key];
                 const sideBadge = signal.side === "LONG" ? "badge-long" : "badge-short";
-                const sideIcon = signal.side === "LONG" ? "fa-arrow-trend-up" : "fa-arrow-trend-down";
-                const timeString = signal.timestamp ? new Date(signal.timestamp * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'LIVE';
+                const timeString = signal.timestamp ? new Date(signal.timestamp * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'NOW';
 
                 const cardHtml = `
-                    <div class="col-12 col-lg-6">
-                        <div class="card p-4 quantum-glow">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="col-12 col-md-6">
+                        <div class="card quantum-glow">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
                                 <div>
-                                    <h3 class="fw-bold m-0 text-white">${signal.pair || signal.coin_name || key}</h3>
-                                    <span class="text-muted small"><i class="fa-regular fa-clock me-1"></i> Triggered: ${timeString}</span>
+                                    <h2 class="fw-bold m-0 text-white tracking-tight">${signal.pair || key}</h2>
+                                    <span class="text-muted" style="font-size:0.7rem;"><i class="fa-regular fa-clock me-1"></i> Triggered: ${timeString}</span>
                                 </div>
-                                <div class="text-end">
-                                    <span class="badge ${sideBadge} px-3 py-2 fs-6 rounded-0">
-                                        <i class="fa-solid ${sideIcon} me-1"></i> ${signal.side}
-                                    </span>
-                                </div>
+                                <span class="badge ${sideBadge} px-3 py-2 rounded-3">${signal.side}</span>
                             </div>
                             
-                            <div class="row g-2 text-center mb-4 bg-dark py-3 border border-secondary" style="--bs-border-opacity: .2;">
-                                <div class="col-4 border-end border-secondary" style="--bs-border-opacity: .2;">
-                                    <div class="text-muted small mb-1">ENTRY</div>
+                            <div class="row g-2 text-center my-3 p-3 rounded-3" style="background-color: #0b0c16; border: 1px solid var(--border-color);">
+                                <div class="col-4">
+                                    <div class="text-muted mb-1" style="font-size:0.65rem; font-weight:600;">ENTRY ZONE</div>
                                     <div class="text-entry">${signal.entry}</div>
                                 </div>
-                                <div class="col-4 border-end border-secondary" style="--bs-border-opacity: .2;">
-                                    <div class="text-muted small mb-1">TARGET TP</div>
+                                <div class="col-4">
+                                    <div class="text-muted mb-1" style="font-size:0.65rem; font-weight:600;">TARGET TP</div>
                                     <div class="text-tp">${signal.tp1}</div>
                                 </div>
                                 <div class="col-4">
-                                    <div class="text-muted small mb-1">STOP LOSS</div>
+                                    <div class="text-muted mb-1" style="font-size:0.65rem; font-weight:600;">STOP LOSS</div>
                                     <div class="text-sl">${signal.sl}</div>
                                 </div>
                             </div>
                             
-                            <div class="bg-black p-2 rounded small text-muted border border-secondary mb-2" style="--bs-border-opacity: .1;">
-                                <div><strong class="text-secondary">AI Logic:</strong> ${signal.tech_logic || "Institutional Structuring"}</div>
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between small text-muted mb-1" style="font-size:0.7rem;">
+                                    <span>AI Probability Confluence</span>
+                                    <span style="color: var(--neon-purple);" class="fw-bold">${signal.accuracy}%</span>
+                                </div>
+                                <div class="accuracy-bar"><div class="accuracy-fill" style="width: ${signal.accuracy}%"></div></div>
+                            </div>
+                            <div class="text-muted mt-2 pt-1 small border-top border-dark" style="font-size:0.7rem; color: var(--text-muted) !important;">
+                                <strong>Logic Matrix:</strong> ${signal.tech_logic || "Algorithmic Regime Expansion Locked."}
                             </div>
                         </div>
                     </div>
