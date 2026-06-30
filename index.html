@@ -3,60 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna Live Signals Hub</title>
+    <title>AlphaSigna Ultimate Quantum Hub</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
-            background-color: #0b0e11;
+            background-color: #050505;
             color: #eaecef;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Consolas', 'Courier New', monospace; /* Hacker/Quant Vibe */
         }
         .navbar {
-            background-color: #181a20;
-            border-bottom: 1px solid #2b2f36;
+            background-color: #0a0a0a;
+            border-bottom: 1px solid #1f2937;
         }
         .card {
-            background-color: #181a20;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            background-color: #0f1219;
+            border: 1px solid #1f2937;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
         }
-        .badge-long {
-            background-color: #0ecb81;
-            color: #000;
-            font-weight: bold;
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #3b82f6;
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.2);
         }
-        .badge-short {
-            background-color: #f6465d;
-            color: #fff;
-            font-weight: bold;
+        .badge-long { background-color: #0ecb81; color: #000; font-weight: bold; }
+        .badge-short { background-color: #f6465d; color: #fff; font-weight: bold; }
+        .text-entry { color: #f0b90b; font-weight: bold; font-size: 1.1rem; }
+        .text-tp { color: #0ecb81; font-weight: bold; font-size: 1.1rem; }
+        .text-sl { color: #f6465d; font-weight: bold; font-size: 1.1rem; }
+        
+        .quantum-glow {
+            border: 1px solid #a855f7 !important;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.25) !important;
         }
-        .text-entry { color: #f0b90b; font-weight: 600; }
-        .text-tp { color: #0ecb81; font-weight: 600; }
-        .text-sl { color: #f6465d; font-weight: 600; }
-        .accuracy-bar {
-            height: 6px;
-            border-radius: 3px;
-            background-color: #2b2f36;
-        }
-        .accuracy-fill {
-            height: 100%;
-            border-radius: 3px;
-            background: linear-gradient(90deg, #f0b90b, #0ecb81);
-        }
+        
+        .accuracy-bar { height: 4px; background-color: #1f2937; margin-top: 5px; }
+        .accuracy-fill { height: 100%; background: linear-gradient(90deg, #3b82f6, #a855f7); }
+        
         .status-dot {
-            width: 10px;
-            height: 10px;
-            background-color: #0ecb81;
-            border-radius: 50%;
-            display: inline-block;
+            width: 10px; height: 10px; background-color: #0ecb81;
+            border-radius: 50%; display: inline-block;
             animation: blink 1.5s infinite;
         }
-        @keyframes blink {
-            0% { opacity: 0.3; }
-            50% { opacity: 1; }
-            100% { opacity: 0.3; }
-        }
+        @keyframes blink { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
     </style>
 </head>
 <body>
@@ -64,12 +55,12 @@
     <nav class="navbar navbar-dark sticky-top py-3">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="#">
-                <i class="fa-solid fa-brain text-warning me-2 fs-3"></i>
-                <span class="fw-bold tracking-wider">ALPHASIGNA <span class="text-warning">V27.0</span></span>
+                <i class="fa-solid fa-microchip text-primary me-2 fs-3"></i>
+                <span class="fw-bold tracking-wider" style="letter-spacing: 2px;">ALPHASIGNA <span class="text-primary">V31.0</span></span>
             </a>
             <div class="d-flex align-items-center">
                 <span class="status-dot me-2"></span>
-                <span class="text-muted small" id="system-status">Connecting Live Matrix...</span>
+                <span class="text-success small" id="system-status">QUANTUM CORE ONLINE</span>
             </div>
         </div>
     </nav>
@@ -77,17 +68,17 @@
     <div class="container my-5">
         <div class="row mb-4">
             <div class="col">
-                <h3 class="fw-bold"><i class="fa-solid fa-satellite-dish me-2 text-primary"></i>Live Market Signals</h3>
-                <p class="text-muted small">Real-time dynamic signal grid powered by AI Core.</p>
+                <h4 class="fw-bold text-primary"><i class="fa-solid fa-radar me-2"></i>Institutional Signal Matrix</h4>
+                <p class="text-muted small">Live MTF Confluence & Whale Tracking Network.</p>
             </div>
         </div>
 
         <div class="row g-4" id="signals-container">
             <div class="col-12 text-center py-5">
-                <div class="spinner-border text-warning" role="status">
+                <div class="spinner-grow text-primary" role="status">
                     <span class="visually-hidden">Loading...</span>
                 </div>
-                <p class="text-muted mt-2">Syncing with Firebase Realtime Core...</p>
+                <p class="text-muted mt-3" style="letter-spacing: 1px;">SYNCING WITH QUANTUM DATABANK...</p>
             </div>
         </div>
     </div>
@@ -96,22 +87,13 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
-        // --- ⚙️ FIREBASE CONFIGURATION ---
+        // ⚙️ ඔයාගේ Firebase Config එක මෙතනට දාන්න
         const firebaseConfig = {
             databaseURL: "https://alphasigna-live-d644a-default-rtdb.firebaseio.com/"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-
-        // 📡 System Status Update
-        database.ref('system_status').on('value', (snapshot) => {
-            const data = snapshot.val();
-            if(data) {
-                document.getElementById('system-status').innerText = data.message || "ONLINE";
-            }
-        });
 
         // 📊 Listen to Live Signals
         database.ref('live_signals').on('value', (snapshot) => {
@@ -121,76 +103,75 @@
             if (!signals || Object.keys(signals).length === 0) {
                 signalsContainer.innerHTML = `
                     <div class="col-12 text-center py-5">
-                        <i class="fa-solid fa-circle-exclamation text-muted fs-1 mb-2"></i>
-                        <p class="text-muted">No active signals at the moment. Waiting for market triggers...</p>
+                        <i class="fa-solid fa-shield-halved text-muted fs-1 mb-3"></i>
+                        <p class="text-muted" style="letter-spacing: 1px;">MARKET NEUTRAL. NO INSTITUTIONAL ACTIVITY DETECTED.</p>
                     </div>`;
                 return;
             }
 
-            signalsContainer.innerHTML = ''; // Clear loading screen
+            signalsContainer.innerHTML = ''; 
 
             Object.keys(signals).forEach(key => {
                 const signal = signals[key];
                 
-                // Determine side badge color
                 const sideBadge = signal.side === "LONG" ? "badge-long" : "badge-short";
                 const sideIcon = signal.side === "LONG" ? "fa-arrow-trend-up" : "fa-arrow-trend-down";
-                
-                // Format time
                 const timeString = new Date(signal.timestamp * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
 
-                // 👑 VIP Signal Checking Logic
-                const isVIP = signal.signal_type && signal.signal_type.includes("VIP");
-                
-                const vipBadge = isVIP 
-                    ? `<span class="badge bg-warning text-dark ms-2"><i class="fa-solid fa-crown"></i> VIP DYNAMIC</span>` 
-                    : `<span class="badge bg-secondary ms-2 text-light" style="font-size: 0.7rem; opacity: 0.8;">${signal.signal_type}</span>`;
-
-                const cardStyle = isVIP ? 'border: 1px solid #f0b90b;' : 'border: 1px solid #2b2f36;';
-                const cardGlow = isVIP ? 'box-shadow: 0 0 20px rgba(240, 185, 11, 0.2);' : '';
+                // 🐋 Whale Alert & Quantum Checking
+                const hasWhale = signal.whale_alert ? `<span class="badge bg-info text-dark ms-2"><i class="fa-solid fa-whale"></i> 🐋 WHALE DETECTED</span>` : '';
+                const sentimentColor = signal.sentiment_text === "BULLISH" ? "text-success" : (signal.sentiment_text === "BEARISH" ? "text-danger" : "text-warning");
 
                 const cardHtml = `
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <div class="card h-100 p-4" style="transition: all 0.3s ease; ${cardStyle} ${cardGlow}">
+                    <div class="col-12 col-lg-6">
+                        <div class="card p-4 quantum-glow">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <div class="d-flex align-items-center">
-                                    <h4 class="fw-bold m-0 text-white">${signal.pair}</h4>
-                                    ${vipBadge}
+                                <div>
+                                    <h3 class="fw-bold m-0 text-white">${signal.pair}</h3>
+                                    <span class="text-muted small"><i class="fa-regular fa-clock me-1"></i> ${timeString}</span>
                                 </div>
-                                <span class="badge ${sideBadge} px-3 py-2 rounded">
-                                    <i class="fa-solid ${sideIcon} me-1"></i> ${signal.side}
-                                </span>
+                                <div class="text-end">
+                                    <span class="badge ${sideBadge} px-3 py-2 fs-6 rounded-0">
+                                        <i class="fa-solid ${sideIcon} me-1"></i> ${signal.side}
+                                    </span>
+                                    <div class="mt-2">${hasWhale}</div>
+                                </div>
                             </div>
                             
-                            <p class="text-muted small mb-3"><i class="fa-regular fa-clock me-1"></i> Triggered: ${timeString}</p>
-                            
-                            <div class="row g-2 text-center mb-3 bg-dark py-2 rounded border border-secondary" style="--bs-border-opacity: .2;">
-                                <div class="col-4">
-                                    <div class="text-muted small">Entry</div>
+                            <div class="row g-2 text-center mb-4 bg-dark py-3 border border-secondary" style="--bs-border-opacity: .2;">
+                                <div class="col-4 border-end border-secondary" style="--bs-border-opacity: .2;">
+                                    <div class="text-muted small mb-1">ENTRY ZONE</div>
                                     <div class="text-entry">${signal.entry}</div>
                                 </div>
-                                <div class="col-4">
-                                    <div class="text-muted small">Target TP</div>
+                                <div class="col-4 border-end border-secondary" style="--bs-border-opacity: .2;">
+                                    <div class="text-muted small mb-1">TAKE PROFIT (TP)</div>
                                     <div class="text-tp">${signal.tp1}</div>
                                 </div>
                                 <div class="col-4">
-                                    <div class="text-muted small">Stop Loss</div>
+                                    <div class="text-muted small mb-1">STOP LOSS (SL)</div>
                                     <div class="text-sl">${signal.sl}</div>
                                 </div>
                             </div>
 
-                            <div class="mb-3">
+                            <div class="row mb-3 small">
+                                <div class="col-6">
+                                    <div class="text-muted">Global Sentiment:</div>
+                                    <strong class="${sentimentColor}">${signal.sentiment_text || "NEUTRAL"}</strong>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <div class="text-muted">Kelly Margin (Risk):</div>
+                                    <strong class="text-info">${signal.rec_margin || "2.0"}% Allocation</strong>
+                                </div>
+                            </div>
+
+                            <div class="mb-2">
                                 <div class="d-flex justify-content-between small text-muted mb-1">
-                                    <span>AI Probability Score</span>
-                                    <span class="text-warning fw-bold">${signal.accuracy}%</span>
+                                    <span>AI Confluence Score</span>
+                                    <span class="text-primary fw-bold">${signal.accuracy}%</span>
                                 </div>
                                 <div class="accuracy-bar">
                                     <div class="accuracy-fill" style="width: ${signal.accuracy}%"></div>
                                 </div>
-                            </div>
-
-                            <div class="bg-black p-2 rounded small text-muted border border-secondary" style="--bs-border-opacity: .1; font-size: 0.8rem;">
-                                <div><strong class="text-secondary">Logic:</strong> ${signal.tech_logic}</div>
                             </div>
                         </div>
                     </div>
