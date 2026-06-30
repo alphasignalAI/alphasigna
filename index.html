@@ -10,12 +10,9 @@
         body {
             background-color: #050505;
             color: #eaecef;
-            font-family: 'Consolas', 'Courier New', monospace; /* Hacker/Quant Vibe */
+            font-family: 'Consolas', 'Courier New', monospace;
         }
-        .navbar {
-            background-color: #0a0a0a;
-            border-bottom: 1px solid #1f2937;
-        }
+        .navbar { background-color: #0a0a0a; border-bottom: 1px solid #1f2937; }
         .card {
             background-color: #0f1219;
             border: 1px solid #1f2937;
@@ -23,25 +20,14 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
             transition: all 0.3s ease;
         }
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: #3b82f6;
-            box-shadow: 0 0 25px rgba(59, 130, 246, 0.2);
-        }
+        .stats-card { background: linear-gradient(145deg, #0f1219, #1a1f2b); border-left: 4px solid #3b82f6; }
+        .user-card { border-left: 4px solid #a855f7; }
         .badge-long { background-color: #0ecb81; color: #000; font-weight: bold; }
         .badge-short { background-color: #f6465d; color: #fff; font-weight: bold; }
-        .text-entry { color: #f0b90b; font-weight: bold; font-size: 1.1rem; }
-        .text-tp { color: #0ecb81; font-weight: bold; font-size: 1.1rem; }
-        .text-sl { color: #f6465d; font-weight: bold; font-size: 1.1rem; }
-        
-        .quantum-glow {
-            border: 1px solid #a855f7 !important;
-            box-shadow: 0 0 20px rgba(168, 85, 247, 0.25) !important;
-        }
-        
-        .accuracy-bar { height: 4px; background-color: #1f2937; margin-top: 5px; }
-        .accuracy-fill { height: 100%; background: linear-gradient(90deg, #3b82f6, #a855f7); }
-        
+        .text-entry { color: #f0b90b; font-weight: bold; }
+        .text-tp { color: #0ecb81; font-weight: bold; }
+        .text-sl { color: #f6465d; font-weight: bold; }
+        .quantum-glow { border: 1px solid #a855f7 !important; box-shadow: 0 0 20px rgba(168, 85, 247, 0.25) !important; }
         .status-dot {
             width: 10px; height: 10px; background-color: #0ecb81;
             border-radius: 50%; display: inline-block;
@@ -60,19 +46,24 @@
             </a>
             <div class="d-flex align-items-center">
                 <span class="status-dot me-2"></span>
-                <span class="text-success small" id="system-status">QUANTUM CORE ONLINE</span>
+                <span class="text-success small fw-bold" id="system-status">CONNECTING...</span>
             </div>
         </div>
     </nav>
 
     <div class="container my-5">
-        <div class="row mb-4">
-            <div class="col">
-                <h4 class="fw-bold text-primary"><i class="fa-solid fa-radar me-2"></i>Institutional Signal Matrix</h4>
-                <p class="text-muted small">Live MTF Confluence & Whale Tracking Network.</p>
-            </div>
+        
+        <h5 class="text-muted mb-3"><i class="fa-solid fa-globe text-primary me-2"></i>GLOBAL PERFORMANCE MATRIX</h5>
+        <div class="row g-3 mb-5" id="global-stats-container">
+            <div class="col-12 text-center text-muted small">Loading Global Stats...</div>
         </div>
 
+        <h5 class="text-muted mb-3"><i class="fa-solid fa-users text-purple me-2" style="color: #a855f7;"></i>ACTIVE PREMIUM NODES</h5>
+        <div class="row g-3 mb-5" id="users-container">
+            <div class="col-12 text-center text-muted small">Loading User Data...</div>
+        </div>
+
+        <h5 class="text-muted mb-3"><i class="fa-solid fa-radar text-success me-2"></i>LIVE QUANTUM SIGNALS</h5>
         <div class="row g-4" id="signals-container">
             <div class="col-12 text-center py-5">
                 <div class="spinner-grow text-primary" role="status">
@@ -81,13 +72,14 @@
                 <p class="text-muted mt-3" style="letter-spacing: 1px;">SYNCING WITH QUANTUM DATABANK...</p>
             </div>
         </div>
+
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
-        // ⚙️ ඔයාගේ Firebase Config එක මෙතනට දාන්න
+        // ⚙️ FIREBASE CONFIGURATION
         const firebaseConfig = {
             databaseURL: "https://alphasigna-live-d644a-default-rtdb.firebaseio.com/"
         };
@@ -95,7 +87,106 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // 📊 Listen to Live Signals
+        // 🟢 System Status
+        database.ref('system_status').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if(data) {
+                document.getElementById('system-status').innerText = data.message.toUpperCase();
+                document.getElementById('system-status').className = data.is_paused ? "text-warning small fw-bold" : "text-success small fw-bold";
+            }
+        });
+
+        // 📊 Global Stats
+        database.ref('global_stats').on('value', (snapshot) => {
+            const stats = snapshot.val();
+            const container = document.getElementById('global-stats-container');
+            if (stats) {
+                const total = stats.total_trades || 0;
+                const tp = stats.total_tp || 0;
+                const sl = stats.total_sl || 0;
+                const winRate = total > 0 ? ((tp / (tp + sl)) * 100).toFixed(1) : 0;
+
+                container.innerHTML = `
+                    <div class="col-6 col-md-3">
+                        <div class="card stats-card p-3 text-center h-100">
+                            <div class="text-muted small mb-1">TOTAL TRADES</div>
+                            <h3 class="text-white m-0">${total}</h3>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card stats-card p-3 text-center h-100" style="border-left-color: #0ecb81;">
+                            <div class="text-muted small mb-1">TAKE PROFITS (TP)</div>
+                            <h3 class="text-success m-0">${tp}</h3>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card stats-card p-3 text-center h-100" style="border-left-color: #f6465d;">
+                            <div class="text-muted small mb-1">STOP LOSS (SL)</div>
+                            <h3 class="text-danger m-0">${sl}</h3>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card stats-card p-3 text-center h-100" style="border-left-color: #f0b90b;">
+                            <div class="text-muted small mb-1">WIN RATE</div>
+                            <h3 class="text-warning m-0">${winRate}%</h3>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+
+        // 👥 Premium Users
+        database.ref('premium_keys').on('value', (snapshot) => {
+            const users = snapshot.val();
+            const container = document.getElementById('users-container');
+            
+            if (!users || Object.keys(users).length === 0) {
+                container.innerHTML = `<div class="col-12 text-muted small">No active premium users found.</div>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            Object.keys(users).forEach(username => {
+                const user = users[username];
+                if (user.status === 'active' || (user.stats && user.stats.status === 'active')) {
+                    const stats = user.stats || { trades: 0, tp: 0, sl: 0 };
+                    const expire = user.expire_date || 'N/A';
+                    
+                    let activeTradesHtml = '<span class="text-muted small">None</span>';
+                    if (user.active_trades) {
+                        const tradeCoins = Object.keys(user.active_trades).join(', ');
+                        if (tradeCoins) activeTradesHtml = `<span class="text-info small">${tradeCoins}</span>`;
+                    }
+
+                    const winRate = stats.tp + stats.sl > 0 ? ((stats.tp / (stats.tp + stats.sl)) * 100).toFixed(1) : 0;
+
+                    container.innerHTML += `
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="card user-card p-3 h-100">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h5 class="text-white m-0"><i class="fa-solid fa-user-astronaut me-2 text-secondary"></i>${username}</h5>
+                                    <span class="badge bg-success">ACTIVE</span>
+                                </div>
+                                <div class="text-muted" style="font-size: 0.75rem; border-bottom: 1px solid #1f2937; padding-bottom: 8px; margin-bottom: 8px;">
+                                    Valid till: ${expire}
+                                </div>
+                                <div class="row text-center g-1 mb-2">
+                                    <div class="col-4"><div class="small text-muted">Trades</div><div class="text-white">${stats.trades}</div></div>
+                                    <div class="col-4"><div class="small text-muted">TP</div><div class="text-success">${stats.tp}</div></div>
+                                    <div class="col-4"><div class="small text-muted">SL</div><div class="text-danger">${stats.sl}</div></div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mt-2 pt-2" style="border-top: 1px solid #1f2937;">
+                                    <span class="small text-muted">Active: ${activeTradesHtml}</span>
+                                    <span class="small text-warning fw-bold">WR: ${winRate}%</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+        });
+
+        // 📡 Live Signals (Quantum)
         database.ref('live_signals').on('value', (snapshot) => {
             const signalsContainer = document.getElementById('signals-container');
             const signals = snapshot.val();
@@ -110,68 +201,44 @@
             }
 
             signalsContainer.innerHTML = ''; 
-
             Object.keys(signals).forEach(key => {
                 const signal = signals[key];
-                
                 const sideBadge = signal.side === "LONG" ? "badge-long" : "badge-short";
                 const sideIcon = signal.side === "LONG" ? "fa-arrow-trend-up" : "fa-arrow-trend-down";
-                const timeString = new Date(signal.timestamp * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
-
-                // 🐋 Whale Alert & Quantum Checking
-                const hasWhale = signal.whale_alert ? `<span class="badge bg-info text-dark ms-2"><i class="fa-solid fa-whale"></i> 🐋 WHALE DETECTED</span>` : '';
-                const sentimentColor = signal.sentiment_text === "BULLISH" ? "text-success" : (signal.sentiment_text === "BEARISH" ? "text-danger" : "text-warning");
+                const timeString = signal.timestamp ? new Date(signal.timestamp * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'LIVE';
 
                 const cardHtml = `
                     <div class="col-12 col-lg-6">
                         <div class="card p-4 quantum-glow">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <div>
-                                    <h3 class="fw-bold m-0 text-white">${signal.pair}</h3>
-                                    <span class="text-muted small"><i class="fa-regular fa-clock me-1"></i> ${timeString}</span>
+                                    <h3 class="fw-bold m-0 text-white">${signal.pair || signal.coin_name || key}</h3>
+                                    <span class="text-muted small"><i class="fa-regular fa-clock me-1"></i> Triggered: ${timeString}</span>
                                 </div>
                                 <div class="text-end">
                                     <span class="badge ${sideBadge} px-3 py-2 fs-6 rounded-0">
                                         <i class="fa-solid ${sideIcon} me-1"></i> ${signal.side}
                                     </span>
-                                    <div class="mt-2">${hasWhale}</div>
                                 </div>
                             </div>
                             
                             <div class="row g-2 text-center mb-4 bg-dark py-3 border border-secondary" style="--bs-border-opacity: .2;">
                                 <div class="col-4 border-end border-secondary" style="--bs-border-opacity: .2;">
-                                    <div class="text-muted small mb-1">ENTRY ZONE</div>
+                                    <div class="text-muted small mb-1">ENTRY</div>
                                     <div class="text-entry">${signal.entry}</div>
                                 </div>
                                 <div class="col-4 border-end border-secondary" style="--bs-border-opacity: .2;">
-                                    <div class="text-muted small mb-1">TAKE PROFIT (TP)</div>
+                                    <div class="text-muted small mb-1">TARGET TP</div>
                                     <div class="text-tp">${signal.tp1}</div>
                                 </div>
                                 <div class="col-4">
-                                    <div class="text-muted small mb-1">STOP LOSS (SL)</div>
+                                    <div class="text-muted small mb-1">STOP LOSS</div>
                                     <div class="text-sl">${signal.sl}</div>
                                 </div>
                             </div>
-
-                            <div class="row mb-3 small">
-                                <div class="col-6">
-                                    <div class="text-muted">Global Sentiment:</div>
-                                    <strong class="${sentimentColor}">${signal.sentiment_text || "NEUTRAL"}</strong>
-                                </div>
-                                <div class="col-6 text-end">
-                                    <div class="text-muted">Kelly Margin (Risk):</div>
-                                    <strong class="text-info">${signal.rec_margin || "2.0"}% Allocation</strong>
-                                </div>
-                            </div>
-
-                            <div class="mb-2">
-                                <div class="d-flex justify-content-between small text-muted mb-1">
-                                    <span>AI Confluence Score</span>
-                                    <span class="text-primary fw-bold">${signal.accuracy}%</span>
-                                </div>
-                                <div class="accuracy-bar">
-                                    <div class="accuracy-fill" style="width: ${signal.accuracy}%"></div>
-                                </div>
+                            
+                            <div class="bg-black p-2 rounded small text-muted border border-secondary mb-2" style="--bs-border-opacity: .1;">
+                                <div><strong class="text-secondary">AI Logic:</strong> ${signal.tech_logic || "Institutional Structuring"}</div>
                             </div>
                         </div>
                     </div>
