@@ -16,99 +16,45 @@
             --text-muted: #8492a6;
         }
 
-        body {
-            margin: 0;
-            padding: 20px;
-            background-color: var(--bg-color);
-            color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
+        body { margin: 0; padding: 20px; background-color: var(--bg-color); color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         .container { max-width: 1000px; margin: auto; }
 
         /* --- LOGIN SCREEN STYLES --- */
-        #login-screen {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 80vh; text-align: center;
-        }
-        .login-box {
-            background: var(--card-bg); padding: 40px; border-radius: 15px;
-            border: 1px solid var(--gold); box-shadow: 0 0 30px var(--gold-glow);
-            width: 100%; max-width: 400px;
-        }
-        .key-input {
-            width: 90%; padding: 15px; margin: 20px 0; border-radius: 8px;
-            border: 1px solid var(--blue-glow); background: #060b13; color: white;
-            font-size: 16px; text-align: center; outline: none;
-        }
+        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh; text-align: center; }
+        .login-box { background: var(--card-bg); padding: 40px; border-radius: 15px; border: 1px solid var(--gold); box-shadow: 0 0 30px var(--gold-glow); width: 100%; max-width: 400px; }
+        .key-input { width: 90%; padding: 15px; margin: 20px 0; border-radius: 8px; border: 1px solid var(--blue-glow); background: #060b13; color: white; font-size: 16px; text-align: center; outline: none; }
         .key-input:focus { box-shadow: 0 0 15px rgba(0, 210, 255, 0.5); }
 
         /* Header Style */
         .header { text-align: center; margin-bottom: 30px; }
-        .header h1 {
-            font-size: 42px; margin: 0;
-            background: linear-gradient(135deg, #fff 0%, var(--gold) 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            letter-spacing: 2px;
-        }
+        .header h1 { font-size: 42px; margin: 0; background: linear-gradient(135deg, #fff 0%, var(--gold) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px; }
         .header p { color: var(--text-muted); margin: 5px 0; font-size: 14px; letter-spacing: 4px; }
 
         /* Stats Dashboard */
-        .stats-panel {
-            background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 15px; padding: 20px; display: flex; justify-content: space-around;
-            align-items: center; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
+        .stats-panel { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 15px; padding: 20px; display: flex; justify-content: space-around; align-items: center; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .stat-item { text-align: center; }
         .stat-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
         .stat-value { font-size: 28px; font-weight: bold; color: #fff; }
 
         /* Gauge Meter Box */
         .gauge-section { text-align: center; margin: 40px 0; }
-        .scanning-coin {
-            font-size: 22px; color: var(--gold); font-weight: bold;
-            text-shadow: 0 0 10px var(--gold-glow); margin-bottom: 10px; height: 30px;
-        }
+        .scanning-coin { font-size: 22px; color: var(--gold); font-weight: bold; text-shadow: 0 0 10px var(--gold-glow); margin-bottom: 10px; height: 30px; }
         .meter-container { position: relative; width: 240px; height: 140px; margin: auto; overflow: hidden; }
-        .gauge-bg {
-            width: 200px; height: 200px; border-radius: 50%;
-            border: 15px solid #16263d; border-bottom-color: transparent; border-left-color: transparent;
-            transform: rotate(-45deg); margin: auto;
-        }
-        .gauge-fill {
-            position: absolute; top: 0; left: 20px; width: 200px; height: 200px; border-radius: 50%;
-            border: 15px solid transparent; border-top-color: var(--blue-glow); border-left-color: var(--blue-glow);
-            transform: rotate(-45deg); transition: transform 0.1s linear;
-        }
+        .gauge-bg { width: 200px; height: 200px; border-radius: 50%; border: 15px solid #16263d; border-bottom-color: transparent; border-left-color: transparent; transform: rotate(-45deg); margin: auto; }
+        .gauge-fill { position: absolute; top: 0; left: 20px; width: 200px; height: 200px; border-radius: 50%; border: 15px solid transparent; border-top-color: var(--blue-glow); border-left-color: var(--blue-glow); transform: rotate(-45deg); transition: transform 0.1s linear; }
         .gauge-percentage { position: absolute; bottom: 10px; left: 0; right: 0; font-size: 36px; font-weight: bold; color: #fff; }
 
         /* VIP Bubbles Animation */
-        .section-title {
-            font-size: 20px; color: var(--gold); border-bottom: 2px solid #16263d;
-            padding-bottom: 10px; margin-top: 40px; margin-bottom: 20px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
+        .section-title { font-size: 20px; color: var(--gold); border-bottom: 2px solid #16263d; padding-bottom: 10px; margin-top: 40px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
         #vip-bubbles-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 20px 0; }
-        .crypto-bubble {
-            width: 130px; height: 130px; border-radius: 50%; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; text-align: center; font-weight: bold;
-            cursor: pointer; transition: 0.3s; color: white; border: 2px solid transparent;
-            animation: bubblePulse 2s infinite ease-in-out; position: relative; background: var(--card-bg);
-        }
+        .crypto-bubble { width: 130px; height: 130px; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; font-weight: bold; cursor: pointer; transition: 0.3s; color: white; border: 2px solid transparent; animation: bubblePulse 2s infinite ease-in-out; position: relative; background: var(--card-bg); }
         .crypto-bubble:hover { transform: scale(1.1); box-shadow: 0 0 20px var(--gold-glow); border-color: var(--gold); }
-        @keyframes bubblePulse {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-            100% { transform: translateY(0px); }
-        }
+        @keyframes bubblePulse { 0% { transform: translateY(0px); } 50% { transform: translateY(-8px); } 100% { transform: translateY(0px); } }
         .bubble-pnl { position: absolute; top: 5px; font-size: 12px; font-weight: bold; background: rgba(0,0,0,0.5); padding: 2px 8px; border-radius: 10px;}
 
         /* Grid Layout Cards */
         .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .card {
-            background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 12px; padding: 20px; position: relative; transition: all 0.3s ease;
-        }
+        .card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; position: relative; transition: all 0.3s ease; }
         .card:hover { transform: translateY(-5px); border-color: var(--gold); box-shadow: 0 5px 20px var(--gold-glow); }
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .coin-title { font-size: 18px; font-weight: bold; }
@@ -119,10 +65,7 @@
         .label { color: var(--text-muted); } .val { font-weight: 500; }
 
         /* Buttons */
-        .primary-btn {
-            background: linear-gradient(135deg, var(--gold) 0%, #d49a1c 100%); color: #000; border: none; padding: 12px 30px;
-            font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 0 15px var(--gold-glow); transition: 0.3s;
-        }
+        .primary-btn { background: linear-gradient(135deg, var(--gold) 0%, #d49a1c 100%); color: #000; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 0 15px var(--gold-glow); transition: 0.3s; }
         .primary-btn:hover { transform: scale(1.05); }
         .action-row { display: flex; gap: 10px; margin-top: 15px; }
         .btn-trade, .btn-chart { flex: 1; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; text-align: center; border: none;}
@@ -130,29 +73,16 @@
         .btn-trade:hover { background: var(--green); color: #000; }
         .btn-chart { background: rgba(0, 210, 255, 0.1); border: 1px solid var(--blue-glow); color: var(--blue-glow); }
         .btn-chart:hover { background: var(--blue-glow); color: #000; }
-        .more-btn {
-            width: 100%; background: transparent; border: 1px solid rgba(243, 186, 47, 0.3); color: var(--gold);
-            padding: 10px; border-radius: 6px; cursor: pointer; margin-top: 15px; font-weight: bold; transition: 0.3s;
-        }
+        .more-btn { width: 100%; background: transparent; border: 1px solid rgba(243, 186, 47, 0.3); color: var(--gold); padding: 10px; border-radius: 6px; cursor: pointer; margin-top: 15px; font-weight: bold; transition: 0.3s; }
         .more-btn:hover { background: var(--gold); color: #000; }
 
         /* Modals */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000;
-        }
-        .modal-content {
-            background: #0d1b2e; border: 1px solid var(--gold); padding: 30px;
-            border-radius: 15px; max-width: 500px; width: 90%; position: relative; box-shadow: 0 0 30px var(--gold-glow);
-        }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: #0d1b2e; border: 1px solid var(--gold); padding: 30px; border-radius: 15px; max-width: 500px; width: 90%; position: relative; box-shadow: 0 0 30px var(--gold-glow); }
         .modal-content.chart-size { max-width: 900px; height: 600px; padding: 10px; display: flex; flex-direction: column; }
         .close-modal { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: var(--text-muted); z-index: 10; }
         .close-modal:hover { color: white; }
-        
-        .risk-box {
-            background: rgba(255, 77, 77, 0.1); border-left: 4px solid var(--red);
-            padding: 15px; margin-top: 20px; border-radius: 4px; font-size: 13px; color: #ddd;
-        }
+        .risk-box { background: rgba(255, 77, 77, 0.1); border-left: 4px solid var(--red); padding: 15px; margin-top: 20px; border-radius: 4px; font-size: 13px; color: #ddd; }
     </style>
 </head>
 <body>
@@ -168,31 +98,34 @@
 </div>
 
 <div class="container" id="main-app" style="display: none;">
-    
     <div class="header">
         <h1>AlphaSigna AI</h1>
-        <p>AI-POWERED MARKET INTELLIGENCE</p>
+        <p>ULTRA VIP GLOBAL INTELLIGENCE DASHBOARD</p>
     </div>
 
     <div class="stats-panel">
-        <div class="stat-item"><div class="stat-label">Total Signals</div><div id="total-signals" class="stat-value">1,240</div></div>
-        <div class="stat-item"><div class="stat-label">TP Hit</div><div id="tp-hit" class="stat-value" style="color: var(--green);">1,105</div></div>
-        <div class="stat-item"><div class="stat-label">SL Hit</div><div id="sl-hit" class="stat-value" style="color: var(--red);">135</div></div>
-        <div class="stat-item"><div class="stat-label">Win Rate</div><div id="win-rate" class="stat-value" style="color: var(--gold);">89.1%</div></div>
+        <div class="stat-item"><div class="stat-label">Total Signals</div><div id="total-signals" class="stat-value">--</div></div>
+        <div class="stat-item"><div class="stat-label">TP Hit</div><div id="tp-hit" class="stat-value" style="color: var(--green);">--</div></div>
+        <div class="stat-item"><div class="stat-label">SL Hit</div><div id="sl-hit" class="stat-value" style="color: var(--red);">--</div></div>
+        <div class="stat-item"><div class="stat-label">Win Rate</div><div id="win-rate" class="stat-value" style="color: var(--gold);">--%</div></div>
     </div>
 
     <div class="gauge-section">
         <div class="scanning-coin" id="scan-coin-name">OMNI-MATRIX GLOBAL ONLINE</div>
         <div class="meter-container">
             <div class="gauge-bg"></div>
-            <div class="gauge-fill" id="gauge-pointer" style="transform: rotate(135deg);"></div> <div class="gauge-percentage" id="gauge-text">100%</div>
+            <div class="gauge-fill" id="gauge-pointer" style="transform: rotate(135deg);"></div>
+            <div class="gauge-percentage" id="gauge-text">100%</div>
         </div>
         <div style="color: var(--text-muted); font-size: 12px; margin-top: 10px;">SMC / ICT & NEWS ALGORITHM STATUS</div>
     </div>
 
-    <div class="section-title"><span>👑 VIP MASTER SIGNALS (AUTO-UPDATE)</span></div>
+    <div class="section-title"><span>👑 GLOBAL MASTER SIGNALS - VIP BUBBLES HUB</span></div>
     <div id="vip-bubbles-container">
+        <div style="text-align: center; color: var(--text-muted); padding: 40px; grid-column: 1 / -1;">
+            ⏳ Connecting to Live Omni-Matrix Global Engine... Loading Real VIP Signals...
         </div>
+    </div>
 
     <div class="section-title" style="margin-top: 50px;">
         <span>📡 REGULAR MARKET SCANNER</span>
@@ -201,7 +134,7 @@
     
     <div class="signal-grid" id="cards-container">
         <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 40px;">
-            Click "SCAN MARKET" to find AI trading opportunities.
+            Click "SCAN MARKET" to find Real-time AI trading opportunities.
         </div>
     </div>
 </div>
@@ -219,6 +152,7 @@
             • Never risk more than <b>2%</b> of your total capital on a single trade.<br>
             • Always use the <b>Stop Loss (SL)</b> provided by the AI to protect your account.<br>
             • If you hit Take Profit 1 (TP1), move your Stop Loss to your Entry Price.<br>
+            • Do not FOMO. Let the AI find the perfect setups.
         </div>
     </div>
 </div>
@@ -228,7 +162,7 @@
         <span class="close-modal" onclick="closeModal('chart-modal')" style="background: var(--red); color: white; border-radius: 50%; padding: 2px 10px;">&times;</span>
         
         <div style="display: flex; justify-content: space-between; background: #16263d; padding: 12px; border-radius: 8px; margin-bottom: 10px; margin-top: 25px; font-weight: bold; font-size: 15px;">
-            <span id="tv-title" style="color: var(--gold); font-size: 18px;">BTCUSDT</span>
+            <span id="tv-title" style="color: var(--gold); font-size: 18px;"></span>
             <span>🔵 Entry: <span id="tv-entry" style="color: white;"></span></span>
             <span style="color: var(--green);">🟢 TP: <span id="tv-tp"></span></span>
             <span style="color: var(--red);">🔴 SL: <span id="tv-sl"></span></span>
@@ -237,59 +171,88 @@
     </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
 <script>
+    // 🛑 අතිශය වැදගත්: ඔයාගේ Firebase Web Config එක මෙතන දාන්න 🛑
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY", // <--- මේවා ඔයාගේ දත්ත වලින් Replace කරන්න
+        authDomain: "alphasigna-live-d644a.firebaseapp.com",
+        databaseURL: "https://alphasigna-live-d644a-default-rtdb.firebaseio.com",
+        projectId: "alphasigna-live-d644a",
+        storageBucket: "alphasigna-live-d644a.appspot.com",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+    
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+
+    // Global variable to hold real signals
+    let liveSignalsData = {};
+
     // --- LOGIN LOGIC ---
     function verifyKey() {
         let key = document.getElementById('private-key-input').value;
-        if (key.length > 3) { // Simple validation
+        if (key.length >= 3) {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
-            loadVIPBubbles(); // Load VIPs immediately after login
+            
+            // ලොග් වුණ ගමන් Firebase එකෙන් දත්ත ගන්න පටන් ගන්නවා
+            startFirebaseListener();
         } else {
             document.getElementById('login-error').style.display = 'block';
         }
     }
 
-    // --- MOCK DATABASE ---
-    const vipDataPool = [
-        { pair: "BTC/USDT", side: "BUY", entry: "64250", tp1: "65400", sl: "63600", acc: "96.4", logic: "Daily order block mitigated. RSI oversold." },
-        { pair: "SOL/USDT", side: "SELL", entry: "145.20", tp1: "138.00", sl: "148.50", acc: "94.1", logic: "Liquidity swept above Asian High. MACD Bearish." }
-    ];
+    // --- FIREBASE LISTENER (ඇත්තම දත්ත ගන්න තැන) ---
+    function startFirebaseListener() {
+        db.ref('live_signals').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                liveSignalsData = data; // දත්ත ගබඩා කරගන්නවා
+                renderVIPBubbles(data); // VIP Bubbles අප්ඩේට් කරනවා
+            } else {
+                document.getElementById("vip-bubbles-container").innerHTML = `
+                    <div style="text-align: center; color: var(--text-muted); padding: 40px; grid-column: 1 / -1;">
+                        No active signals in the database right now. Wait for AI to scan...
+                    </div>
+                `;
+            }
+        });
+    }
 
-    const regularDataPool = [
-        { pair: "ETH/USDT", side: "BUY", entry: "3450", tp1: "3520", sl: "3410", pnl: "+1.2%", est: "15m", logic: "Bullish divergence on 1H RSI. Price holding EMA 50." },
-        { pair: "BNB/USDT", side: "BUY", entry: "580", tp1: "595", sl: "572", pnl: "0.0%", est: "30m", logic: "Bollinger Bands squeezing. Accumulation phase finishing." },
-        { pair: "XRP/USDT", side: "SELL", entry: "0.58", tp1: "0.55", sl: "0.595", pnl: "-0.4%", est: "45m", logic: "Failed to break resistance. MACD cross positive." },
-        { pair: "AVAX/USDT", side: "BUY", entry: "28.5", tp1: "30.2", sl: "27.6", pnl: "+5.1%", est: "15m", logic: "Breakout from descending channel. High volume spike." },
-        { pair: "LINK/USDT", side: "BUY", entry: "14.2", tp1: "15.0", sl: "13.8", pnl: "0.0%", est: "1h", logic: "Whale wallet accumulation detected. EMA crossover." },
-        { pair: "DOGE/USDT", side: "SELL", entry: "0.125", tp1: "0.118", sl: "0.129", pnl: "-1.0%", est: "15m", logic: "Retail FOMO fading. Bearish engulfing on 1H." }
-    ];
-
-    const coinNames = ["BTC/USDT", "ETH/USDT", "SOL/USDT", "XRP/USDT", "ADA/USDT"];
-
-    // --- VIP BUBBLES ---
-    function loadVIPBubbles() {
+    function renderVIPBubbles(data) {
         const container = document.getElementById("vip-bubbles-container");
         container.innerHTML = "";
-        vipDataPool.forEach(data => {
-            let color = data.side === "BUY" ? "var(--green)" : "var(--red)";
-            let pnl = data.side === "BUY" ? "+2.5%" : "+1.8%";
-            let safeLogic = data.logic.replace(/'/g, "\\'");
+        
+        // Database එකේ තියෙන හැම coin එකක්ම මෙතනට එනවා
+        Object.keys(data).forEach(coinKey => {
+            let sig = data[coinKey];
+            
+            // "LONG" නම් කොළ පාට, "SHORT" නම් රතු පාට
+            let color = sig.side === "LONG" ? "var(--green)" : "var(--red)";
+            let sideText = sig.side === "LONG" ? "BUY" : "SELL";
+            let pnl = sig.pnl ? `+${sig.pnl}%` : "Live"; 
+            let safeLogic = (sig.tech_logic || "Live dynamic signal active.").replace(/'/g, "\\'");
             
             container.innerHTML += `
-                <div class="crypto-bubble" style="border-color: ${color};" onclick="openLiveChart('${data.pair}', '${data.entry}', '${data.tp1}', '${data.sl}', '${safeLogic}')">
+                <div class="crypto-bubble" style="border-color: ${color};" onclick="openLiveChart('${sig.pair}', '${sig.entry}', '${sig.tp1}', '${sig.sl}', '${safeLogic}')">
                     <div class="bubble-pnl" style="color: ${color};">${pnl}</div>
-                    <div style="font-size: 16px;">${data.pair}</div>
-                    <div style="font-size: 13px; color: ${color};">${data.side}</div>
-                    <div style="font-size: 12px; color: var(--gold);">Sc: ${data.acc}%</div>
+                    <div style="font-size: 16px;">${sig.pair}</div>
+                    <div style="font-size: 13px; color: ${color};">${sideText}</div>
+                    <div style="font-size: 12px; color: var(--gold);">Sc: ${sig.accuracy || 0}%</div>
                 </div>
             `;
         });
     }
 
-    // --- SCANNER ANIMATION & RENDER ---
+    // --- SCANNER ANIMATION & RENDER (ඇත්තම දත්ත වලින්) ---
     function triggerScan() {
         let btn = document.getElementById("main-scan-btn");
         let container = document.getElementById("cards-container");
@@ -299,16 +262,17 @@
 
         container.innerHTML = "";
         btn.disabled = true;
-        btn.innerText = "SCANNING... 🔄";
+        btn.innerText = "SCANNING DATABASE... 🔄";
         
         let progress = 0;
+        let coinKeys = Object.keys(liveSignalsData);
         let coinIndex = 0;
 
         // Gauge Animation
         const scanInterval = setInterval(() => {
             progress += 4;
-            if (progress % 12 === 0) {
-                scanCoinName.innerText = "SCANNING BINANCE: " + coinNames[coinIndex % coinNames.length];
+            if (progress % 12 === 0 && coinKeys.length > 0) {
+                scanCoinName.innerText = "ANALYZING: " + coinKeys[coinIndex % coinKeys.length];
                 coinIndex++;
             }
             gaugeText.innerText = progress + "%";
@@ -317,11 +281,11 @@
 
             if (progress >= 100) {
                 clearInterval(scanInterval);
-                scanCoinName.innerText = "🎯 HIGH ACCURACY SIGNALS FOUND";
-                renderRegularCards();
+                scanCoinName.innerText = "🎯 LIVE AI SIGNALS LOADED";
+                renderRegularCards(); // ඇත්ත දත්ත දානවා
                 
                 btn.disabled = false;
-                btn.innerText = "RE-SCAN MARKET 🔄";
+                btn.innerText = "RE-SCAN LIVE DATA 🔄";
                 btn.style.background = "linear-gradient(135deg, #00d2ff 0%, #005cff 100%)";
                 btn.style.color = "white";
             }
@@ -330,23 +294,34 @@
 
     function renderRegularCards() {
         const container = document.getElementById('cards-container');
-        let shuffled = regularDataPool.sort(() => 0.5 - Math.random());
-        let selected = shuffled.slice(0, 6);
+        let allSignals = Object.values(liveSignalsData);
+        
+        // Randomly shuffle actual signals from your python backend
+        let shuffled = allSignals.sort(() => 0.5 - Math.random());
+        let selected = shuffled.slice(0, 6); // Pick 6 random ones
+
+        if (selected.length === 0) {
+            container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 40px; grid-column: 1 / -1;">No live signals from Python Engine yet. Try again in a few minutes.</div>`;
+            return;
+        }
 
         selected.forEach((coin) => {
-            let safeLogic = coin.logic.replace(/'/g, "\\'");
-            let sideClass = coin.side === "BUY" ? "buy" : "sell";
+            let safeLogic = (coin.tech_logic || "Live strategy matched.").replace(/'/g, "\\'");
+            let sideClass = coin.side === "LONG" ? "buy" : "sell";
+            let sideText = coin.side === "LONG" ? "BUY" : "SELL";
+            let pnl = coin.pnl ? `${coin.pnl}%` : "Pending";
             
             container.innerHTML += `
                 <div class="card">
                     <div class="card-header">
                         <span class="coin-title">${coin.pair}</span>
-                        <span class="badge ${sideClass}">${coin.side}</span>
+                        <span class="badge ${sideClass}">${sideText}</span>
                     </div>
-                    <div class="price-row"><span class="label">AI Entry:</span><span class="val">$${coin.entry}</span></div>
+                    <div class="price-row"><span class="label">AI Score:</span><span class="val" style="color:var(--gold)">${coin.accuracy}%</span></div>
+                    <div class="price-row"><span class="label">Entry Zone:</span><span class="val">$${coin.entry}</span></div>
                     <div class="price-row"><span class="label">Target TP:</span><span class="val" style="color:var(--green)">$${coin.tp1}</span></div>
                     <div class="price-row"><span class="label">Target SL:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
-                    <div class="price-row"><span class="label">Live PNL:</span><span class="val" style="color:${coin.pnl.startsWith('+') ? 'var(--green)' : 'var(--red)'}">${coin.pnl}</span></div>
+                    <div class="price-row"><span class="label">Status:</span><span class="val" style="color:var(--gold)">Active</span></div>
                     
                     <div class="action-row">
                         <button class="btn-trade" onclick="takeTrade('${coin.pair}')">⚡ TAKE TRADE</button>
@@ -360,7 +335,7 @@
 
     // --- MODALS & CHART ---
     function openLogicModal(pair, logicText) {
-        document.getElementById('modal-coin').innerText = pair + " AI ANALYSIS & INSIGHT";
+        document.getElementById('modal-coin').innerText = pair + " AI ANALYSIS";
         document.getElementById('modal-logic').innerText = logicText;
         document.getElementById('info-modal').style.display = 'flex';
     }
@@ -373,8 +348,9 @@
 
         let studies = [];
         let lowerLogic = logicText.toLowerCase();
-        if (lowerLogic.includes("rsi")) studies.push("RSI@tv-basicstudies");
-        if (lowerLogic.includes("ema") || lowerLogic.includes("macd")) studies.push("MASimple@tv-basicstudies", "MACD@tv-basicstudies");
+        if (lowerLogic.includes("rsi") || lowerLogic.includes("oversold") || lowerLogic.includes("overbought")) studies.push("RSI@tv-basicstudies");
+        if (lowerLogic.includes("ema") || lowerLogic.includes("trend")) studies.push("MASimple@tv-basicstudies");
+        if (lowerLogic.includes("macd")) studies.push("MACD@tv-basicstudies");
         if (studies.length === 0) studies.push("Volume@tv-basicstudies");
 
         document.getElementById("chart-modal").style.display = "flex";
