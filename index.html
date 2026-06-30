@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna AI - Ultra Dashboard</title>
+    <title>AlphaSigna AI - Ultra VIP Dashboard</title>
     <style>
         :root {
             --bg-color: #060b13;
@@ -60,7 +60,34 @@
         }
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
 
-        /* Grid & Cards */
+        /* Crypto Bubbles Animation */
+        #vip-bubbles-container {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 20px 0;
+        }
+        .crypto-bubble {
+            width: 130px; height: 130px; border-radius: 50%; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center; font-weight: bold;
+            cursor: pointer; transition: 0.3s; color: white; border: 2px solid transparent;
+            animation: bubblePulse 2s infinite ease-in-out; position: relative;
+        }
+        .crypto-bubble:hover { transform: scale(1.1); }
+        @keyframes bubblePulse {
+            0% { box-shadow: 0 0 10px transparent; transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+        .crypto-bubble.long {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 255, 136, 0.4) 100%);
+            border-color: var(--green);
+        }
+        .crypto-bubble.short {
+            background: linear-gradient(135deg, rgba(255, 77, 77, 0.1) 0%, rgba(255, 77, 77, 0.4) 100%);
+            border-color: var(--red);
+        }
+
+        .bubble-pnl { position: absolute; top: -10px; right: 0; font-size: 12px; font-weight: bold; }
+
+        /* Regular Signals Card Grid */
         .signal-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;
         }
@@ -68,15 +95,13 @@
             background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05);
             border-radius: 12px; padding: 20px; transition: all 0.3s ease; position: relative;
         }
-        .card.vip-card { border-color: var(--gold); box-shadow: 0 0 20px var(--gold-glow); }
-        .card:hover { transform: translateY(-5px); }
+        .card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.1); }
 
         .card-header { display: flex; justify-content: space-between; margin-bottom: 15px; }
         .coin-title { font-size: 20px; font-weight: bold; }
         .badge { padding: 4px 10px; border-radius: 5px; font-size: 12px; font-weight: bold; }
         .badge.buy { background: rgba(0, 255, 136, 0.1); color: var(--green); border: 1px solid var(--green); }
         .badge.sell { background: rgba(255, 77, 77, 0.1); color: var(--red); border: 1px solid var(--red); }
-        .badge.vip-badge { background: var(--gold); color: #000; margin-left: 10px; }
 
         .price-row { display: flex; justify-content: space-between; margin: 8px 0; font-size: 14px; }
         .label { color: var(--text-muted); } .val { font-weight: 500; }
@@ -126,25 +151,29 @@
 <div class="container">
     <div class="header">
         <h1>AlphaSigna AI</h1>
-        <p>ULTRA VIP OMNI-MATRIX DASHBOARD</p>
+        <p>ULTRA VIP GLOBAL INTELLIGENCE DASHBOARD</p>
     </div>
 
     <div class="section-title">
-        <span>👑 ACTIVE VIP SIGNALS</span>
+        <span>👑 GLOBAL MASTER SIGNALS - VIP BUBBLES HUB</span>
     </div>
-    <div class="signal-grid" id="vip-container">
+    
+    <div id="vip-bubbles-container">
+        <div style="text-align: center; color: var(--text-muted); padding: 40px; grid-column: 1 / -1;">
+            ⏳ Connecting to Live Omni-Matrix Global Engine... Loading VIP Signals...
         </div>
+    </div>
 
     <div class="section-title" style="margin-top: 50px;">
-        <span>📡 REGULAR MARKET SCANNER</span>
+        <span>📡 REGULAR MARKET SCANNER - HIGH ACCURACY CORE</span>
         <button class="primary-btn" id="main-scan-btn" onclick="triggerScan()">SCAN MARKET 🔍</button>
     </div>
 
-    <div id="scanner-loader">⏳ Omni-Scanner AI Analyzing 150+ Coins... Please Wait...</div>
+    <div id="scanner-loader">⏳ Omni-Scanner AI Analyzing 150+ Coins... Finding Non-VIP Trade Opportunities...</div>
 
-    <div class="signal-grid" id="regular-container">
+    <div class="signal-grid" id="regular-signals-container">
         <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 40px;">
-            Click "SCAN MARKET" to find real-time AI trading opportunities.
+            Click "SCAN MARKET" to find real-time, high-probability non-VIP trading opportunities.
         </div>
     </div>
 </div>
@@ -154,9 +183,18 @@
         <span class="close-modal" onclick="closeModal('logic-modal')" style="background: none; color: var(--text-muted);">&times;</span>
         <h2 style="color: var(--gold); margin-top: 0;" id="modal-coin-title">COIN LOGIC</h2>
         <hr style="border-color: #16263d;">
-        <h3 style="color: var(--blue-glow);">🧠 SMC / AI Logic</h3>
+        
+        <h3 style="color: var(--blue-glow);">🧠 SMC / AI Logic Summary</h3>
         <p id="modal-logic-text" style="font-size: 14px; line-height: 1.6; color: #e0e6ed;"></p>
         
+        <hr style="border-color: #16263d;">
+        <h3 style="color: var(--green);">💡 SMC Concept Guide</h3>
+        <ul style="font-size: 14px; color: #e0e6ed;">
+            <li><b>Order Block (OB):</b> Whales Buying/Selling Zone</li>
+            <li><b>Liquidity (LQ):</b> Area with lot of SL orders</li>
+            <li><b>Market Structure Shift (MSS):</b> Trend change confirmation</li>
+        </ul>
+
         <div class="risk-box">
             <strong style="color: var(--red); font-size: 15px;">⚠️ TRADING GUIDE & 2% RISK RULE</strong><br><br>
             • Never risk more than <b>2%</b> of your total capital on a single trade.<br>
@@ -173,46 +211,80 @@
         
         <div style="display: flex; justify-content: space-between; background: #16263d; padding: 12px; border-radius: 8px; margin-bottom: 10px; margin-top: 25px; font-weight: bold; font-size: 15px;">
             <span id="tv-title" style="color: var(--gold); font-size: 18px;">BTCUSDT</span>
-            <span>🔵 Entry: <span id="tv-entry" style="color: white;"></span></span>
+            <span>🔵 Entry Zone: <span id="tv-entry" style="color: white;"></span></span>
             <span style="color: var(--green);">🟢 TP: <span id="tv-tp"></span></span>
             <span style="color: var(--red);">🔴 SL: <span id="tv-sl"></span></span>
         </div>
 
-        <div id="tv_chart_container" style="width: 100%; flex-grow: 1;"></div>
+        <div id="tv_chart_container" style="width: 100%; flex-grow: 1; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;"></div>
     </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
 <script>
-    // --- MOCK DATABASE --- //
-    const vipData = [
-        { pair: "BTCUSDT", side: "LONG", entry: 64250, tp: 65400, sl: 63600, acc: "96.4%", logic: "Daily EMA crossover detected. RSI is oversold and showing bullish divergence." },
-        { pair: "SOLUSDT", side: "SHORT", entry: 145.20, tp: 138.00, sl: 148.50, acc: "94.1%", logic: "Liquidity swept above Asian High. MACD showing bearish momentum with heavy Volume." }
+    // --- FIREBASE CONFIGURATION --- //
+    // IMPORTANT: .env configuration must be properly setup with FIREBASE_API_KEY, etc.
+    const firebaseConfig = {
+        apiKey: "YOUR_FIREBASE_API_KEY",
+        authDomain: "alphasigna-live-d644a.firebaseapp.com",
+        databaseURL: "https://alphasigna-live-d644a-default-rtdb.firebaseio.com",
+        projectId: "alphasigna-live-d644a",
+        storageBucket: "alphasigna-live-d644a.appspot.com",
+        messagingSenderId: "303273183574",
+        appId: "1:303273183574:web:757e4e098485a0604113cb"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Local state for all mock data to enable re-scanning
+    const allRegularSignalsMockPool = [
+        { pair: "ETH/USDT", side: "LONG", entry: 3450, tp: 3520, sl: 3410, acc: "88.2%", logic: "EMA cross confirmed. RSI oversold." },
+        { pair: "BNB/USDT", side: "LONG", entry: 580, tp: 595, sl: 572, acc: "85.0%", logic: "Wyckoff phase C spring. Accumulation." },
+        { pair: "XRP/USDT", side: "SHORT", entry: 0.58, tp: 0.55, sl: 0.595, acc: "82.4%", logic: "Failure to break resistance. Funding rate high." },
+        { pair: "AVAX/USDT", side: "LONG", entry: 28.5, tp: 30.2, sl: 27.6, acc: "87.1%", logic: " descending channel breakout. High volume spike." },
+        { pair: "LINK/USDT", side: "LONG", entry: 14.2, tp: 15.0, sl: 13.8, acc: "89.5%", logic: "Whale wallet accumulation. RSI bullish." },
+        { pair: "DOGE/USDT", side: "SHORT", entry: 0.125, tp: 0.118, sl: 0.129, acc: "81.0%", logic: "Retail FOMO fading. Bearish engulfing." },
+        { pair: "ADA/USDT", side: "LONG", entry: 0.45, tp: 0.48, sl: 0.43, acc: "84.3%", logic: "Major support holds tight. Bollinger Band squeeze." },
+        { pair: "DOT/USDT", side: "SHORT", entry: 6.5, tp: 6.1, sl: 6.7, acc: "80.5%", logic: "Trendline broken downside. retesting as resistance." }
     ];
 
-    const allRegularSignals = [
-        { pair: "ETHUSDT", side: "LONG", entry: 3450, tp: 3520, sl: 3410, acc: "88.2%", logic: "Bullish divergence on 1H RSI. Price holding EMA 50." },
-        { pair: "BNBUSDT", side: "LONG", entry: 580, tp: 595, sl: 572, acc: "85.0%", logic: "Bollinger Bands squeezing. Accumulation phase finishing." },
-        { pair: "XRPUSDT", side: "SHORT", entry: 0.58, tp: 0.55, sl: 0.595, acc: "82.4%", logic: "Failed to break resistance. MACD cross positive." },
-        { pair: "AVAXUSDT", side: "LONG", entry: 28.5, tp: 30.2, sl: 27.6, acc: "87.1%", logic: "Breakout from descending channel. High volume spike." },
-        { pair: "LINKUSDT", side: "LONG", entry: 14.2, tp: 15.0, sl: 13.8, acc: "89.5%", logic: "Whale wallet accumulation detected. EMA crossover." },
-        { pair: "DOGEUSDT", side: "SHORT", entry: 0.125, tp: 0.118, sl: 0.129, acc: "81.0%", logic: "Retail FOMO fading. Bearish engulfing on 1H." }
-    ];
+    // Placeholder takeTrade function
+    function takeTrade(pair) {
+        alert("This functionality would take you to the order execution page to connect with Binance and execute the trade for " + pair + "!");
+    }
 
-    // --- RENDER FUNCTIONS --- //
-    function createCardHTML(data, isVIP) {
+    // --- UI INJECTION FUNCTIONS --- //
+
+    // Function to create animated Crypto Bubbles
+    function createBubbleHTML(data, coinNameForLiveChart) {
+        let sideClass = data.side === "LONG" ? "long" : "short";
+        
+        // PNL placeholder to simulate CryptoBubbles
+        let pnlText = data.side === "LONG" ? "+2.1%" : "-1.5%";
+        let pnlColor = data.side === "LONG" ? "var(--green)" : "var(--red)";
+
+        return `
+            <div class="crypto-bubble ${sideClass}" onclick="openLiveChartFromBubble('${coinNameForLiveChart}', '${data.entry}', '${data.tp1}', '${data.sl}', '${data.accuracy}')">
+                <div class="bubble-pnl" style="color: ${pnlColor}">${pnlText}</div>
+                <div style="font-size: 16px;">${coinNameForLiveChart.replace("USDT", "/USDT")}</div>
+                <div style="font-size: 13px; color: ${pnlColor};">${data.side}</div>
+                <div style="font-size: 12px; color: var(--gold);">Sc: ${data.accuracy}%</div>
+            </div>
+        `;
+    }
+
+    // Function to create a standard Regular Signal Card
+    function createRegularSignalCardHTML(data) {
         let sideClass = data.side === "LONG" ? "buy" : "sell";
-        let vipBadgeHTML = isVIP ? `<span class="badge vip-badge">💎 VIP</span>` : "";
-        let borderClass = isVIP ? "vip-card" : "";
-
-        // Stringify the logic securely
         let safeLogic = data.logic.replace(/'/g, "\\'");
 
         return `
-            <div class="card ${borderClass}">
+            <div class="card">
                 <div class="card-header">
-                    <span class="coin-title">${data.pair} ${vipBadgeHTML}</span>
+                    <span class="coin-title">${data.pair}</span>
                     <span class="badge ${sideClass}">${data.side}</span>
                 </div>
                 <div class="price-row"><span class="label">AI Accuracy:</span><span class="val" style="color:var(--gold)">${data.acc}</span></div>
@@ -222,75 +294,45 @@
                 
                 <div class="action-row">
                     <button class="btn-trade" onclick="takeTrade('${data.pair}')">⚡ TAKE TRADE</button>
-                    <button class="btn-chart" onclick="openLiveChart('${data.pair}', '${data.entry}', '${data.tp}', '${data.sl}', '${safeLogic}')">📊 LIVE CHART</button>
+                    <button class="btn-chart" onclick="openLiveChart('${data.pair}')">📊 LIVE CHART</button>
                 </div>
                 <button class="btn-logic" onclick="openLogicModal('${data.pair}', '${safeLogic}')">🧠 More / Learn Logic</button>
             </div>
         `;
     }
 
-    function loadVIPSignals() {
-        const container = document.getElementById("vip-container");
-        container.innerHTML = "";
-        vipData.forEach(sig => {
-            container.innerHTML += createCardHTML(sig, true);
+    // Function for basic chart opening (used by regular signals)
+    function openLiveChart(pair) {
+        document.getElementById('tv-title').innerText = pair.replace("USDT", "/USDT");
+        document.getElementById('tv-entry').innerText = " (Check logic for zone)";
+        document.getElementById('tv-tp').innerText = " (Check card for targets)";
+        document.getElementById('tv-sl').innerText = " (Check card for target)";
+
+        document.getElementById("chart-modal").style.display = "flex";
+        document.getElementById("tv_chart_container").innerHTML = ""; // Clear old chart
+        new TradingView.widget({
+            "autosize": true, "symbol": "BINANCE:" + pair.replace("/", ""), "interval": "15",
+            "timezone": "Asia/Colombo", "theme": "dark", "style": "1", "locale": "en",
+            "enable_publishing": false, "backgroundColor": "#0d1b2e", "gridColor": "#16263d",
+            "hide_top_toolbar": false, "hide_legend": false, "save_image": false, "container_id": "tv_chart_container",
+            "studies": ["Volume@tv-basicstudies"] // Default to volume only
         });
     }
 
-    function triggerScan() {
-        let btn = document.getElementById("main-scan-btn");
-        let loader = document.getElementById("scanner-loader");
-        let container = document.getElementById("regular-container");
-
-        container.innerHTML = "";
-        loader.style.display = "block";
-        btn.disabled = true;
-        btn.innerText = "SCANNING... 🔄";
-
-        setTimeout(() => {
-            loader.style.display = "none";
-            let shuffled = allRegularSignals.sort(() => 0.5 - Math.random());
-            let selectedSignals = shuffled.slice(0, 6); // Pick 6 random signals
-
-            selectedSignals.forEach(sig => {
-                container.innerHTML += createCardHTML(sig, false);
-            });
-
-            btn.disabled = false;
-            btn.innerText = "RE-SCAN MARKET 🔄";
-            btn.style.background = "linear-gradient(135deg, #00d2ff 0%, #005cff 100%)";
-            btn.style.color = "white";
-
-        }, 1500);
-    }
-
-    // --- SMART LIVE CHART FUNCTION --- //
-    function openLiveChart(pair, entry, tp, sl, logicText) {
-        // Update Info Bar
-        document.getElementById('tv-title').innerText = pair.replace("USDT", "/USDT");
+    // --- SMART LIVE CHART FUNCTION (For VIP and Logic Education) --- //
+    function openLiveChartFromBubble(coinName, entry, tp, sl, accuracy) {
+        // Update Trade Info Bar
+        document.getElementById('tv-title').innerText = coinName.replace("USDT", "/USDT") + ` [Sc: ${accuracy}%]`;
         document.getElementById('tv-entry').innerText = "$" + entry;
         document.getElementById('tv-tp').innerText = "$" + tp;
         document.getElementById('tv-sl').innerText = "$" + sl;
 
-        // Auto-select indicators based on logic
-        let studies = [];
-        let lowerLogic = logicText.toLowerCase();
-
-        if (lowerLogic.includes("rsi")) studies.push("RSI@tv-basicstudies");
-        if (lowerLogic.includes("ema") || lowerLogic.includes("moving average")) studies.push("MASimple@tv-basicstudies");
-        if (lowerLogic.includes("macd")) studies.push("MACD@tv-basicstudies");
-        if (lowerLogic.includes("bollinger")) studies.push("BB@tv-basicstudies");
-        if (lowerLogic.includes("volume")) studies.push("Volume@tv-basicstudies");
-
-        if(studies.length === 0) studies.push("Volume@tv-basicstudies");
-
         document.getElementById("chart-modal").style.display = "flex";
         document.getElementById("tv_chart_container").innerHTML = ""; // Clear old chart
 
-        // Load new TradingView widget
         new TradingView.widget({
             "autosize": true,
-            "symbol": "BINANCE:" + pair,
+            "symbol": "BINANCE:" + coinName,
             "interval": "15",
             "timezone": "Asia/Colombo",
             "theme": "dark",
@@ -303,12 +345,18 @@
             "hide_legend": false,
             "save_image": false,
             "container_id": "tv_chart_container",
-            "studies": studies
+            // STUDIES: No dynamic injection, just the advanced lines and basic indicators.
+            "studies": [
+                "Volume@tv-basicstudies",
+                "MASimple@tv-basicstudies", // EMA placeholder
+                "RSI@tv-basicstudies"
+            ]
         });
     }
 
+    // --- MODAL FUNCTIONS --- //
     function openLogicModal(pair, logicText) {
-        document.getElementById("modal-coin-title").innerText = pair + " AI LOGIC & PLAN";
+        document.getElementById("modal-coin-title").innerText = pair + " AI ANALYSIS HUB";
         document.getElementById("modal-logic-text").innerText = logicText;
         document.getElementById("logic-modal").style.display = "flex";
     }
@@ -320,13 +368,78 @@
         }
     }
 
-    function takeTrade(pair) {
-        alert("TAKE TRADE functionality clicked for " + pair + "!\nThis will be built in the next step.");
+    // --- MAIN ENGINE LISTENERS --- //
+
+    let currentLiveSignalsStore = {}; // Global store for duplicate checking
+    
+    // 1. Permanent Listener on Firebase `live_signals` location
+    function activateVipBubblesListener() {
+        const vipRef = db.reference('live_signals');
+        vipRef.on('value', (snapshot) => {
+            currentLiveSignalsStore = snapshot.val() || {}; // Update store for scan button
+            const container = document.getElementById("vip-bubbles-container");
+            container.innerHTML = "";
+            const currentSignals = Object.entries(currentLiveSignalsStore);
+
+            if(currentSignals.length > 0) {
+                currentSignals.forEach(([coinName, sigData]) => {
+                    container.innerHTML += createBubbleHTML(sigData, coinName);
+                });
+            } else {
+                container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 40px; grid-column: 1 / -1;">
+                    No Active VIP Signals Found via Omni-Scanner AI Engine... Check Market Scanner for alternative options.
+                    </div>`;
+            }
+        });
     }
 
+    // 2. Main Scan Trigger Function
+    function triggerScan() {
+        const btn = document.getElementById("main-scan-btn");
+        const loader = document.getElementById("scanner-loader");
+        const container = document.getElementById("regular-signals-container");
+
+        container.innerHTML = "";
+        loader.style.display = "block";
+        btn.disabled = true;
+        btn.innerText = "SMC-MATRIX CORE ANALYZING... 🔄";
+
+        // Simulate AI analysis delay (2 seconds)
+        setTimeout(() => {
+            loader.style.display = "none";
+            
+            // Duplicate Check and Random Selection logic
+            const currentSignalsInDatabase = Object.keys(currentLiveSignalsStore);
+            let shuffleRegular = allRegularSignalsMockPool
+                // Filter out signals that are already "live" in the VIP bubbles
+                .filter(sig => !currentSignalsInDatabase.includes(sig.pair.replace("/", "")))
+                .sort(() => 0.5 - Math.random()); // Shuffle for Rescan effect
+            
+            let selectedSignals = shuffleRegular.slice(0, 6); // Pick 6 unique signals
+
+            if(selectedSignals.length > 0) {
+                selectedSignals.forEach(sig => {
+                    container.innerHTML += createRegularSignalCardHTML(sig);
+                });
+            } else {
+                container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 40px;">
+                    All available unique, high-probability non-VIP opportunities are already shown as Live Master Signals. Re-scan later!
+                    </div>`;
+            }
+
+            btn.disabled = false;
+            btn.innerText = "RE-SCAN OMNI-HUB 🔄";
+            btn.style.background = "linear-gradient(135deg, #00d2ff 0%, #005cff 100%)";
+            btn.style.color = "white";
+
+        }, 2000);
+    }
+
+    // Initialize App
     window.onload = () => {
-        loadVIPSignals();
+        activateVipBubblesListener();
     };
+
 </script>
 
 </body>
