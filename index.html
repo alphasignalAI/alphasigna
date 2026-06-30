@@ -108,10 +108,10 @@
             background: #0d1b2e; border: 1px solid var(--gold); padding: 25px;
             border-radius: 12px; width: 90%; max-width: 600px; position: relative;
         }
-        .modal-content.chart-size { max-width: 900px; height: 600px; padding: 10px; }
+        .modal-content.chart-size { max-width: 900px; height: 600px; padding: 10px; display: flex; flex-direction: column; }
         .close-modal {
             position: absolute; top: 10px; right: 15px; font-size: 24px;
-            color: white; cursor: pointer; z-index: 10;
+            color: white; cursor: pointer; z-index: 10; background: var(--red); border-radius: 50%; padding: 0 8px;
         }
         
         /* Risk Warning Box */
@@ -151,7 +151,7 @@
 
 <div class="modal" id="logic-modal">
     <div class="modal-content">
-        <span class="close-modal" onclick="closeModal('logic-modal')">&times;</span>
+        <span class="close-modal" onclick="closeModal('logic-modal')" style="background: none; color: var(--text-muted);">&times;</span>
         <h2 style="color: var(--gold); margin-top: 0;" id="modal-coin-title">COIN LOGIC</h2>
         <hr style="border-color: #16263d;">
         <h3 style="color: var(--blue-glow);">🧠 SMC / AI Logic</h3>
@@ -169,42 +169,44 @@
 
 <div class="modal" id="chart-modal">
     <div class="modal-content chart-size">
-        <span class="close-modal" onclick="closeModal('chart-modal')" style="background: black; border-radius: 50%; padding: 0 8px;">&times;</span>
-        <iframe id="tv-iframe" style="width: 100%; height: 100%; border: none; border-radius: 8px;"></iframe>
+        <span class="close-modal" onclick="closeModal('chart-modal')">&times;</span>
+        
+        <div style="display: flex; justify-content: space-between; background: #16263d; padding: 12px; border-radius: 8px; margin-bottom: 10px; margin-top: 25px; font-weight: bold; font-size: 15px;">
+            <span id="tv-title" style="color: var(--gold); font-size: 18px;">BTCUSDT</span>
+            <span>🔵 Entry: <span id="tv-entry" style="color: white;"></span></span>
+            <span style="color: var(--green);">🟢 TP: <span id="tv-tp"></span></span>
+            <span style="color: var(--red);">🔴 SL: <span id="tv-sl"></span></span>
+        </div>
+
+        <div id="tv_chart_container" style="width: 100%; flex-grow: 1;"></div>
     </div>
 </div>
 
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+
 <script>
     // --- MOCK DATABASE --- //
-    // 1. VIP Signals (These will show permanently)
     const vipData = [
-        { pair: "BTCUSDT", side: "LONG", entry: 64250, tp: 65400, sl: 63600, acc: "96.4%", logic: "Daily order block mitigated. Heavy institutional buying pressure detected via AI Heatmap." },
-        { pair: "SOLUSDT", side: "SHORT", entry: 145.20, tp: 138.00, sl: 148.50, acc: "94.1%", logic: "Liquidity swept above Asian High. Bearish MSS (Market Structure Shift) confirmed on 15m timeframe." }
+        { pair: "BTCUSDT", side: "LONG", entry: 64250, tp: 65400, sl: 63600, acc: "96.4%", logic: "Daily EMA crossover detected. RSI is oversold and showing bullish divergence." },
+        { pair: "SOLUSDT", side: "SHORT", entry: 145.20, tp: 138.00, sl: 148.50, acc: "94.1%", logic: "Liquidity swept above Asian High. MACD showing bearish momentum with heavy Volume." }
     ];
 
-    // 2. Regular Signals Pool (The scanner will pick 6 random ones from here)
     const allRegularSignals = [
-        { pair: "ETHUSDT", side: "LONG", entry: 3450, tp: 3520, sl: 3410, acc: "88.2%", logic: "Bullish divergence on 1H RSI. Price holding VWAP." },
-        { pair: "BNBUSDT", side: "LONG", entry: 580, tp: 595, sl: 572, acc: "85.0%", logic: "Golden pocket bounce. Accumulation phase finishing." },
-        { pair: "XRPUSDT", side: "SHORT", entry: 0.58, tp: 0.55, sl: 0.595, acc: "82.4%", logic: "Failed to break 4H resistance. Funding rate extremely high." },
+        { pair: "ETHUSDT", side: "LONG", entry: 3450, tp: 3520, sl: 3410, acc: "88.2%", logic: "Bullish divergence on 1H RSI. Price holding EMA 50." },
+        { pair: "BNBUSDT", side: "LONG", entry: 580, tp: 595, sl: 572, acc: "85.0%", logic: "Bollinger Bands squeezing. Accumulation phase finishing." },
+        { pair: "XRPUSDT", side: "SHORT", entry: 0.58, tp: 0.55, sl: 0.595, acc: "82.4%", logic: "Failed to break resistance. MACD cross positive." },
         { pair: "AVAXUSDT", side: "LONG", entry: 28.5, tp: 30.2, sl: 27.6, acc: "87.1%", logic: "Breakout from descending channel. High volume spike." },
-        { pair: "LINKUSDT", side: "LONG", entry: 14.2, tp: 15.0, sl: 13.8, acc: "89.5%", logic: "Whale wallet accumulation detected. MACD cross positive." },
-        { pair: "DOGEUSDT", side: "SHORT", entry: 0.125, tp: 0.118, sl: 0.129, acc: "81.0%", logic: "Retail FOMO fading. Bearish engulfing on 1H." },
-        { pair: "ADAUSDT", side: "LONG", entry: 0.45, tp: 0.48, sl: 0.43, acc: "84.3%", logic: "Support holds after 3 tests. RSI oversold." },
-        { pair: "DOTUSDT", side: "SHORT", entry: 6.5, tp: 6.1, sl: 6.7, acc: "80.5%", logic: "Trendline broken downside. Retesting as resistance." },
-        { pair: "SHIBUSDT", side: "LONG", entry: 0.000015, tp: 0.000017, sl: 0.000014, acc: "83.1%", logic: "Symmetrical triangle breakout. Volume confirming." },
-        { pair: "MATICUSDT", side: "SHORT", entry: 0.65, tp: 0.61, sl: 0.67, acc: "86.0%", logic: "Double top formation complete. Neckline broken." }
+        { pair: "LINKUSDT", side: "LONG", entry: 14.2, tp: 15.0, sl: 13.8, acc: "89.5%", logic: "Whale wallet accumulation detected. EMA crossover." },
+        { pair: "DOGEUSDT", side: "SHORT", entry: 0.125, tp: 0.118, sl: 0.129, acc: "81.0%", logic: "Retail FOMO fading. Bearish engulfing on 1H." }
     ];
 
     // --- RENDER FUNCTIONS --- //
-    
-    // Function to generate the HTML for a single card
     function createCardHTML(data, isVIP) {
         let sideClass = data.side === "LONG" ? "buy" : "sell";
         let vipBadgeHTML = isVIP ? `<span class="badge vip-badge">💎 VIP</span>` : "";
         let borderClass = isVIP ? "vip-card" : "";
 
-        // Stringify the logic securely to pass into the onclick function
+        // Stringify the logic securely
         let safeLogic = data.logic.replace(/'/g, "\\'");
 
         return `
@@ -220,14 +222,13 @@
                 
                 <div class="action-row">
                     <button class="btn-trade" onclick="takeTrade('${data.pair}')">⚡ TAKE TRADE</button>
-                    <button class="btn-chart" onclick="openLiveChart('${data.pair}')">📊 LIVE CHART</button>
+                    <button class="btn-chart" onclick="openLiveChart('${data.pair}', '${data.entry}', '${data.tp}', '${data.sl}', '${safeLogic}')">📊 LIVE CHART</button>
                 </div>
                 <button class="btn-logic" onclick="openLogicModal('${data.pair}', '${safeLogic}')">🧠 More / Learn Logic</button>
             </div>
         `;
     }
 
-    // Load VIP Signals permanently
     function loadVIPSignals() {
         const container = document.getElementById("vip-container");
         container.innerHTML = "";
@@ -236,50 +237,74 @@
         });
     }
 
-    // Trigger Scan/Rescan
     function triggerScan() {
         let btn = document.getElementById("main-scan-btn");
         let loader = document.getElementById("scanner-loader");
         let container = document.getElementById("regular-container");
 
-        // Hide old signals, show loading
         container.innerHTML = "";
         loader.style.display = "block";
         btn.disabled = true;
         btn.innerText = "SCANNING... 🔄";
 
-        // Simulate AI fetching delay (2 seconds)
         setTimeout(() => {
             loader.style.display = "none";
-            
-            // Randomly select 6 signals for the Rescan effect
             let shuffled = allRegularSignals.sort(() => 0.5 - Math.random());
-            let selectedSignals = shuffled.slice(0, 6);
+            let selectedSignals = shuffled.slice(0, 6); // Pick 6 random signals
 
             selectedSignals.forEach(sig => {
                 container.innerHTML += createCardHTML(sig, false);
             });
 
-            // Update button for next time
             btn.disabled = false;
             btn.innerText = "RE-SCAN MARKET 🔄";
             btn.style.background = "linear-gradient(135deg, #00d2ff 0%, #005cff 100%)";
             btn.style.color = "white";
 
-        }, 2000);
+        }, 1500);
     }
 
-    // --- MODAL FUNCTIONS --- //
+    // --- SMART LIVE CHART FUNCTION --- //
+    function openLiveChart(pair, entry, tp, sl, logicText) {
+        // Update Info Bar
+        document.getElementById('tv-title').innerText = pair.replace("USDT", "/USDT");
+        document.getElementById('tv-entry').innerText = "$" + entry;
+        document.getElementById('tv-tp').innerText = "$" + tp;
+        document.getElementById('tv-sl').innerText = "$" + sl;
 
-    function openLiveChart(pair) {
-        // Remove 'USDT' to format properly for TradingView (e.g., BTCUSDT -> BINANCE:BTCUSDT)
-        let tvSymbol = "BINANCE:" + pair;
-        let iframe = document.getElementById("tv-iframe");
-        
-        // TradingView Lightweight Embed URL
-        iframe.src = `https://s.tradingview.com/widgetembed/?frameElementId=tradingview_123&symbol=${tvSymbol}&interval=15&hidesidetoolbar=1&symboledit=1&saveimage=1&toolbarbg=f1f3f6&studies=%5B%5D&theme=dark&style=1&timezone=Etc%2FUTC`;
-        
+        // Auto-select indicators based on logic
+        let studies = [];
+        let lowerLogic = logicText.toLowerCase();
+
+        if (lowerLogic.includes("rsi")) studies.push("RSI@tv-basicstudies");
+        if (lowerLogic.includes("ema") || lowerLogic.includes("moving average")) studies.push("MASimple@tv-basicstudies");
+        if (lowerLogic.includes("macd")) studies.push("MACD@tv-basicstudies");
+        if (lowerLogic.includes("bollinger")) studies.push("BB@tv-basicstudies");
+        if (lowerLogic.includes("volume")) studies.push("Volume@tv-basicstudies");
+
+        if(studies.length === 0) studies.push("Volume@tv-basicstudies");
+
         document.getElementById("chart-modal").style.display = "flex";
+        document.getElementById("tv_chart_container").innerHTML = ""; // Clear old chart
+
+        // Load new TradingView widget
+        new TradingView.widget({
+            "autosize": true,
+            "symbol": "BINANCE:" + pair,
+            "interval": "15",
+            "timezone": "Asia/Colombo",
+            "theme": "dark",
+            "style": "1",
+            "locale": "en",
+            "enable_publishing": false,
+            "backgroundColor": "#0d1b2e",
+            "gridColor": "#16263d",
+            "hide_top_toolbar": false,
+            "hide_legend": false,
+            "save_image": false,
+            "container_id": "tv_chart_container",
+            "studies": studies
+        });
     }
 
     function openLogicModal(pair, logicText) {
@@ -290,22 +315,18 @@
 
     function closeModal(modalId) {
         document.getElementById(modalId).style.display = "none";
-        // Clear iframe src to stop background loading when closed
         if(modalId === 'chart-modal') {
-            document.getElementById("tv-iframe").src = "";
+            document.getElementById("tv_chart_container").innerHTML = "";
         }
     }
 
-    // Placeholder for next step
     function takeTrade(pair) {
-        alert("TAKE TRADE functionality clicked for " + pair + "!\nThis will be built in the next step to connect with Binance/Firebase.");
+        alert("TAKE TRADE functionality clicked for " + pair + "!\nThis will be built in the next step.");
     }
 
-    // Initialize the App
     window.onload = () => {
         loadVIPSignals();
     };
-
 </script>
 
 </body>
