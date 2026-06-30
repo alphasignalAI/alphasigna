@@ -1244,4 +1244,22 @@ BTCUSDT 4H timeframe එකේ පැහැදිලි Bullish Order Block එ�
                                 <span class="text-cyber-purple font-bold">${s.accuracy}%</span>
                             </div>
                             <div class="accuracy-bar">
-                                <div class="accuracy-fill" style="width: ${s.accuracy}%; background: ${isVIP ? 'linear-gradient(90deg, #fbbf24, #f5
+                                <div class="accuracy-fill" style="width: ${s.accuracy}%; background: ${isVIP ? 'linear-gradient(90deg, #fbbf24, #f59e0b)' : 'linear-gradient(90deg, var(--neon-pink) 0%, var(--neon-purple) 100%)'};"></div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-2 border-t border-cyber-border/40 text-[10px] text-gray-400">
+                            <strong>Logic:</strong> ${s.tech_logic || "Confluence alignment confirmed."}
+                        </div>
+                    </div>
+                `;
+            });
+        });
+
+        // Initialize Heatmap on load
+        window.onload = function() {
+            regenerateHeatmap();
+        };
+    </script>
+</body>
+</html>
