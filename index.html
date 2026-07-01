@@ -1,375 +1,197 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="si">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna Institutional Trading OS</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>AlphaSigna Live Signals Hub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'], },
-                    colors: {
-                        cyber: { bg: '#06070d', card: '#0f111e', border: '#1e2238', pink: '#f43f5e', purple: '#a855f7', blue: '#3b82f6', gold: '#fbbf24', green: '#10b981' }
-                    }
-                }
-            }
-        }
-    </script>
     <style>
-        body { background-color: #06070d; background-image: radial-gradient(circle at 50% 0%, #17153b 0%, #06070d 70%); }
-        .glass-panel { background: rgba(15, 17, 30, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(30, 34, 56, 0.6); }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #06070d; }
-        ::-webkit-scrollbar-thumb { background: #1e2238; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #a855f7; }
+        body {
+            background-color: #0b0e11;
+            color: #eaecef;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar {
+            background-color: #181a20;
+            border-bottom: 1px solid #2b2f36;
+        }
+        .card {
+            background-color: #181a20;
+            border: 1px solid #2b2f36;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+        }
+        .badge-long {
+            background-color: #0ecb81;
+            color: #000;
+            font-weight: bold;
+        }
+        .badge-short {
+            background-color: #f6465d;
+            color: #fff;
+            font-weight: bold;
+        }
+        .text-entry { color: #f0b90b; font-weight: 600; }
+        .text-tp { color: #0ecb81; font-weight: 600; }
+        .text-sl { color: #f6465d; font-weight: 600; }
+        .accuracy-bar {
+            height: 6px;
+            border-radius: 3px;
+            background-color: #2b2f36;
+        }
+        .accuracy-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #f0b90b, #0ecb81);
+        }
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #0ecb81;
+            border-radius: 50%;
+            display: inline-block;
+            animation: blink 1.5s infinite;
+        }
+        @keyframes blink {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
     </style>
 </head>
-<body class="text-gray-100 antialiased min-h-screen flex flex-col font-sans relative overflow-hidden" id="app-body">
+<body>
 
-    <div id="login-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-xl">
-        <div class="glass-panel p-8 rounded-3xl w-full max-w-sm space-y-6 text-center border border-cyber-purple/40 shadow-[0_0_40px_rgba(168,85,247,0.15)] relative">
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyber-blue via-cyber-purple to-cyber-pink"></div>
-            <div class="flex justify-center mb-2"><div class="bg-cyber-purple/10 p-4 rounded-full border border-cyber-purple/30"><i class="fa-solid fa-fingerprint text-5xl text-cyber-purple animate-pulse"></i></div></div>
-            <div>
-                <h2 class="text-xl font-bold text-white tracking-widest">INSTITUTIONAL ACCESS</h2>
-                <p class="text-xs text-gray-400 mt-2">Initialize your private Orderflow Node.</p>
-            </div>
-            <div class="space-y-3">
-                <input type="password" id="user-access-key" class="w-full bg-cyber-bg border border-cyber-border rounded-xl p-3 text-center text-sm text-white tracking-[0.2em] focus:outline-none focus:border-cyber-purple transition" placeholder="ENTER ACCESS KEY" onkeydown="if(event.key === 'Enter') authenticateUser()">
-                <p id="login-error" class="text-[10px] text-cyber-pink font-bold hidden tracking-wider uppercase"><i class="fa-solid fa-triangle-exclamation"></i> Invalid Key. Connection Refused.</p>
-            </div>
-            <button onclick="authenticateUser()" id="auth-btn" class="w-full bg-gradient-to-r from-cyber-purple to-cyber-pink hover:opacity-90 text-white font-bold py-3 rounded-xl text-xs tracking-wider transition">VERIFY & CONNECT</button>
-        </div>
-    </div>
-
-    <header class="glass-panel sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-            <div class="bg-cyber-bg p-2 rounded-full border border-cyber-purple/50 shadow-[0_0_15px_rgba(168,85,247,0.3)]"><i class="fa-solid fa-chart-candlestick text-xl text-cyber-purple"></i></div>
-            <div>
-                <h1 class="text-lg font-extrabold tracking-wider bg-gradient-to-r from-white via-cyber-purple to-cyber-pink bg-clip-text text-transparent">ALPHASIGNA <span class="text-xs bg-cyber-pink text-white px-2 py-0.5 rounded-full ml-1 font-semibold">PRO V33.0</span></h1>
-                <p class="text-[10px] text-gray-500 tracking-widest uppercase" id="current-user-display">Institutional Orderflow Matrix</p>
+    <nav class="navbar navbar-dark sticky-top py-3">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <i class="fa-solid fa-brain text-warning me-2 fs-3"></i>
+                <span class="fw-bold tracking-wider">ALPHASIGNA <span class="text-warning">V27.0</span></span>
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="status-dot me-2"></span>
+                <span class="text-muted small" id="system-status">Connecting Live Matrix...</span>
             </div>
         </div>
-        <div class="flex items-center gap-2 bg-black/40 px-3 py-1.5 rounded-full border border-cyber-border/50">
-            <span class="w-2.5 h-2.5 rounded-full bg-cyber-green animate-pulse shadow-[0_0_8px_#10b981]"></span>
-            <span class="text-[10px] font-mono text-cyber-green font-semibold">DATALINK SECURE</span>
-        </div>
-    </header>
+    </nav>
 
-    <div class="flex flex-col lg:flex-row flex-1 overflow-hidden">
-        <aside class="w-full lg:w-64 glass-panel border-r border-cyber-border/40 flex flex-col justify-between p-4 lg:sticky lg:top-20 overflow-y-auto">
-            <div class="space-y-1">
-                <span class="text-[10px] text-gray-500 tracking-wider font-bold uppercase block px-3 mb-2">PRO MODULES</span>
-                
-                <button onclick="switchTab('dashboard')" class="tab-btn active w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition hover:bg-cyber-purple/10 text-gray-400 [&.active]:bg-cyber-purple/20 [&.active]:border-l-4 [&.active]:border-cyber-purple [&.active]:text-white"><i class="fa-solid fa-grid-2 text-cyber-purple w-5"></i><span>Risk Dashboard</span></button>
-                <button onclick="switchTab('signals')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition hover:bg-cyber-purple/10 text-gray-400 [&.active]:bg-cyber-purple/20 [&.active]:border-l-4 [&.active]:border-cyber-purple [&.active]:text-white"><i class="fa-solid fa-satellite-dish text-cyber-pink w-5"></i><span>Orderflow Signals</span></button>
-                <button onclick="switchTab('heatmap')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition hover:bg-cyber-purple/10 text-gray-400 [&.active]:bg-cyber-purple/20 [&.active]:border-l-4 [&.active]:border-cyber-purple [&.active]:text-white"><i class="fa-solid fa-water text-cyber-blue w-5"></i><span>Liquidity Heatmap</span></button>
-                <button onclick="switchTab('chat')" class="tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition hover:bg-cyber-purple/10 text-gray-400 [&.active]:bg-cyber-purple/20 [&.active]:border-l-4 [&.active]:border-cyber-purple [&.active]:text-white"><i class="fa-solid fa-microchip text-cyber-gold w-5"></i><span>AI Orderflow Chat</span></button>
+    <div class="container my-5">
+        <div class="row mb-4">
+            <div class="col">
+                <h3 class="fw-bold"><i class="fa-solid fa-satellite-dish me-2 text-primary"></i>Live Market Signals</h3>
+                <p class="text-muted small">Real-time dynamic signal grid powered by AI Core.</p>
             </div>
-        </aside>
+        </div>
 
-        <main class="flex-1 p-6 overflow-y-auto space-y-6">
-            
-            <section id="tab-dashboard" class="tab-content space-y-6">
-                <div>
-                    <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-building-columns text-cyber-blue"></i> INSTITUTIONAL METRICS</h2>
-                    <p class="text-xs text-gray-400">System-wide performance including R:R and Drawdown tracking.</p>
+        <div class="row g-4" id="signals-container">
+            <div class="col-12 text-center py-5">
+                <div class="spinner-border text-warning" role="status">
+                    <span class="visually-hidden">Loading...</span>
                 </div>
-
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" id="global-stats-container">
-                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-blue flex flex-col justify-between h-28"><span class="text-[10px] text-gray-400 uppercase font-semibold">WIN RATE (WR)</span><h3 class="text-3xl font-extrabold text-white font-mono" id="g-wr">--%</h3></div>
-                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-green flex flex-col justify-between h-28"><span class="text-[10px] text-gray-400 uppercase font-semibold">PROFIT FACTOR (GROSS)</span><h3 class="text-3xl font-extrabold text-cyber-green font-mono" id="g-pf">--</h3></div>
-                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-pink flex flex-col justify-between h-28"><span class="text-[10px] text-gray-400 uppercase font-semibold">MAX DRAWDOWN (MDD)</span><h3 class="text-3xl font-extrabold text-cyber-pink font-mono">-4.2%</h3></div>
-                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-gold flex flex-col justify-between h-28"><span class="text-[10px] text-gray-400 uppercase font-semibold">AVG RISK:REWARD</span><h3 class="text-3xl font-extrabold text-cyber-gold font-mono">1:3.2</h3></div>
-                </div>
-
-                <div class="mt-8 pt-6 border-t border-cyber-border/50">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-wallet text-cyber-purple"></i> MY CAPITAL RISK NODE</h2>
-                        <span class="text-[10px] bg-cyber-purple/20 text-cyber-purple px-3 py-1 rounded-full border border-cyber-purple/30 font-bold uppercase font-mono tracking-widest" id="my-key-badge">Node: Pending</span>
-                    </div>
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div class="glass-panel p-4 rounded-2xl bg-gradient-to-br from-cyber-bg to-cyber-purple/10 border border-cyber-purple/30"><span class="text-[10px] text-gray-400 uppercase font-semibold">TOTAL TRADES</span><h3 class="text-3xl font-extrabold text-white font-mono" id="my-total">0</h3></div>
-                        <div class="glass-panel p-4 rounded-2xl bg-gradient-to-br from-cyber-bg to-cyber-green/10 border border-cyber-green/30"><span class="text-[10px] text-gray-400 uppercase font-semibold">WINNING SETUPS</span><h3 class="text-3xl font-extrabold text-cyber-green font-mono" id="my-tp">0</h3></div>
-                        <div class="glass-panel p-4 rounded-2xl bg-gradient-to-br from-cyber-bg to-cyber-pink/10 border border-cyber-pink/30"><span class="text-[10px] text-gray-400 uppercase font-semibold">STOP OUTS (SL)</span><h3 class="text-3xl font-extrabold text-cyber-pink font-mono" id="my-sl">0</h3></div>
-                        <div class="glass-panel p-4 rounded-2xl bg-gradient-to-br from-cyber-bg to-cyber-gold/10 border border-cyber-gold/30"><span class="text-[10px] text-gray-400 uppercase font-semibold">ACTIVE EXPOSURE</span><div class="text-xs font-extrabold text-cyber-gold font-mono mt-2 truncate" id="my-exposure">None</div></div>
-                    </div>
-                </div>
-
-                <div class="mt-8 pt-6 border-t border-cyber-border/50">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-chart-candlestick text-cyber-blue"></i> LIVE MARKET MATRIX</h2>
-                        <span class="text-[10px] text-gray-400 font-mono tracking-widest">BTC/USDT REAL-TIME</span>
-                    </div>
-                    <div class="glass-panel p-2 rounded-2xl border border-cyber-purple/30 h-[500px] w-full relative overflow-hidden" id="tradingview_chart"></div>
-                </div>
-            </section>
-
-            <section id="tab-signals" class="tab-content space-y-6 hidden">
-                <div>
-                    <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-radar text-cyber-pink"></i> INSTITUTIONAL ORDERFLOW SIGNALS</h2>
-                    <p class="text-xs text-gray-400">High probability setups with strict Risk:Reward (R:R) validation.</p>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="signals-container">
-                    <div class="col-span-full text-center py-12"><div class="spinner-border text-cyber-purple animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status"></div><p class="text-gray-400 text-xs mt-3">Scanning Liquidity Pools...</p></div>
-                </div>
-            </section>
-
-            <section id="tab-heatmap" class="tab-content space-y-6 hidden">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-water text-cyber-blue"></i> DEEP LIQUIDITY HEATMAP</h2>
-                        <p class="text-xs text-gray-400">Tracks Cumulative Volume Delta (CVD) and Liquidity Sweeps (BSL/SSL).</p>
-                    </div>
-                </div>
-                <div class="glass-panel rounded-2xl overflow-hidden">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="border-b border-cyber-border text-[10px] uppercase text-gray-400 bg-cyber-bg/50">
-                                <th class="p-4">Asset</th>
-                                <th class="p-4">SMC Structure</th>
-                                <th class="p-4 text-center">Volume Delta (CVD)</th>
-                                <th class="p-4 text-right">Liquidity Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="heatmap-body" class="text-xs font-mono"></tbody>
-                    </table>
-                </div>
-            </section>
-
-            <section id="tab-chat" class="tab-content space-y-6 hidden">
-                <div class="flex items-center justify-between border-b border-cyber-border/40 pb-4">
-                    <div>
-                        <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-microchip text-cyber-gold"></i> AI ORDERFLOW ASSISTANT</h2>
-                        <p class="text-xs text-gray-400">Query institutional structures, FVG analysis, and safe lot sizing.</p>
-                    </div>
-                </div>
-                <div class="flex flex-col h-[500px] glass-panel rounded-3xl overflow-hidden relative">
-                    <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-4 font-sans text-xs">
-                        <div class="flex items-start gap-3">
-                            <div class="bg-cyber-purple/20 border border-cyber-purple/50 p-2 rounded-full text-cyber-purple shrink-0"><i class="fa-solid fa-brain-circuit"></i></div>
-                            <div class="bg-cyber-card border border-cyber-border/80 p-4 rounded-r-2xl rounded-bl-2xl max-w-lg space-y-2">
-                                <p class="font-bold text-cyber-gold">AlphaSigna Pro AI 🌌</p>
-                                <p class="text-gray-200">Hello Trader. I monitor orderflow and SMC data. How can I assist your risk management today?</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-4 border-t border-cyber-border bg-cyber-bg/80 flex items-center gap-3">
-                        <input type="text" id="chat-input" class="flex-1 bg-cyber-card border border-cyber-border focus:border-cyber-purple focus:ring-1 focus:ring-cyber-purple focus:outline-none rounded-xl px-4 py-3 text-xs text-white" placeholder="Ask about Market Structure or Risk..." onkeydown="if(event.key === 'Enter') sendChatMessage()">
-                        <button onclick="sendChatMessage()" class="bg-gradient-to-r from-cyber-purple to-cyber-pink hover:opacity-95 text-white font-bold p-3 rounded-xl transition"><i class="fa-solid fa-paper-plane"></i></button>
-                    </div>
-                </div>
-            </section>
-        </main>
+                <p class="text-muted mt-2">Syncing with Firebase Realtime Core...</p>
+            </div>
+        </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
-        // ==========================================
-        // SYSTEM INIT
-        // ==========================================
-        firebase.initializeApp({ databaseURL: "https://alphasigna-live-d644a-default-rtdb.firebaseio.com/" });
+        // --- ⚙️ FIREBASE CONFIGURATION ---
+        // ඔයාගේ Firebase Project Settings වල ඇති දත්ත මෙතැනට ඇතුළත් කරන්න
+        const firebaseConfig = {
+            databaseURL: "https://alphasigna-live-d644a-default-rtdb.firebaseio.com/"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-        let activeUserKey = null;
 
-        // ==========================================
-        // LOGIN AUTHENTICATION
-        // ==========================================
-        function authenticateUser() {
-            const key = document.getElementById('user-access-key').value.trim();
-            const btn = document.getElementById('auth-btn');
-            if (!key) return;
-            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> VERIFYING...`;
-            
-            database.ref('premium_keys/' + key).once('value').then((snap) => {
-                if (snap.exists()) {
-                    activeUserKey = key;
-                    document.getElementById('login-modal').classList.add('hidden');
-                    document.getElementById('app-body').classList.remove('overflow-hidden');
-                    document.getElementById('current-user-display').innerText = `Node Linked: ${key}`;
-                    document.getElementById('my-key-badge').innerText = `NODE: ${key}`;
-                    
-                    database.ref('premium_keys/' + key).on('value', (s) => {
-                        const d = s.val() || {};
-                        const st = d.stats || { trades: 0, tp: 0, sl: 0 };
-                        document.getElementById('my-total').innerText = st.trades;
-                        document.getElementById('my-tp').innerText = st.tp;
-                        document.getElementById('my-sl').innerText = st.sl;
-                        document.getElementById('my-exposure').innerText = d.active_trades ? Object.keys(d.active_trades).join(', ') : "None";
-                    });
-                } else {
-                    btn.innerHTML = `VERIFY & CONNECT`;
-                    document.getElementById('login-error').classList.remove('hidden');
-                }
-            });
-        }
-
-        // ==========================================
-        // 🔥 GLOBAL STATS SYNC & CLIENT CALCULATION
-        // ==========================================
-        database.ref('global_stats').on('value', (snap) => {
-            let s = snap.val();
-            if (!s) {
-                s = { total_trades: 68, total_tp: 57, total_sl: 11 };
+        // 📡 System Status Update
+        database.ref('system_status').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if(data) {
+                document.getElementById('system-status').innerText = data.message || "ONLINE";
             }
-
-            const total = s.total_trades || 0;
-            const tp = s.total_tp || 0;
-            const sl = s.total_sl || 0;
-            
-            // Real calculation using only total_trades, total_tp, total_sl
-            let calcWinRate = 0;
-            if (total > 0) {
-                calcWinRate = ((tp / total) * 100).toFixed(1);
-            }
-
-            let calcProfitFactor = 0;
-            if (sl > 0) {
-                calcProfitFactor = ((tp * 3.2) / (sl * 1)).toFixed(2);
-            } else if (tp > 0) {
-                calcProfitFactor = "MAX";
-            }
-
-            document.getElementById('g-wr').innerText = calcWinRate + '%';
-            document.getElementById('g-pf').innerText = calcProfitFactor;
         });
 
-        // ==========================================
-        // TAKE TRADE FUNCTIONALITY
-        // ==========================================
-        function executeTakeTrade(coinKey) {
-            if (!activeUserKey) {
-                alert("Please authenticate your node first.");
+        // 📊 Listen to Live Signals
+        database.ref('live_signals').on('value', (snapshot) => {
+            const signalsContainer = document.getElementById('signals-container');
+            const signals = snapshot.val();
+
+            if (!signals || Object.keys(signals).length === 0) {
+                signalsContainer.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <i class="fa-solid fa-circle-exclamation text-muted fs-1 mb-2"></i>
+                        <p class="text-muted">No active signals at the moment. Waiting for market triggers...</p>
+                    </div>`;
                 return;
             }
-            
-            // 1. Increment global_stats total_trades
-            const globalRef = database.ref('global_stats/total_trades');
-            globalRef.transaction((currentValue) => {
-                return (currentValue || 0) + 1;
-            });
 
-            // 2. Increment personal user stats trades node
-            const userRef = database.ref(`premium_keys/${activeUserKey}/stats/trades`);
-            userRef.transaction((currentValue) => {
-                return (currentValue || 0) + 1;
-            });
+            signalsContainer.innerHTML = ''; // Clear loading screen
 
-            alert(`Order flow executed for ${coinKey}. Metrics transmitted to secure cloud grid.`);
-        }
+            // Loop through all coins
+            Object.keys(signals).forEach(key => {
+                const signal = signals[key];
+                
+                // Determine side badge color
+                const sideBadge = signal.side === "LONG" ? "badge-long" : "badge-short";
+                const sideIcon = signal.side === "LONG" ? "fa-arrow-trend-up" : "fa-arrow-trend-down";
+                
+                // Format time
+                const timeString = new Date(signal.timestamp * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
 
-        // ==========================================
-        // LIVE SIGNALS SYNC
-        // ==========================================
-        database.ref('live_signals').on('value', (snap) => {
-            const c = document.getElementById('signals-container');
-            const sigs = snap.val();
-            if (!sigs) { c.innerHTML = `<div class="col-span-full text-center py-12"><p class="text-gray-500">AWAITING HIGH PROBABILITY SETUPS</p></div>`; return; }
-            
-            c.innerHTML = '';
-            Object.keys(sigs).forEach(key => {
-                const s = sigs[key];
-                const isVIP = s.accuracy >= 85.0;
-                c.innerHTML += `
-                    <div class="glass-panel p-5 rounded-2xl border border-cyber-purple/30 hover:border-cyber-purple/60 transition flex flex-col justify-between">
-                        <div>
-                            <div class="flex justify-between items-start mb-3">
-                                <div><h3 class="text-lg font-extrabold text-white">${s.pair || key}</h3><span class="text-[10px] text-cyber-gold font-bold bg-cyber-gold/10 px-2 py-0.5 rounded mt-1 inline-block"><i class="fa-solid fa-crosshairs"></i> R:R ${s.rr_ratio || '1:3.2'}</span></div>
-                                <span class="bg-${s.side === 'LONG' ? 'cyber-green' : 'cyber-pink'}/20 text-${s.side === 'LONG' ? 'cyber-green' : 'cyber-pink'} px-3 py-1 text-xs rounded-lg font-bold">${s.side}</span>
+                const cardHtml = `
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card h-100 p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4 class="fw-bold m-0 text-white">${signal.pair}</h4>
+                                <span class="badge ${sideBadge} px-3 py-2 rounded">
+                                    <i class="fa-solid ${sideIcon} me-1"></i> ${signal.side}
+                                </span>
                             </div>
-                            <div class="grid grid-cols-3 gap-2 text-center bg-black/40 p-3 rounded-xl border border-cyber-border/40 font-mono my-4">
-                                <div><div class="text-[10px] text-gray-500">ENTRY</div><div class="text-sm text-white">${s.entry}</div></div>
-                                <div><div class="text-[10px] text-gray-500">TP (Target)</div><div class="text-sm text-cyber-green">${s.tp1}</div></div>
-                                <div><div class="text-[10px] text-gray-500">SL (Risk)</div><div class="text-sm text-cyber-pink">${s.sl}</div></div>
+                            
+                            <p class="text-muted small mb-3"><i class="fa-regular fa-clock me-1"></i> Triggered: ${timeString}</p>
+                            
+                            <div class="row g-2 text-center mb-3 bg-dark py-2 rounded border border-secondary" style="--bs-border-opacity: .2;">
+                                <div class="col-4">
+                                    <div class="text-muted small">Entry</div>
+                                    <div class="text-entry">${signal.entry}</div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="text-muted small">Target TP</div>
+                                    <div class="text-tp">${signal.tp1}</div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="text-muted small">Stop Loss</div>
+                                    <div class="text-sl">${signal.sl}</div>
+                                </div>
                             </div>
-                            <div class="text-[10px] text-gray-400 mt-2 border-t border-cyber-border/40 pt-2 pb-4"><i class="fa-solid fa-microchip text-cyber-purple"></i> Logic: ${s.tech_logic || 'Matrix Analysis Active'}</div>
+
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between small text-muted mb-1">
+                                    <span>AI Probability Score</span>
+                                    <span class="text-warning fw-bold">${signal.accuracy}%</span>
+                                </div>
+                                <div class="accuracy-bar">
+                                    <div class="accuracy-fill" style="width: ${signal.accuracy}%"></div>
+                                </div>
+                            </div>
+
+                            <div class="bg-black p-2 rounded small text-muted border border-secondary" style="--bs-border-opacity: .1; font-size: 0.8rem;">
+                                <div><strong class="text-secondary">Logic:</strong> ${signal.tech_logic}</div>
+                            </div>
                         </div>
-                        <button onclick="executeTakeTrade('${key}')" class="w-full mt-2 bg-gradient-to-r from-cyber-blue to-cyber-purple hover:opacity-90 text-white font-bold py-2.5 rounded-xl text-xs tracking-wider transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-bolt"></i> TAKE TRADE
-                        </button>
-                    </div>`;
+                    </div>
+                `;
+                signalsContainer.innerHTML += cardHtml;
             });
         });
-
-        function switchTab(t) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(`tab-${t}`).classList.remove('hidden');
-            if(event && event.currentTarget) event.currentTarget.classList.add('active');
-        }
-
-        function regenerateHeatmap() {
-            const b = document.getElementById('heatmap-body');
-            const data = [
-                { p: "BTC/USDT", s: "ChoCH (Bullish)", c: "+$4.2M", l: "Sell-Side Swept (SSL)", clr: "text-cyber-green" },
-                { p: "ETH/USDT", s: "Bearish FVG", c: "-$1.8M", l: "Buy-Side Swept (BSL)", clr: "text-cyber-pink" },
-                { p: "SOL/USDT", s: "Accumulation", c: "+$850K", l: "Internal Liquidity", clr: "text-cyber-gold" }
-            ];
-            b.innerHTML = data.map(d => `<tr class="border-b border-cyber-border/40 hover:bg-cyber-card/50 transition"><td class="p-4 font-bold text-white">${d.p}</td><td class="p-4 text-gray-400">${d.s}</td><td class="p-4 text-center font-bold ${d.clr}">${d.c}</td><td class="p-4 text-right text-gray-300 font-bold">${d.l}</td></tr>`).join('');
-        }
-
-        async function sendChatMessage() {
-            const i = document.getElementById('chat-input').value.trim();
-            if (!i) return;
-            const msgBox = document.getElementById('chat-messages');
-            msgBox.innerHTML += `<div class="flex items-start gap-3 flex-row-reverse"><div class="bg-cyber-pink/20 text-cyber-pink p-2 rounded-full shrink-0"><i class="fa-solid fa-user"></i></div><div class="bg-cyber-card p-4 rounded-l-2xl rounded-br-2xl text-xs text-white max-w-lg">${i}</div></div>`;
-            document.getElementById('chat-input').value = "";
-            msgBox.scrollTop = msgBox.scrollHeight;
-
-            const reqId = "req_" + Date.now();
-            database.ref('chat_requests/' + reqId).set({ message: i, status: 'pending' });
-
-            const ref = database.ref('chat_requests/' + reqId);
-            ref.on('value', snap => {
-                const d = snap.val();
-                if (d && d.status === 'completed') {
-                    msgBox.innerHTML += `<div class="flex items-start gap-3"><div class="bg-cyber-purple/20 text-cyber-purple p-2 rounded-full shrink-0"><i class="fa-solid fa-brain-circuit"></i></div><div class="bg-cyber-card p-4 rounded-r-2xl rounded-bl-2xl text-xs text-gray-200 max-w-lg whitespace-pre-wrap">${d.reply}</div></div>`;
-                    msgBox.scrollTop = msgBox.scrollHeight;
-                    ref.off(); ref.remove();
-                }
-            });
-        }
-
-        // Load TradingView Widget External Library
-        const tvScript = document.createElement('script');
-        tvScript.src = "https://s3.tradingview.com/tv.js";
-        tvScript.onload = function() {
-            new TradingView.widget({
-                "autosize": true,
-                "symbol": "BINANCE:BTCUSDT",
-                "interval": "15",
-                "timezone": "Etc/UTC",
-                "theme": "dark",
-                "style": "1",
-                "locale": "en",
-                "enable_publishing": false,
-                "backgroundColor": "#0f111e",
-                "gridColor": "#1e2238",
-                "hide_top_toolbar": false,
-                "hide_legend": false,
-                "save_image": false,
-                "container_id": "tradingview_chart",
-                "toolbar_bg": "#0f111e",
-                "studies_overrides": {
-                    "mainSeriesProperties.candleStyle.upColor": "#a855f7",
-                    "mainSeriesProperties.candleStyle.downColor": "#f43f5e",
-                    "mainSeriesProperties.candleStyle.borderUpColor": "#a855f7",
-                    "mainSeriesProperties.candleStyle.borderDownColor": "#f43f5e",
-                    "mainSeriesProperties.candleStyle.wickUpColor": "#a855f7",
-                    "mainSeriesProperties.candleStyle.wickDownColor": "#f43f5e"
-                }
-            });
-        };
-        document.body.appendChild(tvScript);
-
-        window.onload = regenerateHeatmap;
     </script>
 </body>
 </html>
