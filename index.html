@@ -31,7 +31,6 @@
 </head>
 <body class="text-gray-100 antialiased min-h-screen flex flex-col font-sans relative overflow-hidden" id="app-body">
 
-    <!-- LOGIN MODAL -->
     <div id="login-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-xl">
         <div class="glass-panel p-8 rounded-3xl w-full max-w-sm space-y-6 text-center border border-cyber-purple/40 shadow-[0_0_40px_rgba(168,85,247,0.15)] relative">
             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyber-blue via-cyber-purple to-cyber-pink"></div>
@@ -48,7 +47,6 @@
         </div>
     </div>
 
-    <!-- Header -->
     <header class="glass-panel sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
         <div class="flex items-center gap-3">
             <div class="bg-cyber-bg p-2 rounded-full border border-cyber-purple/50 shadow-[0_0_15px_rgba(168,85,247,0.3)]"><i class="fa-solid fa-chart-candlestick text-xl text-cyber-purple"></i></div>
@@ -64,7 +62,6 @@
     </header>
 
     <div class="flex flex-col lg:flex-row flex-1 overflow-hidden">
-        <!-- Sidebar -->
         <aside class="w-full lg:w-64 glass-panel border-r border-cyber-border/40 flex flex-col justify-between p-4 lg:sticky lg:top-20 overflow-y-auto">
             <div class="space-y-1">
                 <span class="text-[10px] text-gray-500 tracking-wider font-bold uppercase block px-3 mb-2">PRO MODULES</span>
@@ -76,17 +73,14 @@
             </div>
         </aside>
 
-        <!-- Content -->
         <main class="flex-1 p-6 overflow-y-auto space-y-6">
             
-            <!-- DASHBOARD -->
             <section id="tab-dashboard" class="tab-content space-y-6">
                 <div>
                     <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-building-columns text-cyber-blue"></i> INSTITUTIONAL METRICS</h2>
                     <p class="text-xs text-gray-400">System-wide performance including R:R and Drawdown tracking.</p>
                 </div>
 
-                <!-- Pro Global Stats -->
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" id="global-stats-container">
                     <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-blue flex flex-col justify-between h-28"><span class="text-[10px] text-gray-400 uppercase font-semibold">WIN RATE (WR)</span><h3 class="text-3xl font-extrabold text-white font-mono" id="g-wr">--%</h3></div>
                     <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-green flex flex-col justify-between h-28"><span class="text-[10px] text-gray-400 uppercase font-semibold">PROFIT FACTOR (GROSS)</span><h3 class="text-3xl font-extrabold text-cyber-green font-mono" id="g-pf">--</h3></div>
@@ -94,7 +88,6 @@
                     <div class="glass-panel p-4 rounded-2xl border-l-4 border-cyber-gold flex flex-col justify-between h-28"><span class="text-[10px] text-gray-400 uppercase font-semibold">AVG RISK:REWARD</span><h3 class="text-3xl font-extrabold text-cyber-gold font-mono">1:3.2</h3></div>
                 </div>
 
-                <!-- Personal Node -->
                 <div class="mt-8 pt-6 border-t border-cyber-border/50">
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-wallet text-cyber-purple"></i> MY CAPITAL RISK NODE</h2>
@@ -108,18 +101,15 @@
                     </div>
                 </div>
 
-                <!-- LIVE MARKET MATRIX (TradingView Chart) -->
                 <div class="mt-8 pt-6 border-t border-cyber-border/50">
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-chart-candlestick text-cyber-blue"></i> LIVE MARKET MATRIX</h2>
                         <span class="text-[10px] text-gray-400 font-mono tracking-widest">BTC/USDT REAL-TIME</span>
                     </div>
-                    <!-- Chart Container -->
                     <div class="glass-panel p-2 rounded-2xl border border-cyber-purple/30 h-[500px] w-full relative overflow-hidden" id="tradingview_chart"></div>
                 </div>
             </section>
 
-            <!-- SIGNALS -->
             <section id="tab-signals" class="tab-content space-y-6 hidden">
                 <div>
                     <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-radar text-cyber-pink"></i> INSTITUTIONAL ORDERFLOW SIGNALS</h2>
@@ -130,7 +120,6 @@
                 </div>
             </section>
 
-            <!-- HEATMAP -->
             <section id="tab-heatmap" class="tab-content space-y-6 hidden">
                 <div class="flex items-center justify-between">
                     <div>
@@ -153,7 +142,6 @@
                 </div>
             </section>
 
-            <!-- AI CHAT -->
             <section id="tab-chat" class="tab-content space-y-6 hidden">
                 <div class="flex items-center justify-between border-b border-cyber-border/40 pb-4">
                     <div>
@@ -180,7 +168,6 @@
         </main>
     </div>
 
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
@@ -202,14 +189,13 @@
             btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> VERIFYING...`;
             
             database.ref('premium_keys/' + key).once('value').then((snap) => {
-                if (snap.exists() && snap.val().status === 'active') {
+                if (snap.exists()) {
                     activeUserKey = key;
                     document.getElementById('login-modal').classList.add('hidden');
                     document.getElementById('app-body').classList.remove('overflow-hidden');
                     document.getElementById('current-user-display').innerText = `Node Linked: ${key}`;
                     document.getElementById('my-key-badge').innerText = `NODE: ${key}`;
                     
-                    // Load Personal Stats
                     database.ref('premium_keys/' + key).on('value', (s) => {
                         const d = s.val() || {};
                         const st = d.stats || { trades: 0, tp: 0, sl: 0 };
@@ -238,17 +224,14 @@
             const tp = s.total_tp || 0;
             const sl = s.total_sl || 0;
             
+            // Real calculation using only total_trades, total_tp, total_sl
             let calcWinRate = 0;
-            if (s.win_rate) {
-                calcWinRate = s.win_rate;
-            } else if (total > 0) {
+            if (total > 0) {
                 calcWinRate = ((tp / total) * 100).toFixed(1);
             }
 
             let calcProfitFactor = 0;
-            if (s.profit_factor) {
-                calcProfitFactor = s.profit_factor;
-            } else if (sl > 0) {
+            if (sl > 0) {
                 calcProfitFactor = ((tp * 3.2) / (sl * 1)).toFixed(2);
             } else if (tp > 0) {
                 calcProfitFactor = "MAX";
@@ -259,6 +242,30 @@
         });
 
         // ==========================================
+        // TAKE TRADE FUNCTIONALITY
+        // ==========================================
+        function executeTakeTrade(coinKey) {
+            if (!activeUserKey) {
+                alert("Please authenticate your node first.");
+                return;
+            }
+            
+            // 1. Increment global_stats total_trades
+            const globalRef = database.ref('global_stats/total_trades');
+            globalRef.transaction((currentValue) => {
+                return (currentValue || 0) + 1;
+            });
+
+            // 2. Increment personal user stats trades node
+            const userRef = database.ref(`premium_keys/${activeUserKey}/stats/trades`);
+            userRef.transaction((currentValue) => {
+                return (currentValue || 0) + 1;
+            });
+
+            alert(`Order flow executed for ${coinKey}. Metrics transmitted to secure cloud grid.`);
+        }
+
+        // ==========================================
         // LIVE SIGNALS SYNC
         // ==========================================
         database.ref('live_signals').on('value', (snap) => {
@@ -267,19 +274,26 @@
             if (!sigs) { c.innerHTML = `<div class="col-span-full text-center py-12"><p class="text-gray-500">AWAITING HIGH PROBABILITY SETUPS</p></div>`; return; }
             
             c.innerHTML = '';
-            Object.values(sigs).forEach(s => {
+            Object.keys(sigs).forEach(key => {
+                const s = sigs[key];
+                const isVIP = s.accuracy >= 85.0;
                 c.innerHTML += `
-                    <div class="glass-panel p-5 rounded-2xl border border-cyber-purple/30 hover:border-cyber-purple/60 transition">
-                        <div class="flex justify-between items-start mb-3">
-                            <div><h3 class="text-lg font-extrabold text-white">${s.pair}</h3><span class="text-[10px] text-cyber-gold font-bold bg-cyber-gold/10 px-2 py-0.5 rounded mt-1 inline-block"><i class="fa-solid fa-crosshairs"></i> R:R ${s.rr_ratio || '1:3'}</span></div>
-                            <span class="bg-${s.side === 'LONG' ? 'cyber-green' : 'cyber-pink'}/20 text-${s.side === 'LONG' ? 'cyber-green' : 'cyber-pink'} px-3 py-1 text-xs rounded-lg font-bold">${s.side}</span>
+                    <div class="glass-panel p-5 rounded-2xl border border-cyber-purple/30 hover:border-cyber-purple/60 transition flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-3">
+                                <div><h3 class="text-lg font-extrabold text-white">${s.pair || key}</h3><span class="text-[10px] text-cyber-gold font-bold bg-cyber-gold/10 px-2 py-0.5 rounded mt-1 inline-block"><i class="fa-solid fa-crosshairs"></i> R:R ${s.rr_ratio || '1:3.2'}</span></div>
+                                <span class="bg-${s.side === 'LONG' ? 'cyber-green' : 'cyber-pink'}/20 text-${s.side === 'LONG' ? 'cyber-green' : 'cyber-pink'} px-3 py-1 text-xs rounded-lg font-bold">${s.side}</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 text-center bg-black/40 p-3 rounded-xl border border-cyber-border/40 font-mono my-4">
+                                <div><div class="text-[10px] text-gray-500">ENTRY</div><div class="text-sm text-white">${s.entry}</div></div>
+                                <div><div class="text-[10px] text-gray-500">TP (Target)</div><div class="text-sm text-cyber-green">${s.tp1}</div></div>
+                                <div><div class="text-[10px] text-gray-500">SL (Risk)</div><div class="text-sm text-cyber-pink">${s.sl}</div></div>
+                            </div>
+                            <div class="text-[10px] text-gray-400 mt-2 border-t border-cyber-border/40 pt-2 pb-4"><i class="fa-solid fa-microchip text-cyber-purple"></i> Logic: ${s.tech_logic || 'Matrix Analysis Active'}</div>
                         </div>
-                        <div class="grid grid-cols-3 gap-2 text-center bg-black/40 p-3 rounded-xl border border-cyber-border/40 font-mono my-4">
-                            <div><div class="text-[10px] text-gray-500">ENTRY</div><div class="text-sm text-white">${s.entry}</div></div>
-                            <div><div class="text-[10px] text-gray-500">TP (Target)</div><div class="text-sm text-cyber-green">${s.tp1}</div></div>
-                            <div><div class="text-[10px] text-gray-500">SL (Risk)</div><div class="text-sm text-cyber-pink">${s.sl}</div></div>
-                        </div>
-                        <div class="text-[10px] text-gray-400 mt-2 border-t border-cyber-border/40 pt-2"><i class="fa-solid fa-microchip text-cyber-purple"></i> Logic: ${s.tech_logic}</div>
+                        <button onclick="executeTakeTrade('${key}')" class="w-full mt-2 bg-gradient-to-r from-cyber-blue to-cyber-purple hover:opacity-90 text-white font-bold py-2.5 rounded-xl text-xs tracking-wider transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-bolt"></i> TAKE TRADE
+                        </button>
                     </div>`;
             });
         });
@@ -288,6 +302,7 @@
             document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(`tab-${t}`).classList.remove('hidden');
+            if(event && event.currentTarget) event.currentTarget.classList.add('active');
         }
 
         function regenerateHeatmap() {
@@ -300,9 +315,6 @@
             b.innerHTML = data.map(d => `<tr class="border-b border-cyber-border/40 hover:bg-cyber-card/50 transition"><td class="p-4 font-bold text-white">${d.p}</td><td class="p-4 text-gray-400">${d.s}</td><td class="p-4 text-center font-bold ${d.clr}">${d.c}</td><td class="p-4 text-right text-gray-300 font-bold">${d.l}</td></tr>`).join('');
         }
 
-        // ==========================================
-        // AI CHAT SYSTEM
-        // ==========================================
         async function sendChatMessage() {
             const i = document.getElementById('chat-input').value.trim();
             if (!i) return;
@@ -325,9 +337,7 @@
             });
         }
 
-        // ==========================================
-        // 📈 TRADINGVIEW WIDGET WITH NEON IMPLEMENTATION
-        // ==========================================
+        // Load TradingView Widget External Library
         const tvScript = document.createElement('script');
         tvScript.src = "https://s3.tradingview.com/tv.js";
         tvScript.onload = function() {
@@ -346,19 +356,8 @@
                 "hide_legend": false,
                 "save_image": false,
                 "container_id": "tradingview_chart",
-                "upColor": "#a855f7",        
-                "downColor": "#f43f5e",      
-                "borderUpColor": "#a855f7",  
-                "borderDownColor": "#f43f5e",
-                "wickUpColor": "#a855f7",    
-                "wickDownColor": "#f43f5e",
-                "colors": {
-                    "palette": {
-                        "up": "#a855f7",
-                        "down": "#f43f5e"
-                    }
-                },
-                "overrides": {
+                "toolbar_bg": "#0f111e",
+                "studies_overrides": {
                     "mainSeriesProperties.candleStyle.upColor": "#a855f7",
                     "mainSeriesProperties.candleStyle.downColor": "#f43f5e",
                     "mainSeriesProperties.candleStyle.borderUpColor": "#a855f7",
