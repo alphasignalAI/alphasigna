@@ -3,416 +3,678 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaSigna AI - Premium Market Intelligence</title>
+    <title>AlphaSigna V19.3 - VIP Alert Matrix</title>
     <style>
         :root {
-            --bg-color: #060b13;
-            --card-bg: #0b1523;
-            --gold: #f3ba2f;
-            --gold-glow: rgba(243, 186, 47, 0.2);
-            --blue-glow: #00d2ff;
-            --green: #00ff88;
-            --red: #ff4d4d;
-            --text-muted: #8492a6;
+            --primary: #00ffcc;
+            --bg-dark: #06090e;
+            --card-bg: #0d1117;
+            --accent: #ff007f;
+            --long: #00e676;
+            --short: #ff1744;
+            --border: #21262d;
+            --btc-gold: #f7931a;
         }
-
         body {
-            margin: 0;
-            padding: 20px;
-            background-color: var(--bg-color);
-            color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark); color: #c9d1d9; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 15px;
+            overflow-x: hidden;
         }
-
-        .container {
-            max-width: 1000px;
-            margin: auto;
+        
+        /* 🚨 System Status Bar */
+        #status-bar {
+            background: rgba(0, 255, 204, 0.1); border: 1px solid var(--primary);
+            color: var(--primary); text-align: center; padding: 10px; border-radius: 8px;
+            font-size: 13px; font-weight: bold; letter-spacing: 2px; margin-bottom: 20px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
         }
+        .pulse-dot { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 8px var(--primary); animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
 
-        /* Header Style */
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
+        /* 🔑 Login Screen */
+        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh; }
+        .login-box { background: var(--card-bg); padding: 40px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 320px; }
+        .login-box input { padding: 14px; width: 85%; border-radius: 8px; border: 1px solid var(--border); background: #010409; color: var(--primary); font-size: 16px; text-transform: uppercase; text-align: center; margin-bottom: 20px; outline: none; }
+        
+        /* Universal Buttons */
+        .btn { background: var(--primary); color: #000; padding: 14px 28px; border: none; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; transition: all 0.3s; text-transform: uppercase; width: 100%; }
+        .btn:hover { box-shadow: 0 0 20px var(--primary); transform: translateY(-1px); }
+        
+        .btn-trade { background: transparent; border: 1px solid var(--primary); color: var(--primary); margin-top: 15px; padding: 11px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+        .btn-trade:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary); }
+        
+        .btn-chart { background: rgba(56, 139, 253, 0.05); border: 1px solid #388bff; color: #58a6ff; margin-top: 10px; padding: 11px; width: 48%; display: inline-block; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-chart:hover { background: #388bff; color: #fff; box-shadow: 0 0 15px #388bff; }
+        
+        .btn-logic { background: rgba(255, 0, 127, 0.05); border: 1px solid var(--accent); color: var(--accent); margin-top: 10px; padding: 11px; width: 48%; display: inline-block; float: right; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-logic:hover { background: var(--accent); color: #fff; box-shadow: 0 0 15px var(--accent); }
+
+        /* Dashboard Main Layout */
+        #dashboard { display: none; max-width: 1400px; margin: 0 auto; position: relative; }
+        
+        /* 🆔 RED NEON USER BADGE (Top Right) - UPDATED FOR MOBILE FIX */
+        .neon-badge {
+            position: absolute; top: 15px; right: 15px; background: rgba(255, 23, 68, 0.05); border: 1px solid var(--short);
+            border-radius: 8px; padding: 10px 18px; text-align: right; box-shadow: 0 0 15px rgba(255, 23, 68, 0.3), inset 0 0 8px rgba(255, 23, 68, 0.1); z-index: 100;
         }
+        .neon-badge .username { color: var(--short); font-weight: 900; font-size: 14px; letter-spacing: 1px; text-shadow: 0 0 8px rgba(255, 23, 68, 0.8); margin-bottom: 3px; }
+        .neon-badge .expiry { color: #8b949e; font-size: 11px; font-family: monospace; font-weight: bold; letter-spacing: 0.5px; }
 
-        .header h1 {
-            font-size: 42px;
-            margin: 0;
-            background: linear-gradient(135deg, #fff 0%, var(--gold) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 2px;
+        /* HEADER - UPDATED FOR MOBILE FIX */
+        .header { text-align: center; margin-top: 60px; margin-bottom: 30px; }
+        .header h1 { color: #fff; margin-bottom: 5px; font-size: 28px; font-weight: 800; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; }
+        .stat-value { font-size: 26px; font-weight: 700; color: #f0f6fc; }
+        .global-card { border-left: 4px solid var(--primary); }
+        .personal-card { border-left: 4px solid var(--accent); }
+
+        /* 🕸️ MASSIVE NEURAL NETWORK MATRIX CONTAINER */
+        .scanner-section { text-align: center; margin: 20px 0; position: relative; }
+        #network-container { 
+            display: none; width: 100%; height: 950px; margin: 0 auto 20px auto; 
+            background: #010409; border-radius: 16px; border: 1px solid var(--border); 
+            position: relative; overflow: hidden; background-image: radial-gradient(circle at 50% 50%, rgba(0, 255, 204, 0.05) 0%, transparent 70%);
         }
+        
+        #network-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        #scanner-status { position: absolute; bottom: 15px; left: 0; width: 100%; text-align: center; font-family: monospace; font-size: 13px; color: var(--primary); font-weight: bold; z-index: 100; }
 
-        .header p {
-            color: var(--text-muted);
-            margin: 5px 0;
-            font-size: 14px;
-            letter-spacing: 4px;
+        .node-wrapper { position: absolute; top: 0; left: 0; will-change: transform; z-index: 10; }
+        .node-wrapper:hover { z-index: 50; }
+
+        .crypto-node {
+            border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: white; font-family: 'Segoe UI', sans-serif; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+            transition: transform 0.2s ease, filter 0.2s ease; user-select: none;
         }
+        .node-wrapper:hover .crypto-node { transform: scale(1.3); filter: brightness(1.3) drop-shadow(0 0 20px rgba(0,255,204,0.7)); }
 
-        /* Stats Dashboard */
-        .stats-panel {
-            background: var(--card-bg);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 15px;
-            padding: 20px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        /* 🫀 CENTER BTC HEARTBEAT STYLES */
+        @keyframes btc-heartbeat {
+            0% { transform: scale(1); box-shadow: 0 0 20px rgba(247, 147, 26, 0.4); }
+            15% { transform: scale(1.15); box-shadow: 0 0 40px rgba(247, 147, 26, 0.8), 0 0 10px rgba(255, 255, 255, 0.5); }
+            30% { transform: scale(1); box-shadow: 0 0 20px rgba(247, 147, 26, 0.4); }
+            45% { transform: scale(1.08); box-shadow: 0 0 30px rgba(247, 147, 26, 0.6); }
+            60% { transform: scale(1); box-shadow: 0 0 20px rgba(247, 147, 26, 0.4); }
+            100% { transform: scale(1); box-shadow: 0 0 20px rgba(247, 147, 26, 0.4); }
         }
+        .center-btc-node { background: radial-gradient(circle at 30% 30%, #ffd000, #f7931a, #8a520e) !important; border: 2px solid #ffcc00 !important; animation: btc-heartbeat 1.8s infinite; }
+        .node-wrapper:hover .center-btc-node { animation: none; transform: scale(1.25); filter: brightness(1.3) drop-shadow(0 0 30px rgba(247, 147, 26, 0.9)); }
+        
+        .node-name { font-weight: 800; font-size: 12px; letter-spacing: 0.5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+        .node-price { font-size: 9px; opacity: 0.9; margin-top: 2px; font-weight: 600; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+        .node-percent { font-size: 10px; font-weight: 900; margin-top: 2px; padding: 2px 5px; border-radius: 4px; background: rgba(0,0,0,0.5); }
+        .btc-title { font-size: 16px; font-weight: 900; text-shadow: 2px 2px 4px rgba(0,0,0,0.9); }
 
-        .stat-item {
-            text-align: center;
+        /* 🚀 Signals Grid & NORMAL Cards */
+        .signal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 20px; opacity: 1; transition: opacity 0.5s ease; margin-top: 20px; }
+        .signal-card { background: var(--card-bg); border-radius: 14px; padding: 24px; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s; }
+        
+        /* ⭐ GOLD NEON VIP CARD STYLES */
+        @keyframes gold-pulse {
+            0% { box-shadow: 0 0 20px rgba(247, 147, 26, 0.4), inset 0 0 10px rgba(247, 147, 26, 0.1); }
+            50% { box-shadow: 0 0 35px rgba(247, 147, 26, 0.9), inset 0 0 20px rgba(247, 147, 26, 0.3); }
+            100% { box-shadow: 0 0 20px rgba(247, 147, 26, 0.4), inset 0 0 10px rgba(247, 147, 26, 0.1); }
         }
-
-        .stat-label {
-            font-size: 12px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
+        .neon-gold-card {
+            border: 2px solid var(--btc-gold) !important;
+            animation: gold-pulse 2s infinite;
+            background: linear-gradient(180deg, rgba(247, 147, 26, 0.1) 0%, var(--card-bg) 40%) !important;
         }
-
-        .stat-value {
-            font-size: 28px;
-            font-weight: bold;
-            color: #fff;
+        .premium-tag {
+            background: linear-gradient(45deg, #f7931a, #ffd000); color: #000; font-weight: 900; padding: 4px 10px;
+            border-radius: 6px; font-size: 11px; margin-left: 10px; box-shadow: 0 0 10px rgba(247, 147, 26, 0.8);
+            animation: blink 1.5s infinite; letter-spacing: 0.5px;
         }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
 
-        /* Gauge Meter Box */
-        .gauge-section {
-            text-align: center;
-            margin: 40px 0;
-        }
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; }
+        .badge-swing { background: rgba(56, 139, 253, 0.15); color: #58a6ff; border: 1px solid rgba(56, 139, 253, 0.4); }
+        .badge-scalp { background: rgba(242, 140, 166, 0.15); color: #f25ca6; border: 1px solid rgba(242, 140, 166, 0.4); }
+        .coin-title { font-size: 24px; font-weight: 700; margin-bottom: 18px; display: flex; justify-content: space-between; color: #fff; align-items: center;}
+        .side-long { color: var(--long); }
+        .side-short { color: var(--short); }
+        .data-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; border-bottom: 1px solid rgba(33,38,45,0.5); padding-bottom: 6px; }
+        .data-label { color: #8b949e; }
+        .data-value { font-weight: 600; color: #f0f6fc; }
 
-        .scanning-coin {
-            font-size: 22px;
-            color: var(--gold);
-            font-weight: bold;
-            text-shadow: 0 0 10px var(--gold-glow);
-            margin-bottom: 10px;
-            height: 30px;
-        }
-
-        .meter-container {
-            position: relative;
-            width: 240px;
-            height: 140px;
-            margin: auto;
-            overflow: hidden;
-        }
-
-        .gauge-bg {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            border: 15px solid #16263d;
-            border-bottom-color: transparent;
-            border-left-color: transparent;
-            transform: rotate(-45deg);
-            margin: auto;
-        }
-
-        .gauge-fill {
-            position: absolute;
-            top: 0; left: 20px;
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            border: 15px solid transparent;
-            border-top-color: var(--blue-glow);
-            border-left-color: var(--blue-glow);
-            transform: rotate(-45deg);
-            transition: transform 0.1s linear;
-        }
-
-        .gauge-percentage {
-            position: absolute;
-            bottom: 10px;
-            left: 0; right: 0;
-            font-size: 36px;
-            font-weight: bold;
-            color: #fff;
-        }
-
-        /* Grid Layout Cards */
-        .signal-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 12px;
-            padding: 20px;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: var(--gold);
-            box-shadow: 0 5px 20px var(--gold-glow);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .coin-title {
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .badge {
-            padding: 5px 12px;
-            border-radius: 5px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .badge.buy { background: rgba(0, 255, 136, 0.1); color: var(--green); border: 1px solid var(--green); }
-        .badge.sell { background: rgba(255, 77, 77, 0.1); color: var(--red); border: 1px solid var(--red); }
-
-        .price-row {
-            display: flex;
-            justify-content: space-between;
-            margin: 8px 0;
-            font-size: 14px;
-        }
-
-        .label { color: var(--text-muted); }
-        .val { font-weight: 500; }
-
-        .more-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #1a2f4c 0%, #112035 100%);
-            border: 1px solid rgba(243, 186, 47, 0.3);
-            color: var(--gold);
-            padding: 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-top: 15px;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .more-btn:hover {
-            background: var(--gold);
-            color: #000;
-        }
-
-        /* Modal / Pop-up style */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-        }
-
-        .modal-content {
-            background: #0d1b2e;
-            border: 1px solid var(--gold);
-            padding: 30px;
-            border-radius: 15px;
-            max-width: 500px;
-            width: 90%;
-            position: relative;
-            box-shadow: 0 0 30px var(--gold-glow);
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 15px; right: 20px;
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--text-muted);
-        }
-
-        /* Plan Expired Style */
-        .expired-screen {
-            display: none;
-            text-align: center;
-            padding: 150px 20px;
-        }
-
-        .expired-screen h1 { font-size: 48px; color: var(--red); margin-bottom: 10px; }
+        /* 📈 Modals Container UI Layout */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(1, 4, 9, 0.96); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(6px); }
+        .chart-container { width: 92%; max-width: 1050px; height: 75vh; background: #010409; border: 1px solid var(--border); border-radius: 16px; padding: 24px; position: relative; display: flex; flex-direction: column; }
+        .close-btn { position: absolute; top: 15px; right: 20px; color: #8b949e; font-size: 26px; cursor: pointer; background: none; border: none; outline: none; z-index: 10;}
+        .close-btn:hover { color: #fff; }
+        /* CHART FIX - min height added */
+        #tv-chart { flex-grow: 1; width: 100%; margin-top: 15px; position: relative; min-height: 350px;} 
+        
+        /* AI Logic Modal specific classes */
+        .logic-box-container { max-width: 550px; width: 90%; background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 30px; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
+        .logic-header { font-size: 20px; font-weight: bold; color: #fff; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .logic-content-block { background: #010409; border: 1px solid var(--border); padding: 15px; border-radius: 8px; font-family: monospace; font-size: 13px; color: #00ffcc; line-height: 1.6; margin-bottom: 15px; white-space: pre-wrap; word-break: break-word; }
     </style>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
 
-<div class="container" id="main-app">
-    <div class="header">
-        <h1>AlphaSigna AI</h1>
-        <p>AI-POWERED MARKET INTELLIGENCE</p>
+    <div id="status-bar" style="display: none;">
+        <div class="pulse-dot" id="status-dot"></div>
+        <span id="status-text">HF ENGINE CORE: LOADING...</span>
     </div>
 
-    <div class="stats-panel">
-        <div class="stat-item">
-            <div class="stat-label">Total Signals</div>
-            <div id="total-signals" class="stat-value">--</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-label">TP Hit</div>
-            <div id="tp-hit" class="stat-value" style="color: var(--green);">--</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-label">SL Hit</div>
-            <div id="sl-hit" class="stat-value" style="color: var(--red);">--</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-label">Win Rate</div>
-            <div id="win-rate" class="stat-value" style="color: var(--gold);">--%</div>
+    <div id="login-screen">
+        <div class="login-box">
+            <h2 style="color: #fff; margin-bottom: 5px; font-weight: 800;">ALPHASIGNA AI</h2>
+            <p style="color: #8b949e; font-size: 13px; margin-bottom: 25px;">Global High-Frequency Terminal</p>
+            <input type="password" id="access-key" placeholder="ENTER LICENSE KEY" />
+            <br>
+            <button class="btn" onclick="verifyFirebaseKey()">INITIALIZE MATRIX</button>
+            <p id="error-msg" style="color: var(--short); display: none; margin-top: 15px; font-weight: 600;">⚠️ ACCESS DENIED</p>
         </div>
     </div>
 
-    <div class="gauge-section">
-        <div class="scanning-coin" id="scan-coin-name">CONNECTING TO SECURE DATABASE...</div>
-        <div class="meter-container">
-            <div class="gauge-bg"></div>
-            <div class="gauge-fill" id="gauge-pointer"></div>
-            <div class="gauge-percentage" id="gauge-text">0%</div>
+    <div id="dashboard">
+        <div id="user-badge" class="neon-badge" style="display: none;">
+            <div id="user-welcome-text" class="username">USER: UNKNOWN</div>
+            <div id="user-expiry-text" class="expiry">EXP: N/A</div>
         </div>
-        <div style="color: var(--text-muted); font-size: 12px; margin-top: 10px;">SMC / ICT & NEWS ALGORITHM STATUS</div>
+
+        <div class="header">
+            <h1>AlphaSigna Intelligence Hub</h1>
+            <p style="color: #8b949e; font-size: 13px; font-weight: 700; margin: 0;">GLOBAL HIGH-FREQUENCY TERMINAL</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card global-card"><h3>Global Total Trades</h3><div class="stat-value" id="global-total-trades">0</div></div>
+            <div class="stat-card global-card"><h3>Global Win Rate</h3><div class="stat-value" id="global-win-rate" style="color: var(--primary);">0%</div></div>
+            <div class="stat-card personal-card"><h3>My Matrix Trades</h3><div class="stat-value" id="user-trades">0</div></div>
+            <div class="stat-card personal-card"><h3>My Target Performance</h3><div class="stat-value" id="user-pnl-ratio" style="color: var(--long);">0 / 0</div></div>
+        </div>
+
+        <div class="scanner-section">
+            <div id="network-container">
+                <canvas id="network-canvas"></canvas>
+                <div id="scanner-status">CONNECTING TO BINANCE LIQUIDITY POOLS...</div>
+            </div>
+            <button class="btn" id="scan-btn" style="width: auto; padding: 12px 30px;" onclick="startNetworkScan()">🛰️ SCAN REAL-TIME ORDERBOOK</button>
+        </div>
+
+        <div class="signal-grid" id="signal-container">
+            <div class="signal-card" style="text-align: center; grid-column: 1 / -1; padding: 50px;">
+                <h2 style="color: #8b949e;">Awaiting Real-Time Stream Initialization...</h2>
+                <p style="color: #555;">Click the scanner button above to load network matrix or wait for real-time hooks.</p>
+            </div>
+        </div>
     </div>
 
-    <div class="signal-grid" id="cards-container">
+    <div id="chart-modal" class="modal-overlay">
+        <div class="chart-container">
+            <button class="close-btn" onclick="closeLiveChart()">✖</button>
+            <div style="border-bottom: 1px solid var(--border); padding-bottom: 12px; z-index: 5; position: relative;">
+                <span id="chart-coin-name" style="color: #fff; font-size: 20px; font-weight: bold;">BTC/USDT</span>
+                <span id="chart-side" class="badge badge-swing" style="margin-left: 10px; margin-bottom: 0;">VIEW</span>
+                <span id="chart-loading" style="color: var(--primary); font-size: 12px; margin-left: 15px; font-family: monospace;">Fetching Binance Klines...</span>
+            </div>
+            <div id="tv-chart"></div>
         </div>
-</div>
+    </div>
 
-<div class="expired-screen" id="expired-app">
-    <h1>❌ ACCESS EXPIRED</h1>
-    <p style="font-size: 18px; color: var(--text-muted);">Your membership plan has ended. Please renew your subscription to regain access.</p>
-</div>
+    <div id="logic-modal" class="modal-overlay">
+        <div class="logic-box-container">
+            <button class="close-btn" onclick="closeAiLogicModal()">✖</button>
+            <div class="logic-header">
+                <span>🧠 AI MATRIX STRUCTURAL LOGIC ANALYSIS</span>
+            </div>
+            <div style="color: #8b949e; font-size: 12px; margin-bottom: 8px; font-weight: bold; text-transform: uppercase;">Technical Indicator Strategy:</div>
+            <div id="tech-logic-field" class="logic-content-block">NO LIVE SIGNAL TELEMETRY REGISTERED</div>
+            <div style="color: #8b949e; font-size: 12px; margin-bottom: 8px; font-weight: bold; text-transform: uppercase;">Risk Assessment Protocol:</div>
+            <div id="risk-logic-field" class="logic-content-block">NO DATA DISPATCHED</div>
+        </div>
+    </div>
 
-<div class="modal" id="info-modal">
-    <div class="modal-content">
-        <span class="close-modal" onclick="closeModal()">&times;</span>
-        <h2 style="color: var(--gold); margin-top: 0;" id="modal-coin">COIN ANALYSIS</h2>
-        <hr style="border-color: #16263d;">
+    <script>
+        const firebaseConfig = { databaseURL: "https://alphasigna-live-d644a-default-rtdb.firebaseio.com/" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
         
-        <h3 style="color: var(--blue-glow);">🧠 SMC / ICT Logic Summary</h3>
-        <p id="modal-logic" style="font-size: 14px; line-height: 1.6; color: #e0e6ed;"></p>
-        
-        <h3 style="color: var(--green);">📰 Related Live News Insight</h3>
-        <p id="modal-news" style="font-size: 14px; line-height: 1.6; color: #e0e6ed; font-style: italic;"></p>
-    </div>
-</div>
+        let currentSignalData = null;
+        let activeUserKey = null;
+        let activeChart = null; 
 
-<script>
-    // ඔයා ලබාදුන් අලුත්ම ආරක්ෂිත Google Apps Script API ලින්ක් එක
-    const apiUrl = 'https://script.google.com/macros/s/AKfycbwmBf7jdfLRfrgGGmjivAWI6zwGC1FIVf9UUpKmt_He0DYP-k04X9YFt9esziC9CtS2/exec';
+        // Matrix Animation Variables
+        let nodesArray = []; let edgesArray = []; let particlesArray = [];
+        let renderFrameId; let globalTime = 0; let hoveredNodeId = null;
 
-    // High Accuracy Logic Signals දත්ත පද්ධතිය
-    const cryptoDataPool = [
-        { pair: "BTC/USDT", side: "BUY", entry: "64,250", tp1: "64,800", tp2: "65,400", tp3: "66,100", tp4: "67,200", sl: "63,600", est: "15m", status: "TRIGGERED", pnl: "+1.2%", logic: "4H Order Block validation. Price swept liquidity at previous daily low and initiated a clear Market Structure Shift (MSS) with institutional volume confirmation.", news: "🟢 Bitcoin ETF inflows increased by $150M today, showing massive institutional demand support." },
-        { pair: "ETH/USDT", side: "BUY", entry: "3,450", tp1: "3,490", tp2: "3,530", tp3: "3,580", tp4: "3,650", sl: "3,410", est: "30m", status: "PENDING", pnl: "0.0%", logic: "ICT Optimal Trade Entry (OTE) pattern triggered at the 70.5% Fibonacci level. Order block lining up perfectly with high volume profile node.", news: "🟢 Ethereum network gas fees dropped to multi-year lows amidst spike in layer-2 developer activity." },
-        { pair: "SOL/USDT", side: "SELL", entry: "142.50", tp1: "140.10", tp2: "138.00", tp3: "135.50", tp4: "130.00", sl: "144.80", est: "15m", status: "TRIGGERED", pnl: "+2.4%", logic: "Liquidity Grab above Asian Session High followed by a bearish engulfing candle confirmation. Open interest declining rapidly.", news: "🔴 Whale wallet moved $25M worth of SOL tokens to Binance exchange, indicating potential selling pressure." },
-        { pair: "BNB/USDT", side: "BUY", entry: "575.20", tp1: "582.00", tp2: "588.50", tp3: "595.00", tp4: "610.00", sl: "569.00", est: "1h", status: "PENDING", pnl: "0.0%", logic: "Bullish Wyckoff accumulation phase spring pattern complete. Volume profile shows dynamic support holding tight.", news: "🟢 Binance announces new Launchpool project, historical data shows BNB accumulation spike during these events." },
-        { pair: "XRP/USDT", side: "SELL", entry: "0.5820", tp1: "0.5710", tp2: "0.5620", tp3: "0.5500", tp4: "0.5310", sl: "0.5910", est: "45m", status: "TRIGGERED", pnl: "-0.4%", logic: "Failure to break major resistance level accompanied by bearish MACD crossover on 1H timeframe. Funding rate heavily positive.", news: "🔴 Regulatory uncertainty remains neutral but technical distribution indicates short-term whale exit." },
-        { pair: "AVAX/USDT", side: "BUY", entry: "28.40", tp1: "29.10", tp2: "29.80", tp3: "30.50", tp4: "32.00", sl: "27.70", est: "15m", status: "TRIGGERED", pnl: "+5.1%", logic: "SMC Mitigation block retest successful. Price consolidated inside demand zone and broke structure to the upside on 5m chart.", news: "🟢 Avalanche Foundation announces new gaming ecosystem partnership expansion grants." }
-    ];
-
-    const coinNames = ["BTC/USDT", "ETH/USDT", "SOL/USDT", "BNB/USDT", "XRP/USDT", "ADA/USDT", "AVAX/USDT", "LINK/USDT", "DOT/USDT", "SHIB/USDT"];
-
-    // Google Sheet එකෙන් දත්ත කියවීම
-    fetch(apiUrl)
-    .then(res => res.json())
-    .then(data => {
-        if(data.status === "expired") {
-            // ප්ලෑන් එක ඉවරනම් මුළු ඇප් එකම වසා දමයි
-            document.getElementById('main-app').style.display = 'none';
-            document.getElementById('expired-app').style.display = 'block';
-        } else {
-            // දත්ත සාර්ථකව ලැබුනොත් Counters අප්ඩේට් කරයි
-            document.getElementById('total-signals').innerText = data.totalSignals;
-            document.getElementById('tp-hit').innerText = data.tpHit;
-            document.getElementById('sl-hit').innerText = data.slHit;
-            document.getElementById('win-rate').innerText = data.winRate + '%';
-            startScanning();
-        }
-    }).catch(err => {
-        console.log("Database fetch failed. Displaying preview simulation.");
-        startScanning();
-    });
-
-    // Scanner Animation Loop
-    function startScanning() {
-        let progress = 0;
-        let coinIndex = 0;
-        
-        const scanInterval = setInterval(() => {
-            progress += 2;
-            
-            if (progress % 10 === 0) {
-                document.getElementById('scan-coin-name').innerText = "SCANNING BINANCE: " + coinNames[coinIndex];
-                coinIndex = (coinIndex + 1) % coinNames.length;
+        // 🚨 System Status
+        db.ref('system_status').on('value', (s) => {
+            const status = s.val();
+            if(status) {
+                document.getElementById('status-bar').style.display = 'flex';
+                document.getElementById('status-text').innerText = `SYSTEM STATUS: ${status.message.toUpperCase()}`;
             }
-
-            document.getElementById('gauge-text').innerText = progress + "%";
-            let rotation = -45 + (progress * 1.8);
-            document.getElementById('gauge-pointer').style.transform = `rotate(${rotation}deg)`;
-
-            if (progress >= 100) {
-                clearInterval(scanInterval);
-                document.getElementById('scan-coin-name').innerText = "🎯 HIGH ACCURACY SIGNALS FOUND";
-                renderCards();
-            }
-        }, 60);
-    </div>
-
-    // Cards Grid එක නිර්මාණය කිරීම
-    function renderCards() {
-        const container = document.getElementById('cards-container');
-        container.innerHTML = '';
-
-        cryptoDataPool.forEach((coin, idx) => {
-            const cardHtml = `
-                <div class="card">
-                    <div class="card-header">
-                        <span class="coin-title">${coin.pair}</span>
-                        <span class="badge ${coin.side.toLowerCase()}">${coin.side}</span>
-                    </div>
-                    <div class="price-row"><span class="label">AI Entry:</span><span class="val">$${coin.entry}</span></div>
-                    <div class="price-row"><span class="label">Target TP1:</span><span class="val" style="color:var(--green)">$${coin.tp1}</span></div>
-                    <div class="price-row"><span class="label">Target TP2:</span><span class="val" style="color:var(--green)">$${coin.tp2}</span></div>
-                    <div class="price-row"><span class="label">Target TP3:</span><span class="val" style="color:var(--green)">$${coin.tp3}</span></div>
-                    <div class="price-row"><span class="label">Target TP4:</span><span class="val" style="color:var(--green)">$${coin.tp4}</span></div>
-                    <div class="price-row"><span class="label">Target SL:</span><span class="val" style="color:var(--red)">$${coin.sl}</span></div>
-                    <div class="price-row"><span class="label">Est. Time:</span><span class="val">${coin.est}</span></div>
-                    <div class="price-row"><span class="label">Live PNL:</span><span class="val" style="color:${coin.pnl.startsWith('+') ? 'var(--green)' : 'var(--red)'}">${coin.pnl}</span></div>
-                    <div class="price-row"><span class="label">Status:</span><span class="val" style="color: var(--gold)">${coin.status}</span></div>
-                    <button class="more-btn" onclick="openModal(${idx})">More / Learn Logic</button>
-                </div>
-            `;
-            container.innerHTML += cardHtml;
         });
-    }
 
-    // Modal Control (More Button)
-    function openModal(index) {
-        const data = cryptoDataPool[index];
-        document.getElementById('modal-coin').innerText = data.pair + " AI ANALYSIS & INSIGHT";
-        document.getElementById('modal-logic').innerText = data.logic;
-        document.getElementById('modal-news').innerText = data.news;
-        document.getElementById('info-modal').style.display = 'flex';
-    }
+        // 🔑 Login Function
+        function verifyFirebaseKey() {
+            const inputKey = document.getElementById('access-key').value.trim();
+            if(!inputKey) return;
+            
+            db.ref('premium_keys/' + inputKey).once('value', (s) => {
+                const userData = s.val();
+                if (userData && userData.status === "active") {
+                    activeUserKey = inputKey;
+                    document.getElementById('login-screen').style.display = 'none';
+                    document.getElementById('dashboard').style.display = 'block';
+                    
+                    document.getElementById('user-badge').style.display = 'block';
+                    document.getElementById('user-welcome-text').innerText = `USER: ${inputKey.toUpperCase()}`;
+                    document.getElementById('user-expiry-text').innerText = `EXPIRES: ${userData.expire_date || 'N/A'}`;
 
-    function closeModal() {
-        document.getElementById('info-modal').style.display = 'none';
-    }
-</script>
+                    initCoreListeners();
+                } else {
+                    document.getElementById('error-msg').style.display = 'block';
+                }
+            });
+        }
 
+        // 🔗 Core Listeners
+        function initCoreListeners() {
+            db.ref('live_signals').on('value', (s) => { 
+                currentSignalData = s.val(); 
+                renderSignals(currentSignalData); 
+            });
+
+            db.ref('premium_keys').on('value', (snapshot) => {
+                const keysData = snapshot.val();
+                if (!keysData) return;
+
+                let globalTrades = 0; let globalTP = 0; let globalSL = 0;
+                for (const key in keysData) {
+                    if (keysData[key].stats) {
+                        globalTrades += Number(keysData[key].stats.trades || 0);
+                        globalTP += Number(keysData[key].stats.tp || 0);
+                        globalSL += Number(keysData[key].stats.sl || 0);
+                    }
+                }
+                let globalWinRate = 0;
+                if ((globalTP + globalSL) > 0) {
+                    globalWinRate = Math.round((globalTP / (globalTP + globalSL)) * 100);
+                }
+
+                document.getElementById('global-total-trades').innerText = globalTrades;
+                document.getElementById('global-win-rate').innerText = globalWinRate + "%";
+
+                if (activeUserKey && keysData[activeUserKey]) {
+                    const myStats = keysData[activeUserKey].stats || { trades: 0, tp: 0, sl: 0 };
+                    document.getElementById('user-trades').innerText = myStats.trades || 0;
+                    document.getElementById('user-pnl-ratio').innerText = `${myStats.tp || 0} / ${myStats.sl || 0}`;
+                }
+            });
+        }
+
+        // --- 🕸️ NETWORK SCANNER ENGINE ---
+        async function startNetworkScan() {
+            document.getElementById('scan-btn').style.display = 'none';
+            const container = document.getElementById('network-container');
+            const canvas = document.getElementById('network-canvas');
+            const ctx = canvas.getContext('2d');
+            const statusText = document.getElementById('scanner-status');
+            
+            container.style.display = 'block';
+            canvas.width = container.clientWidth; canvas.height = container.clientHeight;
+            
+            document.querySelectorAll('.node-wrapper').forEach(e => e.remove());
+            cancelAnimationFrame(renderFrameId);
+            nodesArray = []; edgesArray = []; particlesArray = []; hoveredNodeId = null;
+
+            for(let i = 0; i < 200; i++) {
+                particlesArray.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, size: Math.random() * 2.5, speedY: (Math.random() * 0.4) + 0.1, alpha: Math.random() * 0.5 + 0.1 });
+            }
+
+            try {
+                const response = await fetch('https://api.binance.com/api/v3/ticker/24hr');
+                const data = await response.json();
+                
+                const btcData = data.find(c => c.symbol === 'BTCUSDT');
+                const usdtPairs = data.filter(c => c.symbol.endsWith('USDT') && c.symbol !== 'BTCUSDT' && parseFloat(c.volume) > 2000000);
+                usdtPairs.sort((a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume));
+                const topCoins = usdtPairs.slice(0, 66); 
+
+                const centerX = canvas.width / 2; const centerY = canvas.height / 2;
+
+                const btcSize = 95;
+                const btcWrapper = document.createElement('div'); btcWrapper.className = 'node-wrapper';
+                btcWrapper.style.width = `${btcSize}px`; btcWrapper.style.height = `${btcSize}px`;
+
+                const btcNodeEl = document.createElement('div');
+                btcNodeEl.className = 'crypto-node center-btc-node';
+                btcNodeEl.style.width = '100%'; btcNodeEl.style.height = '100%';
+                
+                const btcPriceChange = parseFloat(btcData.priceChangePercent);
+                let btcDisplayPrice = parseFloat(btcData.lastPrice).toFixed(2);
+                
+                btcNodeEl.innerHTML = `
+                    <span class="node-name btc-title">BTC</span>
+                    <span class="node-price" style="font-size:12px;">$${btcDisplayPrice}</span>
+                    <span class="node-percent" style="font-size:12px;">${btcPriceChange >= 0 ? '+' : ''}${btcPriceChange.toFixed(1)}%</span>
+                `;
+                btcWrapper.appendChild(btcNodeEl); container.appendChild(btcWrapper);
+                nodesArray.push({ id: 0, baseX: centerX, baseY: centerY, x: centerX, y: centerY, angle: 0, dist: 0, size: btcSize, wrapper: btcWrapper });
+                
+                btcWrapper.onmouseenter = () => { hoveredNodeId = 0; }; btcWrapper.onmouseleave = () => { hoveredNodeId = null; };
+                btcNodeEl.onclick = () => openLiveChart('BTC/USDT', btcDisplayPrice, btcDisplayPrice*1.05, btcDisplayPrice*0.95, 'ANALYSIS');
+
+                const rings = [
+                    { count: 6, radius: 110, speed: 0.003, dir: 1 }, { count: 12, radius: 210, speed: 0.002, dir: -1 },
+                    { count: 20, radius: 310, speed: 0.0015, dir: 1 }, { count: 28, radius: 410, speed: 0.001, dir: -1 }
+                ];
+
+                let coinIndex = 0; let nodeId = 1;
+
+                rings.forEach((ring, ringIdx) => {
+                    for(let i=0; i < ring.count; i++) {
+                        if(coinIndex >= topCoins.length) break;
+                        
+                        const coin = topCoins[coinIndex];
+                        const priceChange = parseFloat(coin.priceChangePercent);
+                        const isPositive = priceChange >= 0;
+                        const size = Math.max(45, Math.min(75, 40 + (Math.abs(priceChange) * 2)));
+                        const angle = (Math.PI * 2 / ring.count) * i;
+
+                        const wrapper = document.createElement('div');
+                        wrapper.className = 'node-wrapper'; wrapper.style.width = `${size}px`; wrapper.style.height = `${size}px`;
+
+                        const nodeEl = document.createElement('div');
+                        nodeEl.className = 'crypto-node'; nodeEl.style.width = '100%'; nodeEl.style.height = '100%';
+                        
+                        if (isPositive) {
+                            nodeEl.style.background = 'radial-gradient(circle at 30% 30%, #00e676, #008b47)'; nodeEl.style.border = '2px solid #00ffcc';
+                        } else {
+                            nodeEl.style.background = 'radial-gradient(circle at 30% 30%, #ff1744, #9b0021)'; nodeEl.style.border = '2px solid #ff4d6d';
+                        }
+
+                        let displayPrice = parseFloat(coin.lastPrice); displayPrice = displayPrice < 1 ? displayPrice.toFixed(4) : displayPrice.toFixed(2);
+                        
+                        nodeEl.innerHTML = `
+                            <span class="node-name">${coin.symbol.replace('USDT', '')}</span>
+                            <span class="node-price">$${displayPrice}</span>
+                            <span class="node-percent">${isPositive ? '+' : ''}${priceChange.toFixed(1)}%</span>
+                        `;
+                        wrapper.appendChild(nodeEl); container.appendChild(wrapper);
+
+                        nodesArray.push({
+                            id: nodeId, wrapper: wrapper, baseDist: ring.radius, baseAngle: angle,
+                            speed: ring.speed, dir: ring.dir, x: 0, y: 0, size: size, wobbleOffset: Math.random() * 100
+                        });
+                        
+                        const currentId = nodeId;
+                        wrapper.onmouseenter = () => { hoveredNodeId = currentId; }; wrapper.onmouseleave = () => { hoveredNodeId = null; };
+                        nodeEl.onclick = () => openLiveChart(`${coin.symbol.replace('USDT', '')}/USDT`, displayPrice, displayPrice*1.02, displayPrice*0.98, 'ANALYSIS');
+
+                        if(ringIdx === 0) edgesArray.push({ from: 0, to: nodeId });
+                        else if (ringIdx === 1) edgesArray.push({ from: 1 + Math.floor(i / 2), to: nodeId });
+                        else if (ringIdx === 2) edgesArray.push({ from: 7 + Math.floor(i / 1.6), to: nodeId });
+                        else if (ringIdx === 3) edgesArray.push({ from: 19 + Math.floor(i / 1.4), to: nodeId });
+
+                        const prevIdInRing = i === 0 ? nodeId + ring.count - 1 : nodeId - 1;
+                        edgesArray.push({ from: prevIdInRing, to: nodeId });
+
+                        nodeId++; coinIndex++;
+                    }
+                });
+
+                statusText.innerText = "🟢 MASSIVE OMNI-DIRECTIONAL NEURAL INTERFACE LOCKED ON TARGET.";
+
+                function drawNetworkAnimation() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height); globalTime += 1;
+                    particlesArray.forEach(p => {
+                        p.y -= p.speedY; if(p.y < 0) { p.y = canvas.height; p.x = Math.random() * canvas.width; }
+                        ctx.fillStyle = `rgba(0, 255, 204, ${p.alpha})`; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
+                    });
+
+                    nodesArray.forEach(node => {
+                        if(node.id === 0) { node.wrapper.style.transform = `translate(${node.x - (node.size/2)}px, ${node.y - (node.size/2)}px)`; return; }
+                        const currentAngle = node.baseAngle + (globalTime * node.speed * node.dir);
+                        const dist = node.baseDist + (Math.sin(globalTime * 0.02 + node.wobbleOffset) * 12);
+                        node.x = centerX + Math.cos(currentAngle) * dist; node.y = centerY + Math.sin(currentAngle) * dist;
+                        node.wrapper.style.transform = `translate(${node.x - (node.size/2)}px, ${node.y - (node.size/2)}px)`;
+                    });
+
+                    edgesArray.forEach(edge => {
+                        const n1 = nodesArray[edge.from]; const n2 = nodesArray[edge.to];
+                        if(n1 && n2) {
+                            let isHighlighted = false; let alpha = 0.22;
+                            if (hoveredNodeId !== null) {
+                                if (edge.from === hoveredNodeId || edge.to === hoveredNodeId) { isHighlighted = true; alpha = 0.95; } 
+                                else { alpha = 0.02; }
+                            }
+                            ctx.strokeStyle = isHighlighted ? `rgba(0, 255, 204, ${alpha})` : (edge.from === 0 ? `rgba(247, 147, 26, ${alpha})` : `rgba(0, 255, 204, ${alpha})`);
+                            ctx.lineWidth = isHighlighted ? 2.5 : 1.1;
+                            if (isHighlighted) { ctx.shadowBlur = 15; ctx.shadowColor = edge.from === 0 ? "#f7931a" : "#00ffcc"; } else { ctx.shadowBlur = 0; }
+                            ctx.beginPath(); ctx.moveTo(n1.x, n1.y); ctx.lineTo(n2.x, n2.y); ctx.stroke();
+                        }
+                    });
+                    ctx.shadowBlur = 0; renderFrameId = requestAnimationFrame(drawNetworkAnimation);
+                }
+                drawNetworkAnimation();
+
+            } catch(e) { statusText.innerText = "⚠️ SYSTEM FAULT INTERRUPTED PIPELINE STREAM."; }
+        }
+
+        function openAiLogicModal(techLogic, riskLogic) {
+            document.getElementById('logic-modal').style.display = 'flex';
+            document.getElementById('tech-logic-field').innerText = techLogic || "INDICATOR BOUNDARIES EXCEEDED OVERFLOW PIPELINE METRICS.";
+            document.getElementById('risk-logic-field').innerText = riskLogic || "RISK EVALUATION PROFILE CONFIRMED SECURE AUTHORIZATION GAIN.";
+        }
+        function closeAiLogicModal() { document.getElementById('logic-modal').style.display = 'none'; }
+
+        // --- 📊 RENDER LIVE SIGNAL CARDS ---
+        function renderSignals(data) {
+            const container = document.getElementById('signal-container');
+            container.innerHTML = ''; 
+            
+            if (!data || Object.keys(data).length === 0) {
+                container.innerHTML = `
+                    <div class="signal-card" style="text-align: center; grid-column: 1 / -1; padding: 50px;">
+                        <h2 style="color: #fff;">🛰️ Live Alpha Engine Scanning...</h2>
+                        <p style="color: #8b949e;">Python core එකෙන් signals generate වෙනකම් බලා සිටී. (No active signals in DB)</p>
+                    </div>`;
+                return;
+            }
+
+            for (const [coinKey, details] of Object.entries(data)) {
+                let badgeClass = details.signal_type.includes("SWING") ? "badge-swing" : "badge-scalp";
+                let sideClass = details.side === "LONG" ? "side-long" : "side-short";
+
+                const isPremiumAlert = details.accuracy >= 85;
+                const cardCssClass = isPremiumAlert ? "signal-card neon-gold-card" : "signal-card";
+                const premiumBadgeHtml = isPremiumAlert ? `<span class="premium-tag">⭐ VIP ALERT</span>` : "";
+
+                const formattedTech = (details.tech_logic || "🧠 Telemetry Active").replace(/'/g, "\\'");
+                const formattedRisk = (details.risk_logic || "⚖️ Risk Managed").replace(/'/g, "\\'");
+                
+                const chartArgs = `'${details.pair}', ${details.entry}, ${details.tp1}, ${details.sl}, '${details.side}'`;
+                const logicArgs = `'${formattedTech}', '${formattedRisk}'`;
+
+                container.innerHTML += `
+                    <div class="${cardCssClass}">
+                        <div>
+                            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                                <span class="badge ${badgeClass}" style="margin-bottom: 0;">${details.signal_type}</span>
+                                ${premiumBadgeHtml}
+                            </div>
+                            <div class="coin-title">
+                                <span>${details.pair}</span>
+                                <div style="display: flex; flex-direction: column; text-align: right;">
+                                    <span class="${sideClass}">${details.side}</span>
+                                    <span style="font-size: 11px; color: #8b949e; font-weight: normal; margin-top: 2px;">ACCURACY: ${details.accuracy}%</span>
+                                </div>
+                            </div>
+                            <div class="data-row"><span class="data-label">Target Entry</span><span class="data-value">${details.entry}</span></div>
+                            <div class="data-row"><span class="data-label">Take Profit</span><span class="data-value" style="color: #00e676;">${details.tp1}</span></div>
+                            <div class="data-row"><span class="data-label">Stop Loss</span><span class="data-value" style="color: #ff1744;">${details.sl}</span></div>
+                        </div>
+                        <div>
+                            <button class="btn btn-trade" onclick="takeTrade('${coinKey}')">⚡ TAKE TRADE</button>
+                            <button class="btn btn-chart" onclick="openLiveChart(${chartArgs})">📊 LIVE CHART</button>
+                            <button class="btn btn-logic" onclick="openAiLogicModal(${logicArgs})">🧠 AI LOGIC</button>
+                        </div>
+                    </div>`;
+            }
+        }
+
+        // --- ⚡ LIVE MARKET BINANCE WEBSOCKET TRACKER (NEW UPDATE) ---
+        let activeMarketWatchers = {};
+
+        function takeTrade(coinKey) {
+            if (!currentSignalData || !currentSignalData[coinKey]) {
+                alert("⚠️ Error: Signal data shifted before execution.");
+                return;
+            }
+
+            const signal = currentSignalData[coinKey];
+            const pairName = signal.pair.replace('/', ''); 
+            
+            if (activeMarketWatchers[pairName]) {
+                alert(`⚠️ Already tracking an active trade for ${signal.pair}`);
+                return;
+            }
+
+            alert(`⚡ REAL TRADE COMPILATION: Tracking ${signal.pair} live on Binance order flow...`);
+
+            db.ref('premium_keys/' + activeUserKey).once('value', (snapshot) => {
+                const userData = snapshot.val();
+                if (!userData) return;
+
+                let stats = userData.stats || { trades: 0, tp: 0, sl: 0, status: "active" };
+                stats.trades = Number(stats.trades) + 1;
+                db.ref('premium_keys/' + activeUserKey + '/stats/trades').set(stats.trades);
+
+                const wsUrl = `wss://fstream.binance.com/ws/${pairName.toLowerCase()}@ticker`;
+                const ws = new WebSocket(wsUrl);
+
+                activeMarketWatchers[pairName] = ws;
+
+                ws.onmessage = function(event) {
+                    const marketData = JSON.parse(event.data);
+                    const currentPrice = parseFloat(marketData.c); 
+
+                    if (signal.side === "LONG") {
+                        if (currentPrice >= parseFloat(signal.tp1)) {
+                            triggerTradeResult(ws, pairName, true, signal.tp1);
+                        } else if (currentPrice <= parseFloat(signal.sl)) {
+                            triggerTradeResult(ws, pairName, false, signal.sl);
+                        }
+                    } 
+                    else if (signal.side === "SHORT") {
+                        if (currentPrice <= parseFloat(signal.tp1)) {
+                            triggerTradeResult(ws, pairName, true, signal.tp1);
+                        } else if (currentPrice >= parseFloat(signal.sl)) {
+                            triggerTradeResult(ws, pairName, false, signal.sl);
+                        }
+                    }
+                };
+            });
+        }
+
+        function triggerTradeResult(wsInstance, pairName, isWin, hitPrice) {
+            wsInstance.close();
+            delete activeMarketWatchers[pairName];
+
+            db.ref('premium_keys/' + activeUserKey).once('value', (snapshot) => {
+                const userData = snapshot.val();
+                if (!userData) return;
+
+                let stats = userData.stats || { trades: 0, tp: 0, sl: 0 };
+
+                if (isWin) {
+                    stats.tp = Number(stats.tp) + 1;
+                    alert(`🟢 TARGET HIT: ${pairName} hit Take Profit at $${hitPrice}!`);
+                    db.ref('premium_keys/' + activeUserKey + '/stats/tp').set(stats.tp);
+                } else {
+                    stats.sl = Number(stats.sl) + 1;
+                    alert(`🔴 STOP LOSS HIT: ${pairName} protection triggered at $${hitPrice}!`);
+                    db.ref('premium_keys/' + activeUserKey + '/stats/sl').set(stats.sl);
+                }
+            });
+        }
+
+        // --- 📈 ADVANCED LIGHTWEIGHT CHARTS API INTEGRATION (UPDATED FOR FIX) ---
+        async function openLiveChart(pair, entry, tp, sl, side) {
+            document.getElementById('chart-modal').style.display = 'flex';
+            document.getElementById('chart-coin-name').innerText = `${pair} Live Analysis`;
+            document.getElementById('chart-side').innerText = `${side} EXECUTION`;
+            
+            const loadingText = document.getElementById('chart-loading');
+            loadingText.style.display = 'inline-block';
+            
+            const chartDiv = document.getElementById('tv-chart');
+            chartDiv.innerHTML = '';
+            const cleanSymbol = pair.replace('/', '');
+
+            activeChart = LightweightCharts.createChart(chartDiv, {
+                layout: { background: { type: 'solid', color: '#010409' }, textColor: '#c9d1d9', },
+                grid: { vertLines: { color: 'rgba(33, 38, 45, 0.4)' }, horzLines: { color: 'rgba(33, 38, 45, 0.4)' }, },
+                crosshair: { mode: LightweightCharts.CrosshairMode.Normal, },
+                timeScale: { timeVisible: true, secondsVisible: false, }
+            });
+            
+            activeChart.resize(chartDiv.clientWidth, chartDiv.clientHeight);
+
+            const candlestickSeries = activeChart.addCandlestickSeries({
+                upColor: '#00e676', downColor: '#ff1744', borderVisible: false, wickUpColor: '#00e676', wickDownColor: '#ff1744'
+            });
+
+            try {
+                // api.binance.com වෙනුවට fapi.binance.com (Futures API) භාවිතා කිරීම
+                const res = await fetch(`https://fapi.binance.com/fapi/v1/klines?symbol=${cleanSymbol}&interval=5m&limit=150`);
+                
+                if (!res.ok) {
+                    throw new Error(`Binance API Blocked (${res.status})`);
+                }
+
+                const klineData = await res.json();
+                
+                const chartData = klineData.map(d => ({
+                    time: d[0] / 1000, open: parseFloat(d[1]), high: parseFloat(d[2]), low: parseFloat(d[3]), close: parseFloat(d[4])
+                }));
+
+                candlestickSeries.setData(chartData);
+                
+                // අගයන් නිවැරදි සංඛ්‍යා (Numbers) නම් පමණක් Price Lines ඇඳීම
+                if (!isNaN(parseFloat(entry))) {
+                    candlestickSeries.createPriceLine({ price: parseFloat(entry), color: '#388bff', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: 'ENTRY' });
+                }
+                if (!isNaN(parseFloat(tp))) {
+                    candlestickSeries.createPriceLine({ price: parseFloat(tp), color: '#00e676', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: 'TP' });
+                }
+                if (!isNaN(parseFloat(sl))) {
+                    candlestickSeries.createPriceLine({ price: parseFloat(sl), color: '#ff1744', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: 'SL' });
+                }
+
+                loadingText.style.display = 'none';
+
+                window.addEventListener('resize', () => {
+                    if(document.getElementById('chart-modal').style.display === 'flex') {
+                        activeChart.resize(chartDiv.clientWidth, chartDiv.clientHeight);
+                    }
+                });
+
+            } catch (error) {
+                console.error("Chart Error:", error);
+                loadingText.innerText = `⚠️ ERROR: ${error.message}`;
+                loadingText.style.color = '#ff1744';
+            }
+        }
+
+        function closeLiveChart() {
+            document.getElementById('chart-modal').style.display = 'none';
+            if (activeChart) { activeChart.remove(); activeChart = null; }
+        }
+    </script>
 </body>
 </html>
