@@ -14,6 +14,10 @@
             --short: #ff1744;
             --border: #21262d;
             --btc-gold: #f7931a;
+            
+            /* Neon Cyberpunk Colors for Chart */
+            --neon-purple: #a855f7;
+            --neon-pink: #f43f5e;
         }
         body {
             background-color: var(--bg-dark); color: #c9d1d9; 
@@ -52,7 +56,7 @@
         /* Dashboard Main Layout */
         #dashboard { display: none; max-width: 1400px; margin: 0 auto; position: relative; }
         
-        /* 🆔 RED NEON USER BADGE (Top Right) - UPDATED FOR MOBILE FIX */
+        /* 🆔 RED NEON USER BADGE */
         .neon-badge {
             position: absolute; top: 15px; right: 15px; background: rgba(255, 23, 68, 0.05); border: 1px solid var(--short);
             border-radius: 8px; padding: 10px 18px; text-align: right; box-shadow: 0 0 15px rgba(255, 23, 68, 0.3), inset 0 0 8px rgba(255, 23, 68, 0.1); z-index: 100;
@@ -60,7 +64,7 @@
         .neon-badge .username { color: var(--short); font-weight: 900; font-size: 14px; letter-spacing: 1px; text-shadow: 0 0 8px rgba(255, 23, 68, 0.8); margin-bottom: 3px; }
         .neon-badge .expiry { color: #8b949e; font-size: 11px; font-family: monospace; font-weight: bold; letter-spacing: 0.5px; }
 
-        /* HEADER - UPDATED FOR MOBILE FIX */
+        /* HEADER */
         .header { text-align: center; margin-top: 60px; margin-bottom: 30px; }
         .header h1 { color: #fff; margin-bottom: 5px; font-size: 28px; font-weight: 800; }
         
@@ -145,7 +149,6 @@
         .chart-container { width: 92%; max-width: 1050px; height: 75vh; background: #010409; border: 1px solid var(--border); border-radius: 16px; padding: 24px; position: relative; display: flex; flex-direction: column; }
         .close-btn { position: absolute; top: 15px; right: 20px; color: #8b949e; font-size: 26px; cursor: pointer; background: none; border: none; outline: none; z-index: 10;}
         .close-btn:hover { color: #fff; }
-        /* CHART FIX - min height added */
         #tv-chart { flex-grow: 1; width: 100%; margin-top: 15px; position: relative; min-height: 350px;} 
         
         /* AI Logic Modal specific classes */
@@ -281,38 +284,41 @@
             });
         }
 
-        // 🔗 Core Listeners
+        // 🔗 Core Listeners (Modified for Real Firebase Stats Calculation)
         function initCoreListeners() {
             db.ref('live_signals').on('value', (s) => { 
                 currentSignalData = s.val(); 
                 renderSignals(currentSignalData); 
             });
 
-            db.ref('premium_keys').on('value', (snapshot) => {
-                const keysData = snapshot.val();
-                if (!keysData) return;
+            // Global Stats Sync
+            db.ref('global_stats').on('value', (snap) => {
+                let s = snap.val();
+                if (!s) { s = { total_trades: 0, total_tp: 0, total_sl: 0 }; }
 
-                let globalTrades = 0; let globalTP = 0; let globalSL = 0;
-                for (const key in keysData) {
-                    if (keysData[key].stats) {
-                        globalTrades += Number(keysData[key].stats.trades || 0);
-                        globalTP += Number(keysData[key].stats.tp || 0);
-                        globalSL += Number(keysData[key].stats.sl || 0);
-                    }
-                }
-                let globalWinRate = 0;
-                if ((globalTP + globalSL) > 0) {
-                    globalWinRate = Math.round((globalTP / (globalTP + globalSL)) * 100);
+                const total = s.total_trades || 0;
+                const tp = s.total_tp || 0;
+                const sl = s.total_sl || 0;
+                
+                let calcWinRate = 0;
+                if (s.win_rate) {
+                    calcWinRate = s.win_rate;
+                } else if (total > 0) {
+                    calcWinRate = ((tp / total) * 100).toFixed(1);
                 }
 
-                document.getElementById('global-total-trades').innerText = globalTrades;
-                document.getElementById('global-win-rate').innerText = globalWinRate + "%";
+                document.getElementById('global-total-trades').innerText = total;
+                document.getElementById('global-win-rate').innerText = calcWinRate + "%";
+            });
 
-                if (activeUserKey && keysData[activeUserKey]) {
-                    const myStats = keysData[activeUserKey].stats || { trades: 0, tp: 0, sl: 0 };
-                    document.getElementById('user-trades').innerText = myStats.trades || 0;
-                    document.getElementById('user-pnl-ratio').innerText = `${myStats.tp || 0} / ${myStats.sl || 0}`;
-                }
+            // Personal User Stats Sync
+            db.ref('premium_keys/' + activeUserKey).on('value', (snapshot) => {
+                const userData = snapshot.val();
+                if (!userData) return;
+                
+                const myStats = userData.stats || { trades: 0, tp: 0, sl: 0 };
+                document.getElementById('user-trades').innerText = myStats.trades || 0;
+                document.getElementById('user-pnl-ratio').innerText = `${myStats.tp || 0} / ${myStats.sl || 0}`;
             });
         }
 
@@ -487,7 +493,7 @@
             }
 
             for (const [coinKey, details] of Object.entries(data)) {
-                let badgeClass = details.signal_type.includes("SWING") ? "badge-swing" : "badge-scalp";
+                let badgeClass = (details.signal_type && details.signal_type.includes("SWING")) ? "badge-swing" : "badge-scalp";
                 let sideClass = details.side === "LONG" ? "side-long" : "side-short";
 
                 const isPremiumAlert = details.accuracy >= 85;
@@ -504,7 +510,7 @@
                     <div class="${cardCssClass}">
                         <div>
                             <div style="display: flex; align-items: center; margin-bottom: 15px;">
-                                <span class="badge ${badgeClass}" style="margin-bottom: 0;">${details.signal_type}</span>
+                                <span class="badge ${badgeClass}" style="margin-bottom: 0;">${details.signal_type || 'SIGNAL'}</span>
                                 ${premiumBadgeHtml}
                             </div>
                             <div class="coin-title">
@@ -527,10 +533,15 @@
             }
         }
 
-        // --- ⚡ LIVE MARKET BINANCE WEBSOCKET TRACKER (NEW UPDATE) ---
+        // --- ⚡ LIVE MARKET BINANCE WEBSOCKET TRACKER & DB UPDATE ---
         let activeMarketWatchers = {};
 
         function takeTrade(coinKey) {
+            if (!activeUserKey) {
+                alert("Please authenticate your node first.");
+                return;
+            }
+
             if (!currentSignalData || !currentSignalData[coinKey]) {
                 alert("⚠️ Error: Signal data shifted before execution.");
                 return;
@@ -544,15 +555,24 @@
                 return;
             }
 
+            // 1. UPDATE GLOBAL STATS IN FIREBASE
+            const globalRef = db.ref('global_stats/total_trades');
+            globalRef.transaction((currentValue) => {
+                return (currentValue || 0) + 1;
+            });
+
+            // 2. UPDATE PERSONAL STATS IN FIREBASE
+            const userRef = db.ref(`premium_keys/${activeUserKey}/stats/trades`);
+            userRef.transaction((currentValue) => {
+                return (currentValue || 0) + 1;
+            });
+
             alert(`⚡ REAL TRADE COMPILATION: Tracking ${signal.pair} live on Binance order flow...`);
 
+            // 3. START WEBSOCKET FOR TP/SL TRACKING
             db.ref('premium_keys/' + activeUserKey).once('value', (snapshot) => {
                 const userData = snapshot.val();
                 if (!userData) return;
-
-                let stats = userData.stats || { trades: 0, tp: 0, sl: 0, status: "active" };
-                stats.trades = Number(stats.trades) + 1;
-                db.ref('premium_keys/' + activeUserKey + '/stats/trades').set(stats.trades);
 
                 const wsUrl = `wss://fstream.binance.com/ws/${pairName.toLowerCase()}@ticker`;
                 const ws = new WebSocket(wsUrl);
@@ -585,6 +605,7 @@
             wsInstance.close();
             delete activeMarketWatchers[pairName];
 
+            // Update Personal Firebase Data
             db.ref('premium_keys/' + activeUserKey).once('value', (snapshot) => {
                 const userData = snapshot.val();
                 if (!userData) return;
@@ -595,15 +616,22 @@
                     stats.tp = Number(stats.tp) + 1;
                     alert(`🟢 TARGET HIT: ${pairName} hit Take Profit at $${hitPrice}!`);
                     db.ref('premium_keys/' + activeUserKey + '/stats/tp').set(stats.tp);
+                    
+                    // Update Global TP
+                    db.ref('global_stats/total_tp').transaction(val => (val || 0) + 1);
+
                 } else {
                     stats.sl = Number(stats.sl) + 1;
                     alert(`🔴 STOP LOSS HIT: ${pairName} protection triggered at $${hitPrice}!`);
                     db.ref('premium_keys/' + activeUserKey + '/stats/sl').set(stats.sl);
+                    
+                    // Update Global SL
+                    db.ref('global_stats/total_sl').transaction(val => (val || 0) + 1);
                 }
             });
         }
 
-        // --- 📈 ADVANCED LIGHTWEIGHT CHARTS API INTEGRATION (UPDATED FOR FIX) ---
+        // --- 📈 ADVANCED LIGHTWEIGHT CHARTS API INTEGRATION (NEON COLORS APPLIED) ---
         async function openLiveChart(pair, entry, tp, sl, side) {
             document.getElementById('chart-modal').style.display = 'flex';
             document.getElementById('chart-coin-name').innerText = `${pair} Live Analysis`;
@@ -625,12 +653,12 @@
             
             activeChart.resize(chartDiv.clientWidth, chartDiv.clientHeight);
 
+            // FIX: NEON PURPLE (#a855f7) AND NEON PINK (#f43f5e) CANDLES APPLIED HERE
             const candlestickSeries = activeChart.addCandlestickSeries({
-                upColor: '#00e676', downColor: '#ff1744', borderVisible: false, wickUpColor: '#00e676', wickDownColor: '#ff1744'
+                upColor: '#a855f7', downColor: '#f43f5e', borderVisible: false, wickUpColor: '#a855f7', wickDownColor: '#f43f5e'
             });
 
             try {
-                // api.binance.com වෙනුවට fapi.binance.com (Futures API) භාවිතා කිරීම
                 const res = await fetch(`https://fapi.binance.com/fapi/v1/klines?symbol=${cleanSymbol}&interval=5m&limit=150`);
                 
                 if (!res.ok) {
@@ -645,15 +673,14 @@
 
                 candlestickSeries.setData(chartData);
                 
-                // අගයන් නිවැරදි සංඛ්‍යා (Numbers) නම් පමණක් Price Lines ඇඳීම
                 if (!isNaN(parseFloat(entry))) {
                     candlestickSeries.createPriceLine({ price: parseFloat(entry), color: '#388bff', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: 'ENTRY' });
                 }
                 if (!isNaN(parseFloat(tp))) {
-                    candlestickSeries.createPriceLine({ price: parseFloat(tp), color: '#00e676', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: 'TP' });
+                    candlestickSeries.createPriceLine({ price: parseFloat(tp), color: '#a855f7', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: 'TP' });
                 }
                 if (!isNaN(parseFloat(sl))) {
-                    candlestickSeries.createPriceLine({ price: parseFloat(sl), color: '#ff1744', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: 'SL' });
+                    candlestickSeries.createPriceLine({ price: parseFloat(sl), color: '#f43f5e', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: 'SL' });
                 }
 
                 loadingText.style.display = 'none';
