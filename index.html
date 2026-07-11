@@ -59,7 +59,7 @@
         .side-long { color: var(--long); } .side-short { color: var(--short); }
         .data-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; border-bottom: 1px solid rgba(33,38,45,0.5); padding-bottom: 6px; }
 
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(1,4,9,0.96); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(6px); }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(1,4,9,0.96); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(6px); overflow-y: auto; }
         .chart-container { width: 92%; max-width: 1050px; height: 75vh; background: #010409; border: 1px solid var(--border); border-radius: 16px; padding: 24px; position: relative; display: flex; flex-direction: column; }
         .close-btn { position: absolute; top: 15px; right: 20px; color: #8b949e; font-size: 26px; cursor: pointer; background: none; border: none; }
         .close-btn:hover { color: #fff; }
@@ -68,6 +68,12 @@
         .logic-box-container { max-width: 550px; width: 90%; background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 30px; position: relative; }
         .logic-header { font-size: 20px; font-weight: bold; color: #fff; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 20px; }
         .logic-content-block { background: #010409; border: 1px solid var(--border); padding: 15px; border-radius: 8px; font-family: monospace; font-size: 13px; color: #00ffcc; margin-bottom: 15px; white-space: pre-wrap; }
+
+        /* Admin Panel Styles */
+        .admin-panel-container { max-width: 900px; width: 95%; background: var(--card-bg); border: 1px solid var(--btc-gold); border-radius: 16px; padding: 30px; position: relative; max-height: 80vh; overflow-y: auto; }
+        .admin-trade-row { background: #010409; border: 1px solid var(--border); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+        .admin-trade-header { display: flex; justify-content: space-between; font-weight: bold; font-size: 16px; border-bottom: 1px solid #21262d; padding-bottom: 8px; margin-bottom: 8px; }
+        .ai-feedback { font-family: monospace; font-size: 13px; color: #a855f7; background: rgba(168,85,247,0.1); padding: 10px; border-radius: 6px; border-left: 3px solid #a855f7; }
     </style>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -100,6 +106,7 @@
         <div class="header">
             <h1>AlphaSigna Intelligence Hub</h1>
             <p style="color: #8b949e; font-size: 13px; font-weight: 700; margin: 0;">GLOBAL HIGH-FREQUENCY TERMINAL</p>
+            <button id="admin-btn" class="btn" style="display: none; background: var(--btc-gold); color: #000; width: auto; padding: 10px 20px; margin: 15px auto 0; box-shadow: 0 0 15px rgba(247,147,26,0.4);" onclick="openAdminPanel()">👑 ADMIN: AI LEARNING LOGS</button>
         </div>
 
         <div class="stats-grid">
@@ -142,6 +149,15 @@
         </div>
     </div>
 
+    <div id="admin-modal" class="modal-overlay">
+        <div class="admin-panel-container">
+            <button class="close-btn" onclick="closeAdminPanel()">✖</button>
+            <div class="logic-header" style="color: var(--btc-gold);">👑 ADMIN: AI AUTO-TRACKING & LEARNING LOGS</div>
+            <p style="color:#8b949e; font-size:13px; margin-top:-10px; margin-bottom:20px;">System automatically tracks ALL generated signals regardless of user interaction. Below is the AI's self-reflection on each trade.</p>
+            <div id="admin-logs-content">Loading Logs...</div>
+        </div>
+    </div>
+
     <script>
         const firebaseConfig = { databaseURL: "https://alphasigna-live-d644a-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(firebaseConfig);
@@ -163,6 +179,19 @@
             const inputKey = document.getElementById('access-key').value.trim();
             if(!inputKey) return;
             
+            // 👑 Admin පරීක්ෂාව
+            if(inputKey.toLowerCase() === "pehelitha") {
+                activeUserKey = "pehelitha";
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                document.getElementById('user-badge').style.display = 'block';
+                document.getElementById('user-welcome-text').innerText = `👑 ADMIN: PEHELITHA`;
+                document.getElementById('user-expiry-text').innerText = `LIFETIME ACCESS`;
+                document.getElementById('admin-btn').style.display = 'block'; // Admin බොත්තම පෙන්වීම
+                initCoreListeners();
+                return;
+            }
+
             db.ref('premium_keys/' + inputKey).once('value', (s) => {
                 const userData = s.val();
                 if (userData && userData.status === "active") {
@@ -185,7 +214,6 @@
                 if(signalsRevealed) renderSignals(currentSignalData); 
             });
 
-            // [AI CONTEXT]: Only LISTENS to global stats. Python handles the updates.
             db.ref('global_stats').on('value', (snap) => {
                 const s = snap.val() || { total_trades: 0, total_tp: 0, total_sl: 0 };
                 let total = Number(s.total_trades) || 0;
@@ -195,14 +223,59 @@
                 document.getElementById('global-win-rate').innerText = calcWinRate + "%";
             });
 
-            db.ref('premium_keys/' + activeUserKey).on('value', (snapshot) => {
-                const userData = snapshot.val();
-                if (!userData) return;
-                const myStats = userData.stats || { trades: 0, tp: 0, sl: 0 };
-                document.getElementById('user-trades').innerText = myStats.trades || 0;
-                document.getElementById('user-pnl-ratio').innerText = `${myStats.tp || 0} / ${myStats.sl || 0}`;
+            if (activeUserKey !== "pehelitha") {
+                db.ref('premium_keys/' + activeUserKey).on('value', (snapshot) => {
+                    const userData = snapshot.val();
+                    if (!userData) return;
+                    const myStats = userData.stats || { trades: 0, tp: 0, sl: 0 };
+                    document.getElementById('user-trades').innerText = myStats.trades || 0;
+                    document.getElementById('user-pnl-ratio').innerText = `${myStats.tp || 0} / ${myStats.sl || 0}`;
+                });
+            } else {
+                document.getElementById('user-trades').innerText = "ADMIN";
+                document.getElementById('user-pnl-ratio').innerText = "N/A";
+            }
+        }
+
+        // 👑 Admin Panel Logic
+        function openAdminPanel() {
+            document.getElementById('admin-modal').style.display = 'flex';
+            db.ref('trade_history').limitToLast(30).on('value', (snap) => {
+                const logsContainer = document.getElementById('admin-logs-content');
+                logsContainer.innerHTML = '';
+                const data = snap.val();
+                
+                if(!data) {
+                    logsContainer.innerHTML = '<p style="color:#8b949e;">No trades logged yet.</p>';
+                    return;
+                }
+
+                // Reverse data to show newest first
+                const trades = Object.values(data).reverse();
+                
+                trades.forEach(trade => {
+                    const isWin = trade.result === "WIN";
+                    const resultColor = isWin ? "var(--long)" : "var(--short)";
+                    
+                    logsContainer.innerHTML += `
+                        <div class="admin-trade-row">
+                            <div class="admin-trade-header">
+                                <span>${trade.coin} <span style="color:#8b949e; font-size:12px; font-weight:normal; margin-left:10px;">${trade.time}</span></span>
+                                <span style="color:${resultColor};">${trade.result}</span>
+                            </div>
+                            <div style="font-size:13px; color:#c9d1d9; margin-bottom:10px;">
+                                <b>Side:</b> ${trade.side} | <b>Entry:</b> ${trade.entry} | <b>Hit Price:</b> ${trade.hit_price}
+                            </div>
+                            <div class="ai-feedback">
+                                <b>🧠 AI Learning Note:</b><br>
+                                ${trade.ai_learning}
+                            </div>
+                        </div>
+                    `;
+                });
             });
         }
+        function closeAdminPanel() { document.getElementById('admin-modal').style.display = 'none'; }
 
         function revealSignals() {
             const btn = document.getElementById('scan-btn');
@@ -275,11 +348,12 @@
             
             if (activeMarketWatchers[pairName]) { alert(`Already tracking ${pairName}`); return; }
 
-            // [AI CONTEXT]: ONLY Personal stats updated here.
-            db.ref(`premium_keys/${activeUserKey}/stats`).once('value', (snap) => {
-                let st = snap.val() || { trades: 0 };
-                db.ref(`premium_keys/${activeUserKey}/stats/trades`).set((Number(st.trades) || 0) + 1);
-            });
+            if (activeUserKey !== "pehelitha") {
+                db.ref(`premium_keys/${activeUserKey}/stats`).once('value', (snap) => {
+                    let st = snap.val() || { trades: 0 };
+                    db.ref(`premium_keys/${activeUserKey}/stats/trades`).set((Number(st.trades) || 0) + 1);
+                });
+            }
 
             alert(`⚡ Tracking ${pairName} live on Binance...`);
             const ws = new WebSocket(`wss://fstream.binance.com/ws/${pairName.toLowerCase()}@ticker`);
@@ -300,17 +374,20 @@
         function triggerTradeResult(wsInstance, pairName, isWin, hitPrice) {
             wsInstance.close(); delete activeMarketWatchers[pairName];
 
-            // [AI CONTEXT]: ONLY Personal stats updated here.
-            db.ref(`premium_keys/${activeUserKey}/stats`).once('value', (snap) => {
-                let st = snap.val() || { tp: 0, sl: 0 };
-                if (isWin) {
-                    db.ref(`premium_keys/${activeUserKey}/stats/tp`).set((Number(st.tp) || 0) + 1);
-                    alert(`🟢 TARGET HIT: ${pairName} hit TP at $${hitPrice}!`);
-                } else {
-                    db.ref(`premium_keys/${activeUserKey}/stats/sl`).set((Number(st.sl) || 0) + 1);
-                    alert(`🔴 STOP LOSS HIT: ${pairName} hit SL at $${hitPrice}!`);
-                }
-            });
+            if (activeUserKey !== "pehelitha") {
+                db.ref(`premium_keys/${activeUserKey}/stats`).once('value', (snap) => {
+                    let st = snap.val() || { tp: 0, sl: 0 };
+                    if (isWin) {
+                        db.ref(`premium_keys/${activeUserKey}/stats/tp`).set((Number(st.tp) || 0) + 1);
+                        alert(`🟢 TARGET HIT: ${pairName} hit TP at $${hitPrice}!`);
+                    } else {
+                        db.ref(`premium_keys/${activeUserKey}/stats/sl`).set((Number(st.sl) || 0) + 1);
+                        alert(`🔴 STOP LOSS HIT: ${pairName} hit SL at $${hitPrice}!`);
+                    }
+                });
+            } else {
+                alert(`ADMIN PREVIEW: ${isWin ? '🟢 TP HIT' : '🔴 SL HIT'} at $${hitPrice}`);
+            }
         }
 
         let activeChart = null; 
