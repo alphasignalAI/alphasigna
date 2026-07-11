@@ -4,23 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AlphaSigna V35.0 - VIP Alert Matrix</title>
-    <!-- 
-    [AI CONTEXT FOR FUTURE PROMPTS]: 
-    1. English UI enforced.
-    2. Neon Pink Theme applied.
-    3. Added Account Settings modal bound to user profile avatar click.
-    4. Nickname logic: if nickname exists, initial updates to nickname's first letter.
-    5. Added UI placeholders for Phase 3/4/5 advanced modules (Whale Tracker, Psychology Dashboard, etc.).
-    -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Inter:wght@400;600;800&display=swap');
 
         :root {
-            /* Neon Pink Cyberpunk Theme */
-            --primary: #ff007f;      /* Neon Pink */
-            --accent: #00f0ff;       /* Neon Cyan */
-            --bg-dark: #090206;      /* Deep Space Dark Pinkish-Black */
-            --card-bg: rgba(25, 5, 20, 0.75); /* Glassmorphism Dark Pink Tint */
+            --primary: #ff007f;      
+            --accent: #00f0ff;       
+            --bg-dark: #090206;      
+            --card-bg: rgba(25, 5, 20, 0.75); 
             --card-border: rgba(255, 0, 127, 0.2);
             --long: #00ffaa;
             --short: #ff1744;
@@ -44,7 +35,6 @@
         
         h1, h2, h3 { font-family: 'Rajdhani', sans-serif; letter-spacing: 1px; }
 
-        /* Shared Components */
         .glass-panel {
             background: var(--card-bg);
             backdrop-filter: blur(16px);
@@ -72,7 +62,6 @@
         .btn:hover { box-shadow: 0 0 25px rgba(255, 0, 127, 0.6); transform: translateY(-2px); }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 
-        /* Login & Setup Screens */
         #login-screen, #setup-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90vh; }
         .auth-box { width: 100%; max-width: 400px; padding: 40px; text-align: center; }
         .auth-box h2 { color: #fff; margin-bottom: 5px; font-size: 32px; text-shadow: 0 0 15px rgba(255, 0, 127, 0.5); }
@@ -86,7 +75,6 @@
         .auth-box input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(0, 240, 255, 0.25); }
         .input-group label { display: block; color: var(--text-muted); font-size: 12px; font-weight: bold; margin-bottom: 8px; text-align: left; text-transform: uppercase; }
 
-        /* Main Dashboard */
         #dashboard { display: none; max-width: 1600px; margin: 0 auto; padding-top: 10px; }
         
         .dashboard-layout {
@@ -100,7 +88,6 @@
             .dashboard-layout { grid-template-columns: 1fr; }
         }
 
-        /* Top Navigation Area */
         .top-nav {
             display: flex;
             justify-content: space-between;
@@ -113,7 +100,6 @@
         
         .nav-actions { display: flex; align-items: center; gap: 20px; }
         
-        /* User Profile Circle */
         .user-profile { display: flex; align-items: center; gap: 15px; cursor: pointer; transition: 0.3s; padding: 5px 10px; border-radius: 30px; }
         .user-profile:hover { background: rgba(255,0,127,0.1); }
         .profile-circle {
@@ -130,7 +116,6 @@
         .profile-name { font-weight: 800; font-size: 14px; color: #fff; text-transform: uppercase; }
         .profile-exp { font-size: 11px; color: var(--text-muted); font-weight: bold; }
 
-        /* Left Column */
         .left-col { display: flex; flex-direction: column; gap: 25px; }
         
         #network-container { 
@@ -144,7 +129,6 @@
         }
         #scanner-status { font-family: 'Rajdhani', monospace; font-size: 18px; color: var(--primary); font-weight: bold; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255,0,127,0.6); }
 
-        /* Ask AI / Stats Panel */
         .ask-ai-panel {
             padding: 25px;
             background: linear-gradient(145deg, rgba(255,0,127,0.05), rgba(21,5,20,0.9));
@@ -155,7 +139,6 @@
         .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: bold; margin-bottom: 5px; }
         .stat-val { font-size: 22px; font-weight: 800; font-family: 'Rajdhani', sans-serif; }
         
-        /* Advanced Modules Grid (Phase 3/4/5 Placeholders) */
         .adv-modules-header { font-size: 14px; font-weight: bold; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; }
         .adv-modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
         .module-card {
@@ -167,7 +150,6 @@
         .module-card:hover { border-color: var(--primary); color: var(--primary); }
         .module-badge { display: block; font-size: 9px; background: rgba(255,0,127,0.1); color: var(--primary); padding: 2px 5px; border-radius: 4px; margin-top: 5px; width: max-content; margin-inline: auto; }
 
-        /* Right Column */
         .right-col { display: flex; flex-direction: column; gap: 20px; }
         
         .scan-action-area { display: flex; justify-content: center; margin-bottom: 10px; }
@@ -181,7 +163,6 @@
         .signal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         @media (max-width: 768px) { .signal-grid { grid-template-columns: 1fr; } }
 
-        /* Signal Cards */
         .signal-card { 
             background: rgba(30, 5, 25, 0.7); 
             border-radius: 16px; padding: 20px; 
@@ -206,7 +187,6 @@
         .btn-mini { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); color: #fff; padding: 8px; border-radius: 8px; font-size: 11px; cursor: pointer; font-weight: bold;}
         .btn-mini:hover { background: rgba(255,255,255,0.15); }
 
-        /* Modals */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5,2,4,0.95); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(12px); overflow-y: auto; }
         .chart-container { width: 95%; max-width: 1200px; height: 80vh; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; padding: 25px; position: relative; display: flex; flex-direction: column; }
         .close-btn { position: absolute; top: 20px; right: 25px; color: var(--text-muted); font-size: 28px; cursor: pointer; background: none; border: none; transition: 0.2s;}
@@ -220,7 +200,6 @@
         .admin-trade-row { background: rgba(0,0,0,0.5); border: 1px solid var(--card-border); padding: 18px; border-radius: 12px; margin-bottom: 15px; border-left: 4px solid var(--accent);}
         .ai-feedback { font-family: monospace; font-size: 13px; color: var(--primary); background: rgba(255,0,127,0.08); padding: 12px; border-radius: 8px; margin-top: 10px; border-left: 2px solid var(--primary);}
         
-        /* Account Modal Specifics */
         .account-box-container .input-group input { background: rgba(0,0,0,0.5); margin-bottom: 15px; }
     </style>
     
@@ -231,7 +210,6 @@
 </head>
 <body>
 
-    <!-- 1. LOGIN SCREEN -->
     <div id="login-screen">
         <div class="glass-panel auth-box">
             <h2 style="background: -webkit-linear-gradient(0deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">ALPHASIGNA V35</h2>
@@ -242,8 +220,7 @@
         </div>
     </div>
 
-    <!-- 2. SETUP SCREEN (ONE-TIME) -->
-    <div id="setup-screen">
+    <div id="setup-screen" style="display: none;">
         <div class="glass-panel auth-box" style="max-width: 500px;">
             <div style="margin-bottom: 25px;">
                 <h2 style="color: var(--primary);">SYSTEM INITIALIZATION</h2>
@@ -271,14 +248,13 @@
                 <input type="password" id="setup-api-secret" placeholder="Enter API Secret" />
             </div>
 
+            <p id="setup-error-msg" style="color: var(--short); display: none; margin-bottom: 15px; font-weight:bold; font-size: 13px; text-align: left;"><i class="fas fa-exclamation-triangle"></i> ⚠️ Please fill all required fields.</p>
+
             <button class="btn" onclick="saveUserSetup()" id="setup-btn" style="background: var(--primary); color:#fff;">SECURE & FINISH SETUP</button>
         </div>
     </div>
 
-    <!-- 3. MAIN DASHBOARD -->
     <div id="dashboard">
-        
-        <!-- Top Navigation -->
         <div class="top-nav">
             <div class="nav-logo">
                 <h1>AlphaSigna</h1>
@@ -297,17 +273,13 @@
         </div>
 
         <div class="dashboard-layout">
-            
-            <!-- LEFT COLUMN: Chart & AI -->
             <div class="left-col">
-                <!-- Main Chart / Scanner -->
                 <div class="glass-panel" style="padding: 15px;">
                     <div id="network-container">
                         <div id="scanner-status">🟢 SYSTEM READY & MONITORING...</div>
                     </div>
                 </div>
 
-                <!-- Stats & Ask AI -->
                 <div class="glass-panel ask-ai-panel">
                     <div class="stats-grid">
                         <div class="stat-item">
@@ -340,21 +312,16 @@
                 </div>
             </div>
 
-            <!-- RIGHT COLUMN: Actions & Signals -->
             <div class="right-col">
                 <div class="scan-action-area">
                     <button class="btn" id="scan-btn" onclick="revealSignals()">GET NEW SIGNAL</button>
                 </div>
                 
-                <div class="signal-grid" id="signal-container" style="display: none;">
-                    <!-- Cards injected via JS -->
-                </div>
+                <div class="signal-grid" id="signal-container" style="display: none;"></div>
             </div>
-
         </div>
     </div>
 
-    <!-- Modals -->
     <div id="chart-modal" class="modal-overlay">
         <div class="chart-container glass-panel">
             <button class="close-btn" onclick="closeLiveChart()"><i class="fas fa-times"></i></button>
@@ -377,7 +344,6 @@
         </div>
     </div>
 
-    <!-- NEW: Account Settings Modal -->
     <div id="account-modal" class="modal-overlay">
         <div class="account-box-container">
             <button class="close-btn" onclick="closeAccountSettings()"><i class="fas fa-times"></i></button>
@@ -459,9 +425,14 @@
             const apiKey = document.getElementById('setup-api-key').value.trim();
             const apiSecret = document.getElementById('setup-api-secret').value.trim();
             
+            // මෙන්න ඔබ ඉල්ලා සිටි නිශ්චිත JS කේත කොටස 👇
+            const errorMsg = document.getElementById('setup-error-msg');
+
             if(!waNumber || !apiKey || !apiSecret) {
-                alert("⚠️ Please fill all required fields.");
+                errorMsg.style.display = "block"; // Error එක පෙන්වන්න
                 return;
+            } else {
+                errorMsg.style.display = "none"; // හරි නම් Error එක හංගන්න
             }
 
             const btn = document.getElementById('setup-btn');
@@ -506,7 +477,6 @@
             initCoreListeners();
         }
 
-        // --- NEW: Account Settings Logic ---
         function openAccountSettings() {
             if(activeUserKey === 'pehelitha') {
                 alert("Admin account settings cannot be modified here.");
@@ -547,7 +517,6 @@
                 btn.innerText = "UPDATE SETTINGS";
                 btn.disabled = false;
                 
-                // Update UI visually
                 const displayName = nickname || activeUserKey;
                 document.getElementById('user-welcome-text').innerText = displayName.toUpperCase();
                 document.getElementById('user-initial').innerText = displayName.charAt(0).toUpperCase();
@@ -558,7 +527,6 @@
                 btn.disabled = false;
             });
         }
-        // ------------------------------------
 
         function initCoreListeners() {
             db.ref('live_signals').on('value', (s) => { 
