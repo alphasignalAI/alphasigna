@@ -159,6 +159,7 @@
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
@@ -213,6 +214,7 @@
         </div>
     </div>
 
+    <!-- Modals -->
     <div id="chart-modal" class="modal-overlay">
         <div class="chart-container">
             <button class="close-btn" onclick="closeLiveChart()">✖</button>
@@ -508,19 +510,34 @@
                 const cardCssClass = isPremiumAlert ? "signal-card neon-gold-card" : "signal-card";
                 const premiumBadgeHtml = isPremiumAlert ? `<span class="premium-tag">⭐ VIP ALERT</span>` : "";
 
-                const formattedTech = (details.tech_logic || "🧠 Telemetry Active").toString().replace(/'/g, "\\'");
-                const formattedRisk = (details.risk_logic || "⚖️ Risk Managed").toString().replace(/'/g, "\\'");
+                const formattedTech = (details.tech_logic || "🧠 Telemetry Active").toString().replace(/'/g, "\'");
+                const formattedRisk = (details.risk_logic || "⚖️ Risk Managed").toString().replace(/'/g, "\'");
                 
                 const pairName = details.pair || coinKey.replace('USDT', '/USDT');
                 const chartArgs = `'${pairName}', ${details.entry}, ${details.tp1}, ${details.sl}, '${details.side}'`;
                 const logicArgs = `'${formattedTech}', '${formattedRisk}'`;
 
+                // ✅ TIME FORMATTING LOGIC
+                let timeString = "LIVE";
+                if (details.timestamp) {
+                    const tsMs = details.timestamp < 20000000000 ? details.timestamp * 1000 : details.timestamp;
+                    const dateObj = new Date(tsMs);
+                    const h = dateObj.getHours().toString().padStart(2, '0');
+                    const m = dateObj.getMinutes().toString().padStart(2, '0');
+                    const s = dateObj.getSeconds().toString().padStart(2, '0');
+                    timeString = `${h}:${m}:${s}`;
+                }
+
                 container.innerHTML += `
                     <div class="${cardCssClass}">
                         <div>
-                            <div style="display: flex; align-items: center; margin-bottom: 15px;">
-                                <span class="badge ${badgeClass}" style="margin-bottom: 0;">${safeSignalType}</span>
-                                ${premiumBadgeHtml}
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+                                <div style="display: flex; align-items: center;">
+                                    <span class="badge ${badgeClass}" style="margin-bottom: 0;">${safeSignalType}</span>
+                                    ${premiumBadgeHtml}
+                                </div>
+                                <!-- TIMESTAMP DISPLAY -->
+                                <span style="font-size: 11px; color: #8b949e; font-family: monospace; font-weight: bold; background: rgba(0,0,0,0.3); padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border);"><i class="fa-regular fa-clock"></i> ${timeString}</span>
                             </div>
                             <div class="coin-title">
                                 <span>${pairName}</span>
@@ -634,7 +651,7 @@
             });
         }
 
-        // --- 📈 ADVANCED LIGHTWEIGHT CHARTS API INTEGRATION (UPDATED FOR FIX V4) ---
+        // --- 📈 ADVANCED LIGHTWEIGHT CHARTS API INTEGRATION (BUG FIXED + NEON PARAMS) ---
         let activeChart = null; // Global reference for cleanup
         let candlestickSeries = null; // Fixed reference for the series
 
@@ -734,8 +751,4 @@
         }
     </script>
 </body>
-</html>"""
-
-with open("index.html", "w", encoding="utf-8") as f:
-    f.write(fixed_html_content)
-print("Fix applied for the v4 addCandlestickSeries error.")}}
+</html>
