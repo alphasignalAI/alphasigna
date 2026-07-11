@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AlphaSigna V35.0 - VIP Alert Matrix</title>
+    <!-- 
+    [AI CONTEXT FOR FUTURE PROMPTS]: 
+    1. Phase 2 Setup Initiated.
+    2. Added a hidden "setup-screen" for one-time API and WhatsApp configuration.
+    3. Firebase checks `setup_completed` boolean. If true, user goes to Dashboard. If false, to Setup.
+    4. Admin ('pehelitha') bypasses setup automatically.
+    -->
     <style>
         :root {
             --primary: #00ffcc; --bg-dark: #06090e; --card-bg: #0d1117;
@@ -16,10 +23,23 @@
         .pulse-dot { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 8px var(--primary); animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
 
+        /* Login Screen */
         #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh; }
         .login-box { background: var(--card-bg); padding: 40px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 320px; }
         .login-box input { padding: 14px; width: 85%; border-radius: 8px; border: 1px solid var(--border); background: #010409; color: var(--primary); font-size: 16px; text-align: center; margin-bottom: 20px; outline: none; }
         
+        /* New One-Time Setup Screen UI */
+        #setup-screen { display: none; flex-direction: column; align-items: center; justify-content: center; height: 90vh; }
+        .setup-box { background: var(--card-bg); padding: 40px; border-radius: 16px; border: 1px solid var(--primary); box-shadow: 0 0 30px rgba(0,255,204,0.15); width: 100%; max-width: 450px; position: relative; }
+        .setup-header { text-align: center; margin-bottom: 30px; }
+        .setup-header h2 { color: var(--primary); margin: 0 0 10px 0; font-size: 24px; text-transform: uppercase; letter-spacing: 1px;}
+        .setup-header p { color: #8b949e; font-size: 13px; margin: 0; line-height: 1.5;}
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; color: #c9d1d9; font-size: 12px; font-weight: bold; margin-bottom: 8px; text-transform: uppercase; }
+        .input-group input { width: 100%; box-sizing: border-box; padding: 14px 15px; border-radius: 8px; border: 1px solid var(--border); background: #010409; color: #fff; font-size: 14px; outline: none; transition: 0.3s; }
+        .input-group input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0,255,204,0.2); }
+        .security-badge { background: rgba(0,230,118,0.1); border: 1px solid var(--long); color: var(--long); padding: 10px; border-radius: 8px; font-size: 11px; text-align: center; margin-bottom: 25px; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: bold; }
+
         .btn { background: var(--primary); color: #000; padding: 14px 28px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; width: 100%; }
         .btn:hover { box-shadow: 0 0 20px var(--primary); transform: translateY(-1px); }
         .btn-trade { background: transparent; border: 1px solid var(--primary); color: var(--primary); margin-top: 15px; padding: 11px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
@@ -87,6 +107,7 @@
         <div class="pulse-dot"></div><span id="status-text">SYSTEM STATUS</span>
     </div>
 
+    <!-- 1. LOGIN SCREEN -->
     <div id="login-screen">
         <div class="login-box">
             <h2 style="color: #fff; margin-bottom: 5px;">ALPHASIGNA AI</h2>
@@ -97,6 +118,38 @@
         </div>
     </div>
 
+    <!-- 2. NEW: ONE-TIME SETUP SCREEN -->
+    <div id="setup-screen">
+        <div class="setup-box">
+            <div class="setup-header">
+                <h2>SYSTEM INITIALIZATION</h2>
+                <p>Welcome to AlphaSigna V35. Please configure your integration settings to activate the Auto-Execution Module and VIP Alerts.</p>
+            </div>
+            
+            <div class="security-badge">
+                <i class="fas fa-shield-alt"></i> END-TO-END ENCRYPTED & SECURE
+            </div>
+            
+            <div class="input-group">
+                <label>WhatsApp Number (For AI Alerts)</label>
+                <input type="text" id="setup-wa" placeholder="Format: whatsapp:+947XXXXXXXX" />
+            </div>
+            
+            <div class="input-group">
+                <label>Binance API Key (Read & Trade Only)</label>
+                <input type="password" id="setup-api-key" placeholder="Enter your Binance API Key" />
+            </div>
+
+            <div class="input-group">
+                <label>Binance API Secret</label>
+                <input type="password" id="setup-api-secret" placeholder="Enter your Binance API Secret" />
+            </div>
+
+            <button class="btn" onclick="saveUserSetup()" id="setup-btn">SECURE & FINISH SETUP</button>
+        </div>
+    </div>
+
+    <!-- 3. MAIN DASHBOARD -->
     <div id="dashboard">
         <div id="user-badge" class="neon-badge" style="display: none;">
             <div id="user-welcome-text" class="username">USER: UNKNOWN</div>
@@ -126,6 +179,7 @@
         <div class="signal-grid" id="signal-container" style="display: none;"></div>
     </div>
 
+    <!-- Modals -->
     <div id="chart-modal" class="modal-overlay">
         <div class="chart-container">
             <button class="close-btn" onclick="closeLiveChart()">✖</button>
@@ -175,20 +229,16 @@
             }
         });
 
+        // REVISED VERIFICATION LOGIC WITH SETUP ROUTING
         function verifyFirebaseKey() {
             const inputKey = document.getElementById('access-key').value.trim();
             if(!inputKey) return;
             
-            // 👑 Admin පරීක්ෂාව
+            // 👑 Admin Bypass (Admin doesn't need to do setup)
             if(inputKey.toLowerCase() === "pehelitha") {
                 activeUserKey = "pehelitha";
                 document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('dashboard').style.display = 'block';
-                document.getElementById('user-badge').style.display = 'block';
-                document.getElementById('user-welcome-text').innerText = `👑 ADMIN: PEHELITHA`;
-                document.getElementById('user-expiry-text').innerText = `LIFETIME ACCESS`;
-                document.getElementById('admin-btn').style.display = 'block'; // Admin බොත්තම පෙන්වීම
-                initCoreListeners();
+                showDashboard({ expire_date: "LIFETIME" }, true);
                 return;
             }
 
@@ -197,15 +247,70 @@
                 if (userData && userData.status === "active") {
                     activeUserKey = inputKey;
                     document.getElementById('login-screen').style.display = 'none';
-                    document.getElementById('dashboard').style.display = 'block';
-                    document.getElementById('user-badge').style.display = 'block';
-                    document.getElementById('user-welcome-text').innerText = `USER: ${inputKey.toUpperCase()}`;
-                    document.getElementById('user-expiry-text').innerText = `EXPIRES: ${userData.expire_date || 'N/A'}`;
-                    initCoreListeners();
+                    
+                    // Check if setup is already completed
+                    if (userData.setup_completed) {
+                        showDashboard(userData, false);
+                    } else {
+                        // First-time user: Show Setup Screen
+                        document.getElementById('setup-screen').style.display = 'flex';
+                    }
                 } else {
                     document.getElementById('error-msg').style.display = 'block';
                 }
             });
+        }
+
+        // NEW: SAVE SETUP FUNCTION
+        function saveUserSetup() {
+            const waNumber = document.getElementById('setup-wa').value.trim();
+            const apiKey = document.getElementById('setup-api-key').value.trim();
+            const apiSecret = document.getElementById('setup-api-secret').value.trim();
+            
+            if(!waNumber || !apiKey || !apiSecret) {
+                alert("⚠️ Please fill all fields to ensure Auto-Execution works correctly.");
+                return;
+            }
+
+            const btn = document.getElementById('setup-btn');
+            btn.innerText = "ENCRYPTING & SAVING...";
+            btn.disabled = true;
+
+            // Save to Firebase and set setup_completed to true
+            db.ref('premium_keys/' + activeUserKey).update({
+                whatsapp_number: waNumber,
+                binance_api: apiKey,
+                binance_secret: apiSecret,
+                setup_completed: true
+            }).then(() => {
+                document.getElementById('setup-screen').style.display = 'none';
+                
+                // Fetch the newly updated data to load the dashboard correctly
+                db.ref('premium_keys/' + activeUserKey).once('value', (snap) => {
+                    showDashboard(snap.val(), false);
+                });
+            }).catch((err) => {
+                alert("Error saving setup data: " + err.message);
+                btn.innerText = "SECURE & FINISH SETUP";
+                btn.disabled = false;
+            });
+        }
+
+        // NEW: HELPER TO SHOW DASHBOARD
+        function showDashboard(userData, isAdmin) {
+            document.getElementById('dashboard').style.display = 'block';
+            document.getElementById('user-badge').style.display = 'block';
+            
+            if (isAdmin) {
+                document.getElementById('user-welcome-text').innerText = `👑 ADMIN: PEHELITHA`;
+                document.getElementById('user-expiry-text').innerText = `LIFETIME ACCESS`;
+                document.getElementById('admin-btn').style.display = 'block';
+            } else {
+                document.getElementById('user-welcome-text').innerText = `USER: ${activeUserKey.toUpperCase()}`;
+                document.getElementById('user-expiry-text').innerText = `EXPIRES: ${userData.expire_date || 'N/A'}`;
+            }
+            
+            initCoreListeners();
         }
 
         function initCoreListeners() {
@@ -250,7 +355,6 @@
                     return;
                 }
 
-                // Reverse data to show newest first
                 const trades = Object.values(data).reverse();
                 
                 trades.forEach(trade => {
