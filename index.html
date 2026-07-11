@@ -250,7 +250,7 @@
 
             <p id="setup-error-msg" style="color: var(--short); display: none; margin-bottom: 15px; font-weight:bold; font-size: 13px; text-align: left;"><i class="fas fa-exclamation-triangle"></i> ⚠️ Please fill all required fields.</p>
 
-            <button class="btn" onclick="saveUserSetup()" id="setup-btn" style="background: var(--primary); color:#fff;">SECURE & FINISH SETUP</button>
+            <button class="btn" onclick="saveUserSetup()" id="setup-btn" style="background: var(--primary); color:#fff; width: 100%;">SECURE & FINISH SETUP</button>
         </div>
     </div>
 
@@ -387,7 +387,6 @@
         
         let currentSignalData = null;
         let activeUserKey = null;
-        let signalsRevealed = false;
 
         function verifyFirebaseKey() {
             const inputKey = document.getElementById('access-key').value.trim();
@@ -425,7 +424,6 @@
             const apiKey = document.getElementById('setup-api-key').value.trim();
             const apiSecret = document.getElementById('setup-api-secret').value.trim();
             
-            // මෙන්න ඔබ ඉල්ලා සිටි නිශ්චිත JS කේත කොටස 👇
             const errorMsg = document.getElementById('setup-error-msg');
 
             if(!waNumber || !apiKey || !apiSecret) {
@@ -529,10 +527,7 @@
         }
 
         function initCoreListeners() {
-            db.ref('live_signals').on('value', (s) => { 
-                currentSignalData = s.val(); 
-                if(signalsRevealed) renderSignals(currentSignalData); 
-            });
+            // Live Signal listener removed. User MUST click to scan.
 
             db.ref('global_stats').on('value', (snap) => {
                 const s = snap.val() || { total_trades: 0, total_tp: 0, total_sl: 0 };
@@ -603,14 +598,18 @@
             btn.disabled = true;
             statusDiv.innerHTML = `<span style="color:var(--accent);">🔄 SYNCING NEURAL NETWORKS...</span>`;
             
-            setTimeout(() => {
-                signalsRevealed = true; 
-                sigContainer.style.display = 'grid'; 
-                renderSignals(currentSignalData); 
-                btn.innerHTML = `SCAN NEW SIGNALS`; 
-                btn.disabled = false;
-                statusDiv.innerHTML = `🟢 MULTI-TIMEFRAME ANALYSIS ACTIVE`;
-            }, 1000);
+            // Fetch live_signals ONLY when the button is clicked
+            db.ref('live_signals').once('value').then((snap) => {
+                currentSignalData = snap.val();
+                
+                setTimeout(() => {
+                    sigContainer.style.display = 'grid'; 
+                    renderSignals(currentSignalData); 
+                    btn.innerHTML = `SCAN NEW SIGNALS`; 
+                    btn.disabled = false;
+                    statusDiv.innerHTML = `🟢 MULTI-TIMEFRAME ANALYSIS ACTIVE`;
+                }, 1000);
+            });
         }
 
         function openAiLogicModal(techLogic, riskLogic) {
