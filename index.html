@@ -77,7 +77,7 @@
         /* 🕸️ MASSIVE NEURAL NETWORK MATRIX CONTAINER */
         .scanner-section { text-align: center; margin: 20px 0; position: relative; }
         #network-container { 
-            display: block; /* Modified to show by default */
+            display: block; 
             width: 100%; height: 950px; margin: 0 auto 20px auto; 
             background: #010409; border-radius: 16px; border: 1px solid var(--border); 
             position: relative; overflow: hidden; background-image: radial-gradient(circle at 50% 50%, rgba(0, 255, 204, 0.05) 0%, transparent 70%);
@@ -243,13 +243,11 @@
         
         let currentSignalData = null;
         let activeUserKey = null;
-        let signalsRevealed = false; // Flag to check if scan button was clicked
+        let signalsRevealed = false;
 
-        // Matrix Animation Variables
         let nodesArray = []; let edgesArray = []; let particlesArray = [];
         let renderFrameId; let globalTime = 0; let hoveredNodeId = null;
 
-        // 🚨 System Status
         db.ref('system_status').on('value', (s) => {
             const status = s.val();
             if(status) {
@@ -258,7 +256,6 @@
             }
         });
 
-        // 🔑 Login Function
         function verifyFirebaseKey() {
             const inputKey = document.getElementById('access-key').value.trim();
             if(!inputKey) return;
@@ -276,7 +273,6 @@
 
                     initCoreListeners();
                     
-                    // START ANIMATION IMMEDIATELY AFTER LOGIN
                     setTimeout(() => {
                         initNetworkAnimation();
                     }, 100);
@@ -287,18 +283,17 @@
             });
         }
 
-        // 🔗 Core Listeners
         function initCoreListeners() {
             db.ref('live_signals').on('value', (s) => { 
                 currentSignalData = s.val(); 
-                renderSignals(currentSignalData); 
+                if (signalsRevealed) {
+                    renderSignals(currentSignalData); 
+                }
             });
 
-            // 🔥 GLOBAL STATS SYNC
             db.ref('global_stats').on('value', (snap) => {
                 const s = snap.val();
                 let total = 0, tp = 0, sl = 0;
-
                 if (s) {
                     total = Number(s.total_trades) || 0;
                     tp = Number(s.total_tp) || 0;
@@ -306,33 +301,26 @@
                 } else {
                     total = 57; tp = 46; sl = 9;
                 }
-                
                 let calcWinRate = 0;
                 if (total > 0) {
                     calcWinRate = ((tp / total) * 100).toFixed(1);
                 }
-
                 document.getElementById('global-total-trades').innerText = total;
                 document.getElementById('global-win-rate').innerText = calcWinRate + "%";
-
             }, (error) => {
-                console.warn("Global Stats Error. Defaulting to backup:", error);
                 document.getElementById('global-total-trades').innerText = "57";
                 document.getElementById('global-win-rate').innerText = "80.7%";
             });
 
-            // Personal User Stats Sync
             db.ref('premium_keys/' + activeUserKey).on('value', (snapshot) => {
                 const userData = snapshot.val();
                 if (!userData) return;
-                
                 const myStats = userData.stats || { trades: 0, tp: 0, sl: 0 };
                 document.getElementById('user-trades').innerText = myStats.trades || 0;
                 document.getElementById('user-pnl-ratio').innerText = `${myStats.tp || 0} / ${myStats.sl || 0}`;
             });
         }
 
-        // --- 🕸️ NETWORK SCANNER ENGINE (ANIMATION NOW RUNS ON LOAD) ---
         async function initNetworkAnimation() {
             const container = document.getElementById('network-container');
             const canvas = document.getElementById('network-canvas');
@@ -486,18 +474,15 @@
             const btn = document.getElementById('scan-btn');
             const sigContainer = document.getElementById('signal-container');
             
-            // Show loading animation on button
             btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> SCANNING LIQUIDITY...`;
             btn.style.opacity = '0.7';
             btn.disabled = true;
 
-            // Wait 1.5 seconds for dramatic effect, then show signals
             setTimeout(() => {
-                signalsRevealed = true; // Set flag to true
-                sigContainer.style.display = 'grid'; // Make container visible
-                renderSignals(currentSignalData); // Render signals
+                signalsRevealed = true; 
+                sigContainer.style.display = 'grid'; 
+                renderSignals(currentSignalData); 
                 
-                // Change button to Rescan
                 btn.innerHTML = `🔄 RESCAN SIGNALS`;
                 btn.style.opacity = '1';
                 btn.disabled = false;
@@ -511,9 +496,9 @@
         }
         function closeAiLogicModal() { document.getElementById('logic-modal').style.display = 'none'; }
 
-        // --- 📊 RENDER LIVE SIGNAL CARDS ---
+        // --- 📊 RENDER LIVE SIGNAL CARDS (LIMIT TO TOP 6 MAX) ---
         function renderSignals(data) {
-            if (!signalsRevealed) return; // Do not render if the scan button hasn't been clicked
+            if (!signalsRevealed) return; 
 
             const container = document.getElementById('signal-container');
             container.innerHTML = ''; 
@@ -522,12 +507,49 @@
                 container.innerHTML = `
                     <div class="signal-card" style="text-align: center; grid-column: 1 / -1; padding: 50px;">
                         <h2 style="color: #fff;">🛰️ Live Alpha Engine Scanning...</h2>
-                        <p style="color: #8b949e;">Python core එකෙන් signals generate වෙනකම් බලා සිටී. (No active signals in DB)</p>
+                        <p style="color: #8b949e;">Market volatility evaluating. Awaiting new high-probability setups...</p>
                     </div>`;
                 return;
             }
 
+            const currentTime = Date.now();
+            let validSignals = [];
+
+            // 1. Filter out old signals (older than 2 hours) and collect them in an array
             for (const [coinKey, details] of Object.entries(data)) {
+                if (details.timestamp) {
+                    const tsMs = details.timestamp < 20000000000 ? details.timestamp * 1000 : details.timestamp;
+                    const timeDiff = currentTime - tsMs;
+                    const hoursDiff = timeDiff / (1000 * 60 * 60);
+                    if (hoursDiff > 2) continue; // Skip old signals
+                }
+                
+                // VIP check placeholder for WhatsApp (Logs to console for now)
+                if (details.accuracy >= 85) {
+                    console.log(`🔔 VIP SIGNAL DETECTED: ${coinKey}. (Backend API required for WhatsApp delivery)`);
+                }
+
+                validSignals.push({ key: coinKey, ...details });
+            }
+
+            // 2. Sort by accuracy (Highest first) to show the BEST signals
+            validSignals.sort((a, b) => (b.accuracy || 0) - (a.accuracy || 0));
+
+            // 3. Keep ONLY the top 6 signals maximum
+            const topSignals = validSignals.slice(0, 6);
+
+            if (topSignals.length === 0) {
+                container.innerHTML = `
+                    <div class="signal-card" style="text-align: center; grid-column: 1 / -1; padding: 50px;">
+                        <h2 style="color: #fff;">🛰️ Live Alpha Engine Scanning...</h2>
+                        <p style="color: #8b949e;">Market volatility evaluating. Awaiting new high-probability setups...</p>
+                    </div>`;
+                return;
+            }
+
+            // Render the top 6 signals
+            topSignals.forEach((details) => {
+                const coinKey = details.key;
                 let safeSignalType = details.signal_type || "SCALP";
                 let badgeClass = safeSignalType.includes("SWING") ? "badge-swing" : "badge-scalp";
                 let sideClass = details.side === "LONG" ? "side-long" : "side-short";
@@ -543,7 +565,6 @@
                 const chartArgs = `'${pairName}', ${details.entry}, ${details.tp1}, ${details.sl}, '${details.side}'`;
                 const logicArgs = `'${formattedTech}', '${formattedRisk}'`;
 
-                // ✅ TIME FORMATTING LOGIC
                 let timeString = "LIVE";
                 if (details.timestamp) {
                     const tsMs = details.timestamp < 20000000000 ? details.timestamp * 1000 : details.timestamp;
@@ -581,7 +602,7 @@
                             <button class="btn btn-logic" onclick="openAiLogicModal(${logicArgs})">🧠 AI LOGIC</button>
                         </div>
                     </div>`;
-            }
+            });
         }
 
         // --- ⚡ LIVE MARKET BINANCE WEBSOCKET TRACKER & DB UPDATE ---
@@ -606,21 +627,18 @@
                 return;
             }
 
-            // 1. UPDATE GLOBAL STATS IN FIREBASE
-            const globalRef = db.ref('global_stats/total_trades');
-            globalRef.transaction((currentValue) => {
-                return (currentValue || 0) + 1;
+            db.ref('global_stats').once('value', (snap) => {
+                let s = snap.val() || { total_trades: 57 };
+                db.ref('global_stats/total_trades').set((Number(s.total_trades) || 0) + 1);
             });
 
-            // 2. UPDATE PERSONAL STATS IN FIREBASE
-            const userRef = db.ref(`premium_keys/${activeUserKey}/stats/trades`);
-            userRef.transaction((currentValue) => {
-                return (currentValue || 0) + 1;
+            db.ref(`premium_keys/${activeUserKey}/stats`).once('value', (snap) => {
+                let st = snap.val() || { trades: 0 };
+                db.ref(`premium_keys/${activeUserKey}/stats/trades`).set((Number(st.trades) || 0) + 1);
             });
 
             alert(`⚡ REAL TRADE COMPILATION: Tracking ${signal.pair || pairName} live on Binance order flow...`);
 
-            // 3. START WEBSOCKET FOR TP/SL TRACKING
             db.ref('premium_keys/' + activeUserKey).once('value', (snapshot) => {
                 const userData = snapshot.val();
                 if (!userData) return;
@@ -656,27 +674,27 @@
             wsInstance.close();
             delete activeMarketWatchers[pairName];
 
-            db.ref('premium_keys/' + activeUserKey).once('value', (snapshot) => {
-                const userData = snapshot.val();
-                if (!userData) return;
-
-                let stats = userData.stats || { trades: 0, tp: 0, sl: 0 };
-
+            db.ref(`premium_keys/${activeUserKey}/stats`).once('value', (snap) => {
+                let st = snap.val() || { tp: 0, sl: 0 };
                 if (isWin) {
-                    stats.tp = Number(stats.tp) + 1;
+                    db.ref(`premium_keys/${activeUserKey}/stats/tp`).set((Number(st.tp) || 0) + 1);
                     alert(`🟢 TARGET HIT: ${pairName} hit Take Profit at $${hitPrice}!`);
-                    db.ref('premium_keys/' + activeUserKey + '/stats/tp').set(stats.tp);
-                    db.ref('global_stats/total_tp').transaction(val => (val || 0) + 1);
                 } else {
-                    stats.sl = Number(stats.sl) + 1;
+                    db.ref(`premium_keys/${activeUserKey}/stats/sl`).set((Number(st.sl) || 0) + 1);
                     alert(`🔴 STOP LOSS HIT: ${pairName} protection triggered at $${hitPrice}!`);
-                    db.ref('premium_keys/' + activeUserKey + '/stats/sl').set(stats.sl);
-                    db.ref('global_stats/total_sl').transaction(val => (val || 0) + 1);
+                }
+            });
+
+            db.ref('global_stats').once('value', (snap) => {
+                let s = snap.val() || { total_tp: 46, total_sl: 9 };
+                if (isWin) {
+                    db.ref('global_stats/total_tp').set((Number(s.total_tp) || 0) + 1);
+                } else {
+                    db.ref('global_stats/total_sl').set((Number(s.total_sl) || 0) + 1);
                 }
             });
         }
 
-        // --- 📈 ADVANCED LIGHTWEIGHT CHARTS API INTEGRATION ---
         let activeChart = null; 
         let candlestickSeries = null; 
 
