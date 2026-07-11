@@ -119,15 +119,14 @@
         .left-col { display: flex; flex-direction: column; gap: 25px; }
         
         #network-container { 
-            width: 100%; height: 350px; 
+            width: 100%; height: 420px; 
             border-radius: 20px; 
             position: relative; overflow: hidden; 
-            background: radial-gradient(circle at center, rgba(255,0,127,0.08) 0%, transparent 70%);
-            display: flex; align-items: center; justify-content: center; flex-direction: column;
+            background: #090206;
             border: 1px solid var(--card-border);
             box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
         }
-        #scanner-status { font-family: 'Rajdhani', monospace; font-size: 18px; color: var(--primary); font-weight: bold; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255,0,127,0.6); }
+        #scanner-status { font-family: 'Rajdhani', monospace; font-size: 15px; color: var(--primary); font-weight: bold; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255,0,127,0.6); padding: 10px 15px; background: rgba(0,0,0,0.8); width: 100%; box-sizing: border-box; position: absolute; top: 0; z-index: 10; border-bottom: 1px solid var(--card-border); }
 
         .ask-ai-panel {
             padding: 25px;
@@ -201,6 +200,38 @@
         .ai-feedback { font-family: monospace; font-size: 13px; color: var(--primary); background: rgba(255,0,127,0.08); padding: 12px; border-radius: 8px; margin-top: 10px; border-left: 2px solid var(--primary);}
         
         .account-box-container .input-group input[type="text"], .account-box-container .input-group input[type="password"] { background: rgba(0,0,0,0.5); margin-bottom: 15px; width: 100%; box-sizing: border-box; padding: 15px; border-radius: 12px; border: 1px solid var(--card-border); color: var(--primary); font-size: 16px;}
+        
+        /* NEW: Custom UI Notification Toast Container */
+        #ui-notification-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            width: 90%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .ui-toast {
+            background: rgba(15, 2, 10, 0.9);
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.4);
+            padding: 16px 20px;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(10px);
+            animation: slideDown 0.3s ease forwards;
+        }
+        .ui-toast.success { border-color: var(--long); box-shadow: 0 0 20px rgba(0, 255, 170, 0.3); }
+        .ui-toast.info { border-color: var(--accent); box-shadow: 0 0 20px rgba(0, 240, 255, 0.3); }
+        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -209,6 +240,8 @@
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
+
+    <div id="ui-notification-container"></div>
 
     <div id="login-screen">
         <div class="glass-panel auth-box">
@@ -274,9 +307,12 @@
 
         <div class="dashboard-layout">
             <div class="left-col">
-                <div class="glass-panel" style="padding: 15px;">
+                <div class="glass-panel" style="padding: 0px; overflow: hidden; position: relative;">
+                    <div id="scanner-status">🟢 SYSTEM READY & MONITORING...</div>
                     <div id="network-container">
-                        <div id="scanner-status">🟢 SYSTEM READY & MONITORING...</div>
+                        <div class="tradingview-widget-container" style="height:100%; width:100%;">
+                            <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_chart&symbol=BINANCE:BTCUSDT.P&interval=15&hidesidetoolbar=1&symboledit=0&saveimage=1&toolbarbg=090206&studies=%5B%5D&theme=dark&style=1&timezone=Exchange&studies_overrides=%7B%7D&overrides=%7B%22mainSeriesProperties.candleStyle.upColor%22%3A%22%2300f0ff%22%2C%22mainSeriesProperties.candleStyle.downColor%22%3A%22%23ff007f%22%2C%22mainSeriesProperties.candleStyle.drawWick%22%3Atrue%2C%22mainSeriesProperties.candleStyle.drawBorder%22%3Afalse%2C%22mainSeriesProperties.candleStyle.wickUpColor%22%3A%22%2300f0ff%22%2C%22mainSeriesProperties.candleStyle.wickDownColor%22%3A%22%23ff007f%22%2C%22paneProperties.background%22%3A%22%23090206%22%2C%22paneProperties.vertGridProperties.color%22%3A%22rgba(255%2C255%2C255%2C0.03)%22%2C%22paneProperties.horzGridProperties.color%22%3A%22rgba(255%2C255%2C255%2C0.03)%22%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=en" style="width: 100%; height: 100%; border: none; margin-top: 38px;"></iframe>
+                        </div>
                     </div>
                 </div>
 
@@ -393,6 +429,25 @@
         let currentSignalData = null;
         let activeUserKey = null;
 
+        // NEW: Custom UI Notification Toast Trigger
+        function showUiNotification(message, type = "info") {
+            const container = document.getElementById('ui-notification-container');
+            const toast = document.createElement('div');
+            toast.className = `ui-toast ${type}`;
+            
+            let icon = '<i class="fas fa-info-circle" style="color:var(--accent)"></i>';
+            if(type === "success") icon = '<i class="fas fa-check-circle" style="color:var(--long)"></i>';
+            if(type === "error") icon = '<i class="fas fa-exclamation-triangle" style="color:var(--short)"></i>';
+
+            toast.innerHTML = `${icon} <span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = "slideDown 0.3s ease reverse forwards";
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
         function verifyFirebaseKey() {
             const inputKey = document.getElementById('access-key').value.trim();
             if(!inputKey) return;
@@ -401,6 +456,7 @@
                 activeUserKey = "pehelitha";
                 document.getElementById('login-screen').style.display = 'none';
                 showDashboard({ expire_date: "LIFETIME" }, true, "P");
+                showUiNotification("Matrix Initialized. Welcome Admin.", "success");
                 return;
             }
 
@@ -414,11 +470,13 @@
                         const displayName = userData.nickname || inputKey;
                         const initial = displayName.charAt(0).toUpperCase();
                         showDashboard(userData, false, initial, displayName);
+                        showUiNotification(`Access Granted. Welcome back, ${displayName}!`, "success");
                     } else {
                         document.getElementById('setup-screen').style.display = 'flex';
                     }
                 } else {
                     document.getElementById('error-msg').style.display = 'block';
+                    showUiNotification("Access Denied: Invalid Key Pattern Detected", "error");
                 }
             });
         }
@@ -448,7 +506,7 @@
                 binance_api: apiKey,
                 binance_secret: apiSecret,
                 setup_completed: true,
-                vip_auto_trade: false // Default off initially
+                vip_auto_trade: false
             }).then(() => {
                 document.getElementById('setup-screen').style.display = 'none';
                 db.ref('premium_keys/' + activeUserKey).once('value', (snap) => {
@@ -456,9 +514,10 @@
                     const displayName = userData.nickname || activeUserKey;
                     const initial = displayName.charAt(0).toUpperCase();
                     showDashboard(userData, false, initial, displayName);
+                    showUiNotification("Secure Encryption Bridge Established!", "success");
                 });
             }).catch((err) => {
-                alert("Error: " + err.message);
+                showUiNotification("Setup Sync Error: " + err.message, "error");
                 btn.innerText = "SECURE & FINISH SETUP";
                 btn.disabled = false;
             });
@@ -483,7 +542,7 @@
 
         function openAccountSettings() {
             if(activeUserKey === 'pehelitha') {
-                alert("Admin account settings cannot be modified here.");
+                showUiNotification("Admin node profiles cannot be modified standard UI.", "info");
                 return;
             }
             document.getElementById('account-modal').style.display = 'flex';
@@ -519,7 +578,7 @@
                 binance_secret: apiSecret,
                 vip_auto_trade: vipAuto
             }).then(() => {
-                alert("Settings Updated Successfully!");
+                showUiNotification("Cloud Account Settings Updated Successfully!", "success");
                 closeAccountSettings();
                 btn.innerText = "UPDATE SETTINGS";
                 btn.disabled = false;
@@ -529,7 +588,7 @@
                 document.getElementById('user-initial').innerText = displayName.charAt(0).toUpperCase();
 
             }).catch((err) => {
-                alert("Error updating settings: " + err.message);
+                showUiNotification("Cloud Sync Interrupted: " + err.message, "error");
                 btn.innerText = "UPDATE SETTINGS";
                 btn.disabled = false;
             });
@@ -614,6 +673,7 @@
                     btn.innerHTML = `SCAN NEW SIGNALS`; 
                     btn.disabled = false;
                     statusDiv.innerHTML = `🟢 MULTI-TIMEFRAME ANALYSIS ACTIVE`;
+                    showUiNotification("Deep Space Engine Scan Complete. Top Market Inflows Mapped.", "info");
                 }, 1000);
             });
         }
@@ -664,26 +724,26 @@
 
         let activeMarketWatchers = {};
 
-        // UPDATED: Now sends actual execution request to Python Backend!
         function takeTrade(coinKey) {
             if (!activeUserKey || !currentSignalData[coinKey]) return;
             if (activeUserKey === "pehelitha") {
-                alert("Admin preview active. Real trades disabled for Admin.");
+                showUiNotification("Simulation Node Active: Real Orders Locked for Admin Core.", "info");
                 return;
             }
 
             const signal = currentSignalData[coinKey];
             const pairName = (signal.pair || coinKey).replace('/', ''); 
             
-            if (activeMarketWatchers[pairName]) { alert(`Already tracking ${pairName}`); return; }
+            if (activeMarketWatchers[pairName]) { 
+                showUiNotification(`Core Protocol Error: Already tracking active execution loop for ${pairName}`, "error"); 
+                return; 
+            }
 
-            // Update stats locally
             db.ref(`premium_keys/${activeUserKey}/stats`).once('value', (snap) => {
                 let st = snap.val() || { trades: 0 };
                 db.ref(`premium_keys/${activeUserKey}/stats/trades`).set((Number(st.trades) || 0) + 1);
             });
 
-            // SEND TRADE REQUEST TO PYTHON BACKEND
             db.ref('trade_requests').push({
                 user_key: activeUserKey,
                 coin: pairName,
@@ -693,9 +753,9 @@
                 type: 'MANUAL_CLICK'
             });
 
-            alert(`🚀 Execution Request Sent! Python Engine is placing ${pairName} trade on Binance.`);
+            // REPLACED: Browser alert with inline custom neon UI notification
+            showUiNotification(`🚀 Execution Request Sent! Python Engine is placing ${pairName} trade on Binance.`, "success");
 
-            // Local tracking just for UI Alerts (Hit TP/SL messages)
             const ws = new WebSocket(`wss://fstream.binance.com/ws/${pairName.toLowerCase()}@ticker`);
             activeMarketWatchers[pairName] = ws;
 
@@ -717,10 +777,10 @@
                 let st = snap.val() || { tp: 0, sl: 0 };
                 if (isWin) {
                     db.ref(`premium_keys/${activeUserKey}/stats/tp`).set((Number(st.tp) || 0) + 1);
-                    alert(`🟢 PROFIT SECURED: ${pairName} hit TP at $${hitPrice}!`);
+                    showUiNotification(`🟢 PROFIT SECURED: ${pairName} hit Target Profit at $${hitPrice}!`, "success");
                 } else {
                     db.ref(`premium_keys/${activeUserKey}/stats/sl`).set((Number(st.sl) || 0) + 1);
-                    alert(`🔴 RISK MANAGED: ${pairName} hit SL at $${hitPrice}!`);
+                    showUiNotification(`🔴 RISK MANAGED: ${pairName} hit Stop Loss at $${hitPrice}!`, "error");
                 }
             });
         }
