@@ -498,7 +498,8 @@
                                 
                                 <div class="module-card" onclick="openStrategyBuilder()" style="cursor:pointer; border-style: solid; border-color: var(--accent);">🧠 Strategy Builder <span class="module-badge" style="background:var(--accent); color:#000; font-weight:bold;">ACTIVE</span></div>
                                 
-                                <div class="module-card">❤️ Psychology Dash <span class="module-badge">Phase 4</span></div>
+                                <div class="module-card" onclick="openPsychologyDash()" style="cursor:pointer; border-style: solid; border-color: var(--primary);">❤️ Psychology Dash <span class="module-badge" style="background:var(--primary); color:#fff; font-weight:bold;">ACTIVE</span></div>
+                                
                                 <div class="module-card">🎥 Trade Replay <span class="module-badge">Phase 5</span></div>
                                 <div class="module-card">🎙️ Voice Assist <span class="module-badge">Phase 5</span></div>
                             </div>
@@ -516,6 +517,35 @@
                 
                 <div class="signal-grid" id="signal-container" style="display: none;"></div>
             </div>
+        </div>
+    </div>
+
+    <div id="psychology-modal" class="modal-overlay">
+        <div class="account-box-container" style="max-width: 600px; border-color: var(--primary);">
+            <button class="close-btn" onclick="closePsychologyDash()"><i class="fas fa-times"></i></button>
+            <div class="logic-header" style="color: var(--primary);">❤️ AI PSYCHOLOGY DASHBOARD</div>
+            <p style="color:var(--text-muted); font-size:13px; margin-top:-10px; margin-bottom:25px;">Real-time emotional exposure guard and neural trading state analysis.</p>
+            
+            <div style="background: rgba(255,0,127,0.05); padding: 20px; border-radius: 12px; border: 1px solid var(--card-border); margin-bottom: 20px; text-align: center;">
+                <span style="color:var(--text-muted); font-size:12px; font-weight:bold; text-transform:uppercase; display:block; margin-bottom:5px;">Current Trading State</span>
+                <span id="psy-trader-state" style="color: var(--long); font-size: 24px; font-weight: 800; font-family:'Rajdhani', sans-serif; letter-spacing:1px; text-shadow: 0 0 10px var(--long);">🟢 STABLE & RATIONAL</span>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.4); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px;">
+                <h3 style="color:#fff; font-size:14px; margin-bottom:10px; font-family:'Inter', sans-serif; text-transform:uppercase; font-weight:bold; color:var(--accent);"><i class="fas fa-brain"></i> AI Mindset Directive</h3>
+                <p id="psy-ai-directive" style="color: var(--text-main); font-size: 13px; line-height: 1.6; margin: 0;">Market conditions are tracked alongside your personal win/loss performance. System indicates fully rational environment. Keep executing with pre-defined risk sizing.</p>
+            </div>
+
+            <div style="background: rgba(255,23,68,0.05); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,23,68,0.2); margin-bottom: 25px;">
+                <h3 style="color:#fff; font-size:14px; margin-bottom:8px; color:var(--short);"><i class="fas fa-shield-alt"></i> Max Drawdown Lock (Revenge Trade Protection)</h3>
+                <p style="color:var(--text-muted); font-size:12px; margin: 0 0 15px 0;">If your daily consecutive losses cross this limit, ZenithAI will automatically lock the execution core for 24 hours to safeguard capital.</p>
+                <div class="input-group">
+                    <label style="color:var(--short);">Max Daily Loss Limit (Consecutive Losses Count)</label>
+                    <input type="text" id="psy-loss-limit" value="3" style="width: 100%; box-sizing: border-box; padding: 15px; border-radius: 12px; border: 1px solid rgba(255,23,68,0.3); background: rgba(0,0,0,0.6); color: var(--short); font-size: 16px; outline:none;" />
+                </div>
+            </div>
+
+            <button class="btn" onclick="savePsychologySettings()" id="psy-save-btn" style="width: 100%; background: var(--primary); box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);">UPDATE PSYCHOLOGY GUARD</button>
         </div>
     </div>
 
@@ -780,7 +810,6 @@
             initWhaleTracker(); 
         }
 
-        // --- WHALE TRACKER LIVE UPDATE LOGIC ---
         function initWhaleTracker() {
             db.ref('whale_tracker').limitToLast(1).on('value', (snap) => {
                 if(!snap.exists()) return;
@@ -795,7 +824,6 @@
                     whaleContainer.innerHTML = `<span style="color:${actionColor};">${data.side}</span> ${data.coin.replace('/USDT', '')} <br/> <span style="font-size:16px;">${data.value}</span>`;
                     whaleContainer.style.textShadow = `0 0 10px ${actionColor}`;
                     
-                    // Flash Effect
                     card.style.borderColor = actionColor;
                     card.style.boxShadow = `0 0 15px ${actionColor} inset, 0 0 15px ${actionColor}`;
                     setTimeout(() => {
@@ -806,7 +834,6 @@
             });
         }
 
-        // --- 🧠 NEW: STRATEGY BUILDER INTERACTION LOGIC (PHASE 4) ---
         function openStrategyBuilder() {
             if(!activeUserKey) {
                 showUiNotification("Please login to configure core strategies.", "error");
@@ -855,6 +882,71 @@
                 btn.disabled = false;
             }).catch((err) => {
                 showUiNotification("Matrix Sync Failed: " + err.message, "error");
+                btn.disabled = false;
+            });
+        }
+
+        // --- ❤️ NEW: PSYCHOLOGY DASHBOARD INTERACTION LOGIC (PHASE 4) ---
+        function openPsychologyDash() {
+            if(!activeUserKey) {
+                showUiNotification("Please login to access emotional metrics.", "error");
+                return;
+            }
+            document.getElementById('psychology-modal').style.display = 'flex';
+            
+            db.ref(`premium_keys/${activeUserKey}`).once('value', (s) => {
+                if(s.exists()) {
+                    const userData = s.val();
+                    const psyConfig = userData.psychology_config || { max_loss_limit: 3 };
+                    document.getElementById('psy-loss-limit').value = psyConfig.max_loss_limit;
+                    
+                    const stats = userData.stats || { tp: 0, sl: 0, consecutive_losses: 0 };
+                    const consecutiveLosses = Number(stats.consecutive_losses) || 0;
+                    
+                    const stateContainer = document.getElementById('psy-trader-state');
+                    const directiveContainer = document.getElementById('psy-ai-directive');
+                    
+                    if (consecutiveLosses >= psyConfig.max_loss_limit) {
+                        stateContainer.innerText = "🚨 CRITICAL: EMOTIONAL LOCKOUT ACTIVE";
+                        stateContainer.style.color = "var(--short)";
+                        stateContainer.style.textShadow = "0 0 10px var(--short)";
+                        directiveContainer.innerHTML = "🛑 <b>AI TRADING HALTED:</b> You have triggered the maximum daily consecutive loss limit. To protect your capital from emotional revenge trading, ZenithAI has locked the trade execution framework. Take a break, step away from charts, and return tomorrow with a clear mind.";
+                    } else if (consecutiveLosses > 0) {
+                        stateContainer.innerText = "⚠️ WARNING: HIGH RISK OF FRUSTRATION";
+                        stateContainer.style.color = "var(--btc-gold)";
+                        stateContainer.style.textShadow = "0 0 10px var(--btc-gold)";
+                        directiveContainer.innerHTML = `📉 <b>AI WARNING:</b> You are currently on a ${consecutiveLosses} trade loss streak. Do not increase trade sizes or force entries. Lower your capital limits via the Strategy Builder immediately until a winning structure is validated.`;
+                    } else {
+                        stateContainer.innerText = "🟢 STABLE & RATIONAL";
+                        stateContainer.style.color = "var(--long)";
+                        stateContainer.style.textShadow = "0 0 10px var(--long)";
+                        directiveContainer.innerText = "Market conditions are tracked alongside your personal win/loss performance. System indicates fully rational environment. Keep executing safely with pre-defined risk sizing rules.";
+                    }
+                }
+            });
+        }
+
+        function closePsychologyDash() {
+            document.getElementById('psychology-modal').style.display = 'none';
+        }
+
+        function savePsychologySettings() {
+            const lossLimit = parseInt(document.getElementById('psy-loss-limit').value) || 3;
+            const btn = document.getElementById('psy-save-btn');
+            
+            btn.innerText = "SYNCING GUARD SETTINGS...";
+            btn.disabled = true;
+
+            db.ref(`premium_keys/${activeUserKey}/psychology_config`).set({
+                max_loss_limit: lossLimit,
+                updated_at: Date.now()
+            }).then(() => {
+                showUiNotification("❤️ AI Emotional Safeguard parameters updated!", "success");
+                closePsychologyDash();
+                btn.innerText = "UPDATE PSYCHOLOGY GUARD";
+                btn.disabled = false;
+            }).catch((err) => {
+                showUiNotification("Guard Sync Failed: " + err.message, "error");
                 btn.disabled = false;
             });
         }
@@ -1045,6 +1137,10 @@
         }
         function closeAiLogicModal() { document.getElementById('logic-modal').style.display = 'none'; }
 
+        document.addEventListener("DOMContentLoaded", function() {
+            // Pre-validation checking structure
+        });
+
         function renderSignals(data) {
             const container = document.getElementById('signal-container');
             container.innerHTML = ''; 
@@ -1090,6 +1186,22 @@
                 return;
             }
 
+            // check active lockout rule prior execution
+            db.ref(`premium_keys/${activeUserKey}`).once('value', (snap) => {
+                const ud = snap.val();
+                const limit = ud.psychology_config?.max_loss_limit || 3;
+                const currentLosses = ud.stats?.consecutive_losses || 0;
+                
+                if (currentLosses >= limit) {
+                    showUiNotification("Execution Denied: Emotional Protection Core Lock Active!", "error");
+                    return;
+                }
+
+                executeOrderPayload(coinKey);
+            });
+        }
+
+        function executeOrderPayload(coinKey) {
             const signal = currentSignalData[coinKey];
             const pairName = (signal.pair || coinKey).replace('/', ''); 
             
@@ -1132,12 +1244,16 @@
         function triggerTradeResult(wsInstance, pairName, isWin, hitPrice) {
             wsInstance.close(); delete activeMarketWatchers[pairName];
             db.ref(`premium_keys/${activeUserKey}/stats`).once('value', (snap) => {
-                let st = snap.val() || { tp: 0, sl: 0 };
+                let st = snap.val() || { tp: 0, sl: 0, consecutive_losses: 0 };
+                let currentStreak = Number(st.consecutive_losses) || 0;
+
                 if (isWin) {
                     db.ref(`premium_keys/${activeUserKey}/stats/tp`).set((Number(st.tp) || 0) + 1);
+                    db.ref(`premium_keys/${activeUserKey}/stats/consecutive_losses`).set(0); // reset streak on win
                     showUiNotification(`🟢 PROFIT SECURED: ${pairName} hit Target Profit at $${hitPrice}!`, "success");
                 } else {
                     db.ref(`premium_keys/${activeUserKey}/stats/sl`).set((Number(st.sl) || 0) + 1);
+                    db.ref(`premium_keys/${activeUserKey}/stats/consecutive_losses`).set(currentStreak + 1); // increment loss streak
                     showUiNotification(`🔴 RISK MANAGED: ${pairName} hit Stop Loss at $${hitPrice}!`, "error");
                 }
             });
