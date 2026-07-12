@@ -61,15 +61,20 @@
             box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
         }
         .btn:hover { box-shadow: 0 0 25px rgba(255, 0, 127, 0.6); transform: translateY(-2px); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 
         #login-screen, #setup-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90vh; }
         .auth-box { width: 100%; max-width: 400px; padding: 40px; text-align: center; }
+        .auth-box h2 { color: #fff; margin-bottom: 5px; font-size: 32px; text-shadow: 0 0 15px rgba(255, 0, 127, 0.5); }
+        .auth-box p { color: var(--text-muted); font-size: 14px; margin-bottom: 30px; }
         .auth-box input[type="text"], .auth-box input[type="password"] { 
             width: 100%; box-sizing: border-box; padding: 15px; border-radius: 12px; 
             border: 1px solid var(--card-border); background: rgba(0,0,0,0.6); 
             color: var(--primary); font-size: 16px; text-align: center; margin-bottom: 20px; 
             outline: none; transition: 0.3s;
         }
+        .auth-box input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(255, 0, 127, 0.25); }
+        .input-group label { display: block; color: var(--text-muted); font-size: 12px; font-weight: bold; margin-bottom: 8px; text-align: left; text-transform: uppercase; }
 
         #dashboard { display: none; max-width: 1600px; margin: 0 auto; padding-top: 10px; }
         
@@ -89,166 +94,488 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 25px;
+            padding: 0 10px;
         }
-        .top-nav h1 { font-size: 32px; background: -webkit-linear-gradient(0deg, var(--primary), var(--violet-glow)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .top-nav h1 { font-size: 32px; margin: 0; background: -webkit-linear-gradient(0deg, var(--primary), var(--violet-glow)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .top-nav p { margin: 0; font-size: 12px; color: var(--text-muted); font-weight: bold; letter-spacing: 2px; }
         
         .nav-actions { display: flex; align-items: center; gap: 20px; }
-        .user-profile { display: flex; align-items: center; gap: 15px; cursor: pointer; }
+        
+        .user-profile { display: flex; align-items: center; gap: 15px; cursor: pointer; transition: 0.3s; padding: 5px 10px; border-radius: 30px; }
+        .user-profile:hover { background: rgba(255,0,127,0.1); }
         .profile-circle {
             width: 50px; height: 50px; border-radius: 50%;
-            background: rgba(255, 0, 127, 0.15); border: 2px solid var(--primary);
+            background: rgba(255, 0, 127, 0.15);
+            border: 2px solid var(--primary);
             display: flex; align-items: center; justify-content: center;
             font-size: 20px; font-weight: bold; color: var(--primary);
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
+            transition: 0.3s;
         }
+        .user-profile:hover .profile-circle { box-shadow: 0 0 25px rgba(255, 0, 127, 0.8); }
+        .profile-info { text-align: right; }
+        .profile-name { font-weight: 800; font-size: 14px; color: #fff; text-transform: uppercase; }
+        .profile-exp { font-size: 11px; color: var(--text-muted); font-weight: bold; }
 
         .left-col { display: flex; flex-direction: column; gap: 20px; height: 100%; justify-content: space-between; }
         
         #network-container { 
             width: 100%; height: 430px; 
-            border-radius: 20px; position: relative; overflow: hidden; 
-            background: #090206; border: 1px solid var(--card-border);
+            border-radius: 20px; 
+            position: relative; overflow: hidden; 
+            background: #090206;
+            border: 1px solid var(--card-border);
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
         }
-        #scanner-status { font-family: 'Rajdhani', monospace; font-size: 15px; color: var(--primary); font-weight: bold; padding: 12px 15px; background: rgba(0,0,0,0.8); position: absolute; top: 0; z-index: 10; width: 100%; box-sizing: border-box; border-bottom: 1px solid var(--card-border); }
+        #scanner-status { font-family: 'Rajdhani', monospace; font-size: 15px; color: var(--primary); font-weight: bold; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255,0,127,0.6); padding: 12px 15px; background: rgba(0,0,0,0.8); width: 100%; box-sizing: border-box; position: absolute; top: 0; z-index: 10; border-bottom: 1px solid var(--card-border); }
 
         .ask-ai-panel {
             padding: 25px;
             background: linear-gradient(145deg, rgba(255,0,127,0.03), rgba(21,5,20,0.95));
             border-left: 4px solid var(--violet-glow);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 15px; 
+            margin-bottom: 20px; 
+        }
         .stat-item { 
-            background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(221, 0, 255, 0.2);
-            border-radius: 14px; padding: 12px; text-align: center; 
-            display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-            min-height: 105px; box-sizing: border-box;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(221, 0, 255, 0.2);
+            border-radius: 14px;
+            padding: 12px;
+            text-align: center; 
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 105px;
+            box-sizing: border-box;
         }
-        .stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: bold; }
-        .stat-val { font-size: 20px; font-weight: 800; font-family: 'Rajdhani', sans-serif; color: #fff; }
+        .stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .stat-val { font-size: 20px; font-weight: 800; font-family: 'Rajdhani', sans-serif; line-height: 1; margin-bottom: 6px; }
         
-        .mini-trendline { width: 100%; height: 20px; display: flex; align-items: flex-end; gap: 3px; }
-        .trend-bar { flex-grow: 1; background: var(--violet-glow); opacity: 0.7; height: 40%; }
+        .mini-trendline { width: 100%; height: 20px; display: flex; align-items: flex-end; gap: 3px; margin-top: auto; padding: 0 5px; box-sizing: border-box; }
+        .trend-bar { flex-grow: 1; background: var(--violet-glow); opacity: 0.7; border-radius: 2px; height: 30%; animation: pulseHeight 2s infinite ease-in-out; }
+        .trend-bar:nth-child(2) { height: 60%; animation-delay: 0.3s; }
+        .trend-bar:nth-child(3) { height: 45%; animation-delay: 0.6s; }
+        .trend-bar:nth-child(4) { height: 80%; animation-delay: 0.1s; }
+        .trend-bar:nth-child(5) { height: 55%; animation-delay: 0.4s; }
         
-        .matrix-sub-layout { display: grid; grid-template-columns: 180px 1fr; gap: 20px; }
+        .trend-bar.long-color { background: var(--long); }
+        
+        .circle-chart-box { position: relative; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }
+        .circle-svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+        .circle-bg { fill: none; stroke: rgba(221, 0, 255, 0.1); stroke-width: 4; }
+        .circle-glow-line { fill: none; stroke: var(--violet-glow); stroke-width: 4; stroke-dasharray: 100; stroke-dashoffset: 100; stroke-linecap: round; transition: stroke-dashoffset 1s ease-in-out; filter: drop-shadow(0 0 4px var(--violet-glow)); }
+        .circle-text { position: absolute; font-size: 11px; font-weight: 800; font-family: 'Rajdhani', sans-serif; color: #fff; }
+
+        .pnl-perf-bars { display: flex; gap: 4px; width: 100%; height: 24px; align-items: flex-end; justify-content: center; margin-top: auto; }
+        .pnl-bar { width: 6px; height: 100%; background: rgba(255,255,255,0.05); border-radius: 1px; transform-origin: bottom; }
+        .pnl-bar.fill-tp { background: var(--long); filter: drop-shadow(0 0 2px var(--long)); }
+        .pnl-bar.fill-sl { background: var(--short); filter: drop-shadow(0 0 2px var(--short)); }
+
+        .matrix-sub-layout {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 20px;
+            align-items: start;
+        }
         
         #radar-section {
-            display: flex; flex-direction: column; align-items: center;
-            background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(221, 0, 255, 0.2);
-            border-radius: 16px; padding: 15px 10px; text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(221, 0, 255, 0.2);
+            border-radius: 16px;
+            padding: 15px 10px;
+            box-sizing: border-box;
+            text-align: center;
         }
+        .radar-title { font-size: 11px; font-weight: bold; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px; }
         .radar-scope {
-            position: relative; width: 100px; height: 100px; border-radius: 50%;
-            border: 2px dashed rgba(221, 0, 255, 0.4); display: flex; align-items: center; justify-content: center; margin-bottom: 12px;
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px dashed rgba(221, 0, 255, 0.4);
+            box-shadow: inset 0 0 20px rgba(221, 0, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+        .radar-scope::before {
+            content: '';
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 1px solid rgba(221, 0, 255, 0.2);
         }
         .radar-sweep {
-            position: absolute; width: 50%; height: 50%; background: linear-gradient(45deg, rgba(221, 0, 255, 0.4) 0%, transparent 70%);
-            transform-origin: bottom right; top: 0; left: 0; border-radius: 100% 0 0 0;
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            background: linear-gradient(45deg, rgba(221, 0, 255, 0.4) 0%, transparent 70%);
+            transform-origin: bottom right;
+            top: 0; left: 0;
+            border-radius: 100% 0 0 0;
             animation: radarRotate 2s linear infinite;
         }
         @keyframes radarRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        #heartbeat-canvas { width: 140px; height: 35px; background: rgba(10, 2, 8, 0.6); margin-bottom: 15px; border-radius: 6px; }
-
-        .adv-modules-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         
-        /* WHALE TRACKER DYNAMIC CARD STYLING */
-        .module-card { 
-            background: rgba(0,0,0,0.4); border: 1px dashed rgba(221, 0, 255, 0.2); 
-            padding: 10px; border-radius: 12px; font-size: 11px; text-align: center; 
-            transition: all 0.3s ease; display: flex; flex-direction: column; justify-content: center;
+        #heartbeat-canvas {
+            width: 140px;
+            height: 35px;
+            border-radius: 6px;
+            background: rgba(10, 2, 8, 0.6);
+            border: 1px solid rgba(221, 0, 255, 0.1);
+            margin-bottom: 15px;
         }
-        #whale-data { transition: 0.3s ease; }
+
+        .adv-modules-header { font-size: 14px; font-weight: bold; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; }
+        .adv-modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+        .module-card {
+            background: rgba(0,0,0,0.4); border: 1px dashed rgba(221, 0, 255, 0.2);
+            padding: 12px; border-radius: 12px; text-align: center;
+            font-size: 11px; font-weight: bold; color: var(--text-muted);
+            transition: 0.3s; position: relative; overflow: hidden;
+        }
+        .module-card:hover { border-color: var(--primary); color: var(--primary); }
+        .module-badge { display: block; font-size: 9px; background: rgba(255,0,127,0.1); color: var(--primary); padding: 2px 5px; border-radius: 4px; margin-top: 5px; width: max-content; margin-inline: auto; }
 
         .right-col { display: flex; flex-direction: column; height: 100%; justify-content: flex-start; }
-        .signal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%; }
-        
-        .signal-card { 
-            background: var(--card-bg); border-radius: 16px; padding: 20px; 
-            border: 1px solid rgba(221, 0, 255, 0.25); display: flex; flex-direction: column; 
-            justify-content: space-between; min-height: 290px; box-sizing: border-box;
-            transition: 0.3s ease;
+
+        .signal-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 20px; 
+            width: 100%; 
         }
-        .signal-card:hover { border-color: var(--primary); box-shadow: 0 8px 25px rgba(255, 0, 127, 0.25); }
+        @media (max-width: 768px) { .signal-grid { grid-template-columns: 1fr; } }
+
+        .signal-card { 
+            background: var(--card-bg); 
+            border-radius: 16px; 
+            padding: 20px; 
+            border: 1px solid rgba(221, 0, 255, 0.25); 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+            transition: all 0.3s ease;
+            min-height: 290px;
+            box-sizing: border-box;
+        }
+        .signal-card:hover { 
+            border-color: var(--primary); 
+            transform: translateY(-2px); 
+            box-shadow: 0 8px 25px rgba(255, 0, 127, 0.25);
+        }
         
-        .coin-title { font-size: 22px; font-weight: 800; display: flex; justify-content: space-between; color: #fff; margin-bottom: 15px; }
-        .side-long { color: #000; background: var(--long); padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: bold;}
-        .side-short { color: #000; background: var(--short); padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: bold;}
+        .placeholder-matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 100%;
+        }
+        .placeholder-box {
+            border: 1px dashed rgba(221, 0, 255, 0.2);
+            background: rgba(15, 3, 12, 0.2);
+            border-radius: 16px;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: rgba(221, 0, 255, 0.4);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .placeholder-box i { font-size: 24px; margin-bottom: 8px; opacity: 0.4; }
+
+        .coin-title { font-size: 22px; font-weight: 800; display: flex; justify-content: space-between; color: #fff; align-items: center; margin-bottom: 15px;}
+        .side-long { color: var(--bg-dark); background: var(--long); padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 800;} 
+        .side-short { color: var(--bg-dark); background: var(--short); padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 800;}
         
-        .data-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; }
+        .data-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; font-weight: 600;}
         .data-label { color: var(--text-muted); }
-        .data-value { color: #fff; font-weight: bold; }
+        .data-value { color: #fff; }
 
+        /* FIXED: Re-enabled grid structure with all restored action triggers */
         .card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
-        .btn-trade { grid-column: span 2; background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; text-transform: uppercase; font-size: 12px; }
+        .btn-trade { grid-column: span 2; background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; font-family: 'Inter', sans-serif;}
         .btn-trade:hover { background: var(--primary); color: #fff; box-shadow: 0 0 15px var(--primary); }
-        .btn-mini { background: rgba(255,255,255,0.04); border: 1px solid rgba(221, 0, 255, 0.2); color: #fff; padding: 8px; border-radius: 8px; font-size: 11px; cursor: pointer; font-weight: 600; text-align: center; }
-        .btn-mini:hover { border-color: var(--primary); background: rgba(255,0,127,0.1); }
+        .btn-mini { background: rgba(255,255,255,0.05); border: 1px solid rgba(221, 0, 255, 0.2); color: #fff; padding: 8px; border-radius: 8px; font-size: 11px; cursor: pointer; font-weight: bold;}
+        .btn-mini:hover { background: rgba(255,255,255,0.15); border-color: var(--primary); }
 
-        #ui-notification-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-        .ui-toast { background: rgba(15, 2, 10, 0.95); border: 1px solid var(--primary); padding: 12px 20px; border-radius: 12px; color: #fff; font-size: 14px; display: flex; align-items: center; gap: 10px; box-shadow: 0 0 15px rgba(255,0,127,0.4); }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5,2,4,0.95); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(12px); overflow-y: auto; }
+        .chart-container { width: 95%; max-width: 1200px; height: 80vh; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; padding: 25px; position: relative; display: flex; flex-direction: column; }
+        .close-btn { position: absolute; top: 20px; right: 25px; color: var(--text-muted); font-size: 28px; cursor: pointer; background: none; border: none; transition: 0.2s;}
+        .close-btn:hover { color: var(--primary); transform: scale(1.1);}
+        #tv-chart { flex-grow: 1; width: 100%; margin-top: 15px; position: relative; min-height: 400px; border-radius: 12px; overflow: hidden; border: 1px solid var(--card-border);} 
+        
+        .logic-box-container, .admin-panel-container, .account-box-container { max-width: 700px; width: 90%; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; padding: 35px; position: relative; max-height: 85vh; overflow-y: auto; }
+        .logic-header { font-size: 24px; font-weight: 800; color: #fff; border-bottom: 1px solid var(--card-border); padding-bottom: 15px; margin-bottom: 25px; font-family: 'Rajdhani', sans-serif;}
+        .logic-content-block { background: rgba(0,0,0,0.6); border: 1px solid var(--card-border); padding: 18px; border-radius: 12px; font-family: monospace; font-size: 14px; color: var(--accent); margin-bottom: 20px; white-space: pre-wrap; }
+        
+        .admin-trade-row { background: rgba(0,0,0,0.5); border: 1px solid var(--card-border); padding: 18px; border-radius: 12px; margin-bottom: 15px; border-left: 4px solid var(--accent);}
+        .ai-feedback { font-family: monospace; font-size: 13px; color: var(--primary); background: rgba(255,0,127,0.08); padding: 12px; border-radius: 8px; margin-top: 10px; border-left: 2px solid var(--primary);}
+        
+        .account-box-container .input-group input[type="text"], .account-box-container .input-group input[type="password"] { background: rgba(0,0,0,0.5); margin-bottom: 15px; width: 100%; box-sizing: border-box; padding: 15px; border-radius: 12px; border: 1px solid var(--card-border); color: var(--primary); font-size: 16px;}
+        
+        #ui-notification-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            width: 90%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .ui-toast {
+            background: rgba(15, 2, 10, 0.95);
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.5);
+            padding: 16px 20px;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(10px);
+            animation: slideDown 0.3s ease forwards;
+        }
+        .ui-toast.success { border-color: var(--long); box-shadow: 0 0 20px rgba(0, 255, 170, 0.3); }
+        .ui-toast.error { border-color: var(--short); box-shadow: 0 0 20px rgba(255, 23, 68, 0.3); }
+        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
+    
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
+
     <div id="ui-notification-container"></div>
 
     <div id="login-screen">
         <div class="glass-panel auth-box">
-            <h2>ZENITHAI TERMINAL</h2>
+            <h2 style="background: -webkit-linear-gradient(0deg, var(--primary), var(--violet-glow)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">ZENITHAI V35</h2>
+            <p>Institutional Command Center</p>
             <input type="password" id="access-key" placeholder="Enter License Key" />
             <button class="btn" onclick="verifyFirebaseKey()">INITIALIZE MATRIX</button>
+            <p id="error-msg" style="color: var(--short); display: none; margin-top: 15px; font-weight:bold;">⚠️ Access Denied</p>
+        </div>
+    </div>
+
+    <div id="setup-screen" style="display: none;">
+        <div class="glass-panel auth-box" style="max-width: 500px;">
+            <div style="margin-bottom: 25px;">
+                <h2 style="color: var(--primary);">SYSTEM INITIALIZATION</h2>
+                <p>Configure your API settings for the Auto-Execution Module.</p>
+            </div>
+            
+            <div style="background: rgba(0,255,170,0.15); color: var(--long); padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; margin-bottom: 25px; border: 1px solid var(--long);">
+                <i class="fas fa-shield-alt"></i> END-TO-END ENCRYPTED
+            </div>
+
+            <div class="input-group">
+                <label>Nickname (User Profile Name)</label>
+                <input type="text" id="setup-nickname" placeholder="Enter a Nickname" />
+            </div>
+            <div class="input-group">
+                <label>WhatsApp Number (VIP Alerts)</label>
+                <input type="text" id="setup-wa" placeholder="whatsapp:+947XXXXXXXX" />
+            </div>
+            <div class="input-group">
+                <label>Binance API Key (Trading Only)</label>
+                <input type="password" id="setup-api-key" placeholder="Enter API Key" />
+            </div>
+            <div class="input-group">
+                <label>Binance API Secret</label>
+                <input type="password" id="setup-api-secret" placeholder="Enter API Secret" />
+            </div>
+
+            <p id="setup-error-msg" style="color: var(--short); display: none; margin-bottom: 15px; font-weight:bold; font-size: 13px; text-align: left;"><i class="fas fa-exclamation-triangle"></i> ⚠️ Please fill all required fields.</p>
+
+            <button class="btn" onclick="saveUserSetup()" id="setup-btn" style="background: var(--primary); color:#fff; width: 100%;">SECURE & FINISH SETUP</button>
         </div>
     </div>
 
     <div id="dashboard">
         <div class="top-nav">
-            <div>
-                <h1>ZenithAI Matrix</h1>
+            <div class="nav-logo">
+                <h1>ZenithAI</h1>
+                <p>ULTIMATE TERMINAL</p>
             </div>
             <div class="nav-actions">
-                <div class="user-profile">
-                    <div class="profile-circle">U</div>
+                <button id="admin-btn" class="btn" style="display: none; background: var(--primary); color: #fff; padding: 10px 20px; font-size: 13px; border: 1px solid rgba(255,255,255,0.2);" onclick="openAdminPanel()">👑 AI LOGS</button>
+                <div class="user-profile" id="user-badge" style="display:none;" onclick="openAccountSettings()">
+                    <div class="profile-info">
+                        <div class="profile-name" id="user-welcome-text">USER</div>
+                        <div class="profile-exp" id="user-expiry-text">EXP: N/A</div>
+                    </div>
+                    <div class="profile-circle" id="user-initial">U</div>
                 </div>
             </div>
         </div>
 
         <div class="dashboard-layout">
             <div class="left-col">
-                <div class="glass-panel" style="overflow: hidden; position: relative; height: 430px;">
-                    <div id="scanner-status">🟢 RADAR ACTIVE & STREAMING LIVE MARKET DATA</div>
-                    <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:BTCUSDT.P&interval=15&theme=dark" style="width: 100%; height: 100%; border: none; margin-top: 38px;"></iframe>
+                <div class="glass-panel" style="padding: 0px; overflow: hidden; position: relative;">
+                    <div id="scanner-status">🟢 SYSTEM READY & MONITORING...</div>
+                    <div id="network-container">
+                        <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_chart&symbol=BINANCE:BTCUSDT.P&interval=15&hidesidetoolbar=1&symboledit=0&saveimage=1&toolbarbg=090206&studies=%5B%5D&theme=dark&style=1&timezone=Exchange&studies_overrides=%7B%7D&overrides=%7B%22mainSeriesProperties.candleStyle.upColor%22%3A%22%2300f0ff%22%2C%22mainSeriesProperties.candleStyle.downColor%22%3A%22%23ff007f%22%2C%22mainSeriesProperties.candleStyle.drawWick%22%3Atrue%2C%22mainSeriesProperties.candleStyle.drawBorder%22%3Afalse%2C%22mainSeriesProperties.candleStyle.wickUpColor%22%3A%22%2300f0ff%22%2C%22mainSeriesProperties.candleStyle.wickDownColor%22%3A%22%23ff007f%22%2C%22paneProperties.background%22%3A%22%23090206%22%2C%22paneProperties.vertGridProperties.color%22%3A%22rgba(255%2C255%2C255%2C0.03)%22%2C%22paneProperties.horzGridProperties.color%22%3A%22rgba(255%2C255%2C255%2C0.03)%22%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=en" style="width: 100%; height: 100%; border: none; margin-top: 38px;"></iframe>
+                    </div>
                 </div>
 
                 <div class="glass-panel ask-ai-panel">
                     <div class="stats-grid">
-                        <div class="stat-item"><div class="stat-label">Global Trades</div><div class="stat-val" id="global-trades">0</div></div>
-                        <div class="stat-item"><div class="stat-label">Win Rate</div><div class="stat-val" id="global-win">0%</div></div>
-                        <div class="stat-item"><div class="stat-label">My Trades</div><div class="stat-val">0</div></div>
-                        <div class="stat-item"><div class="stat-label">P&L Status</div><div class="stat-val" style="color:var(--long);">Stable</div></div>
+                        <div class="stat-item">
+                            <div class="stat-label">Global Trades</div>
+                            <div class="stat-val" id="global-total-trades" style="color:#fff;">0</div>
+                            <div class="mini-trendline"><div class="trend-bar"></div><div class="trend-bar"></div><div class="trend-bar"></div><div class="trend-bar"></div><div class="trend-bar"></div></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Global Win %</div>
+                            <div class="circle-chart-box">
+                                <svg class="circle-svg" viewBox="0 0 36 34">
+                                    <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    <path class="circle-glow-line" id="win-rate-arc" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                </svg>
+                                <div class="circle-text" id="global-win-rate">0%</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">My Trades</div>
+                            <div class="stat-val" id="user-trades" style="color:#fff;">0</div>
+                            <div class="mini-trendline"><div class="trend-bar long-color"></div><div class="trend-bar long-color"></div><div class="trend-bar long-color"></div><div class="trend-bar long-color"></div><div class="trend-bar long-color"></div></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">P&L Ratio</div>
+                            <div class="stat-val" id="user-pnl-ratio" style="color:var(--long);">0/0</div>
+                            <div class="pnl-perf-bars" id="pnl-visual-bars">
+                                <div class="pnl-bar"></div><div class="pnl-bar"></div><div class="pnl-bar"></div><div class="pnl-bar"></div><div class="pnl-bar"></div>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="matrix-sub-layout">
                         <div id="radar-section">
-                            <div class="radar-scope"><div class="radar-sweep"></div></div>
-                            <canvas id="heartbeat-canvas"></canvas>
-                            <button class="btn" style="font-size:11px; padding:8px;" onclick="revealSignals()">Scan Matrix</button>
-                        </div>
-                        <div class="adv-modules-grid">
-                            <div class="module-card active-phase" id="mod-whale">
-                                <span style="font-weight: bold; color: #fff;">🐋 Whale Inflows</span>
-                                <span id="whale-data" style="color:var(--primary); font-size: 14px; font-weight: 800; font-family:'Rajdhani', sans-serif; margin-top:5px; text-shadow: 0 0 10px rgba(255,0,127,0.5);">AWAITING DATA...</span>
+                            <div class="radar-title">Market Inflows</div>
+                            <div class="radar-scope">
+                                <div class="radar-sweep"></div>
                             </div>
-                            
-                            <div class="module-card">🔥 Liquidity Maps <span style="color:var(--text-muted); display:block; margin-top:5px;">Standby</span></div>
+                            <canvas id="heartbeat-canvas"></canvas>
+                            <button class="btn" id="scan-btn" onclick="revealSignals()" style="font-size: 11px; padding: 10px 15px; width: 100%; box-shadow: 0 0 10px rgba(255, 0, 127, 0.2);">Scan Signals</button>
+                        </div>
+                        
+                        <div>
+                            <div class="adv-modules-header">Pro Analysis Modules (Coming Soon)</div>
+                            <div class="adv-modules-grid">
+                                <div class="module-card">🐋 Whale Tracker <span class="module-badge">Phase 3</span></div>
+                                <div class="module-card">🔥 Liquidity Map <span class="module-badge">Phase 3</span></div>
+                                <div class="module-card">🧠 Strategy Builder <span class="module-badge">Phase 4</span></div>
+                                <div class="module-card">❤️ Psychology Dash <span class="module-badge">Phase 4</span></div>
+                                <div class="module-card">🎥 Trade Replay <span class="module-badge">Phase 5</span></div>
+                                <div class="module-card">🎙️ Voice Assist <span class="module-badge">Phase 5</span></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="right-col">
-                <div class="signal-grid" id="signal-container"></div>
+                <div class="placeholder-matrix-grid" id="matrix-placeholder">
+                    <div class="placeholder-box"><i class="fas fa-terminal"></i>Matrix Core Standby</div>
+                    <div class="placeholder-box"><i class="fas fa-search-dollar"></i>Liquidity Map Idle</div>
+                    <div class="placeholder-box"><i class="fas fa-server"></i>Neural Nodes Ready</div>
+                </div>
+                
+                <div class="signal-grid" id="signal-container" style="display: none;"></div>
             </div>
+        </div>
+    </div>
+
+    <div id="chart-modal" class="modal-overlay">
+        <div class="chart-container glass-panel">
+            <button class="close-btn" onclick="closeLiveChart()"><i class="fas fa-times"></i></button>
+            <div style="border-bottom: 1px solid var(--card-border); padding-bottom: 15px; display:flex; align-items:center; gap:15px;">
+                <span id="chart-coin-name" style="color: #fff; font-size: 24px; font-weight: 800; font-family:'Rajdhani', sans-serif;">BTC/USDT</span>
+                <span id="chart-side" style="background: rgba(255,0,127,0.1); color: var(--primary); padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight:bold; border: 1px solid var(--card-border);">LIVE CHART</span>
+            </div>
+            <div id="tv-chart"></div>
+        </div>
+    </div>
+
+    <div id="logic-modal" class="modal-overlay">
+        <div class="logic-box-container">
+            <button class="close-btn" onclick="closeAiLogicModal()"><i class="fas fa-times"></i></button>
+            <div class="logic-header">🧠 AI MATRIX LOGIC</div>
+            <div style="color: var(--text-muted); font-size: 12px; margin-bottom: 8px; text-transform:uppercase; font-weight:bold;">Technical Indicators:</div>
+            <div id="tech-logic-field" class="logic-content-block"></div>
+            <div style="color: var(--text-muted); font-size: 12px; margin-bottom: 8px; text-transform:uppercase; font-weight:bold;">Risk Protocol:</div>
+            <div id="risk-logic-field" class="logic-content-block" style="color:var(--primary); border-color: var(--card-border);"></div>
+        </div>
+    </div>
+
+    <div id="account-modal" class="modal-overlay">
+        <div class="account-box-container">
+            <button class="close-btn" onclick="closeAccountSettings()"><i class="fas fa-times"></i></button>
+            <div class="logic-header" style="color: var(--primary);">⚙️ ACCOUNT SETTINGS</div>
+            <p style="color:var(--text-muted); font-size:13px; margin-top:-10px; margin-bottom:25px;">Update your Nickname, WhatsApp, and Binance API credentials.</p>
+            
+            <div class="input-group">
+                <label>Nickname</label>
+                <input type="text" id="edit-nickname" />
+            </div>
+            <div class="input-group">
+                <label>WhatsApp Number</label>
+                <input type="text" id="edit-wa" />
+            </div>
+            <div class="input-group">
+                <label>Binance API Key</label>
+                <input type="password" id="edit-api-key" />
+            </div>
+            <div class="input-group">
+                <label>Binance API Secret</label>
+                <input type="password" id="edit-api-secret" />
+            </div>
+
+            <div class="input-group" style="display: flex; align-items: center; gap: 10px; margin-bottom: 25px; background: rgba(255,0,127,0.05); padding: 15px; border-radius: 12px; border: 1px solid var(--card-border);">
+                <input type="checkbox" id="edit-vip-auto" style="width: 24px; height: 24px; margin: 0; cursor: pointer; accent-color: var(--primary);">
+                <label style="margin: 0; color: #fff; font-size: 14px; text-transform: none;">Enable Auto-Trade for <b>VIP Signals (85%+)</b></label>
+            </div>
+
+            <button class="btn" onclick="saveAccountSettings()" id="edit-save-btn" style="width: 100%;">UPDATE SETTINGS</button>
+        </div>
+    </div>
+
+    <div id="admin-modal" class="modal-overlay">
+        <div class="admin-panel-container">
+            <button class="close-btn" onclick="closeAdminPanel()"><i class="fas fa-times"></i></button>
+            <div class="logic-header" style="color: var(--primary);">👑 ADMIN: AI AUTO-TRACKING LOGS</div>
+            <p style="color:var(--text-muted); font-size:13px; margin-top:-10px; margin-bottom:25px;">24/7 background execution analysis and AI self-reflection records.</p>
+            <div id="admin-logs-content">Loading Data...</div>
         </div>
     </div>
 
@@ -256,90 +583,442 @@
         const firebaseConfig = { databaseURL: "https://alphasigna-live-d644a-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
+        
+        let currentSignalData = null;
+        let activeUserKey = null;
 
-        function verifyFirebaseKey() {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            initLiveTracker();
-            initHeartbeatPulse();
-            initWhaleTracker(); // Initialize Whale Data Stream
+        function showUiNotification(message, type = "info") {
+            const container = document.getElementById('ui-notification-container');
+            const toast = document.createElement('div');
+            toast.className = `ui-toast ${type}`;
+            
+            let icon = '<i class="fas fa-info-circle" style="color:var(--primary)"></i>';
+            if(type === "success") icon = '<i class="fas fa-check-circle" style="color:var(--long)"></i>';
+            if(type === "error") icon = '<i class="fas fa-exclamation-triangle" style="color:var(--short)"></i>';
+
+            toast.innerHTML = `${icon} <span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = "slideDown 0.3s ease reverse forwards";
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
         }
 
         function initHeartbeatPulse() {
             const canvas = document.getElementById('heartbeat-canvas');
-            if(!canvas) return;
+            if (!canvas) return;
             const ctx = canvas.getContext('2d');
             let x = 0;
-            ctx.strokeStyle = '#ff007f'; ctx.lineWidth = 2;
+            
+            ctx.strokeStyle = '#ff007f';
+            ctx.lineWidth = 2;
+            ctx.shadowBlur = 6;
+            ctx.shadowColor = '#ff007f';
+
             function draw() {
-                if(x > canvas.width){ x=0; ctx.clearRect(0,0,canvas.width,canvas.height); }
-                ctx.beginPath(); ctx.moveTo(x, canvas.height/2);
-                x+=2; let y = canvas.height/2;
-                if(x%40===0) y-=12; else if(x%40===4) y+=12;
-                ctx.lineTo(x,y); ctx.stroke();
+                if (x > canvas.width) {
+                    x = 0;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+                
+                ctx.beginPath();
+                ctx.moveTo(x, canvas.height / 2);
+                
+                x += 2;
+                let y = canvas.height / 2;
+                if (x % 40 === 0) {
+                    y -= 15; 
+                } else if (x % 40 === 4) {
+                    y += 15; 
+                } else if (x % 40 === 8) {
+                    y = canvas.height / 2; 
+                }
+                
+                ctx.lineTo(x, y);
+                ctx.stroke();
                 requestAnimationFrame(draw);
             }
             draw();
         }
 
-        // ==========================================
-        // NEW: Live Whale Tracker Dynamic UI Hook
-        // ==========================================
-        function initWhaleTracker() {
-            // Listen to the last added whale trade from Firebase
-            db.ref('whale_tracker').limitToLast(1).on('child_added', (snap) => {
+        function verifyFirebaseKey() {
+            const inputKey = document.getElementById('access-key').value.trim();
+            if(!inputKey) return;
+            
+            if(inputKey.toLowerCase() === "pehelitha") {
+                activeUserKey = "pehelitha";
+                document.getElementById('login-screen').style.display = 'none';
+                showDashboard({ expire_date: "LIFETIME" }, true, "P");
+                showUiNotification("ZenithAI Matrix Initialized. Welcome Admin.", "success");
+                return;
+            }
+
+            db.ref('premium_keys/' + inputKey).once('value', (s) => {
+                const userData = s.val();
+                if (userData && userData.status === "active") {
+                    activeUserKey = inputKey;
+                    document.getElementById('login-screen').style.display = 'none';
+                    
+                    if (userData.setup_completed) {
+                        const displayName = userData.nickname || inputKey;
+                        const initial = displayName.charAt(0).toUpperCase();
+                        showDashboard(userData, false, initial, displayName);
+                        showUiNotification(`Access Granted. Welcome to ZenithAI, ${displayName}!`, "success");
+                    } else {
+                        document.getElementById('setup-screen').style.display = 'flex';
+                    }
+                } else {
+                    document.getElementById('error-msg').style.display = 'block';
+                    showUiNotification("Access Denied: Invalid Key Pattern Detected", "error");
+                }
+            });
+        }
+
+        function saveUserSetup() {
+            const nickname = document.getElementById('setup-nickname').value.trim();
+            const waNumber = document.getElementById('setup-wa').value.trim();
+            const apiKey = document.getElementById('setup-api-key').value.trim();
+            const apiSecret = document.getElementById('setup-api-secret').value.trim();
+            
+            const errorMsg = document.getElementById('setup-error-msg');
+
+            if(!waNumber || !apiKey || !apiSecret) {
+                errorMsg.style.display = "block";
+                return;
+            } else {
+                errorMsg.style.display = "none";
+            }
+
+            const btn = document.getElementById('setup-btn');
+            btn.innerText = "SAVING...";
+            btn.disabled = true;
+
+            db.ref('premium_keys/' + activeUserKey).update({
+                nickname: nickname,
+                whatsapp_number: waNumber,
+                binance_api: apiKey,
+                binance_secret: apiSecret,
+                setup_completed: true,
+                vip_auto_trade: false
+            }).then(() => {
+                document.getElementById('setup-screen').style.display = 'none';
+                db.ref('premium_keys/' + activeUserKey).once('value', (snap) => {
+                    const userData = snap.val();
+                    const displayName = userData.nickname || activeUserKey;
+                    const initial = displayName.charAt(0).toUpperCase();
+                    showDashboard(userData, false, initial, displayName);
+                    showUiNotification("Secure Encryption Bridge Established!", "success");
+                });
+            }).catch((err) => {
+                showUiNotification("Setup Sync Error: " + err.message, "error");
+                btn.innerText = "SECURE & FINISH SETUP";
+                btn.disabled = false;
+            });
+        }
+
+        function showDashboard(userData, isAdmin, initial, displayName = "") {
+            document.getElementById('dashboard').style.display = 'block';
+            document.getElementById('user-badge').style.display = 'flex';
+            document.getElementById('user-initial').innerText = initial;
+            
+            if (isAdmin) {
+                document.getElementById('user-welcome-text').innerText = `ADMIN`;
+                document.getElementById('user-expiry-text').innerText = `LIFETIME ACCESS`;
+                document.getElementById('admin-btn').style.display = 'block';
+            } else {
+                document.getElementById('user-welcome-text').innerText = displayName.toUpperCase();
+                document.getElementById('user-expiry-text').innerText = `EXP: ${userData.expire_date || 'N/A'}`;
+            }
+            
+            initCoreListeners();
+            initHeartbeatPulse(); 
+        }
+
+        function openAccountSettings() {
+            if(activeUserKey === 'pehelitha') {
+                showUiNotification("Admin node profiles cannot be modified standard UI.", "info");
+                return;
+            }
+            document.getElementById('account-modal').style.display = 'flex';
+            db.ref('premium_keys/' + activeUserKey).once('value', (s) => {
+                const data = s.val();
+                document.getElementById('edit-nickname').value = data.nickname || '';
+                document.getElementById('edit-wa').value = data.whatsapp_number || '';
+                document.getElementById('edit-api-key').value = data.binance_api || '';
+                document.getElementById('edit-api-secret').value = data.binance_secret || '';
+                document.getElementById('edit-vip-auto').checked = data.vip_auto_trade === true;
+            });
+        }
+
+        function closeAccountSettings() {
+            document.getElementById('account-modal').style.display = 'none';
+        }
+
+        function saveAccountSettings() {
+            const nickname = document.getElementById('edit-nickname').value.trim();
+            const waNumber = document.getElementById('edit-wa').value.trim();
+            const apiKey = document.getElementById('edit-api-key').value.trim();
+            const apiSecret = document.getElementById('edit-api-secret').value.trim();
+            const vipAuto = document.getElementById('edit-vip-auto').checked;
+            
+            const btn = document.getElementById('edit-save-btn');
+            btn.innerText = "UPDATING...";
+            btn.disabled = true;
+
+            db.ref('premium_keys/' + activeUserKey).update({
+                nickname: nickname,
+                whatsapp_number: waNumber,
+                binance_api: apiKey,
+                binance_secret: apiSecret,
+                vip_auto_trade: vipAuto
+            }).then(() => {
+                showUiNotification("Cloud Account Settings Updated Successfully!", "success");
+                closeAccountSettings();
+                btn.innerText = "UPDATE SETTINGS";
+                btn.disabled = false;
+                
+                const displayName = nickname || activeUserKey;
+                document.getElementById('user-welcome-text').innerText = displayName.toUpperCase();
+                document.getElementById('user-initial').innerText = displayName.charAt(0).toUpperCase();
+
+            }).catch((err) => {
+                showUiNotification("Cloud Sync Interrupted: " + err.message, "error");
+                btn.innerText = "UPDATE SETTINGS";
+                btn.disabled = false;
+            });
+        }
+
+        function initCoreListeners() {
+            db.ref('global_stats').on('value', (snap) => {
+                const s = snap.val() || { total_trades: 0, total_tp: 0, total_sl: 0 };
+                let total = Number(s.total_trades) || 0;
+                let tp = Number(s.total_tp) || 0;
+                let calcWinRate = total > 0 ? ((tp / total) * 100).toFixed(1) : 0;
+                
+                document.getElementById('global-total-trades').innerText = total;
+                document.getElementById('global-win-rate').innerText = calcWinRate + "%";
+                
+                const arc = document.getElementById('win-rate-arc');
+                if(arc) {
+                    let offset = 100 - parseFloat(calcWinRate);
+                    arc.style.strokeDashoffset = offset;
+                }
+            });
+
+            if (activeUserKey !== "pehelitha") {
+                db.ref('premium_keys/' + activeUserKey).on('value', (snapshot) => {
+                    const userData = snapshot.val();
+                    if (!snapshot.exists()) return;
+                    const myStats = userData.stats || { trades: 0, tp: 0, sl: 0 };
+                    
+                    let tpCount = Number(myStats.tp) || 0;
+                    let slCount = Number(myStats.sl) || 0;
+
+                    document.getElementById('user-trades').innerText = myStats.trades || 0;
+                    document.getElementById('user-pnl-ratio').innerText = `${tpCount}/${slCount}`;
+                    
+                    const pnlBarsContainer = document.getElementById('pnl-visual-bars');
+                    if(pnlBarsContainer) {
+                        pnlBarsContainer.innerHTML = '';
+                        for(let i=0; i<tpCount && i<5; i++) { pnlBarsContainer.innerHTML += '<div class="pnl-bar fill-tp" style="height:80%"></div>'; }
+                        for(let i=0; i<slCount && i<5; i++) { pnlBarsContainer.innerHTML += '<div class="pnl-bar fill-sl" style="height:50%"></div>'; }
+                        if(tpCount === 0 && slCount === 0) {
+                            pnlBarsContainer.innerHTML = '<div class="pnl-bar"></div><div class="pnl-bar"></div><div class="pnl-bar"></div><div class="pnl-bar"></div><div class="pnl-bar"></div>';
+                        }
+                    }
+                });
+            } else {
+                document.getElementById('user-trades').innerText = "-";
+                document.getElementById('user-pnl-ratio').innerText = "-";
+            }
+        }
+
+        function openAdminPanel() {
+            document.getElementById('admin-modal').style.display = 'flex';
+            db.ref('trade_history').limitToLast(30).on('value', (snap) => {
+                const logsContainer = document.getElementById('admin-logs-content');
+                logsContainer.innerHTML = '';
                 const data = snap.val();
-                if(!data) return;
                 
-                const whaleContainer = document.getElementById('whale-data');
-                const card = document.getElementById('mod-whale');
+                if(!data) {
+                    logsContainer.innerHTML = '<p style="color:#8b949e;">No trades logged yet.</p>';
+                    return;
+                }
+
+                const trades = Object.values(data).reverse();
                 
-                // Determine color based on BUY or SELL
-                const actionColor = data.side === "BUY" ? "var(--long)" : "var(--short)";
+                trades.forEach(trade => {
+                    const isWin = trade.result === "WIN";
+                    const resultColor = isWin ? "var(--long)" : "var(--short)";
+                    
+                    logsContainer.innerHTML += `
+                        <div class="admin-trade-row">
+                            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 16px; border-bottom: 1px solid var(--card-border); padding-bottom: 8px; margin-bottom: 8px;">
+                                <span style="color:#fff;">${trade.coin} <span style="color:var(--text-muted); font-size:12px; margin-left:10px;">${trade.time}</span></span>
+                                <span style="color:${resultColor};">${trade.result}</span>
+                            </div>
+                            <div style="font-size:13px; color:var(--text-main); margin-bottom:10px;">
+                                Direction: <span style="color:#fff; font-weight:bold;">${trade.side}</span> | Entry: ${trade.entry} | Hit Price: ${trade.hit_price}
+                            </div>
+                            <div class="ai-feedback">
+                                <b><i class="fas fa-brain"></i> AI Learning Note:</b><br>${trade.ai_learning}
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+        }
+        function closeAdminPanel() { document.getElementById('admin-modal').style.display = 'none'; }
+
+        function revealSignals() {
+            const btn = document.getElementById('scan-btn');
+            const sigContainer = document.getElementById('signal-container');
+            const placeholderGrid = document.getElementById('matrix-placeholder');
+            const statusDiv = document.getElementById('scanner-status');
+            
+            btn.innerHTML = `SCANNING...`; 
+            btn.disabled = true;
+            statusDiv.innerHTML = `<span style="color:var(--primary);">🔄 SYNCING NEURAL NETWORKS...</span>`;
+            
+            db.ref('live_signals').once('value').then((snap) => {
+                currentSignalData = snap.val();
                 
-                // Update Box Text
-                whaleContainer.innerHTML = `<span style="color:${actionColor};">${data.side}</span> ${data.coin.replace('/USDT', '')} <br/> <span style="font-size:16px;">${data.value}</span>`;
-                whaleContainer.style.textShadow = `0 0 10px ${actionColor}`;
-                
-                // Create a Flash Visual Effect
-                card.style.borderColor = actionColor;
-                card.style.boxShadow = `0 0 15px ${actionColor} inset, 0 0 15px ${actionColor}`;
-                
-                // Reset visual effect after 1 second
                 setTimeout(() => {
-                    card.style.borderColor = "rgba(221, 0, 255, 0.2)";
-                    card.style.boxShadow = "none";
+                    placeholderGrid.style.display = 'none'; 
+                    sigContainer.style.display = 'grid'; 
+                    renderSignals(currentSignalData); 
+                    btn.innerHTML = `Scan Signals`; 
+                    btn.disabled = false;
+                    statusDiv.innerHTML = `🟢 MULTI-TIMEFRAME ANALYSIS ACTIVE`;
+                    showUiNotification("ZenithAI Deep Space Scan Complete. Top Market Inflows Mapped.", "success");
                 }, 1000);
             });
         }
 
-        function initLiveTracker() {
-            db.ref('live_signals').on('value', (snap) => {
-                renderSignals(snap.val());
-            });
+        function openLiveChart(pair, entry, tp, sl, side) {
+            const modal = document.getElementById('chart-modal'); modal.style.display = 'flex';
+            document.getElementById('chart-coin-name').innerText = pair;
+            const chartDiv = document.getElementById('tv-chart'); chartDiv.innerHTML = '';
+            
+            activeChart = LightweightCharts.createChart(chartDiv, { width: chartDiv.clientWidth, height: 400, layout: { background: { type: 'solid', color: '#090206' }, textColor: '#f8fafc' }, grid: { vertLines: { color: 'rgba(255, 255, 255, 0.05)' }, horzLines: { color: 'rgba(255, 255, 255, 0.05)' } }});
+            candlestickSeries = activeChart.addSeries(LightweightCharts.CandlestickSeries, { upColor: '#00f0ff', downColor: '#ff007f', borderVisible: false, wickUpColor: '#00f0ff', wickDownColor: '#ff007f' });
+            
+            fetch(`https://fapi.binance.com/fapi/v1/klines?symbol=${pair.replace('/','')}&interval=15m&limit=150`)
+                .then(res => res.json()).then(data => {
+                    candlestickSeries.setData(data.map(d => ({ time: d[0]/1000, open: parseFloat(d[1]), high: parseFloat(d[2]), low: parseFloat(d[3]), close: parseFloat(d[4]) })));
+                    candlestickSeries.createPriceLine({ price: parseFloat(entry), color: '#f7931a', title: 'ENTRY' });
+                    candlestickSeries.createPriceLine({ price: parseFloat(tp), color: '#00ffaa', title: 'TP' });
+                    candlestickSeries.createPriceLine({ price: parseFloat(sl), color: '#ff1744', title: 'SL' });
+                });
         }
+        function closeLiveChart() { document.getElementById('chart-modal').style.display = 'none'; if(activeChart) activeChart.remove(); }
+
+        function openAiLogicModal(techLogic, riskLogic) {
+            document.getElementById('logic-modal').style.display = 'flex';
+            document.getElementById('tech-logic-field').innerText = techLogic;
+            document.getElementById('risk-logic-field').innerText = riskLogic;
+        }
+        function closeAiLogicModal() { document.getElementById('logic-modal').style.display = 'none'; }
 
         function renderSignals(data) {
             const container = document.getElementById('signal-container');
-            container.innerHTML = '';
-            if(!data) return;
-            for(const [key, val] of Object.entries(data)) {
-                let sideClass = val.side === "LONG" ? "side-long" : "side-short";
+            container.innerHTML = ''; 
+            if (!data) return;
+
+            for (const [coinKey, details] of Object.entries(data)) {
+                let safeSignalType = details.signal_type || "SCALP";
+                let sideClass = details.side === "LONG" ? "side-long" : "side-short";
+                const isPremiumAlert = details.accuracy >= 85;
+                const cardCssClass = isPremiumAlert ? "signal-card neon-gold-card" : "signal-card";
+                
+                const formattedTech = (details.tech_logic || "").replace(/'/g, "\\'");
+                const formattedRisk = (details.risk_logic || "").replace(/'/g, "\\'");
+                const pairName = details.pair || coinKey.replace('USDT', '/USDT');
+                const chartArgs = `'${pairName}', ${details.entry}, ${details.tp1}, ${details.sl}, '${details.side}'`;
+
+                // RESTORED ALL BUTTONS: 'Live Market' and 'Logic' triggers loaded safely inside view matrix
                 container.innerHTML += `
-                    <div class="signal-card">
+                    <div class="${cardCssClass}">
                         <div>
-                            <div class="coin-title"><span>${val.pair || key}</span><span class="${sideClass}">${val.side}</span></div>
-                            <div class="data-row"><span class="data-label">Entry Price</span><span class="data-value">${val.entry}</span></div>
-                            <div class="data-row"><span class="data-label">TP Target</span><span class="data-value" style="color:var(--long)">${val.tp1}</span></div>
-                            <div class="data-row"><span class="data-label">Stop Loss</span><span class="data-value" style="color:var(--short)">${val.sl}</span></div>
+                            <div class="coin-title">
+                                <span>${pairName}</span>
+                                <span class="${sideClass}">${details.side}</span>
+                            </div>
+                            <div class="data-row"><span class="data-label">Type</span><span class="data-value">${safeSignalType}</span></div>
+                            <div class="data-row"><span class="data-label">Entry Price</span><span class="data-value" style="font-weight:bold;">${details.entry}</span></div>
+                            <div class="data-row"><span class="data-label">Take Profit</span><span class="data-value" style="color:var(--long); font-weight:bold;">${details.tp1}</span></div>
+                            <div class="data-row"><span class="data-label">Stop Loss</span><span class="data-value" style="color:var(--short); font-weight:bold;">${details.sl}</span></div>
                         </div>
                         <div class="card-actions">
-                            <button class="btn-trade">AUTO-TRADE API</button>
-                            <button class="btn-mini" onclick="window.open('https://www.binance.com/en/futures/${val.pair || key}', '_blank')"><i class="fas fa-chart-line"></i> Live Market</button>
-                            <button class="btn-mini" onclick="alert('Logic Mode: Institutional Scalp AI Strategy Enabled')"><i class="fas fa-cog"></i> Logic Config</button>
+                            <button class="btn-trade" onclick="takeTrade('${coinKey}')">AUTO-TRADE API</button>
+                            <button class="btn-mini" onclick="window.open('https://www.binance.com/en/futures/${coinKey}', '_blank')"><i class="fas fa-chart-line"></i> Live Market</button>
+                            <button class="btn-mini" onclick="openAiLogicModal('${formattedTech}', '${formattedRisk}')"><i class="fas fa-brain"></i> Logic</button>
                         </div>
                     </div>`;
             }
+        }
+
+        let activeMarketWatchers = {};
+
+        function takeTrade(coinKey) {
+            if (!activeUserKey || !currentSignalData[coinKey]) return;
+            if (activeUserKey === "pehelitha") {
+                showUiNotification("Simulation Node Active: Real Orders Locked for Admin Core.", "info");
+                return;
+            }
+
+            const signal = currentSignalData[coinKey];
+            const pairName = (signal.pair || coinKey).replace('/', ''); 
+            
+            if (activeMarketWatchers[pairName]) { 
+                showUiNotification("Core Protocol Error: Already tracking active execution loop", "error"); 
+                return; 
+            }
+
+            db.ref(`premium_keys/${activeUserKey}/stats`).once('value', (snap) => {
+                let st = snap.val() || { trades: 0 };
+                db.ref(`premium_keys/${activeUserKey}/stats/trades`).set((Number(st.trades) || 0) + 1);
+            });
+
+            db.ref('trade_requests').push({
+                user_key: activeUserKey,
+                coin: pairName,
+                side: signal.side,
+                status: 'pending',
+                timestamp: Date.now(),
+                type: 'MANUAL_CLICK'
+            });
+
+            showUiNotification("🚀 Execution Request Sent! ZenithAI Engine is placing trade on Binance.", "success");
+
+            const ws = new WebSocket(`wss://fstream.binance.com/ws/${pairName.toLowerCase()}@ticker`);
+            activeMarketWatchers[pairName] = ws;
+
+            ws.onmessage = function(event) {
+                const currentPrice = parseFloat(JSON.parse(event.data).c); 
+                if (signal.side === "LONG") {
+                    if (currentPrice >= parseFloat(signal.tp1)) triggerTradeResult(ws, pairName, true, signal.tp1);
+                    else if (currentPrice <= parseFloat(signal.sl)) triggerTradeResult(ws, pairName, false, signal.sl);
+                } else {
+                    if (currentPrice <= parseFloat(signal.tp1)) triggerTradeResult(ws, pairName, true, signal.tp1);
+                    else if (currentPrice >= parseFloat(signal.sl)) triggerTradeResult(ws, pairName, false, signal.sl);
+                }
+            };
+        }
+
+        function triggerTradeResult(wsInstance, pairName, isWin, hitPrice) {
+            wsInstance.close(); delete activeMarketWatchers[pairName];
+            db.ref(`premium_keys/${activeUserKey}/stats`).once('value', (snap) => {
+                let st = snap.val() || { tp: 0, sl: 0 };
+                if (isWin) {
+                    db.ref(`premium_keys/${activeUserKey}/stats/tp`).set((Number(st.tp) || 0) + 1);
+                    showUiNotification(`🟢 PROFIT SECURED: ${pairName} hit Target Profit at $${hitPrice}!`, "success");
+                } else {
+                    db.ref(`premium_keys/${activeUserKey}/stats/sl`).set((Number(st.sl) || 0) + 1);
+                    showUiNotification(`🔴 RISK MANAGED: ${pairName} hit Stop Loss at $${hitPrice}!`, "error");
+                }
+            });
         }
     </script>
 </body>
