@@ -95,8 +95,8 @@
             margin-bottom: 25px;
             padding: 0 10px;
         }
-        .nav-logo h1 { font-size: 32px; margin: 0; background: -webkit-linear-gradient(0deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .nav-logo p { margin: 0; font-size: 12px; color: var(--text-muted); font-weight: bold; letter-spacing: 2px; }
+        .top-nav h1 { font-size: 32px; margin: 0; background: -webkit-linear-gradient(0deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .top-nav p { margin: 0; font-size: 12px; color: var(--text-muted); font-weight: bold; letter-spacing: 2px; }
         
         .nav-actions { display: flex; align-items: center; gap: 20px; }
         
@@ -131,13 +131,76 @@
         .ask-ai-panel {
             padding: 25px;
             background: linear-gradient(145deg, rgba(255,0,127,0.05), rgba(21,5,20,0.9));
-            border-left: 4px solid var(--accent);
+            border-left: 4px solid var(--primary);
         }
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; }
         .stat-item { text-align: center; }
         .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: bold; margin-bottom: 5px; }
         .stat-val { font-size: 22px; font-weight: 800; font-family: 'Rajdhani', sans-serif; }
         
+        /* NEW Matrix Panel Split for Radar Animation Integration */
+        .matrix-sub-layout {
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        /* Continuous Circular Scanner (Image 2 Match) */
+        #radar-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 15px 10px;
+            height: 100%;
+            box-sizing: border-box;
+        }
+        .radar-title { font-size: 10px; font-weight: bold; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.5px; }
+        .radar-scope {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px dashed rgba(255, 0, 127, 0.4);
+            box-shadow: inset 0 0 20px rgba(255, 0, 127, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .radar-scope::before {
+            content: '';
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 0, 127, 0.2);
+        }
+        .radar-sweep {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            background: linear-gradient(45deg, rgba(255, 0, 127, 0.4) 0%, transparent 70%);
+            transform-origin: bottom right;
+            top: 0; left: 0;
+            border-radius: 100% 0 0 0;
+            animation: radarRotate 2s linear infinite;
+        }
+        @keyframes radarRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        
+        /* Heartbeat Signal Canvas Overlay */
+        #heartbeat-canvas {
+            width: 120px;
+            height: 35px;
+            margin-top: 15px;
+            border-radius: 6px;
+            background: rgba(10, 2, 8, 0.6);
+            border: 1px solid rgba(255, 0, 127, 0.1);
+        }
+
         .adv-modules-header { font-size: 14px; font-weight: bold; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; }
         .adv-modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
         .module-card {
@@ -162,6 +225,7 @@
         .signal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         @media (max-width: 768px) { .signal-grid { grid-template-columns: 1fr; } }
 
+        /* Unified Aesthetic: Force Pink Accents on standard elements */
         .signal-card { 
             background: rgba(30, 5, 25, 0.7); 
             border-radius: 16px; padding: 20px; 
@@ -169,7 +233,7 @@
             display: flex; flex-direction: column; justify-content: space-between; 
             transition: 0.3s;
         }
-        .signal-card:hover { border-color: rgba(255,0,127,0.5); transform: translateY(-3px); box-shadow: 0 5px 20px rgba(255,0,127,0.15); }
+        .signal-card:hover { border-color: rgba(255,0,127,0.6); transform: translateY(-3px); box-shadow: 0 5px 20px rgba(255,0,127,0.2); }
         .neon-gold-card { border-top: 3px solid var(--accent); box-shadow: 0 -5px 20px rgba(0,240,255,0.2); }
         
         .coin-title { font-size: 22px; font-weight: 800; display: flex; justify-content: space-between; color: #fff; align-items: center; margin-bottom: 15px;}
@@ -184,7 +248,7 @@
         .btn-trade { grid-column: span 2; background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; font-family: 'Inter', sans-serif;}
         .btn-trade:hover { background: var(--primary); color: #fff; box-shadow: 0 0 15px var(--primary); }
         .btn-mini { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); color: #fff; padding: 8px; border-radius: 8px; font-size: 11px; cursor: pointer; font-weight: bold;}
-        .btn-mini:hover { background: rgba(255,255,255,0.15); }
+        .btn-mini:hover { background: rgba(255,255,255,0.15); border-color: var(--primary); }
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5,2,4,0.95); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(12px); overflow-y: auto; }
         .chart-container { width: 95%; max-width: 1200px; height: 80vh; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; padding: 25px; position: relative; display: flex; flex-direction: column; }
@@ -201,7 +265,6 @@
         
         .account-box-container .input-group input[type="text"], .account-box-container .input-group input[type="password"] { background: rgba(0,0,0,0.5); margin-bottom: 15px; width: 100%; box-sizing: border-box; padding: 15px; border-radius: 12px; border: 1px solid var(--card-border); color: var(--primary); font-size: 16px;}
         
-        /* NEW: Custom UI Notification Toast Container */
         #ui-notification-container {
             position: fixed;
             top: 20px;
@@ -310,9 +373,7 @@
                 <div class="glass-panel" style="padding: 0px; overflow: hidden; position: relative;">
                     <div id="scanner-status">🟢 SYSTEM READY & MONITORING...</div>
                     <div id="network-container">
-                        <div class="tradingview-widget-container" style="height:100%; width:100%;">
-                            <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_chart&symbol=BINANCE:BTCUSDT.P&interval=15&hidesidetoolbar=1&symboledit=0&saveimage=1&toolbarbg=090206&studies=%5B%5D&theme=dark&style=1&timezone=Exchange&studies_overrides=%7B%7D&overrides=%7B%22mainSeriesProperties.candleStyle.upColor%22%3A%22%2300f0ff%22%2C%22mainSeriesProperties.candleStyle.downColor%22%3A%22%23ff007f%22%2C%22mainSeriesProperties.candleStyle.drawWick%22%3Atrue%2C%22mainSeriesProperties.candleStyle.drawBorder%22%3Afalse%2C%22mainSeriesProperties.candleStyle.wickUpColor%22%3A%22%2300f0ff%22%2C%22mainSeriesProperties.candleStyle.wickDownColor%22%3A%22%23ff007f%22%2C%22paneProperties.background%22%3A%22%23090206%22%2C%22paneProperties.vertGridProperties.color%22%3A%22rgba(255%2C255%2C255%2C0.03)%22%2C%22paneProperties.horzGridProperties.color%22%3A%22rgba(255%2C255%2C255%2C0.03)%22%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=en" style="width: 100%; height: 100%; border: none; margin-top: 38px;"></iframe>
-                        </div>
+                        <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_chart&symbol=BINANCE:BTCUSDT.P&interval=15&hidesidetoolbar=1&symboledit=0&saveimage=1&toolbarbg=090206&studies=%5B%5D&theme=dark&style=1&timezone=Exchange&studies_overrides=%7B%7D&overrides=%7B%22mainSeriesProperties.candleStyle.upColor%22%3A%22%2300f0ff%22%2C%22mainSeriesProperties.candleStyle.downColor%22%3A%22%23ff007f%22%2C%22mainSeriesProperties.candleStyle.drawWick%22%3Atrue%2C%22mainSeriesProperties.candleStyle.drawBorder%22%3Afalse%2C%22mainSeriesProperties.candleStyle.wickUpColor%22%3A%22%2300f0ff%22%2C%22mainSeriesProperties.candleStyle.wickDownColor%22%3A%22%23ff007f%22%2C%22paneProperties.background%22%3A%22%23090206%22%2C%22paneProperties.vertGridProperties.color%22%3A%22rgba(255%2C255%2C255%2C0.03)%22%2C%22paneProperties.horzGridProperties.color%22%3A%22rgba(255%2C255%2C255%2C0.03)%22%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=en" style="width: 100%; height: 100%; border: none; margin-top: 38px;"></iframe>
                     </div>
                 </div>
 
@@ -336,14 +397,26 @@
                         </div>
                     </div>
                     
-                    <div class="adv-modules-header">Pro Analysis Modules (Coming Soon)</div>
-                    <div class="adv-modules-grid">
-                        <div class="module-card">🐋 Whale Tracker <span class="module-badge">Phase 3</span></div>
-                        <div class="module-card">🔥 Liquidity Map <span class="module-badge">Phase 3</span></div>
-                        <div class="module-card">🧠 Strategy Builder <span class="module-badge">Phase 4</span></div>
-                        <div class="module-card">❤️ Psychology Dash <span class="module-badge">Phase 4</span></div>
-                        <div class="module-card">🎥 Trade Replay <span class="module-badge">Phase 5</span></div>
-                        <div class="module-card">🎙️ Voice Assist <span class="module-badge">Phase 5</span></div>
+                    <div class="matrix-sub-layout">
+                        <div id="radar-section">
+                            <div class="radar-title">Market Inflows</div>
+                            <div class="radar-scope">
+                                <div class="radar-sweep"></div>
+                            </div>
+                            <canvas id="heartbeat-canvas"></canvas>
+                        </div>
+                        
+                        <div>
+                            <div class="adv-modules-header">Pro Analysis Modules (Coming Soon)</div>
+                            <div class="adv-modules-grid">
+                                <div class="module-card">🐋 Whale Tracker <span class="module-badge">Phase 3</span></div>
+                                <div class="module-card">🔥 Liquidity Map <span class="module-badge">Phase 3</span></div>
+                                <div class="module-card">🧠 Strategy Builder <span class="module-badge">Phase 4</span></div>
+                                <div class="module-card">❤️ Psychology Dash <span class="module-badge">Phase 4</span></div>
+                                <div class="module-card">🎥 Trade Replay <span class="module-badge">Phase 5</span></div>
+                                <div class="module-card">🎙️ Voice Assist <span class="module-badge">Phase 5</span></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -429,7 +502,6 @@
         let currentSignalData = null;
         let activeUserKey = null;
 
-        // NEW: Custom UI Notification Toast Trigger
         function showUiNotification(message, type = "info") {
             const container = document.getElementById('ui-notification-container');
             const toast = document.createElement('div');
@@ -446,6 +518,45 @@
                 toast.style.animation = "slideDown 0.3s ease reverse forwards";
                 setTimeout(() => toast.remove(), 300);
             }, 4000);
+        }
+
+        // NEW: Automatic HTML5 Canvas Heartbeat Pulse Engine Loop
+        function initHeartbeatPulse() {
+            const canvas = document.getElementById('heartbeat-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let x = 0;
+            
+            ctx.strokeStyle = '#ff007f';
+            ctx.lineWidth = 2;
+            ctx.shadowBlur = 6;
+            ctx.shadowColor = '#ff007f';
+
+            function draw() {
+                if (x > canvas.width) {
+                    x = 0;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+                
+                ctx.beginPath();
+                ctx.moveTo(x, canvas.height / 2);
+                
+                // ECG Pattern calculations
+                x += 2;
+                let y = canvas.height / 2;
+                if (x % 40 === 0) {
+                    y -= 15; // Spike up
+                } else if (x % 40 === 4) {
+                    y += 15; // Drop down
+                } else if (x % 40 === 8) {
+                    y = canvas.height / 2; // Flatline normalize
+                }
+                
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                requestAnimationFrame(draw);
+            }
+            draw();
         }
 
         function verifyFirebaseKey() {
@@ -538,6 +649,7 @@
             }
             
             initCoreListeners();
+            initHeartbeatPulse(); // Initialize moving ECG baseline pulse
         }
 
         function openAccountSettings() {
@@ -753,7 +865,6 @@
                 type: 'MANUAL_CLICK'
             });
 
-            // REPLACED: Browser alert with inline custom neon UI notification
             showUiNotification(`🚀 Execution Request Sent! Python Engine is placing ${pairName} trade on Binance.`, "success");
 
             const ws = new WebSocket(`wss://fstream.binance.com/ws/${pairName.toLowerCase()}@ticker`);
