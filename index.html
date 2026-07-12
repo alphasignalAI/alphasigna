@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZenithAI V35.0 - VIP Alert Matrix</title>
+    <title>ZenithAI V39.0 - VIP Alert Matrix</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Inter:wght@400;600;800&display=swap');
 
@@ -427,6 +427,11 @@
             </div>
             <div class="nav-actions">
                 <button id="admin-btn" class="btn" style="display: none; background: var(--primary); color: #fff; padding: 10px 20px; font-size: 13px; border: 1px solid rgba(255,255,255,0.2);" onclick="openAdminPanel()">👑 AI LOGS</button>
+                
+                <button id="voice-toggle-btn" class="btn" style="background: rgba(0, 240, 255, 0.1); color: var(--accent); border: 1px solid var(--accent); padding: 10px 15px; font-size: 13px;" onclick="toggleVoiceAssist()">
+                    <i class="fas fa-volume-up"></i> VOICE: ON
+                </button>
+
                 <div class="user-profile" id="user-badge" style="display:none;" onclick="openAccountSettings()">
                     <div class="profile-info">
                         <div class="profile-name" id="user-welcome-text">USER</div>
@@ -500,8 +505,9 @@
                                 
                                 <div class="module-card" onclick="openPsychologyDash()" style="cursor:pointer; border-style: solid; border-color: var(--primary);">❤️ Psychology Dash <span class="module-badge" style="background:var(--primary); color:#fff; font-weight:bold;">ACTIVE</span></div>
                                 
-                                <div class="module-card">🎥 Trade Replay <span class="module-badge">Phase 5</span></div>
-                                <div class="module-card">🎙️ Voice Assist <span class="module-badge">Phase 5</span></div>
+                                <div class="module-card" onclick="openTradeReplay()" style="cursor:pointer; border-style: solid; border-color: var(--accent);">🎥 Trade Replay <span class="module-badge" style="background:var(--accent); color:#000; font-weight:bold;">ACTIVE</span></div>
+                                
+                                <div class="module-card" style="opacity: 0.6;">🎙️ Voice Assist <span class="module-badge" style="background:rgba(255,255,255,0.1); color:#fff;">INTEGRATED</span></div>
                             </div>
                         </div>
                     </div>
@@ -516,6 +522,18 @@
                 </div>
                 
                 <div class="signal-grid" id="signal-container" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="replay-modal" class="modal-overlay">
+        <div class="admin-panel-container" style="max-width: 750px;">
+            <button class="close-btn" onclick="closeTradeReplay()"><i class="fas fa-times"></i></button>
+            <div class="logic-header" style="color: var(--accent);">🎥 AI TRADE REPLAY SIMULATOR</div>
+            <p style="color:var(--text-muted); font-size:13px; margin-top:-10px; margin-bottom:20px;">Review past algorithmic executions step-by-step to optimize custom strategy builders.</p>
+            
+            <div id="replay-logs-container" style="max-height: 60vh; overflow-y: auto;">
+                Loading Historical Execution Node Tracks...
             </div>
         </div>
     </div>
@@ -660,6 +678,9 @@
         let currentSignalData = null;
         let activeUserKey = null;
         let activeChart = null;
+        
+        // 🎙️ VOICE ASSIST STATE LAYER
+        let isVoiceAssistEnabled = true;
 
         function showUiNotification(message, type = "info") {
             const container = document.getElementById('ui-notification-container');
@@ -677,6 +698,35 @@
                 toast.style.animation = "slideDown 0.3s ease reverse forwards";
                 setTimeout(() => toast.remove(), 300);
             }, 4000);
+        }
+
+        // 🎙️ NEW: WEB SPEECH API SYNTHESIS ENGINE (VOICE ASSIST)
+        function triggerAIVoiceBroadcast(textMessage) {
+            if (!isVoiceAssistEnabled) return;
+            try {
+                window.speechSynthesis.cancel(); // Cancel any ongoing speech
+                const speech = new SpeechSynthesisUtterance(textMessage);
+                speech.lang = 'en-US';
+                speech.rate = 1.0;
+                speech.pitch = 0.9; // Matrix institutional tone mapping
+                window.speechSynthesis.speak(speech);
+            } catch (e) { console.log("Voice Engine Muted: ", e); }
+        }
+
+        function toggleVoiceAssist() {
+            isVoiceAssistEnabled = !isVoiceAssistEnabled;
+            const btn = document.getElementById('voice-toggle-btn');
+            if (isVoiceAssistEnabled) {
+                btn.innerHTML = `<i class="fas fa-volume-up"></i> VOICE: ON`;
+                btn.style.borderColor = "var(--accent)";
+                btn.style.color = "var(--accent)";
+                showUiNotification("AI Voice Assistant Activated.", "success");
+            } else {
+                btn.innerHTML = `<i class="fas fa-volume-mute"></i> VOICE: OFF`;
+                btn.style.borderColor = "var(--text-muted)";
+                btn.style.color = "var(--text-muted)";
+                showUiNotification("AI Voice Assistant Deactivated.", "info");
+            }
         }
 
         function initHeartbeatPulse() {
@@ -725,6 +775,7 @@
                 document.getElementById('login-screen').style.display = 'none';
                 showDashboard({ expire_date: "LIFETIME" }, true, "P");
                 showUiNotification("ZenithAI Matrix Initialized. Welcome Admin.", "success");
+                triggerAIVoiceBroadcast("Access granted. Welcome to Zenith A I institutional command center pehelitha.");
                 return;
             }
 
@@ -739,12 +790,14 @@
                         const initial = displayName.charAt(0).toUpperCase();
                         showDashboard(userData, false, initial, displayName);
                         showUiNotification(`Access Granted. Welcome to ZenithAI, ${displayName}!`, "success");
+                        triggerAIVoiceBroadcast(`Access granted. Welcome back ${displayName}. Neural matrix is fully operational.`);
                     } else {
                         document.getElementById('setup-screen').style.display = 'flex';
                     }
                 } else {
                     document.getElementById('error-msg').style.display = 'block';
                     showUiNotification("Access Denied: Invalid Key Pattern Detected", "error");
+                    triggerAIVoiceBroadcast("Security alert. License key denied access.");
                 }
             });
         }
@@ -826,6 +879,10 @@
                     
                     card.style.borderColor = actionColor;
                     card.style.boxShadow = `0 0 15px ${actionColor} inset, 0 0 15px ${actionColor}`;
+                    
+                    // 🎙️ Voice Notification Layer for Whale Actions
+                    triggerAIVoiceBroadcast(`Alert. Large whale inflow detected. ${data.side} order placed on ${data.coin.replace('/USDT', '')} asset value ${data.value}`);
+
                     setTimeout(() => {
                         card.style.borderColor = "rgba(221, 0, 255, 0.2)";
                         card.style.boxShadow = "none";
@@ -833,6 +890,60 @@
                 });
             });
         }
+
+        // 🎥 NEW: TRADE REPLAY SIMULATOR TRIGGER CORE (PHASE 5)
+        function openTradeReplay() {
+            document.getElementById('replay-modal').style.display = 'flex';
+            db.ref('trade_history').limitToLast(20).once('value', (snap) => {
+                const container = document.getElementById('replay-logs-container');
+                container.innerHTML = '';
+                const data = snap.val();
+                
+                if (!data) {
+                    container.innerHTML = `<p style="color:var(--text-muted); text-align:center;">No completed trade frames available to replay right now.</p>`;
+                    return;
+                }
+
+                Object.values(data).reverse().forEach((trade, index) => {
+                    const statusColor = trade.result === "WIN" ? "var(--long)" : "var(--short)";
+                    container.innerHTML += `
+                        <div class="admin-trade-row" style="border-left-color: ${statusColor}; margin-bottom:15px; background:rgba(0,0,0,0.4);">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                                <span style="color:#fff; font-weight:bold; font-size:15px;">🎬 REPLAY FRAME #${index+1}: ${trade.coin}</span>
+                                <button class="btn-mini" style="border-color:${statusColor}; color:${statusColor};" onclick="simulateFramePlayback('${trade.coin}', '${trade.side}', '${trade.entry}', '${trade.hit_price}', '${trade.result}')">
+                                    <i class="fas fa-play"></i> Play Replay
+                                </button>
+                            </div>
+                            <div style="font-size:12px; color:var(--text-muted);">
+                                Timestamp: ${trade.time} | Mode: Quantitative Swing Track | Result Outcome: <b style="color:${statusColor}">${trade.result}</b>
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        function simulateFramePlayback(coin, side, entry, hitPrice, result) {
+            closeTradeReplay();
+            showUiNotification(`Initializing frame playback simulator for ${coin}...`, "info");
+            triggerAIVoiceBroadcast(`Simulating algorithmic breakdown for ${coin}. Trade direction was ${side}.`);
+            
+            // Open standard Neon chart window and mock custom lines setup tracking entry parameters
+            setTimeout(() => {
+                openLiveChart(coin.replace('USDT', '/USDT'), entry, side==="LONG"? entry*1.05: entry*0.95, side==="LONG"? entry*0.95: entry*1.05, side);
+                setTimeout(() => {
+                    if(result === "WIN") {
+                        showUiNotification(`🎬 REPLAY TARGET HIT: secured dynamic target zone at $${hitPrice}`, "success");
+                        triggerAIVoiceBroadcast(`Simulation finalized. Position closed successfully at profit target ${hitPrice}.`);
+                    } else {
+                        showUiNotification(`🎬 REPLAY LIQUIDITY MITIGATED: position knocked at $${hitPrice}`, "error");
+                        triggerAIVoiceBroadcast(`Simulation finalized. Position knocked at structural stop loss ${hitPrice}.`);
+                    }
+                }, 2000);
+            }, 1000);
+        }
+
+        function closeTradeReplay() { document.getElementById('replay-modal').style.display = 'none'; }
 
         function openStrategyBuilder() {
             if(!activeUserKey) {
@@ -886,7 +997,6 @@
             });
         }
 
-        // --- ❤️ NEW: PSYCHOLOGY DASHBOARD INTERACTION LOGIC (PHASE 4) ---
         function openPsychologyDash() {
             if(!activeUserKey) {
                 showUiNotification("Please login to access emotional metrics.", "error");
@@ -1137,14 +1247,13 @@
         }
         function closeAiLogicModal() { document.getElementById('logic-modal').style.display = 'none'; }
 
-        document.addEventListener("DOMContentLoaded", function() {
-            // Pre-validation checking structure
-        });
-
         function renderSignals(data) {
             const container = document.getElementById('signal-container');
             container.innerHTML = ''; 
             if (!data) return;
+
+            let highestAccuracySignal = null;
+            let topAccuracy = 0;
 
             for (const [coinKey, details] of Object.entries(data)) {
                 let safeSignalType = details.signal_type || "SCALP";
@@ -1152,6 +1261,11 @@
                 const isPremiumAlert = details.accuracy >= 85;
                 const cardCssClass = isPremiumAlert ? "signal-card neon-gold-card" : "signal-card";
                 
+                if (details.accuracy > topAccuracy) {
+                    topAccuracy = details.accuracy;
+                    highestAccuracySignal = { pair: details.pair || coinKey.replace('USDT', '/USDT'), side: details.side, accuracy: details.accuracy };
+                }
+
                 const formattedTech = (details.tech_logic || "").replace(/'/g, "\\'");
                 const formattedRisk = (details.risk_logic || "").replace(/'/g, "\\'");
                 const pairName = details.pair || coinKey.replace('USDT', '/USDT');
@@ -1175,6 +1289,11 @@
                         </div>
                     </div>`;
             }
+
+            // 🎙️ Voice Notification Layer for Top Signal Detected
+            if (highestAccuracySignal) {
+                triggerAIVoiceBroadcast(`Deep scan finalized. High accuracy signal generated for ${highestAccuracySignal.pair}. Direction is ${highestAccuracySignal.side} with ${highestAccuracySignal.accuracy} percent accuracy score.`);
+            }
         }
 
         let activeMarketWatchers = {};
@@ -1186,7 +1305,6 @@
                 return;
             }
 
-            // check active lockout rule prior execution
             db.ref(`premium_keys/${activeUserKey}`).once('value', (snap) => {
                 const ud = snap.val();
                 const limit = ud.psychology_config?.max_loss_limit || 3;
@@ -1194,6 +1312,7 @@
                 
                 if (currentLosses >= limit) {
                     showUiNotification("Execution Denied: Emotional Protection Core Lock Active!", "error");
+                    triggerAIVoiceBroadcast("Execution denied. Core framework is locked out to protect emotional drawdown.");
                     return;
                 }
 
@@ -1225,6 +1344,7 @@
             });
 
             showUiNotification("🚀 Execution Request Sent! ZenithAI Engine is placing trade on Binance.", "success");
+            triggerAIVoiceBroadcast(`Executing auto trade transaction for ${pairName.replace('USDT','')}. Dispatching API order parameters to Biance exchange.`);
 
             const ws = new WebSocket(`wss://fstream.binance.com/ws/${pairName.toLowerCase()}@ticker`);
             activeMarketWatchers[pairName] = ws;
@@ -1249,12 +1369,14 @@
 
                 if (isWin) {
                     db.ref(`premium_keys/${activeUserKey}/stats/tp`).set((Number(st.tp) || 0) + 1);
-                    db.ref(`premium_keys/${activeUserKey}/stats/consecutive_losses`).set(0); // reset streak on win
+                    db.ref(`premium_keys/${activeUserKey}/stats/consecutive_losses`).set(0); 
                     showUiNotification(`🟢 PROFIT SECURED: ${pairName} hit Target Profit at $${hitPrice}!`, "success");
+                    triggerAIVoiceBroadcast(`Position update. Target profit secured successfully for ${pairName.replace('USDT','')}.`);
                 } else {
                     db.ref(`premium_keys/${activeUserKey}/stats/sl`).set((Number(st.sl) || 0) + 1);
-                    db.ref(`premium_keys/${activeUserKey}/stats/consecutive_losses`).set(currentStreak + 1); // increment loss streak
+                    db.ref(`premium_keys/${activeUserKey}/stats/consecutive_losses`).set(currentStreak + 1); 
                     showUiNotification(`🔴 RISK MANAGED: ${pairName} hit Stop Loss at $${hitPrice}!`, "error");
+                    triggerAIVoiceBroadcast(`Position update. Position stopped out for ${pairName.replace('USDT','')}. Risk protocol applied.`);
                 }
             });
         }
