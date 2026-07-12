@@ -133,11 +133,55 @@
             background: linear-gradient(145deg, rgba(255,0,127,0.05), rgba(21,5,20,0.9));
             border-left: 4px solid var(--primary);
         }
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; }
-        .stat-item { text-align: center; }
-        .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: bold; margin-bottom: 5px; }
-        .stat-val { font-size: 22px; font-weight: 800; font-family: 'Rajdhani', sans-serif; }
         
+        /* UPGRADED: High-Tech Cyberpunk Visual Metrics Grid (Image 2 Reference Style) */
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 15px; 
+            margin-bottom: 25px; 
+        }
+        .stat-item { 
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 12px;
+            text-align: center; 
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 105px;
+            box-sizing: border-box;
+        }
+        .stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .stat-val { font-size: 20px; font-weight: 800; font-family: 'Rajdhani', sans-serif; line-height: 1; margin-bottom: 6px; }
+        
+        /* CSS Chart Elements */
+        .mini-trendline { width: 100%; height: 20px; display: flex; align-items: flex-end; gap: 3px; margin-top: auto; padding: 0 5px; box-sizing: border-box; }
+        .trend-bar { flex-grow: 1; background: var(--primary); opacity: 0.7; border-radius: 2px; height: 30%; animation: pulseHeight 2s infinite ease-in-out; }
+        .trend-bar:nth-child(2) { height: 60%; animation-delay: 0.3s; }
+        .trend-bar:nth-child(3) { height: 45%; animation-delay: 0.6s; }
+        .trend-bar:nth-child(4) { height: 80%; animation-delay: 0.1s; }
+        .trend-bar:nth-child(5) { height: 55%; animation-delay: 0.4s; }
+        
+        .trend-bar.long-color { background: var(--long); }
+        
+        /* Win Rate Circular Glow Chart Ring */
+        .circle-chart-box { position: relative; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }
+        .circle-svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+        .circle-bg { fill: none; stroke: rgba(255, 0, 127, 0.1); stroke-width: 4; }
+        .circle-glow-line { fill: none; stroke: var(--primary); stroke-width: 4; stroke-dasharray: 100; stroke-dashoffset: 100; stroke-linecap: round; transition: stroke-dashoffset 1s ease-in-out; filter: drop-shadow(0 0 4px var(--primary)); }
+        .circle-text { position: absolute; font-size: 11px; font-weight: 800; font-family: 'Rajdhani', sans-serif; color: #fff; }
+
+        /* P&L Performance Grid Bars */
+        .pnl-perf-bars { display: flex; gap: 4px; width: 100%; height: 24px; align-items: flex-end; justify-content: center; margin-top: auto; }
+        .pnl-bar { width: 6px; height: 100%; background: rgba(255,255,255,0.05); border-radius: 1px; transform-origin: bottom; }
+        .pnl-bar.fill-tp { background: var(--long); filter: drop-shadow(0 0 2px var(--long)); }
+        .pnl-bar.fill-sl { background: var(--short); filter: drop-shadow(0 0 2px var(--short)); }
+        @keyframes pulseHeight { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.7); } }
+
         .matrix-sub-layout {
             display: grid;
             grid-template-columns: 180px 1fr;
@@ -145,7 +189,6 @@
             align-items: start;
         }
         
-        /* Integrated Scanning Core Widget Panel */
         #radar-section {
             display: flex;
             flex-direction: column;
@@ -213,7 +256,6 @@
 
         .right-col { display: flex; flex-direction: column; gap: 20px; }
 
-        /* NEW Cyberpunk Placeholder Grid to eliminate layout emptiness */
         .placeholder-matrix-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -239,7 +281,6 @@
             box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
         }
         .placeholder-box i { font-size: 24px; margin-bottom: 8px; opacity: 0.4; animation: pulseGlow 2s infinite ease-in-out; }
-        @keyframes pulseGlow { 0%, 100% { opacity: 0.2; transform: scale(0.95); } 50% { opacity: 0.5; transform: scale(1.05); } }
 
         .signal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         @media (max-width: 768px) { .signal-grid { grid-template-columns: 1fr; } }
@@ -282,37 +323,6 @@
         .ai-feedback { font-family: monospace; font-size: 13px; color: var(--primary); background: rgba(255,0,127,0.08); padding: 12px; border-radius: 8px; margin-top: 10px; border-left: 2px solid var(--primary);}
         
         .account-box-container .input-group input[type="text"], .account-box-container .input-group input[type="password"] { background: rgba(0,0,0,0.5); margin-bottom: 15px; width: 100%; box-sizing: border-box; padding: 15px; border-radius: 12px; border: 1px solid var(--card-border); color: var(--primary); font-size: 16px;}
-        
-        #ui-notification-container {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 9999;
-            width: 90%;
-            max-width: 500px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .ui-toast {
-            background: rgba(15, 2, 10, 0.9);
-            border: 1px solid var(--primary);
-            box-shadow: 0 0 20px rgba(255, 0, 127, 0.4);
-            padding: 16px 20px;
-            border-radius: 12px;
-            color: #fff;
-            font-size: 14px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            backdrop-filter: blur(10px);
-            animation: slideDown 0.3s ease forwards;
-        }
-        .ui-toast.success { border-color: var(--long); box-shadow: 0 0 20px rgba(0, 255, 170, 0.3); }
-        .ui-toast.info { border-color: var(--accent); box-shadow: 0 0 20px rgba(0, 240, 255, 0.3); }
-        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -400,18 +410,29 @@
                         <div class="stat-item">
                             <div class="stat-label">Global Trades</div>
                             <div class="stat-val" id="global-total-trades" style="color:#fff;">0</div>
+                            <div class="mini-trendline"><div class="trend-bar"></div><div class="trend-bar"></div><div class="trend-bar"></div><div class="trend-bar"></div><div class="trend-bar"></div></div>
                         </div>
                         <div class="stat-item">
                             <div class="stat-label">Global Win %</div>
-                            <div class="stat-val" id="global-win-rate" style="color:var(--primary);">0%</div>
+                            <div class="circle-chart-box">
+                                <svg class="circle-svg" viewBox="0 0 36 34">
+                                    <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    <path class="circle-glow-line" id="win-rate-arc" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                </svg>
+                                <div class="circle-text" id="global-win-rate">0%</div>
+                            </div>
                         </div>
                         <div class="stat-item">
                             <div class="stat-label">My Trades</div>
                             <div class="stat-val" id="user-trades" style="color:#fff;">0</div>
+                            <div class="mini-trendline"><div class="trend-bar long-color"></div><div class="trend-bar long-color"></div><div class="trend-bar long-color"></div><div class="trend-bar long-color"></div><div class="trend-bar long-color"></div></div>
                         </div>
                         <div class="stat-item">
                             <div class="stat-label">P&L Ratio</div>
                             <div class="stat-val" id="user-pnl-ratio" style="color:var(--long);">0/0</div>
+                            <div class="pnl-perf-bars" id="pnl-visual-bars">
+                                <div class="pnl-bar"></div><div class="pnl-bar"></div><div class="pnl-bar"></div><div class="pnl-bar"></div><div class="pnl-bar"></div>
+                            </div>
                         </div>
                     </div>
                     
@@ -422,7 +443,6 @@
                                 <div class="radar-sweep"></div>
                             </div>
                             <canvas id="heartbeat-canvas"></canvas>
-                            
                             <button class="btn" id="scan-btn" onclick="revealSignals()" style="font-size: 11px; padding: 10px 15px; width: 100%; box-shadow: 0 0 10px rgba(255, 0, 127, 0.2);">Scan Signals</button>
                         </div>
                         
@@ -733,8 +753,16 @@
                 let total = Number(s.total_trades) || 0;
                 let tp = Number(s.total_tp) || 0;
                 let calcWinRate = total > 0 ? ((tp / total) * 100).toFixed(1) : 0;
+                
                 document.getElementById('global-total-trades').innerText = total;
                 document.getElementById('global-win-rate').innerText = calcWinRate + "%";
+                
+                // Update SVG Ring Progress Arc
+                const arc = document.getElementById('win-rate-arc');
+                if(arc) {
+                    let offset = 100 - parseFloat(calcWinRate);
+                    arc.style.strokeDashoffset = offset;
+                }
             });
 
             if (activeUserKey !== "pehelitha") {
@@ -742,8 +770,23 @@
                     const userData = snapshot.val();
                     if (!snapshot.exists()) return;
                     const myStats = userData.stats || { trades: 0, tp: 0, sl: 0 };
+                    
+                    let tpCount = Number(myStats.tp) || 0;
+                    let slCount = Number(myStats.sl) || 0;
+
                     document.getElementById('user-trades').innerText = myStats.trades || 0;
-                    document.getElementById('user-pnl-ratio').innerText = `${myStats.tp || 0}/${myStats.sl || 0}`;
+                    document.getElementById('user-pnl-ratio').innerText = `${tpCount}/${slCount}`;
+                    
+                    // Update P&L Visual Bar Matrix Elements dynamically
+                    const pnlBarsContainer = document.getElementById('pnl-visual-bars');
+                    if(pnlBarsContainer) {
+                        pnlBarsContainer.innerHTML = '';
+                        for(let i=0; i<tpCount && i<5; i++) { pnlBarsContainer.innerHTML += '<div class="pnl-bar fill-tp" style="height:80%"></div>'; }
+                        for(let i=0; i<slCount && i<5; i++) { pnlBarsContainer.innerHTML += '<div class="pnl-bar fill-sl" style="height:50%"></div>'; }
+                        if(tpCount === 0 && slCount === 0) {
+                            pnlBarsContainer.innerHTML = '<div class="pnl-bar"></div><div class="pnl-bar"></div><div class="pnl-bar"></div><div class="pnl-bar"></div><div class="pnl-bar"></div>';
+                        }
+                    }
                 });
             } else {
                 document.getElementById('user-trades').innerText = "-";
@@ -802,8 +845,8 @@
                 currentSignalData = snap.val();
                 
                 setTimeout(() => {
-                    placeholderGrid.style.display = 'none'; // Remove placeholder items
-                    sigContainer.style.display = 'grid'; // Enable real data cards
+                    placeholderGrid.style.display = 'none'; 
+                    sigContainer.style.display = 'grid'; 
                     renderSignals(currentSignalData); 
                     btn.innerHTML = `Scan Signals`; 
                     btn.disabled = false;
