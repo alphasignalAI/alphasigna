@@ -265,7 +265,6 @@
         }
         @media (max-width: 768px) { .signal-grid { grid-template-columns: 1fr; } }
 
-        /* 🎬 NEON CARD & ADVANCED SCANNING ANIMATION */
         .signal-card { 
             background: var(--card-bg); 
             border-radius: 16px; 
@@ -345,7 +344,6 @@
         .btn-mini { background: rgba(255,255,255,0.05); border: 1px solid rgba(221, 0, 255, 0.2); color: #fff; padding: 8px; border-radius: 8px; font-size: 11px; cursor: pointer; font-weight: bold;}
         .btn-mini:hover { background: rgba(255,255,255,0.15); border-color: var(--primary); }
 
-        /* 🛑 FIX: 100% NEON PINK CHART MODAL LAYOUT */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5,2,4,0.96); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(12px); overflow-y: auto; }
         .chart-container { 
             width: 95%; max-width: 1200px; height: 85vh; 
@@ -887,7 +885,7 @@
                 const container = document.getElementById('replay-logs-container');
                 container.innerHTML = ''; const data = snap.val();
                 if (!data) {
-                    container.innerHTML = `<p style="color:var(--text-muted); text-align:center;">No completed trade frames available.</p>';
+                    container.innerHTML = `<p style="color:var(--text-muted); text-align:center;">No completed trade frames available.</p>`;
                     return;
                 }
                 Object.values(data).reverse().forEach((trade, index) => {
@@ -939,9 +937,6 @@
             }).then(() => { closeAccountSettings(); });
         }
 
-        // ==============================================================================
-        // 🎬 ADVANCED SEQUENTIAL SCANNING MATRIX FLOW WITH 10s DELAY TIMER & REPLAY LINES
-        // ==============================================================================
         function revealSignals() {
             const btn = document.getElementById('scan-btn');
             const sigContainer = document.getElementById('signal-container');
@@ -956,7 +951,7 @@
                 currentSignalData = snap.val();
                 placeholderGrid.style.display = 'none'; 
                 sigContainer.style.display = 'grid'; 
-                sigContainer.innerHTML = ''; // Container එක මුලින්ම Clear කිරීම
+                sigContainer.innerHTML = ''; 
                 
                 btn.innerHTML = `Scan Signals`;
                 btn.disabled = false;
@@ -967,10 +962,8 @@
                     return;
                 }
 
-                // Object එක Array එකක් බවට පරිවර්තනය කර සිග්නල් 6 සීමා කිරීම
                 const signalsArray = Object.entries(currentSignalData).slice(0, 6);
                 
-                // ⏱️ Sequential Delay Loop Tracker (හැම කාඩ් එකක්ම තත්පර 10න් 10ට ලෝඩ් වීම)
                 signalsArray.forEach(([coinKey, details], index) => {
                     setTimeout(() => {
                         let safeSignalType = details.signal_type || "SCALPCORE";
@@ -981,9 +974,8 @@
                         const formattedTech = (details.tech_logic || "").replace(/'/g, "\\'");
                         const formattedRisk = (details.risk_logic || "").replace(/'/g, "\\'");
                         const pairName = details.pair || coinKey;
-
-                        // නව කාඩ්පත UI එකට එකතු කිරීම (Scanning Effect එක සමඟ)
                         const cardId = `sig-card-${index}`;
+
                         sigContainer.innerHTML += `
                             <div class="${cardCssClass} scanning-effect" id="${cardId}">
                                 <div>
@@ -1003,7 +995,6 @@
                                 </div>
                             </div>`;
 
-                        // Animation එක සක්‍රිය කිරීම සහ Scanning Line එක තත්පර 1.5කින් ඉවත් කිරීම
                         setTimeout(() => {
                             const element = document.getElementById(cardId);
                             if(element) {
@@ -1012,15 +1003,13 @@
                             }
                         }, 50);
 
-                        // 🎙️ VOICE PROTOCOL: එක් එක් කාඩ්පත හැදෙන විටම සජීවීව ශබ්ද විකාශනය කිරීම
                         triggerAIVoiceBroadcast(`New quantum matrix signal verified for ${pairName}. Direction is ${details.side}. Accuracy level logged at ${details.accuracy} percent.`);
 
-                    }, index * 10000); // 10000ms = 10 Seconds Delay Interval
+                    }, index * 10000); 
                 });
             });
         }
 
-        // 🛑 POPUP FIX: NEON PINK STYLES WITH PRICE LEVEL TARGET LINES
         function openLiveChart(pair, entry, tp, sl, side) {
             document.getElementById('chart-modal').style.display = 'flex';
             document.getElementById('chart-coin-name').innerText = pair;
@@ -1043,7 +1032,6 @@
                 .then(res => res.json()).then(data => {
                     candlestickSeries.setData(data.map(d => ({ time: d[0]/1000, open: parseFloat(d[1]), high: parseFloat(d[2]), low: parseFloat(d[3]), close: parseFloat(d[4]) })));
                     
-                    // 🎯 DYNAMIC CHART TARGET PRICE LINES DETECT (ENTRY, TP, SL LINES RESTORED)
                     candlestickSeries.createPriceLine({ price: parseFloat(entry), color: '#f7931a', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Dashed, title: 'ENTRY' });
                     candlestickSeries.createPriceLine({ price: parseFloat(tp), color: '#00ffaa', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, title: 'TAKE PROFIT' });
                     candlestickSeries.createPriceLine({ price: parseFloat(sl), color: '#ff1744', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, title: 'STOP LOSS' });
