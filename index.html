@@ -265,22 +265,46 @@
         }
         @media (max-width: 768px) { .signal-grid { grid-template-columns: 1fr; } }
 
+        /* 🎬 NEON CARD & ADVANCED SCANNING ANIMATION */
         .signal-card { 
             background: var(--card-bg); 
             border-radius: 16px; 
             padding: 20px; 
-            border: 1px solid rgba(221, 0, 255, 0.25); 
+            border: 1px solid rgba(255, 0, 127, 0.3); 
             display: flex; 
             flex-direction: column; 
             justify-content: space-between; 
-            transition: all 0.3s ease;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             min-height: 290px;
             box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: scale(0.8) translateY(30px);
+        }
+        .signal-card.reveal-active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.25);
+        }
+        .signal-card.scanning-effect::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: linear-gradient(0deg, transparent, var(--primary), transparent);
+            transform: rotate(30deg);
+            animation: radarSweepLine 1.5s infinite linear;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        @keyframes radarSweepLine {
+            0% { transform: translate(-30%, -30%) rotate(30deg); }
+            100% { transform: translate(30%, 30%) rotate(30deg); }
         }
         .signal-card:hover { 
             border-color: var(--primary); 
-            transform: translateY(-2px); 
-            box-shadow: 0 8px 25px rgba(255, 0, 127, 0.25);
+            box-shadow: 0 0 25px rgba(255, 0, 127, 0.5);
         }
         
         .placeholder-matrix-grid {
@@ -321,11 +345,19 @@
         .btn-mini { background: rgba(255,255,255,0.05); border: 1px solid rgba(221, 0, 255, 0.2); color: #fff; padding: 8px; border-radius: 8px; font-size: 11px; cursor: pointer; font-weight: bold;}
         .btn-mini:hover { background: rgba(255,255,255,0.15); border-color: var(--primary); }
 
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5,2,4,0.95); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(12px); overflow-y: auto; }
-        .chart-container { width: 95%; max-width: 1200px; height: 80vh; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; padding: 25px; position: relative; display: flex; flex-direction: column; }
+        /* 🛑 FIX: 100% NEON PINK CHART MODAL LAYOUT */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5,2,4,0.96); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(12px); overflow-y: auto; }
+        .chart-container { 
+            width: 95%; max-width: 1200px; height: 85vh; 
+            background: #090206; 
+            border: 2px solid var(--primary); 
+            border-radius: 24px; padding: 25px; position: relative; 
+            display: flex; flex-direction: column;
+            box-shadow: 0 0 35px rgba(255, 0, 127, 0.4);
+        }
         .close-btn { position: absolute; top: 20px; right: 25px; color: var(--text-muted); font-size: 28px; cursor: pointer; background: none; border: none; transition: 0.2s;}
-        .close-btn:hover { color: var(--primary); transform: scale(1.1);}
-        #tv-chart { flex-grow: 1; width: 100%; margin-top: 15px; position: relative; min-height: 400px; border-radius: 12px; overflow: hidden; border: 1px solid var(--card-border);} 
+        .close-btn:hover { color: var(--primary); transform: scale(1.1); text-shadow: 0 0 10px var(--primary); }
+        #tv-chart { flex-grow: 1; width: 100%; margin-top: 15px; position: relative; min-height: 420px; border-radius: 14px; overflow: hidden; border: 1px solid var(--card-border);} 
         
         .logic-box-container, .admin-panel-container, .account-box-container { max-width: 700px; width: 90%; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; padding: 35px; position: relative; max-height: 85vh; overflow-y: auto; }
         .logic-header { font-size: 24px; font-weight: 800; color: #fff; border-bottom: 1px solid var(--card-border); padding-bottom: 15px; margin-bottom: 25px; font-family: 'Rajdhani', sans-serif;}
@@ -531,7 +563,6 @@
             <button class="close-btn" onclick="closeTradeReplay()"><i class="fas fa-times"></i></button>
             <div class="logic-header" style="color: var(--accent);">🎥 AI TRADE REPLAY SIMULATOR</div>
             <p style="color:var(--text-muted); font-size:13px; margin-top:-10px; margin-bottom:20px;">Review past algorithmic executions step-by-step to optimize custom strategy builders.</p>
-            
             <div id="replay-logs-container" style="max-height: 60vh; overflow-y: auto;">
                 Loading Historical Execution Node Tracks...
             </div>
@@ -608,11 +639,11 @@
     </div>
 
     <div id="chart-modal" class="modal-overlay">
-        <div class="chart-container glass-panel">
+        <div class="chart-container">
             <button class="close-btn" onclick="closeLiveChart()"><i class="fas fa-times"></i></button>
-            <div style="border-bottom: 1px solid var(--card-border); padding-bottom: 15px; display:flex; align-items:center; gap:15px;">
-                <span id="chart-coin-name" style="color: #fff; font-size: 24px; font-weight: 800; font-family:'Rajdhani', sans-serif;">BTC/USDT</span>
-                <span id="chart-side" style="background: rgba(255,0,127,0.1); color: var(--primary); padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight:bold; border: 1px solid var(--card-border);">LIVE CHART</span>
+            <div style="border-bottom: 2px solid var(--primary); padding-bottom: 15px; display:flex; align-items:center; gap:15px; margin-bottom: 5px;">
+                <span id="chart-coin-name" style="color: #fff; font-size: 26px; font-weight: 800; font-family:'Rajdhani', sans-serif; letter-spacing: 1px;">BTC/USDT</span>
+                <span id="chart-side" style="background: rgba(255,0,127,0.15); color: var(--primary); padding: 5px 14px; border-radius: 8px; font-size: 12px; font-weight:bold; border: 1px solid var(--primary); text-transform: uppercase;">LIVE CHANNELS</span>
             </div>
             <div id="tv-chart"></div>
         </div>
@@ -704,7 +735,7 @@
                 window.speechSynthesis.cancel();
                 const speech = new SpeechSynthesisUtterance(textMessage);
                 speech.lang = 'en-US';
-                speech.rate = 1.0;
+                speech.rate = 0.95;
                 speech.pitch = 0.9;
                 window.speechSynthesis.speak(speech);
             } catch (e) { console.log("Voice Engine Muted: ", e); }
@@ -856,7 +887,7 @@
                 const container = document.getElementById('replay-logs-container');
                 container.innerHTML = ''; const data = snap.val();
                 if (!data) {
-                    container.innerHTML = `<p style="color:var(--text-muted); text-align:center;">No completed trade frames available.</p>`;
+                    container.innerHTML = `<p style="color:var(--text-muted); text-align:center;">No completed trade frames available.</p>';
                     return;
                 }
                 Object.values(data).reverse().forEach((trade, index) => {
@@ -909,82 +940,113 @@
         }
 
         // ==============================================================================
-        // 🛡️ DYNAMIC COINKEY INTERCEPTR MATRIX (REALTIME INTERFACE PATCH FIXED)
+        // 🎬 ADVANCED SEQUENTIAL SCANNING MATRIX FLOW WITH 10s DELAY TIMER & REPLAY LINES
         // ==============================================================================
         function revealSignals() {
             const btn = document.getElementById('scan-btn');
             const sigContainer = document.getElementById('signal-container');
             const placeholderGrid = document.getElementById('matrix-placeholder');
+            const statusDiv = document.getElementById('scanner-status');
+            
             btn.innerHTML = `SCANNING...`; 
+            btn.disabled = true;
+            statusDiv.innerHTML = `<span style="color:var(--primary);">🔄 SEARCHING HIGH-CONFLUENCE LIQUIDITY NODES...</span>`;
             
             db.ref('live_signals').once('value').then((snap) => {
                 currentSignalData = snap.val();
                 placeholderGrid.style.display = 'none'; 
                 sigContainer.style.display = 'grid'; 
-                renderSignals(currentSignalData); 
-                btn.innerHTML = `Scan Signals`; 
+                sigContainer.innerHTML = ''; // Container එක මුලින්ම Clear කිරීම
+                
+                btn.innerHTML = `Scan Signals`;
+                btn.disabled = false;
+                statusDiv.innerHTML = `🟢 MULTI-TIMEFRAME QUANT CORE ACTIVE`;
+
+                if (!currentSignalData) {
+                    sigContainer.innerHTML = '<div style="grid-column: span 2; text-align:center; color:var(--text-muted); padding:40px;">⚠️ Awaiting active HFT Quant Node cycles...</div>';
+                    return;
+                }
+
+                // Object එක Array එකක් බවට පරිවර්තනය කර සිග්නල් 6 සීමා කිරීම
+                const signalsArray = Object.entries(currentSignalData).slice(0, 6);
+                
+                // ⏱️ Sequential Delay Loop Tracker (හැම කාඩ් එකක්ම තත්පර 10න් 10ට ලෝඩ් වීම)
+                signalsArray.forEach(([coinKey, details], index) => {
+                    setTimeout(() => {
+                        let safeSignalType = details.signal_type || "SCALPCORE";
+                        let sideClass = details.side === "LONG" ? "side-long" : "side-short";
+                        const isPremiumAlert = details.accuracy >= 85;
+                        const cardCssClass = isPremiumAlert ? "signal-card neon-gold-card" : "signal-card";
+                        
+                        const formattedTech = (details.tech_logic || "").replace(/'/g, "\\'");
+                        const formattedRisk = (details.risk_logic || "").replace(/'/g, "\\'");
+                        const pairName = details.pair || coinKey;
+
+                        // නව කාඩ්පත UI එකට එකතු කිරීම (Scanning Effect එක සමඟ)
+                        const cardId = `sig-card-${index}`;
+                        sigContainer.innerHTML += `
+                            <div class="${cardCssClass} scanning-effect" id="${cardId}">
+                                <div>
+                                    <div class="coin-title">
+                                        <span>${pairName}</span>
+                                        <span class="${sideClass}">${details.side}</span>
+                                    </div>
+                                    <div class="data-row"><span class="data-label">Type</span><span class="data-value">${safeSignalType}</span></div>
+                                    <div class="data-row"><span class="data-label">Entry Price</span><span class="data-value" style="font-weight:bold;">${details.entry}</span></div>
+                                    <div class="data-row"><span class="data-label">Take Profit</span><span class="data-value" style="color:var(--long); font-weight:bold;">${details.tp1}</span></div>
+                                    <div class="data-row"><span class="data-label">Stop Loss</span><span class="data-value" style="color:var(--short); font-weight:bold;">${details.sl}</span></div>
+                                </div>
+                                <div class="card-actions">
+                                    <button class="btn-trade" onclick="takeTrade('${coinKey}')">AUTO-TRADE API</button>
+                                    <button class="btn-mini" onclick="openLiveChart('${pairName}', ${details.entry}, ${details.tp1}, ${details.sl}, '${details.side}')"><i class="fas fa-chart-line"></i> Live Market</button>
+                                    <button class="btn-mini" onclick="openAiLogicModal('${formattedTech}', '${formattedRisk}')"><i class="fas fa-brain"></i> Logic</button>
+                                </div>
+                            </div>`;
+
+                        // Animation එක සක්‍රිය කිරීම සහ Scanning Line එක තත්පර 1.5කින් ඉවත් කිරීම
+                        setTimeout(() => {
+                            const element = document.getElementById(cardId);
+                            if(element) {
+                                element.classList.add('reveal-active');
+                                setTimeout(() => element.classList.remove('scanning-effect'), 1500);
+                            }
+                        }, 50);
+
+                        // 🎙️ VOICE PROTOCOL: එක් එක් කාඩ්පත හැදෙන විටම සජීවීව ශබ්ද විකාශනය කිරීම
+                        triggerAIVoiceBroadcast(`New quantum matrix signal verified for ${pairName}. Direction is ${details.side}. Accuracy level logged at ${details.accuracy} percent.`);
+
+                    }, index * 10000); // 10000ms = 10 Seconds Delay Interval
+                });
             });
         }
 
-        function renderSignals(data) {
-            const container = document.getElementById('signal-container');
-            container.innerHTML = ''; 
-            if (!data) {
-                container.innerHTML = '<div style="grid-column: span 2; text-align:center; color:var(--text-muted); padding:40px;">⚠️ Awaiting active HFT Quant Node cycles...</div>';
-                return;
-            }
-
-            let highestAccuracySignal = null;
-            let topAccuracy = 0;
-
-            for (const [coinKey, details] of Object.entries(data)) {
-                let safeSignalType = details.signal_type || "SCALP";
-                let sideClass = details.side === "LONG" ? "side-long" : "side-short";
-                const isPremiumAlert = details.accuracy >= 85;
-                const cardCssClass = isPremiumAlert ? "signal-card neon-gold-card" : "signal-card";
-                
-                if (details.accuracy > topAccuracy) {
-                    topAccuracy = details.accuracy;
-                    highestAccuracySignal = { pair: details.pair || coinKey, side: details.side };
-                }
-
-                const formattedTech = (details.tech_logic || "").replace(/'/g, "\\'");
-                const formattedRisk = (details.risk_logic || "").replace(/'/g, "\\'");
-                const pairName = details.pair || coinKey;
-
-                container.innerHTML += `
-                    <div class="${cardCssClass}">
-                        <div>
-                            <div class="coin-title">
-                                <span>${pairName}</span>
-                                <span class="${sideClass}">${details.side}</span>
-                            </div>
-                            <div class="data-row"><span class="data-label">Type</span><span class="data-value">${safeSignalType}</span></div>
-                            <div class="data-row"><span class="data-label">Entry Price</span><span class="data-value" style="font-weight:bold;">${details.entry}</span></div>
-                            <div class="data-row"><span class="data-label">Take Profit</span><span class="data-value" style="color:var(--long); font-weight:bold;">${details.tp1}</span></div>
-                            <div class="data-row"><span class="data-label">Stop Loss</span><span class="data-value" style="color:var(--short); font-weight:bold;">${details.sl}</span></div>
-                        </div>
-                        <div class="card-actions">
-                            <button class="btn-trade" onclick="takeTrade('${coinKey}')">AUTO-TRADE API</button>
-                            <button class="btn-mini" onclick="openLiveChart('${pairName}', ${details.entry}, ${details.tp1}, ${details.sl}, '${details.side}')"><i class="fas fa-chart-line"></i> Live Market</button>
-                            <button class="btn-mini" onclick="openAiLogicModal('${formattedTech}', '${formattedRisk}')"><i class="fas fa-brain"></i> Logic</button>
-                        </div>
-                    </div>`;
-            }
-
-            if (highestAccuracySignal) {
-                triggerAIVoiceBroadcast(`Signal detected for ${highestAccuracySignal.pair}`);
-            }
-        }
-
+        // 🛑 POPUP FIX: NEON PINK STYLES WITH PRICE LEVEL TARGET LINES
         function openLiveChart(pair, entry, tp, sl, side) {
             document.getElementById('chart-modal').style.display = 'flex';
+            document.getElementById('chart-coin-name').innerText = pair;
+            document.getElementById('chart-side').innerText = `MATRIX ${side}`;
+            
             const chartDiv = document.getElementById('tv-chart'); chartDiv.innerHTML = '';
-            activeChart = LightweightCharts.createChart(chartDiv, { width: chartDiv.clientWidth, height: 400, layout: { background: { color: '#090206' }, textColor: '#fff' }});
-            const candlestickSeries = activeChart.addSeries(LightweightCharts.CandlestickSeries);
+            
+            activeChart = LightweightCharts.createChart(chartDiv, { 
+                width: chartDiv.clientWidth, 
+                height: 420, 
+                layout: { background: { type: 'solid', color: '#090206' }, textColor: '#f8fafc' },
+                grid: { vertLines: { color: 'rgba(255, 0, 127, 0.05)' }, horzLines: { color: 'rgba(255, 0, 127, 0.05)' } }
+            });
+            
+            const candlestickSeries = activeChart.addSeries(LightweightCharts.CandlestickSeries, {
+                upColor: '#00f0ff', downColor: '#ff007f', borderVisible: false, wickUpColor: '#00f0ff', wickDownColor: '#ff007f'
+            });
+            
             fetch(`https://fapi.binance.com/fapi/v1/klines?symbol=${pair.replace('/','')}&interval=15m&limit=150`)
                 .then(res => res.json()).then(data => {
                     candlestickSeries.setData(data.map(d => ({ time: d[0]/1000, open: parseFloat(d[1]), high: parseFloat(d[2]), low: parseFloat(d[3]), close: parseFloat(d[4]) })));
+                    
+                    // 🎯 DYNAMIC CHART TARGET PRICE LINES DETECT (ENTRY, TP, SL LINES RESTORED)
+                    candlestickSeries.createPriceLine({ price: parseFloat(entry), color: '#f7931a', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Dashed, title: 'ENTRY' });
+                    candlestickSeries.createPriceLine({ price: parseFloat(tp), color: '#00ffaa', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, title: 'TAKE PROFIT' });
+                    candlestickSeries.createPriceLine({ price: parseFloat(sl), color: '#ff1744', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, title: 'STOP LOSS' });
                 });
         }
 
