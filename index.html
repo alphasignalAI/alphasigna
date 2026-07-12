@@ -250,6 +250,7 @@
             padding: 12px; border-radius: 12px; text-align: center;
             font-size: 11px; font-weight: bold; color: var(--text-muted);
             transition: 0.3s; position: relative; overflow: hidden;
+            display: flex; flex-direction: column; justify-content: center;
         }
         .module-card:hover { border-color: var(--primary); color: var(--primary); }
         .module-badge { display: block; font-size: 9px; background: rgba(255,0,127,0.1); color: var(--primary); padding: 2px 5px; border-radius: 4px; margin-top: 5px; width: max-content; margin-inline: auto; }
@@ -314,7 +315,6 @@
         .data-label { color: var(--text-muted); }
         .data-value { color: #fff; }
 
-        /* FIXED: Re-enabled grid structure with all restored action triggers */
         .card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
         .btn-trade { grid-column: span 2; background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; font-family: 'Inter', sans-serif;}
         .btn-trade:hover { background: var(--primary); color: #fff; box-shadow: 0 0 15px var(--primary); }
@@ -492,7 +492,10 @@
                         <div>
                             <div class="adv-modules-header">Pro Analysis Modules (Coming Soon)</div>
                             <div class="adv-modules-grid">
-                                <div class="module-card">🐋 Whale Tracker <span class="module-badge">Phase 3</span></div>
+                                <div class="module-card" id="mod-whale">
+                                    <span style="font-weight: bold; margin-bottom:5px;">🐋 Whale Inflows</span>
+                                    <span id="whale-data" style="color:var(--primary); font-size: 14px; font-weight: bold; display: block;">AWAITING DATA...</span>
+                                </div>
                                 <div class="module-card">🔥 Liquidity Map <span class="module-badge">Phase 3</span></div>
                                 <div class="module-card">🧠 Strategy Builder <span class="module-badge">Phase 4</span></div>
                                 <div class="module-card">❤️ Psychology Dash <span class="module-badge">Phase 4</span></div>
@@ -586,6 +589,7 @@
         
         let currentSignalData = null;
         let activeUserKey = null;
+        let activeChart = null; // Added to fix chart cleanup
 
         function showUiNotification(message, type = "info") {
             const container = document.getElementById('ui-notification-container');
@@ -733,6 +737,30 @@
             
             initCoreListeners();
             initHeartbeatPulse(); 
+            initWhaleTracker(); // Starting the live tracker
+        }
+
+        // --- WHALE TRACKER LIVE UPDATE LOGIC ---
+        function initWhaleTracker() {
+            db.ref('whale_tracker').limitToLast(1).on('child_added', (snap) => {
+                const data = snap.val();
+                if(!data) return;
+                
+                const whaleContainer = document.getElementById('whale-data');
+                const card = document.getElementById('mod-whale');
+                const actionColor = data.side === "BUY" ? "var(--long)" : "var(--short)";
+                
+                whaleContainer.innerHTML = `<span style="color:${actionColor};">${data.side}</span> ${data.coin.replace('/USDT', '')} <br/> <span style="font-size:16px;">${data.value}</span>`;
+                whaleContainer.style.textShadow = `0 0 10px ${actionColor}`;
+                
+                // Flash Effect
+                card.style.borderColor = actionColor;
+                card.style.boxShadow = `0 0 15px ${actionColor} inset, 0 0 15px ${actionColor}`;
+                setTimeout(() => {
+                    card.style.borderColor = "rgba(221, 0, 255, 0.2)";
+                    card.style.boxShadow = "none";
+                }, 1000);
+            });
         }
 
         function openAccountSettings() {
@@ -896,6 +924,7 @@
             });
         }
 
+        // --- FULLY RESTORED POPUP CHART LOGIC ---
         function openLiveChart(pair, entry, tp, sl, side) {
             const modal = document.getElementById('chart-modal'); modal.style.display = 'flex';
             document.getElementById('chart-coin-name').innerText = pair;
@@ -919,9 +948,9 @@
             document.getElementById('tech-logic-field').innerText = techLogic;
             document.getElementById('risk-logic-field').innerText = riskLogic;
         }
-        
         function closeAiLogicModal() { document.getElementById('logic-modal').style.display = 'none'; }
 
+        // --- FIXED SIGNAL RENDER LOGIC WITH LIVE MARKET BUTTON ---
         function renderSignals(data) {
             const container = document.getElementById('signal-container');
             container.innerHTML = ''; 
@@ -937,7 +966,7 @@
                 const formattedRisk = (details.risk_logic || "").replace(/'/g, "\\'");
                 const pairName = details.pair || coinKey.replace('USDT', '/USDT');
 
-                // මෙන්න මේ කොටසේ තමයි 'Live Market' බොත්තම ඔයාගේ Popup Chart එකට හරියටම ලින්ක් කළේ!
+                // මෙහිදී 'Live Market' බොත්තම සෘජුවම අර ලස්සන Neon Chart Popup එකට ලින්ක් කර ඇත.
                 container.innerHTML += `
                     <div class="${cardCssClass}">
                         <div>
@@ -960,7 +989,7 @@
                     </div>`;
             }
         }
-        
+
         let activeMarketWatchers = {};
 
         function takeTrade(coinKey) {
