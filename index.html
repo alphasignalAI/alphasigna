@@ -600,10 +600,41 @@
     <div id="account-modal" class="modal-overlay">
         <div class="account-box-container">
             <button class="close-btn" onclick="closeAccountSettings()"><i class="fas fa-times"></i></button>
-            <div class="logic-header">⚙️ ACCOUNT SETTINGS</div>
-            <input type="text" id="edit-nickname" placeholder="Nickname" style="width:100%; padding:10px; margin-bottom:10px; background:#000; border:1px solid #333; color:#fff;" />
-            <input type="text" id="edit-wa" placeholder="WhatsApp" style="width:100%; padding:10px; margin-bottom:10px; background:#000; border:1px solid #333; color:#fff;" />
-            <button class="btn" onclick="saveAccountSettings()" style="width:100%;">SAVE CHANGINGS</button>
+            <div class="logic-header" style="color: var(--primary);">⚙️ ACCOUNT SETTINGS</div>
+            <p style="color:var(--text-muted); font-size:13px; margin-top:-10px; margin-bottom:25px;">Update your Nickname, WhatsApp, and Binance API credentials.</p>
+            
+            <div class="input-group">
+                <label>Nickname</label>
+                <input type="text" id="edit-nickname" style="width: 100%; box-sizing: border-box; padding: 15px; border-radius: 12px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.6); color: var(--primary); font-size: 16px; margin-bottom: 15px;" />
+            </div>
+            <div class="input-group">
+                <label>WhatsApp Number</label>
+                <input type="text" id="edit-wa" style="width: 100%; box-sizing: border-box; padding: 15px; border-radius: 12px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.6); color: var(--primary); font-size: 16px; margin-bottom: 15px;" />
+            </div>
+            <div class="input-group">
+                <label>Binance API Key</label>
+                <input type="password" id="edit-api-key" style="width: 100%; box-sizing: border-box; padding: 15px; border-radius: 12px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.6); color: var(--primary); font-size: 16px; margin-bottom: 15px;" />
+            </div>
+            <div class="input-group">
+                <label>Binance API Secret</label>
+                <input type="password" id="edit-api-secret" style="width: 100%; box-sizing: border-box; padding: 15px; border-radius: 12px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.6); color: var(--primary); font-size: 16px; margin-bottom: 20px;" />
+            </div>
+
+            <div class="input-group" style="display: flex; align-items: center; gap: 10px; margin-bottom: 25px; background: rgba(255,0,127,0.05); padding: 15px; border-radius: 12px; border: 1px solid var(--card-border);">
+                <input type="checkbox" id="edit-vip-auto" style="width: 24px; height: 24px; margin: 0; cursor: pointer; accent-color: var(--primary);">
+                <label style="margin: 0; color: #fff; font-size: 14px; text-transform: none;">Enable Auto-Trade for <b>VIP Signals (85%+)</b></label>
+            </div>
+
+            <button class="btn" onclick="saveAccountSettings()" id="edit-save-btn" style="width: 100%;">UPDATE SETTINGS</button>
+        </div>
+    </div>
+
+    <div id="admin-modal" class="modal-overlay">
+        <div class="admin-panel-container">
+            <button class="close-btn" onclick="closeAdminPanel()"><i class="fas fa-times"></i></button>
+            <div class="logic-header" style="color: var(--primary);">👑 ADMIN: AI AUTO-TRACKING LOGS</div>
+            <p style="color:var(--text-muted); font-size:13px; margin-top:-10px; margin-bottom:25px;">24/7 background execution analysis and AI self-reflection records.</p>
+            <div id="admin-logs-content">Loading Data...</div>
         </div>
     </div>
 
@@ -683,14 +714,11 @@
             });
         }
 
-        // ==============================================================================
-        // 🛡️ DYNAMIC FIEXED JAVASCRIPT MATRIX LAYER (NO PATH DUPLICATIONS)
-        // ==============================================================================
         function renderSignals(data) {
             const container = document.getElementById('signal-container');
             container.innerHTML = ''; 
             if (!data) {
-                container.innerHTML = '<div style="grid-column: span 2; text-align:center; color:var(--text-muted); padding:40px;">⚠️ Awaiting active Node cycles. Matrix Core scanning channels...</div>';
+                container.innerHTML = '<div style="grid-column: span 2; text-align:center; color:var(--text-muted); padding:40px;">⚠️ Awaiting active HFT Quant Node cycles...</div>';
                 return;
             }
 
@@ -760,8 +788,45 @@
         function closeStrategyBuilder() { document.getElementById('strategy-modal').style.display = 'none'; }
         function openPsychologyDash() { document.getElementById('psychology-modal').style.display = 'flex'; }
         function closePsychologyDash() { document.getElementById('psychology-modal').style.display = 'none'; }
-        function openAccountSettings() { document.getElementById('account-modal').style.display = 'flex'; }
+        
+        function openAccountSettings() { 
+            if(activeUserKey === 'pehelitha') {
+                showUiNotification("Admin profiles cannot be modified standard UI.", "info");
+                return;
+            }
+            document.getElementById('account-modal').style.display = 'flex'; 
+            db.ref('premium_keys/' + activeUserKey).once('value', (s) => {
+                const data = s.val();
+                document.getElementById('edit-nickname').value = data.nickname || '';
+                document.getElementById('edit-wa').value = data.whatsapp_number || '';
+                document.getElementById('edit-api-key').value = data.binance_api || '';
+                document.getElementById('edit-api-secret').value = data.binance_secret || '';
+                document.getElementById('edit-vip-auto').checked = data.vip_auto_trade === true;
+            });
+        }
+        
         function closeAccountSettings() { document.getElementById('account-modal').style.display = 'none'; }
+        
+        function saveAccountSettings() {
+            const nickname = document.getElementById('edit-nickname').value.trim();
+            const waNumber = document.getElementById('edit-wa').value.trim();
+            const apiKey = document.getElementById('edit-api-key').value.trim();
+            const apiSecret = document.getElementById('edit-api-secret').value.trim();
+            const vipAuto = document.getElementById('edit-vip-auto').checked;
+            
+            db.ref('premium_keys/' + activeUserKey).update({
+                nickname: nickname,
+                whatsapp_number: waNumber,
+                binance_api: apiKey,
+                binance_secret: apiSecret,
+                vip_auto_trade: vipAuto
+            }).then(() => {
+                showUiNotification("Cloud Settings Updated Successfully!", "success");
+                closeAccountSettings();
+                document.getElementById('user-welcome-text').innerText = nickname.toUpperCase();
+            });
+        }
+
         function openAiLogicModal(t, r) { document.getElementById('logic-modal').style.display = 'flex'; document.getElementById('tech-logic-field').innerText = t; document.getElementById('risk-logic-field').innerText = r; }
         function closeAiLogicModal() { document.getElementById('logic-modal').style.display = 'none'; }
 
