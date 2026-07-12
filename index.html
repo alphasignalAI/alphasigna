@@ -47,7 +47,7 @@
         .btn { 
             background: linear-gradient(90deg, var(--primary), #d100ff);
             color: #fff; 
-            padding: 14px 28px; 
+            padding: 12px 24px; 
             border: none; 
             border-radius: 12px; 
             font-weight: 800; 
@@ -55,7 +55,7 @@
             transition: all 0.3s ease; 
             text-transform: uppercase;
             font-family: 'Rajdhani', sans-serif;
-            font-size: 16px;
+            font-size: 14px;
             letter-spacing: 1px;
             box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
         }
@@ -138,15 +138,14 @@
         .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: bold; margin-bottom: 5px; }
         .stat-val { font-size: 22px; font-weight: 800; font-family: 'Rajdhani', sans-serif; }
         
-        /* NEW Matrix Panel Split for Radar Animation Integration */
         .matrix-sub-layout {
             display: grid;
-            grid-template-columns: 160px 1fr;
+            grid-template-columns: 180px 1fr;
             gap: 20px;
-            align-items: center;
+            align-items: start;
         }
         
-        /* Continuous Circular Scanner (Image 2 Match) */
+        /* Integrated Scanning Core Widget Panel */
         #radar-section {
             display: flex;
             flex-direction: column;
@@ -156,10 +155,10 @@
             border: 1px solid var(--card-border);
             border-radius: 16px;
             padding: 15px 10px;
-            height: 100%;
             box-sizing: border-box;
+            text-align: center;
         }
-        .radar-title { font-size: 10px; font-weight: bold; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.5px; }
+        .radar-title { font-size: 11px; font-weight: bold; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px; }
         .radar-scope {
             position: relative;
             width: 100px;
@@ -170,6 +169,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-bottom: 12px;
         }
         .radar-scope::before {
             content: '';
@@ -191,14 +191,13 @@
         }
         @keyframes radarRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         
-        /* Heartbeat Signal Canvas Overlay */
         #heartbeat-canvas {
-            width: 120px;
+            width: 140px;
             height: 35px;
-            margin-top: 15px;
             border-radius: 6px;
             background: rgba(10, 2, 8, 0.6);
             border: 1px solid rgba(255, 0, 127, 0.1);
+            margin-bottom: 15px;
         }
 
         .adv-modules-header { font-size: 14px; font-weight: bold; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; }
@@ -213,19 +212,38 @@
         .module-badge { display: block; font-size: 9px; background: rgba(255,0,127,0.1); color: var(--primary); padding: 2px 5px; border-radius: 4px; margin-top: 5px; width: max-content; margin-inline: auto; }
 
         .right-col { display: flex; flex-direction: column; gap: 20px; }
-        
-        .scan-action-area { display: flex; justify-content: center; margin-bottom: 10px; }
-        #scan-btn { 
-            width: 100%; max-width: 400px; padding: 18px; font-size: 18px; 
-            background: #ffffff; color: #000000; border-radius: 40px;
-            box-shadow: 0 0 25px rgba(255,255,255,0.25);
+
+        /* NEW Cyberpunk Placeholder Grid to eliminate layout emptiness */
+        .placeholder-matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
         }
-        #scan-btn:hover { background: var(--primary); color: #fff; box-shadow: 0 0 30px var(--primary); }
+        @media (max-width: 768px) { .placeholder-matrix-grid { grid-template-columns: 1fr; } }
+        
+        .placeholder-box {
+            border: 1px dashed rgba(255, 0, 127, 0.15);
+            background: rgba(15, 3, 12, 0.2);
+            border-radius: 16px;
+            height: 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 0, 127, 0.3);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .placeholder-box i { font-size: 24px; margin-bottom: 8px; opacity: 0.4; animation: pulseGlow 2s infinite ease-in-out; }
+        @keyframes pulseGlow { 0%, 100% { opacity: 0.2; transform: scale(0.95); } 50% { opacity: 0.5; transform: scale(1.05); } }
 
         .signal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         @media (max-width: 768px) { .signal-grid { grid-template-columns: 1fr; } }
 
-        /* Unified Aesthetic: Force Pink Accents on standard elements */
         .signal-card { 
             background: rgba(30, 5, 25, 0.7); 
             border-radius: 16px; padding: 20px; 
@@ -404,6 +422,8 @@
                                 <div class="radar-sweep"></div>
                             </div>
                             <canvas id="heartbeat-canvas"></canvas>
+                            
+                            <button class="btn" id="scan-btn" onclick="revealSignals()" style="font-size: 11px; padding: 10px 15px; width: 100%; box-shadow: 0 0 10px rgba(255, 0, 127, 0.2);">Scan Signals</button>
                         </div>
                         
                         <div>
@@ -422,8 +442,11 @@
             </div>
 
             <div class="right-col">
-                <div class="scan-action-area">
-                    <button class="btn" id="scan-btn" onclick="revealSignals()">GET NEW SIGNAL</button>
+                <div class="placeholder-matrix-grid" id="matrix-placeholder">
+                    <div class="placeholder-box"><i class="fas fa-terminal"></i>Matrix Core Standby</div>
+                    <div class="placeholder-box"><i class="fas fa-search-dollar"></i>Liquidity Map Idle</div>
+                    <div class="placeholder-box"><i class="fas fa-server"></i>Neural Nodes Ready</div>
+                    <div class="placeholder-box"><i class="fas fa-satellite-dish"></i>Inflow Tracker Offline</div>
                 </div>
                 
                 <div class="signal-grid" id="signal-container" style="display: none;"></div>
@@ -520,7 +543,6 @@
             }, 4000);
         }
 
-        // NEW: Automatic HTML5 Canvas Heartbeat Pulse Engine Loop
         function initHeartbeatPulse() {
             const canvas = document.getElementById('heartbeat-canvas');
             if (!canvas) return;
@@ -541,15 +563,14 @@
                 ctx.beginPath();
                 ctx.moveTo(x, canvas.height / 2);
                 
-                // ECG Pattern calculations
                 x += 2;
                 let y = canvas.height / 2;
                 if (x % 40 === 0) {
-                    y -= 15; // Spike up
+                    y -= 15; 
                 } else if (x % 40 === 4) {
-                    y += 15; // Drop down
+                    y += 15; 
                 } else if (x % 40 === 8) {
-                    y = canvas.height / 2; // Flatline normalize
+                    y = canvas.height / 2; 
                 }
                 
                 ctx.lineTo(x, y);
@@ -649,7 +670,7 @@
             }
             
             initCoreListeners();
-            initHeartbeatPulse(); // Initialize moving ECG baseline pulse
+            initHeartbeatPulse(); 
         }
 
         function openAccountSettings() {
@@ -719,7 +740,7 @@
             if (activeUserKey !== "pehelitha") {
                 db.ref('premium_keys/' + activeUserKey).on('value', (snapshot) => {
                     const userData = snapshot.val();
-                    if (!userData) return;
+                    if (!snapshot.exists()) return;
                     const myStats = userData.stats || { trades: 0, tp: 0, sl: 0 };
                     document.getElementById('user-trades').innerText = myStats.trades || 0;
                     document.getElementById('user-pnl-ratio').innerText = `${myStats.tp || 0}/${myStats.sl || 0}`;
@@ -770,9 +791,10 @@
         function revealSignals() {
             const btn = document.getElementById('scan-btn');
             const sigContainer = document.getElementById('signal-container');
+            const placeholderGrid = document.getElementById('matrix-placeholder');
             const statusDiv = document.getElementById('scanner-status');
             
-            btn.innerHTML = `SCANNING LIQUIDITY...`; 
+            btn.innerHTML = `SCANNING...`; 
             btn.disabled = true;
             statusDiv.innerHTML = `<span style="color:var(--accent);">🔄 SYNCING NEURAL NETWORKS...</span>`;
             
@@ -780,9 +802,10 @@
                 currentSignalData = snap.val();
                 
                 setTimeout(() => {
-                    sigContainer.style.display = 'grid'; 
+                    placeholderGrid.style.display = 'none'; // Remove placeholder items
+                    sigContainer.style.display = 'grid'; // Enable real data cards
                     renderSignals(currentSignalData); 
-                    btn.innerHTML = `SCAN NEW SIGNALS`; 
+                    btn.innerHTML = `Scan Signals`; 
                     btn.disabled = false;
                     statusDiv.innerHTML = `🟢 MULTI-TIMEFRAME ANALYSIS ACTIVE`;
                     showUiNotification("Deep Space Engine Scan Complete. Top Market Inflows Mapped.", "info");
@@ -847,7 +870,7 @@
             const pairName = (signal.pair || coinKey).replace('/', ''); 
             
             if (activeMarketWatchers[pairName]) { 
-                showUiNotification(`Core Protocol Error: Already tracking active execution loop for ${pairName}`, "error"); 
+                showUiNotification("Core Protocol Error: Already tracking active execution loop", "error"); 
                 return; 
             }
 
