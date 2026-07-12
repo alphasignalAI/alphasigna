@@ -139,7 +139,6 @@
             justify-content: space-between;
         }
         
-        /* 🌌 AMBIENT PULSING FOR LEFT PANEL STAT BOXES */
         .stats-grid { 
             display: grid; 
             grid-template-columns: repeat(4, 1fr); 
@@ -159,13 +158,7 @@
             justify-content: space-between;
             min-height: 105px;
             box-sizing: border-box;
-            transition: all 0.4s ease;
             animation: panelPulseAmbient 4s infinite ease-in-out;
-        }
-        .stat-item:hover {
-            border-color: var(--primary);
-            box-shadow: 0 0 15px rgba(255, 0, 127, 0.35) inset;
-            transform: translateY(-2px);
         }
         @keyframes panelPulseAmbient {
             0%, 100% { border-color: rgba(255, 0, 127, 0.15); box-shadow: 0 0 5px rgba(255,0,127,0.05); }
@@ -207,7 +200,6 @@
             align-items: start;
         }
         
-        /* 📡 RADAR SECTION ADVANCED LOOK */
         #radar-section {
             display: flex;
             flex-direction: column;
@@ -219,7 +211,6 @@
             padding: 15px 10px;
             box-sizing: border-box;
             text-align: center;
-            box-shadow: 0 0 15px rgba(255, 0, 127, 0.1);
         }
         .radar-title { font-size: 11px; font-weight: bold; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px; }
         .radar-scope {
@@ -235,23 +226,12 @@
             margin-bottom: 12px;
             overflow: hidden;
         }
-        .radar-scope::before {
-            content: '';
-            position: absolute;
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            border: 1px solid rgba(0, 240, 255, 0.2);
-        }
         .radar-sweep {
             position: absolute;
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             background: conic-gradient(from 0deg, rgba(255, 0, 127, 0.4) 0deg, transparent 90deg);
-            top: 0; left: 0;
-            border-radius: 50%;
+            top: 0; left: 0; border-radius: 50%;
             animation: radarRotate 2.5s linear infinite;
-            transform-origin: center;
         }
         @keyframes radarRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         
@@ -264,31 +244,77 @@
             margin-bottom: 15px;
         }
 
-        /* 🧠 PRO ADVANCED MODULE CARDS FUTURISTIC HOVER EFFECTS */
+        /* 🧠 ADVANCED EMBEDDED REALTIME GRAPHICS MATRIX FOR BUTTON MODULES */
         .adv-modules-header { font-size: 14px; font-weight: bold; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; }
-        .adv-modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+        .adv-modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 12px; }
+        
         .module-card {
-            background: rgba(5, 1, 4, 0.6); 
-            border: 1px dashed rgba(221, 0, 255, 0.25);
-            padding: 12px; border-radius: 12px; text-align: center;
+            background: rgba(8, 2, 6, 0.7); 
+            border: 1px solid rgba(221, 0, 255, 0.25);
+            padding: 12px; border-radius: 16px; text-align: center;
             font-size: 11px; font-weight: bold; color: var(--text-muted);
-            transition: all 0.4s cubic-bezier(0.075, 0.82, 0.165, 1); 
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
             position: relative; overflow: hidden;
-            display: flex; flex-direction: column; justify-content: center;
+            display: flex; flex-direction: column; justify-content: space-between;
+            min-height: 145px; box-sizing: border-box;
         }
-        .module-card::after {
-            content: ''; position: absolute; top: -100%; left: -100%; width: 300%; height: 300%;
-            background: radial-gradient(circle, rgba(0, 240, 255, 0.1) 0%, transparent 70%);
-            transition: all 0.5s ease; opacity: 0; pointer-events: none;
-        }
-        .module-card:hover { 
-            border-color: var(--accent); 
+        .module-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+            transform: translateY(-2px);
             color: #fff;
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.25);
-            transform: scale(1.03);
         }
-        .module-card:hover::after { opacity: 1; top: -100%; left: -100%; }
-        .module-badge { display: block; font-size: 9px; background: rgba(255,0,127,0.1); color: var(--primary); padding: 2px 5px; border-radius: 4px; margin-top: 5px; width: max-content; margin-inline: auto; }
+
+        /* 📊 CSS INTERNAL GRAPHICS ASSETS */
+        .embedded-mini-chart {
+            width: 100%; height: 40px; display: flex; align-items: flex-end; justify-content: center; gap: 4px; margin: 8px 0;
+        }
+        .embedded-bar {
+            width: 8px; height: 30%; background: var(--primary); border-radius: 2px;
+            animation: hftBarPulse 1.2s infinite ease-in-out;
+        }
+        .embedded-bar:nth-child(2) { height: 75%; background: var(--violet-glow); animation-delay: 0.2s; }
+        .embedded-bar:nth-child(3) { height: 45%; background: var(--accent); animation-delay: 0.4s; }
+        .embedded-bar:nth-child(4) { height: 90%; background: var(--long); animation-delay: 0.1s; }
+        .embedded-bar:nth-child(5) { height: 60%; background: var(--btc-gold); animation-delay: 0.3s; }
+        @keyframes hftBarPulse { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.6); opacity: 0.7; } }
+
+        /* 🔄 CIRCULAR RADAR progress MATRIX ASSETS */
+        .embedded-ring-box {
+            position: relative; width: 42px; height: 42px; margin: 8px auto; display: flex; align-items: center; justify-content: center;
+        }
+        .embedded-ring-svg { transform: rotate(-90deg); width: 100%; height: 100%; animation: spinLoop 6s linear infinite; }
+        @keyframes spinLoop { to { transform: rotate(270deg); } }
+        
+        /* 🎙️ MOBILE PHONE UI RECORDING WAVEFORM ASSET (VOICE ASSIST) */
+        .phone-voice-wave {
+            width: 100%; height: 35px; display: flex; align-items: center; justify-content: center; gap: 3px; margin: 10px 0;
+            background: rgba(0, 240, 255, 0.04); border-radius: 8px; border: 1px solid rgba(0, 240, 255, 0.1);
+        }
+        .voice-mic-line {
+            width: 3px; height: 15%; background: var(--accent); border-radius: 4px;
+            animation: phoneMicPulse 0.8s infinite ease-in-out;
+        }
+        .voice-mic-line:nth-child(2) { height: 50%; animation-delay: 0.15s; }
+        .voice-mic-line:nth-child(3) { height: 85%; background: var(--primary); animation-delay: 0.3s; }
+        .voice-mic-line:nth-child(4) { height: 40%; animation-delay: 0.1s; }
+        .voice-mic-line:nth-child(5) { height: 70%; background: var(--violet-glow); animation-delay: 0.25s; }
+        .voice-mic-line:nth-child(6) { height: 25%; animation-delay: 0.05s; }
+        @keyframes phoneMicPulse { 0%, 100% { height: 15%; } 50% { height: 90%; filter: drop-shadow(0 0 4px var(--accent)); } }
+
+        /* 🎥 CANDLE REPLAY GRAPHIC MATRIX */
+        .replay-candle-track {
+            width: 100%; height: 38px; position: relative; margin: 8px 0; background: rgba(0,0,0,0.3); border-radius: 6px; display: flex; align-items: center; justify-content: space-around; padding: 0 5px; box-sizing: border-box;
+        }
+        .mock-candle { width: 6px; height: 22px; background: var(--long); position: relative; }
+        .mock-candle::before { content: ''; position: absolute; width: 2px; height: 30px; background: var(--long); left: 2px; top: -4px; }
+        .mock-candle.red-c { background: var(--short); }
+        .mock-candle.red-c::before { background: var(--short); }
+        .replay-playback-line {
+            position: absolute; top: 0; left: 0; width: 2px; height: 100%; background: var(--accent);
+            box-shadow: 0 0 8px var(--accent); animation: playSweep 3s infinite linear;
+        }
+        @keyframes playSweep { 0% { left: 0; } 100% { left: 100%; } }
 
         .right-col { display: flex; flex-direction: column; height: 100%; justify-content: flex-start; }
 
@@ -300,7 +326,6 @@
         }
         @media (max-width: 768px) { .signal-grid { grid-template-columns: 1fr; } }
 
-        /* 🎬 SIGNALS CARD SLOW-MOTION REVEAL EFFECT */
         .signal-card { 
             background: var(--card-bg); 
             border-radius: 16px; 
@@ -309,36 +334,37 @@
             display: flex; 
             flex-direction: column; 
             justify-content: space-between; 
-            transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             min-height: 290px;
             box-sizing: border-box;
             position: relative;
             overflow: hidden;
             opacity: 0;
-            transform: scale(0.85) translateY(40px);
+            transform: scale(0.8) translateY(30px);
         }
         .signal-card.reveal-active {
             opacity: 1;
             transform: scale(1) translateY(0);
-            box-shadow: 0 0 25px rgba(255, 0, 127, 0.3);
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.25);
         }
         .signal-card.scanning-effect::before {
             content: '';
             position: absolute;
-            top: -100%; left: 0;
-            width: 100%; height: 100%;
-            background: linear-gradient(180deg, transparent, var(--primary), transparent);
-            animation: matrixScanLine 2s infinite ease-in-out;
-            opacity: 0.6;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: linear-gradient(0deg, transparent, var(--primary), transparent);
+            transform: rotate(30deg);
+            animation: radarSweepLine 1.5s infinite linear;
+            opacity: 0.4;
             pointer-events: none;
         }
-        @keyframes matrixScanLine {
-            0% { top: -100%; }
-            100% { top: 100%; }
+        @keyframes radarSweepLine {
+            0% { transform: translate(-30%, -30%) rotate(30deg); }
+            100% { transform: translate(30%, 30%) rotate(30deg); }
         }
         .signal-card:hover { 
             border-color: var(--primary); 
-            box-shadow: 0 0 30px rgba(255, 0, 127, 0.6);
+            box-shadow: 0 0 25px rgba(255, 0, 127, 0.5);
         }
         
         .placeholder-matrix-grid {
@@ -395,40 +421,6 @@
         .logic-box-container, .admin-panel-container, .account-box-container { max-width: 700px; width: 90%; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; padding: 35px; position: relative; max-height: 85vh; overflow-y: auto; }
         .logic-header { font-size: 24px; font-weight: 800; color: #fff; border-bottom: 1px solid var(--card-border); padding-bottom: 15px; margin-bottom: 25px; font-family: 'Rajdhani', sans-serif;}
         .logic-content-block { background: rgba(0,0,0,0.6); border: 1px solid var(--card-border); padding: 18px; border-radius: 12px; font-family: monospace; font-size: 14px; color: var(--accent); margin-bottom: 20px; white-space: pre-wrap; }
-        
-        .admin-trade-row { background: rgba(0,0,0,0.5); border: 1px solid var(--card-border); padding: 18px; border-radius: 12px; margin-bottom: 15px; border-left: 4px solid var(--accent);}
-        .ai-feedback { font-family: monospace; font-size: 13px; color: var(--primary); background: rgba(255,0,127,0.08); padding: 12px; border-radius: 8px; margin-top: 10px; border-left: 2px solid var(--primary);}
-        
-        #ui-notification-container {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 9999;
-            width: 90%;
-            max-width: 500px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .ui-toast {
-            background: rgba(15, 2, 10, 0.95);
-            border: 1px solid var(--primary);
-            box-shadow: 0 0 20px rgba(255, 0, 127, 0.5);
-            padding: 16px 20px;
-            border-radius: 12px;
-            color: #fff;
-            font-size: 14px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            backdrop-filter: blur(10px);
-            animation: slideDown 0.3s ease forwards;
-        }
-        .ui-toast.success { border-color: var(--long); box-shadow: 0 0 20px rgba(0, 255, 170, 0.3); }
-        .ui-toast.error { border-color: var(--short); box-shadow: 0 0 20px rgba(255, 23, 68, 0.3); }
-        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -560,19 +552,65 @@
                         <div>
                             <div class="adv-modules-header">Pro Analysis Modules</div>
                             <div class="adv-modules-grid">
+                                
                                 <div class="module-card" id="mod-whale">
-                                    <span style="font-weight: bold; margin-bottom:5px;">🐋 Whale Inflows</span>
-                                    <span id="whale-data" style="color:var(--primary); font-size: 14px; font-weight: bold; display: block;">AWAITING DATA...</span>
+                                    <span style="font-weight: bold; margin-bottom:2px;">🐋 Whale Inflows</span>
+                                    <div class="embedded-mini-chart">
+                                        <div class="embedded-bar"></div><div class="embedded-bar"></div><div class="embedded-bar"></div><div class="embedded-bar"></div><div class="embedded-bar"></div>
+                                    </div>
+                                    <span id="whale-data" style="color:var(--primary); font-size: 13px; font-weight: bold; display: block;">AWAITING DATA...</span>
                                 </div>
-                                <div class="module-card">🔥 Liquidity Map <span class="module-badge">Phase 3</span></div>
                                 
-                                <div class="module-card" onclick="openStrategyBuilder()" style="cursor:pointer; border-style: solid; border-color: var(--accent);">🧠 Strategy Builder <span class="module-badge" style="background:var(--accent); color:#000; font-weight:bold;">ACTIVE</span></div>
+                                <div class="module-card">
+                                    <span>🔥 Liquidity Map</span>
+                                    <div class="embedded-ring-box">
+                                        <svg class="embedded-ring-svg" viewBox="0 0 36 36">
+                                            <circle cx="18" cy="18" r="16" fill="none" stroke="rgba(0,240,255,0.1)" stroke-width="3"></circle>
+                                            <circle cx="18" cy="18" r="16" fill="none" stroke="var(--accent)" stroke-width="3" stroke-dasharray="75 100"></circle>
+                                        </svg>
+                                    </div>
+                                    <span class="module-badge">Phase 3</span>
+                                </div>
                                 
-                                <div class="module-card" onclick="openPsychologyDash()" style="cursor:pointer; border-style: solid; border-color: var(--primary);">❤️ Psychology Dash <span class="module-badge" style="background:var(--primary); color:#fff; font-weight:bold;">ACTIVE</span></div>
+                                <div class="module-card" onclick="openStrategyBuilder()" style="cursor:pointer; border-color: var(--accent);">
+                                    <span>🧠 Strategy Builder</span>
+                                    <div class="embedded-mini-chart" style="height:35px;">
+                                        <div class="embedded-bar" style="background:var(--accent); height:40%"></div>
+                                        <div class="embedded-bar" style="background:var(--accent); height:85%"></div>
+                                        <div class="embedded-bar" style="background:var(--accent); height:60%"></div>
+                                    </div>
+                                    <span class="module-badge" style="background:var(--accent); color:#000; font-weight:bold;">ACTIVE</span>
+                                </div>
                                 
-                                <div class="module-card" onclick="openTradeReplay()" style="cursor:pointer; border-style: solid; border-color: var(--accent);">🎥 Trade Replay <span class="module-badge" style="background:var(--accent); color:#000; font-weight:bold;">ACTIVE</span></div>
+                                <div class="module-card" onclick="openPsychologyDash()" style="cursor:pointer; border-color: var(--primary);">
+                                    <span>❤️ Psychology Dash</span>
+                                    <div class="embedded-ring-box">
+                                        <svg class="embedded-ring-svg" viewBox="0 0 36 36">
+                                            <circle cx="18" cy="18" r="16" fill="none" stroke="rgba(255,0,127,0.1)" stroke-width="3"></circle>
+                                            <circle cx="18" cy="18" r="16" fill="none" stroke="var(--primary)" stroke-width="3" stroke-dasharray="90 100"></circle>
+                                        </svg>
+                                    </div>
+                                    <span class="module-badge" style="background:var(--primary); color:#fff; font-weight:bold;">ACTIVE</span>
+                                </div>
                                 
-                                <div class="module-card" style="opacity: 0.6;">🎙️ Voice Assist <span class="module-badge" style="background:rgba(255,255,255,0.1); color:#fff;">INTEGRATED</span></div>
+                                <div class="module-card" onclick="openTradeReplay()" style="cursor:pointer; border-color: var(--accent);">
+                                    <span>🎥 Trade Replay</span>
+                                    <div class="replay-candle-track">
+                                        <div class="mock-candle"></div><div class="mock-candle red-c"></div><div class="mock-candle"></div>
+                                        <div class="replay-playback-line"></div>
+                                    </div>
+                                    <span class="module-badge" style="background:var(--accent); color:#000; font-weight:bold;">ACTIVE</span>
+                                </div>
+                                
+                                <div class="module-card" style="opacity: 0.9; border-color: var(--accent);">
+                                    <span>🎙️ Voice Assist</span>
+                                    <div class="phone-voice-wave">
+                                        <div class="voice-mic-line"></div><div class="voice-mic-line"></div><div class="voice-mic-line"></div>
+                                        <div class="voice-mic-line"></div><div class="voice-mic-line"></div><div class="voice-mic-line"></div>
+                                    </div>
+                                    <span class="module-badge" style="background:rgba(0,240,255,0.15); color:var(--accent);">INTEGRATED</span>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -607,17 +645,14 @@
             <button class="close-btn" onclick="closePsychologyDash()"><i class="fas fa-times"></i></button>
             <div class="logic-header" style="color: var(--primary);">❤️ AI PSYCHOLOGY DASHBOARD</div>
             <p style="color:var(--text-muted); font-size:13px; margin-top:-10px; margin-bottom:25px;">Real-time emotional exposure guard and neural trading state analysis.</p>
-            
             <div style="background: rgba(255,0,127,0.05); padding: 20px; border-radius: 12px; border: 1px solid var(--card-border); margin-bottom: 20px; text-align: center;">
                 <span style="color:var(--text-muted); font-size:12px; font-weight:bold; text-transform:uppercase; display:block; margin-bottom:5px;">Current Trading State</span>
                 <span id="psy-trader-state" style="color: var(--long); font-size: 24px; font-weight: 800; font-family:'Rajdhani', sans-serif; letter-spacing:1px; text-shadow: 0 0 10px var(--long);">🟢 STABLE & RATIONAL</span>
             </div>
-
             <div style="background: rgba(0,0,0,0.4); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px;">
                 <h3 style="color:#fff; font-size:14px; margin-bottom:10px; font-family:'Inter', sans-serif; text-transform:uppercase; font-weight:bold; color:var(--accent);"><i class="fas fa-brain"></i> AI Mindset Directive</h3>
                 <p id="psy-ai-directive" style="color: var(--text-main); font-size: 13px; line-height: 1.6; margin: 0;">Market conditions are tracked alongside your personal win/loss performance. System indicates fully rational environment. Keep executing with pre-defined risk sizing.</p>
             </div>
-
             <div style="background: rgba(255,23,68,0.05); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,23,68,0.2); margin-bottom: 25px;">
                 <h3 style="color:#fff; font-size:14px; margin-bottom:8px; color:var(--short);"><i class="fas fa-shield-alt"></i> Max Drawdown Lock (Revenge Trade Protection)</h3>
                 <p style="color:var(--text-muted); font-size:12px; margin: 0 0 15px 0;">If your daily consecutive losses cross this limit, ZenithAI will automatically lock the execution core for 24 hours to safeguard capital.</p>
@@ -626,7 +661,6 @@
                     <input type="text" id="psy-loss-limit" value="3" style="width: 100%; box-sizing: border-box; padding: 15px; border-radius: 12px; border: 1px solid rgba(255,23,68,0.3); background: rgba(0,0,0,0.6); color: var(--short); font-size: 16px; outline:none;" />
                 </div>
             </div>
-
             <button class="btn" onclick="savePsychologySettings()" id="psy-save-btn" style="width: 100%; background: var(--primary); box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);">UPDATE PSYCHOLOGY GUARD</button>
         </div>
     </div>
@@ -636,7 +670,6 @@
             <button class="close-btn" onclick="closeStrategyBuilder()"><i class="fas fa-times"></i></button>
             <div class="logic-header" style="color: var(--accent);">🧠 AI STRATEGY BUILDER</div>
             <p style="color:var(--text-muted); font-size:13px; margin-top:-10px; margin-bottom:25px;">Customize the AI core parameters and capital allocation matrix.</p>
-            
             <div style="background: rgba(0,240,255,0.05); padding: 15px; border-radius: 12px; border: 1px solid rgba(0,240,255,0.15); margin-bottom: 20px;">
                 <h3 style="color:#fff; font-size:16px; margin-bottom:10px;"><i class="fas fa-wallet" style="color:var(--accent)"></i> Risk & Capital Management</h3>
                 <div class="input-group">
@@ -648,7 +681,6 @@
                     <input type="text" id="strat-score-threshold" placeholder="e.g. 70" value="70" style="width: 100%; box-sizing: border-box; padding: 15px; border-radius: 12px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.6); color: var(--accent); font-size: 16px; outline:none;" />
                 </div>
             </div>
-
             <div style="background: rgba(255,0,127,0.05); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,0,127,0.15); margin-bottom: 25px;">
                 <h3 style="color:#fff; font-size:16px; margin-bottom:10px;"><i class="fas fa-sliders-h" style="color:var(--primary)"></i> Technical Trigger Conditions</h3>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:15px;">
@@ -666,7 +698,6 @@
                     <input type="text" id="strat-vol-spike" value="3.0" style="width: 100%; box-sizing: border-box; padding: 15px; border-radius: 12px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.6); color: var(--primary); font-size: 16px; outline:none;" />
                 </div>
             </div>
-
             <button class="btn" onclick="saveCustomStrategy()" id="strat-save-btn" style="width: 100%; background: linear-gradient(90deg, var(--accent), var(--violet-glow)); box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);">DEPLOY CUSTOM STRATEGY</button>
         </div>
     </div>
@@ -698,7 +729,6 @@
             <button class="close-btn" onclick="closeAccountSettings()"><i class="fas fa-times"></i></button>
             <div class="logic-header" style="color: var(--primary);">⚙️ ACCOUNT SETTINGS</div>
             <p style="color:var(--text-muted); font-size:13px; margin-top:-10px; margin-bottom:25px;">Update your Nickname, WhatsApp, and Binance API credentials.</p>
-            
             <div class="input-group">
                 <label>Nickname</label>
                 <input type="text" id="edit-nickname" />
@@ -715,12 +745,10 @@
                 <label>Binance API Secret</label>
                 <input type="password" id="edit-api-secret" />
             </div>
-
             <div class="input-group" style="display: flex; align-items: center; gap: 10px; margin-bottom: 25px; background: rgba(255,0,127,0.05); padding: 15px; border-radius: 12px; border: 1px solid var(--card-border);">
                 <input type="checkbox" id="edit-vip-auto" style="width: 24px; height: 24px; margin: 0; cursor: pointer; accent-color: var(--primary);">
                 <label style="margin: 0; color: #fff; font-size: 14px; text-transform: none;">Enable Auto-Trade for <b>VIP Signals (85%+)</b></label>
             </div>
-
             <button class="btn" onclick="saveAccountSettings()" id="edit-save-btn" style="width: 100%;">UPDATE SETTINGS</button>
         </div>
     </div>
@@ -762,14 +790,13 @@
             }, 4000);
         }
 
-        // 🎙️ RE-CALIBRATED INSTITIONAL VOICE SPEED AND CADENCE ENGINE
         function triggerAIVoiceBroadcast(textMessage) {
             if (!isVoiceAssistEnabled) return;
             try {
-                window.speechSynthesis.cancel(); 
+                window.speechSynthesis.cancel();
                 const speech = new SpeechSynthesisUtterance(textMessage);
                 speech.lang = 'en-US';
-                speech.rate = 0.88; // ⏱️ Slowed down slightly for clearer, spaced articulation
+                speech.rate = 0.88; 
                 speech.pitch = 0.85; 
                 window.speechSynthesis.speak(speech);
             } catch (e) { console.log("Voice Engine Muted: ", e); }
@@ -1039,7 +1066,6 @@
                             }
                         }, 50);
 
-                        // Spaced text matrix format for highly accurate broadcast pacing
                         triggerAIVoiceBroadcast(`Signal verified for ${pairName}. Position. ${details.side}. Accuracy score. ${details.accuracy} percent.`);
 
                     }, index * 10000); 
