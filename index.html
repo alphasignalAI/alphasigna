@@ -12,7 +12,7 @@
             --accent: #00f0ff;       
             --bg-dark: #090206;      
             --card-bg: rgba(25, 5, 20, 0.75); 
-            --card-border: rgba(255, 0, 127, 0.2);
+            --card-border: rgba(255, 0, 127, 0.25);
             --long: #00ffaa;
             --short: #ff1744;
             --btc-gold: #f7931a;
@@ -33,7 +33,7 @@
             overflow-x: hidden; 
         }
         
-        h1, h2, h3 { font-family: 'Rajdhani', sans-serif; letter-spacing: 1px; }
+        h1, h2, h3 { font-family: 'Rajdhani', sans-serif; letter-spacing: 1px; margin: 0; }
 
         .glass-panel {
             background: var(--card-bg);
@@ -72,16 +72,17 @@
             color: var(--primary); font-size: 16px; text-align: center; margin-bottom: 20px; 
             outline: none; transition: 0.3s;
         }
-        .auth-box input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(0, 240, 255, 0.25); }
+        .auth-box input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(255, 0, 127, 0.25); }
         .input-group label { display: block; color: var(--text-muted); font-size: 12px; font-weight: bold; margin-bottom: 8px; text-align: left; text-transform: uppercase; }
 
         #dashboard { display: none; max-width: 1600px; margin: 0 auto; padding-top: 10px; }
         
+        /* FIXED: Master Symmetrical Layout Structure */
         .dashboard-layout {
             display: grid;
             grid-template-columns: 55% 45%;
             gap: 25px;
-            align-items: start;
+            align-items: stretch;
         }
 
         @media (max-width: 1100px) {
@@ -95,7 +96,7 @@
             margin-bottom: 25px;
             padding: 0 10px;
         }
-        .top-nav h1 { font-size: 32px; margin: 0; background: -webkit-linear-gradient(0deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .top-nav h1 { font-size: 32px; margin: 0; background: -webkit-linear-gradient(0deg, var(--primary), #ff66b2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .top-nav p { margin: 0; font-size: 12px; color: var(--text-muted); font-weight: bold; letter-spacing: 2px; }
         
         .nav-actions { display: flex; align-items: center; gap: 20px; }
@@ -116,30 +117,34 @@
         .profile-name { font-weight: 800; font-size: 14px; color: #fff; text-transform: uppercase; }
         .profile-exp { font-size: 11px; color: var(--text-muted); font-weight: bold; }
 
-        .left-col { display: flex; flex-direction: column; gap: 25px; }
+        /* FIXED: Dynamic Left Column Alignment */
+        .left-col { display: flex; flex-direction: column; gap: 25px; justify-content: space-between; height: 100%; }
         
         #network-container { 
-            width: 100%; height: 420px; 
+            width: 100%; height: 435px; 
             border-radius: 20px; 
             position: relative; overflow: hidden; 
             background: #090206;
             border: 1px solid var(--card-border);
             box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
         }
-        #scanner-status { font-family: 'Rajdhani', monospace; font-size: 15px; color: var(--primary); font-weight: bold; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255,0,127,0.6); padding: 10px 15px; background: rgba(0,0,0,0.8); width: 100%; box-sizing: border-box; position: absolute; top: 0; z-index: 10; border-bottom: 1px solid var(--card-border); }
+        #scanner-status { font-family: 'Rajdhani', monospace; font-size: 15px; color: var(--primary); font-weight: bold; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255,0,127,0.6); padding: 12px 15px; background: rgba(0,0,0,0.8); width: 100%; box-sizing: border-box; position: absolute; top: 0; z-index: 10; border-bottom: 1px solid var(--card-border); }
 
         .ask-ai-panel {
             padding: 25px;
             background: linear-gradient(145deg, rgba(255,0,127,0.05), rgba(21,5,20,0.9));
             border-left: 4px solid var(--primary);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         
-        /* UPGRADED: High-Tech Cyberpunk Visual Metrics Grid (Image 2 Reference Style) */
         .stats-grid { 
             display: grid; 
             grid-template-columns: repeat(4, 1fr); 
             gap: 15px; 
-            margin-bottom: 25px; 
+            margin-bottom: 20px; 
         }
         .stat-item { 
             background: rgba(0, 0, 0, 0.4);
@@ -158,7 +163,6 @@
         .stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px; margin-bottom: 4px; }
         .stat-val { font-size: 20px; font-weight: 800; font-family: 'Rajdhani', sans-serif; line-height: 1; margin-bottom: 6px; }
         
-        /* CSS Chart Elements */
         .mini-trendline { width: 100%; height: 20px; display: flex; align-items: flex-end; gap: 3px; margin-top: auto; padding: 0 5px; box-sizing: border-box; }
         .trend-bar { flex-grow: 1; background: var(--primary); opacity: 0.7; border-radius: 2px; height: 30%; animation: pulseHeight 2s infinite ease-in-out; }
         .trend-bar:nth-child(2) { height: 60%; animation-delay: 0.3s; }
@@ -168,14 +172,12 @@
         
         .trend-bar.long-color { background: var(--long); }
         
-        /* Win Rate Circular Glow Chart Ring */
         .circle-chart-box { position: relative; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }
         .circle-svg { transform: rotate(-90deg); width: 100%; height: 100%; }
         .circle-bg { fill: none; stroke: rgba(255, 0, 127, 0.1); stroke-width: 4; }
         .circle-glow-line { fill: none; stroke: var(--primary); stroke-width: 4; stroke-dasharray: 100; stroke-dashoffset: 100; stroke-linecap: round; transition: stroke-dashoffset 1s ease-in-out; filter: drop-shadow(0 0 4px var(--primary)); }
         .circle-text { position: absolute; font-size: 11px; font-weight: 800; font-family: 'Rajdhani', sans-serif; color: #fff; }
 
-        /* P&L Performance Grid Bars */
         .pnl-perf-bars { display: flex; gap: 4px; width: 100%; height: 24px; align-items: flex-end; justify-content: center; margin-top: auto; }
         .pnl-bar { width: 6px; height: 100%; background: rgba(255,255,255,0.05); border-radius: 1px; transform-origin: bottom; }
         .pnl-bar.fill-tp { background: var(--long); filter: drop-shadow(0 0 2px var(--long)); }
@@ -254,25 +256,27 @@
         .module-card:hover { border-color: var(--primary); color: var(--primary); }
         .module-badge { display: block; font-size: 9px; background: rgba(255,0,127,0.1); color: var(--primary); padding: 2px 5px; border-radius: 4px; margin-top: 5px; width: max-content; margin-inline: auto; }
 
-        .right-col { display: flex; flex-direction: column; gap: 20px; }
+        /* FIXED: Right Column Symmetrical Structure Layout */
+        .right-col { display: flex; flex-direction: column; gap: 20px; height: 100%; justify-content: flex-start; }
 
         .placeholder-matrix-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
+            height: 100%;
         }
         @media (max-width: 768px) { .placeholder-matrix-grid { grid-template-columns: 1fr; } }
         
         .placeholder-box {
-            border: 1px dashed rgba(255, 0, 127, 0.15);
+            border: 1px dashed rgba(255, 0, 127, 0.2);
             background: rgba(15, 3, 12, 0.2);
             border-radius: 16px;
-            height: 220px;
+            min-height: 250px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: rgba(255, 0, 127, 0.3);
+            color: rgba(255, 0, 127, 0.4);
             font-family: 'Rajdhani', sans-serif;
             font-weight: 700;
             font-size: 14px;
@@ -282,17 +286,22 @@
         }
         .placeholder-box i { font-size: 24px; margin-bottom: 8px; opacity: 0.4; animation: pulseGlow 2s infinite ease-in-out; }
 
-        .signal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .signal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; }
         @media (max-width: 768px) { .signal-grid { grid-template-columns: 1fr; } }
 
+        /* FIXED: Forced Strict Neon Pink Border and Accent Setup on Cards */
         .signal-card { 
             background: rgba(30, 5, 25, 0.7); 
             border-radius: 16px; padding: 20px; 
             border: 1px solid var(--card-border); 
             display: flex; flex-direction: column; justify-content: space-between; 
             transition: 0.3s;
+            min-height: 250px;
+            box-sizing: border-box;
         }
-        .signal-card:hover { border-color: rgba(255,0,127,0.6); transform: translateY(-3px); box-shadow: 0 5px 20px rgba(255,0,127,0.2); }
+        .signal-card:hover { border-color: var(--primary); transform: translateY(-3px); box-shadow: 0 5px 25px rgba(255, 0, 127, 0.35); }
+        
+        /* Unique exception reserved exclusively for high accuracy validation cards */
         .neon-gold-card { border-top: 3px solid var(--accent); box-shadow: 0 -5px 20px rgba(0,240,255,0.2); }
         
         .coin-title { font-size: 22px; font-weight: 800; display: flex; justify-content: space-between; color: #fff; align-items: center; margin-bottom: 15px;}
@@ -323,6 +332,38 @@
         .ai-feedback { font-family: monospace; font-size: 13px; color: var(--primary); background: rgba(255,0,127,0.08); padding: 12px; border-radius: 8px; margin-top: 10px; border-left: 2px solid var(--primary);}
         
         .account-box-container .input-group input[type="text"], .account-box-container .input-group input[type="password"] { background: rgba(0,0,0,0.5); margin-bottom: 15px; width: 100%; box-sizing: border-box; padding: 15px; border-radius: 12px; border: 1px solid var(--card-border); color: var(--primary); font-size: 16px;}
+        
+        #ui-notification-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            width: 90%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        /* FIXED: All standard Toast updates locked to Neon Pink core signature styling */
+        .ui-toast {
+            background: rgba(15, 2, 10, 0.95);
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.5);
+            padding: 16px 20px;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(10px);
+            animation: slideDown 0.3s ease forwards;
+        }
+        .ui-toast.success { border-color: var(--long); box-shadow: 0 0 20px rgba(0, 255, 170, 0.3); }
+        .ui-toast.error { border-color: var(--short); box-shadow: 0 0 20px rgba(255, 23, 68, 0.3); }
+        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -336,7 +377,7 @@
 
     <div id="login-screen">
         <div class="glass-panel auth-box">
-            <h2 style="background: -webkit-linear-gradient(0deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">ALPHASIGNA V35</h2>
+            <h2 style="background: -webkit-linear-gradient(0deg, var(--primary), #ff66b2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">ALPHASIGNA V35</h2>
             <p>Institutional Command Center</p>
             <input type="password" id="access-key" placeholder="Enter License Key" />
             <button class="btn" onclick="verifyFirebaseKey()">INITIALIZE MATRIX</button>
@@ -385,7 +426,7 @@
                 <p>ULTIMATE TERMINAL</p>
             </div>
             <div class="nav-actions">
-                <button id="admin-btn" class="btn" style="display: none; background: var(--accent); color: #000; padding: 10px 20px; font-size: 13px;" onclick="openAdminPanel()">👑 AI LOGS</button>
+                <button id="admin-btn" class="btn" style="display: none; background: var(--primary); color: #fff; padding: 10px 20px; font-size: 13px; border: 1px solid rgba(255,255,255,0.2);" onclick="openAdminPanel()">👑 AI LOGS</button>
                 <div class="user-profile" id="user-badge" style="display:none;" onclick="openAccountSettings()">
                     <div class="profile-info">
                         <div class="profile-name" id="user-welcome-text">USER</div>
@@ -479,7 +520,7 @@
             <button class="close-btn" onclick="closeLiveChart()"><i class="fas fa-times"></i></button>
             <div style="border-bottom: 1px solid var(--card-border); padding-bottom: 15px; display:flex; align-items:center; gap:15px;">
                 <span id="chart-coin-name" style="color: #fff; font-size: 24px; font-weight: 800; font-family:'Rajdhani', sans-serif;">BTC/USDT</span>
-                <span id="chart-side" style="background: rgba(0,240,255,0.1); color: var(--accent); padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight:bold;">LIVE CHART</span>
+                <span id="chart-side" style="background: rgba(255,0,127,0.1); color: var(--primary); padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight:bold; border: 1px solid var(--card-border);">LIVE CHART</span>
             </div>
             <div id="tv-chart"></div>
         </div>
@@ -492,7 +533,7 @@
             <div style="color: var(--text-muted); font-size: 12px; margin-bottom: 8px; text-transform:uppercase; font-weight:bold;">Technical Indicators:</div>
             <div id="tech-logic-field" class="logic-content-block"></div>
             <div style="color: var(--text-muted); font-size: 12px; margin-bottom: 8px; text-transform:uppercase; font-weight:bold;">Risk Protocol:</div>
-            <div id="risk-logic-field" class="logic-content-block" style="color:var(--accent);"></div>
+            <div id="risk-logic-field" class="logic-content-block" style="color:var(--primary); border-color: var(--card-border);"></div>
         </div>
     </div>
 
@@ -519,8 +560,8 @@
                 <input type="password" id="edit-api-secret" />
             </div>
 
-            <div class="input-group" style="display: flex; align-items: center; gap: 10px; margin-bottom: 25px; background: rgba(0,255,170,0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--long);">
-                <input type="checkbox" id="edit-vip-auto" style="width: 24px; height: 24px; margin: 0; cursor: pointer; accent-color: var(--long);">
+            <div class="input-group" style="display: flex; align-items: center; gap: 10px; margin-bottom: 25px; background: rgba(255,0,127,0.05); padding: 15px; border-radius: 12px; border: 1px solid var(--card-border);">
+                <input type="checkbox" id="edit-vip-auto" style="width: 24px; height: 24px; margin: 0; cursor: pointer; accent-color: var(--primary);">
                 <label style="margin: 0; color: #fff; font-size: 14px; text-transform: none;">Enable Auto-Trade for <b>VIP Signals (85%+)</b></label>
             </div>
 
@@ -531,7 +572,7 @@
     <div id="admin-modal" class="modal-overlay">
         <div class="admin-panel-container">
             <button class="close-btn" onclick="closeAdminPanel()"><i class="fas fa-times"></i></button>
-            <div class="logic-header" style="color: var(--accent);">👑 ADMIN: AI AUTO-TRACKING LOGS</div>
+            <div class="logic-header" style="color: var(--primary);">👑 ADMIN: AI AUTO-TRACKING LOGS</div>
             <p style="color:var(--text-muted); font-size:13px; margin-top:-10px; margin-bottom:25px;">24/7 background execution analysis and AI self-reflection records.</p>
             <div id="admin-logs-content">Loading Data...</div>
         </div>
@@ -550,7 +591,7 @@
             const toast = document.createElement('div');
             toast.className = `ui-toast ${type}`;
             
-            let icon = '<i class="fas fa-info-circle" style="color:var(--accent)"></i>';
+            let icon = '<i class="fas fa-info-circle" style="color:var(--primary)"></i>';
             if(type === "success") icon = '<i class="fas fa-check-circle" style="color:var(--long)"></i>';
             if(type === "error") icon = '<i class="fas fa-exclamation-triangle" style="color:var(--short)"></i>';
 
@@ -563,6 +604,7 @@
             }, 4000);
         }
 
+        // Animated Moving ECG Engine
         function initHeartbeatPulse() {
             const canvas = document.getElementById('heartbeat-canvas');
             if (!canvas) return;
@@ -689,6 +731,7 @@
                 document.getElementById('user-expiry-text').innerText = `EXP: ${userData.expire_date || 'N/A'}`;
             }
             
+            默默 = false;
             initCoreListeners();
             initHeartbeatPulse(); 
         }
@@ -757,7 +800,6 @@
                 document.getElementById('global-total-trades').innerText = total;
                 document.getElementById('global-win-rate').innerText = calcWinRate + "%";
                 
-                // Update SVG Ring Progress Arc
                 const arc = document.getElementById('win-rate-arc');
                 if(arc) {
                     let offset = 100 - parseFloat(calcWinRate);
@@ -777,7 +819,6 @@
                     document.getElementById('user-trades').innerText = myStats.trades || 0;
                     document.getElementById('user-pnl-ratio').innerText = `${tpCount}/${slCount}`;
                     
-                    // Update P&L Visual Bar Matrix Elements dynamically
                     const pnlBarsContainer = document.getElementById('pnl-visual-bars');
                     if(pnlBarsContainer) {
                         pnlBarsContainer.innerHTML = '';
@@ -839,7 +880,7 @@
             
             btn.innerHTML = `SCANNING...`; 
             btn.disabled = true;
-            statusDiv.innerHTML = `<span style="color:var(--accent);">🔄 SYNCING NEURAL NETWORKS...</span>`;
+            statusDiv.innerHTML = `<span style="color:var(--primary);">🔄 SYNCING NEURAL NETWORKS...</span>`;
             
             db.ref('live_signals').once('value').then((snap) => {
                 currentSignalData = snap.val();
@@ -851,7 +892,7 @@
                     btn.innerHTML = `Scan Signals`; 
                     btn.disabled = false;
                     statusDiv.innerHTML = `🟢 MULTI-TIMEFRAME ANALYSIS ACTIVE`;
-                    showUiNotification("Deep Space Engine Scan Complete. Top Market Inflows Mapped.", "info");
+                    showUiNotification("Deep Space Engine Scan Complete. Top Market Inflows Mapped.", "success");
                 }, 1000);
             });
         }
@@ -972,7 +1013,7 @@
             activeChart = LightweightCharts.createChart(chartDiv, { width: chartDiv.clientWidth, height: 400, layout: { background: { type: 'solid', color: '#090206' }, textColor: '#f8fafc' }, grid: { vertLines: { color: 'rgba(255, 255, 255, 0.05)' }, horzLines: { color: 'rgba(255, 255, 255, 0.05)' } }});
             candlestickSeries = activeChart.addSeries(LightweightCharts.CandlestickSeries, { upColor: '#00f0ff', downColor: '#ff007f', borderVisible: false, wickUpColor: '#00f0ff', wickDownColor: '#ff007f' });
             
-            fetch(`https://fapi.binance.com/fapi/v1/klines?symbol=${pair.replace('/','')}&interval=15m&limit=150`)
+            fetch Pis(`https://fapi.binance.com/fapi/v1/klines?symbol=${pair.replace('/','')}&interval=15m&limit=150`)
                 .then(res => res.json()).then(data => {
                     candlestickSeries.setData(data.map(d => ({ time: d[0]/1000, open: parseFloat(d[1]), high: parseFloat(d[2]), low: parseFloat(d[3]), close: parseFloat(d[4]) })));
                     candlestickSeries.createPriceLine({ price: parseFloat(entry), color: '#f7931a', title: 'ENTRY' });
