@@ -334,8 +334,6 @@
         .admin-trade-row { background: rgba(0,0,0,0.5); border: 1px solid var(--card-border); padding: 18px; border-radius: 12px; margin-bottom: 15px; border-left: 4px solid var(--accent);}
         .ai-feedback { font-family: monospace; font-size: 13px; color: var(--primary); background: rgba(255,0,127,0.08); padding: 12px; border-radius: 8px; margin-top: 10px; border-left: 2px solid var(--primary);}
         
-        .account-box-container .input-group input[type="text"], .account-box-container .input-group input[type="password"] { background: rgba(0,0,0,0.5); margin-bottom: 15px; width: 100%; box-sizing: border-box; padding: 15px; border-radius: 12px; border: 1px solid var(--card-border); color: var(--primary); font-size: 16px;}
-        
         #ui-notification-container {
             position: fixed;
             top: 20px;
@@ -490,14 +488,16 @@
                         </div>
                         
                         <div>
-                            <div class="adv-modules-header">Pro Analysis Modules (Coming Soon)</div>
+                            <div class="adv-modules-header">Pro Analysis Modules</div>
                             <div class="adv-modules-grid">
                                 <div class="module-card" id="mod-whale">
                                     <span style="font-weight: bold; margin-bottom:5px;">🐋 Whale Inflows</span>
                                     <span id="whale-data" style="color:var(--primary); font-size: 14px; font-weight: bold; display: block;">AWAITING DATA...</span>
                                 </div>
                                 <div class="module-card">🔥 Liquidity Map <span class="module-badge">Phase 3</span></div>
-                                <div class="module-card">🧠 Strategy Builder <span class="module-badge">Phase 4</span></div>
+                                
+                                <div class="module-card" onclick="openStrategyBuilder()" style="cursor:pointer; border-style: solid; border-color: var(--accent);">🧠 Strategy Builder <span class="module-badge" style="background:var(--accent); color:#000; font-weight:bold;">ACTIVE</span></div>
+                                
                                 <div class="module-card">❤️ Psychology Dash <span class="module-badge">Phase 4</span></div>
                                 <div class="module-card">🎥 Trade Replay <span class="module-badge">Phase 5</span></div>
                                 <div class="module-card">🎙️ Voice Assist <span class="module-badge">Phase 5</span></div>
@@ -516,6 +516,46 @@
                 
                 <div class="signal-grid" id="signal-container" style="display: none;"></div>
             </div>
+        </div>
+    </div>
+
+    <div id="strategy-modal" class="modal-overlay">
+        <div class="account-box-container" style="max-width: 600px;">
+            <button class="close-btn" onclick="closeStrategyBuilder()"><i class="fas fa-times"></i></button>
+            <div class="logic-header" style="color: var(--accent);">🧠 AI STRATEGY BUILDER</div>
+            <p style="color:var(--text-muted); font-size:13px; margin-top:-10px; margin-bottom:25px;">Customize the AI core parameters and capital allocation matrix.</p>
+            
+            <div style="background: rgba(0,240,255,0.05); padding: 15px; border-radius: 12px; border: 1px solid rgba(0,240,255,0.15); margin-bottom: 20px;">
+                <h3 style="color:#fff; font-size:16px; margin-bottom:10px;"><i class="fas fa-wallet" style="color:var(--accent)"></i> Risk & Capital Management</h3>
+                <div class="input-group">
+                    <label>Trade Size (% of Total Capital)</label>
+                    <input type="text" id="strat-capital-pct" placeholder="e.g. 5 for 5%" value="5" style="width: 100%; box-sizing: border-box; padding: 15px; border-radius: 12px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.6); color: var(--accent); font-size: 16px; outline:none; margin-bottom:15px;" />
+                </div>
+                <div class="input-group">
+                    <label>AI Accuracy Score Threshold (%)</label>
+                    <input type="text" id="strat-score-threshold" placeholder="e.g. 70" value="70" style="width: 100%; box-sizing: border-box; padding: 15px; border-radius: 12px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.6); color: var(--accent); font-size: 16px; outline:none;" />
+                </div>
+            </div>
+
+            <div style="background: rgba(255,0,127,0.05); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,0,127,0.15); margin-bottom: 25px;">
+                <h3 style="color:#fff; font-size:16px; margin-bottom:10px;"><i class="fas fa-sliders-h" style="color:var(--primary)"></i> Technical Trigger Conditions</h3>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:15px;">
+                    <div class="input-group">
+                        <label>RSI Oversold (Long)</label>
+                        <input type="text" id="strat-rsi-low" value="30" style="width: 100%; box-sizing: border-box; padding: 15px; border-radius: 12px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.6); color: var(--primary); font-size: 16px; outline:none;" />
+                    </div>
+                    <div class="input-group">
+                        <label>RSI Overbought (Short)</label>
+                        <input type="text" id="strat-rsi-high" value="70" style="width: 100%; box-sizing: border-box; padding: 15px; border-radius: 12px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.6); color: var(--primary); font-size: 16px; outline:none;" />
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Minimum Volume Surge (x-Times)</label>
+                    <input type="text" id="strat-vol-spike" value="3.0" style="width: 100%; box-sizing: border-box; padding: 15px; border-radius: 12px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.6); color: var(--primary); font-size: 16px; outline:none;" />
+                </div>
+            </div>
+
+            <button class="btn" onclick="saveCustomStrategy()" id="strat-save-btn" style="width: 100%; background: linear-gradient(90deg, var(--accent), var(--violet-glow)); box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);">DEPLOY CUSTOM STRATEGY</button>
         </div>
     </div>
 
@@ -589,7 +629,7 @@
         
         let currentSignalData = null;
         let activeUserKey = null;
-        let activeChart = null; // Added to fix chart cleanup
+        let activeChart = null;
 
         function showUiNotification(message, type = "info") {
             const container = document.getElementById('ui-notification-container');
@@ -737,29 +777,85 @@
             
             initCoreListeners();
             initHeartbeatPulse(); 
-            initWhaleTracker(); // Starting the live tracker
+            initWhaleTracker(); 
         }
 
         // --- WHALE TRACKER LIVE UPDATE LOGIC ---
         function initWhaleTracker() {
-            db.ref('whale_tracker').limitToLast(1).on('child_added', (snap) => {
-                const data = snap.val();
-                if(!data) return;
-                
-                const whaleContainer = document.getElementById('whale-data');
-                const card = document.getElementById('mod-whale');
-                const actionColor = data.side === "BUY" ? "var(--long)" : "var(--short)";
-                
-                whaleContainer.innerHTML = `<span style="color:${actionColor};">${data.side}</span> ${data.coin.replace('/USDT', '')} <br/> <span style="font-size:16px;">${data.value}</span>`;
-                whaleContainer.style.textShadow = `0 0 10px ${actionColor}`;
-                
-                // Flash Effect
-                card.style.borderColor = actionColor;
-                card.style.boxShadow = `0 0 15px ${actionColor} inset, 0 0 15px ${actionColor}`;
-                setTimeout(() => {
-                    card.style.borderColor = "rgba(221, 0, 255, 0.2)";
-                    card.style.boxShadow = "none";
-                }, 1000);
+            db.ref('whale_tracker').limitToLast(1).on('value', (snap) => {
+                if(!snap.exists()) return;
+                snap.forEach((childSnap) => {
+                    const data = childSnap.val();
+                    if(!data) return;
+                    
+                    const whaleContainer = document.getElementById('whale-data');
+                    const card = document.getElementById('mod-whale');
+                    const actionColor = data.side === "BUY" ? "var(--long)" : "var(--short)";
+                    
+                    whaleContainer.innerHTML = `<span style="color:${actionColor};">${data.side}</span> ${data.coin.replace('/USDT', '')} <br/> <span style="font-size:16px;">${data.value}</span>`;
+                    whaleContainer.style.textShadow = `0 0 10px ${actionColor}`;
+                    
+                    // Flash Effect
+                    card.style.borderColor = actionColor;
+                    card.style.boxShadow = `0 0 15px ${actionColor} inset, 0 0 15px ${actionColor}`;
+                    setTimeout(() => {
+                        card.style.borderColor = "rgba(221, 0, 255, 0.2)";
+                        card.style.boxShadow = "none";
+                    }, 1000);
+                });
+            });
+        }
+
+        // --- 🧠 NEW: STRATEGY BUILDER INTERACTION LOGIC (PHASE 4) ---
+        function openStrategyBuilder() {
+            if(!activeUserKey) {
+                showUiNotification("Please login to configure core strategies.", "error");
+                return;
+            }
+            document.getElementById('strategy-modal').style.display = 'flex';
+            
+            db.ref(`premium_keys/${activeUserKey}/custom_strategy`).once('value', (s) => {
+                if(s.exists()) {
+                    const data = s.val();
+                    document.getElementById('strat-capital-pct').value = data.capital_pct || 5;
+                    document.getElementById('strat-score-threshold').value = data.score_threshold || 70;
+                    document.getElementById('strat-rsi-low').value = data.rsi_low || 30;
+                    document.getElementById('strat-rsi-high').value = data.rsi_high || 70;
+                    document.getElementById('strat-vol-spike').value = data.vol_spike || 3.0;
+                }
+            });
+        }
+
+        function closeStrategyBuilder() {
+            document.getElementById('strategy-modal').style.display = 'none';
+        }
+
+        function saveCustomStrategy() {
+            const capitalPct = parseFloat(document.getElementById('strat-capital-pct').value);
+            const scoreThreshold = parseFloat(document.getElementById('strat-score-threshold').value);
+            const rsiLow = parseFloat(document.getElementById('strat-rsi-low').value);
+            const rsiHigh = parseFloat(document.getElementById('strat-rsi-high').value);
+            const volSpike = parseFloat(document.getElementById('strat-vol-spike').value);
+            
+            const btn = document.getElementById('strat-save-btn');
+            btn.innerText = "DEPLOYING RULES TO CORE...";
+            btn.disabled = true;
+
+            db.ref(`premium_keys/${activeUserKey}/custom_strategy`).set({
+                capital_pct: capitalPct,
+                score_threshold: scoreThreshold,
+                rsi_low: rsiLow,
+                rsi_high: rsiHigh,
+                vol_spike: volSpike,
+                updated_at: Date.now()
+            }).then(() => {
+                showUiNotification("🚀 Custom Strategy Matrix deployed into ZenithAI Engine!", "success");
+                closeStrategyBuilder();
+                btn.innerText = "DEPLOY CUSTOM STRATEGY";
+                btn.disabled = false;
+            }).catch((err) => {
+                showUiNotification("Matrix Sync Failed: " + err.message, "error");
+                btn.disabled = false;
             });
         }
 
@@ -924,7 +1020,6 @@
             });
         }
 
-        // --- FULLY RESTORED POPUP CHART LOGIC ---
         function openLiveChart(pair, entry, tp, sl, side) {
             const modal = document.getElementById('chart-modal'); modal.style.display = 'flex';
             document.getElementById('chart-coin-name').innerText = pair;
@@ -950,7 +1045,6 @@
         }
         function closeAiLogicModal() { document.getElementById('logic-modal').style.display = 'none'; }
 
-        // --- FIXED SIGNAL RENDER LOGIC WITH LIVE MARKET BUTTON ---
         function renderSignals(data) {
             const container = document.getElementById('signal-container');
             container.innerHTML = ''; 
@@ -966,7 +1060,6 @@
                 const formattedRisk = (details.risk_logic || "").replace(/'/g, "\\'");
                 const pairName = details.pair || coinKey.replace('USDT', '/USDT');
 
-                // මෙහිදී 'Live Market' බොත්තම සෘජුවම අර ලස්සන Neon Chart Popup එකට ලින්ක් කර ඇත.
                 container.innerHTML += `
                     <div class="${cardCssClass}">
                         <div>
@@ -981,9 +1074,7 @@
                         </div>
                         <div class="card-actions">
                             <button class="btn-trade" onclick="takeTrade('${coinKey}')">AUTO-TRADE API</button>
-                            
                             <button class="btn-mini" onclick="openLiveChart('${pairName}', ${details.entry}, ${details.tp1}, ${details.sl}, '${details.side}')"><i class="fas fa-chart-line"></i> Live Market</button>
-                            
                             <button class="btn-mini" onclick="openAiLogicModal('${formattedTech}', '${formattedRisk}')"><i class="fas fa-brain"></i> Logic</button>
                         </div>
                     </div>`;
