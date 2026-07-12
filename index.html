@@ -919,6 +919,7 @@
             document.getElementById('tech-logic-field').innerText = techLogic;
             document.getElementById('risk-logic-field').innerText = riskLogic;
         }
+        
         function closeAiLogicModal() { document.getElementById('logic-modal').style.display = 'none'; }
 
         function renderSignals(data) {
@@ -935,9 +936,8 @@
                 const formattedTech = (details.tech_logic || "").replace(/'/g, "\\'");
                 const formattedRisk = (details.risk_logic || "").replace(/'/g, "\\'");
                 const pairName = details.pair || coinKey.replace('USDT', '/USDT');
-                const chartArgs = `'${pairName}', ${details.entry}, ${details.tp1}, ${details.sl}, '${details.side}'`;
 
-                // RESTORED ALL BUTTONS: 'Live Market' and 'Logic' triggers loaded safely inside view matrix
+                // මෙන්න මේ කොටසේ තමයි 'Live Market' බොත්තම ඔයාගේ Popup Chart එකට හරියටම ලින්ක් කළේ!
                 container.innerHTML += `
                     <div class="${cardCssClass}">
                         <div>
@@ -952,13 +952,15 @@
                         </div>
                         <div class="card-actions">
                             <button class="btn-trade" onclick="takeTrade('${coinKey}')">AUTO-TRADE API</button>
-                            <button class="btn-mini" onclick="window.open('https://www.binance.com/en/futures/${coinKey}', '_blank')"><i class="fas fa-chart-line"></i> Live Market</button>
+                            
+                            <button class="btn-mini" onclick="openLiveChart('${pairName}', ${details.entry}, ${details.tp1}, ${details.sl}, '${details.side}')"><i class="fas fa-chart-line"></i> Live Market</button>
+                            
                             <button class="btn-mini" onclick="openAiLogicModal('${formattedTech}', '${formattedRisk}')"><i class="fas fa-brain"></i> Logic</button>
                         </div>
                     </div>`;
             }
         }
-
+        
         let activeMarketWatchers = {};
 
         function takeTrade(coinKey) {
