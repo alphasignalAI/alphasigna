@@ -244,7 +244,6 @@
             margin-bottom: 15px;
         }
 
-        /* 🧠 ADVANCED EMBEDDED REALTIME GRAPHICS MATRIX FOR BUTTON MODULES */
         .adv-modules-header { font-size: 14px; font-weight: bold; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; }
         .adv-modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 12px; }
         
@@ -265,7 +264,6 @@
             color: #fff;
         }
 
-        /* 📊 CSS INTERNAL GRAPHICS ASSETS */
         .embedded-mini-chart {
             width: 100%; height: 40px; display: flex; align-items: flex-end; justify-content: center; gap: 4px; margin: 8px 0;
         }
@@ -279,14 +277,12 @@
         .embedded-bar:nth-child(5) { height: 60%; background: var(--btc-gold); animation-delay: 0.3s; }
         @keyframes hftBarPulse { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.6); opacity: 0.7; } }
 
-        /* 🔄 CIRCULAR RADAR progress MATRIX ASSETS */
         .embedded-ring-box {
             position: relative; width: 42px; height: 42px; margin: 8px auto; display: flex; align-items: center; justify-content: center;
         }
         .embedded-ring-svg { transform: rotate(-90deg); width: 100%; height: 100%; animation: spinLoop 6s linear infinite; }
         @keyframes spinLoop { to { transform: rotate(270deg); } }
         
-        /* 🎙️ MOBILE PHONE UI RECORDING WAVEFORM ASSET (VOICE ASSIST) */
         .phone-voice-wave {
             width: 100%; height: 35px; display: flex; align-items: center; justify-content: center; gap: 3px; margin: 10px 0;
             background: rgba(0, 240, 255, 0.04); border-radius: 8px; border: 1px solid rgba(0, 240, 255, 0.1);
@@ -302,7 +298,6 @@
         .voice-mic-line:nth-child(6) { height: 25%; animation-delay: 0.05s; }
         @keyframes phoneMicPulse { 0%, 100% { height: 15%; } 50% { height: 90%; filter: drop-shadow(0 0 4px var(--accent)); } }
 
-        /* 🎥 CANDLE REPLAY GRAPHIC MATRIX */
         .replay-candle-track {
             width: 100%; height: 38px; position: relative; margin: 8px 0; background: rgba(0,0,0,0.3); border-radius: 6px; display: flex; align-items: center; justify-content: space-around; padding: 0 5px; box-sizing: border-box;
         }
@@ -357,10 +352,6 @@
             animation: radarSweepLine 1.5s infinite linear;
             opacity: 0.4;
             pointer-events: none;
-        }
-        @keyframes radarSweepLine {
-            0% { transform: translate(-30%, -30%) rotate(30deg); }
-            100% { transform: translate(30%, 30%) rotate(30deg); }
         }
         .signal-card:hover { 
             border-color: var(--primary); 
@@ -936,7 +927,7 @@
                     
                     whaleContainer.innerHTML = `<span style="color:${actionColor};">${data.side}</span> ${data.coin.replace('/USDT', '')} <br/> <span style="font-size:16px;">${data.value}</span>`;
                     card.style.borderColor = actionColor;
-                    triggerAIVoiceBroadcast(`Alert. Large whale inflow detected.`);
+                    triggerAIVoiceBroadcast("Alert. Large whale inflow detected.");
                     setTimeout(() => { card.style.borderColor = "rgba(221, 0, 255, 0.2)"; }, 1000);
                 });
             });
@@ -1105,15 +1096,59 @@
         function openAiLogicModal(t, r) { document.getElementById('logic-modal').style.display = 'flex'; document.getElementById('tech-logic-field').innerText = t; document.getElementById('risk-logic-field').innerText = r; }
         function closeAiLogicModal() { document.getElementById('logic-modal').style.display = 'none'; }
 
+        // ==============================================================================
+        // 🚀 FIX CRITICAL SECURITY EXCLUSION FOR ADMIN BLOCK DEVIATION SYNC
+        // ==============================================================================
         function initCoreListeners() {
             db.ref('global_stats').on('value', (snap) => {
                 const s = snap.val() || { total_trades: 0, total_tp: 0 };
                 document.getElementById('global-total-trades').innerText = s.total_trades;
                 document.getElementById('global-win-rate').innerText = s.total_trades > 0 ? ((s.total_tp / s.total_trades)*100).toFixed(0) + "%" : "0%";
             });
+
+            // 🎯 CRITICAL RE-BALANCED PROJECTION Matrix Core (Admin හෝ User ඕනෑම කෙනෙක් ලොග් වුණාම Live Update වීම)
+            setTimeout(() => {
+                if (!activeUserKey) return;
+                const pathRef = (activeUserKey === "pehelitha") ? 'premium_keys/pehelitha' : `premium_keys/${activeUserKey}`;
+                
+                db.ref(pathRef).on('value', (snapshot) => {
+                    if (!snapshot.exists()) return;
+                    const userData = snapshot.val();
+                    const myStats = userData.stats || { trades: 0, tp: 0, sl: 0 };
+                    
+                    let tpCount = Number(myStats.tp) || 0;
+                    let slCount = Number(myStats.sl) || 0;
+
+                    document.getElementById('user-trades').innerText = myStats.trades || 0;
+                    document.getElementById('user-pnl-ratio').innerText = `${tpCount}/${slCount}`;
+                    
+                    const pnlBarsContainer = document.getElementById('pnl-visual-bars');
+                    if(pnlBarsContainer) {
+                        pnlBarsContainer.innerHTML = '';
+                        for(let i=0; i<tpCount && i<5; i++) { pnlBarsContainer.innerHTML += '<div class="pnl-bar fill-tp" style="height:80%"></div>'; }
+                        for(let i=0; i<slCount && i<5; i++) { pnlBarsContainer.innerHTML += '<div class="pnl-bar fill-sl" style="height:50%"></div>'; }
+                        if(tpCount === 0 && slCount === 0) {
+                            pnlBarsContainer.innerHTML = '<div class="pnl-bar"></div><div class="pnl-bar"></div><div class="pnl-bar"></div><div class="pnl-bar"></div><div class="pnl-bar"></div>';
+                        }
+                    }
+                });
+            }, 1000);
         }
 
-        function takeTrade(coinKey) { showUiNotification(`Placing Auto-Execution Frame for ${coinKey}`, "success"); }
+        function takeTrade(coinKey) { 
+            showUiNotification(`Placing Auto-Execution Frame for ${coinKey}`, "success"); 
+            if (!activeUserKey || !currentSignalData[coinKey]) return;
+
+            // 💥 TRIGGER API REALTIME SIMULATION FOR USER CLICKS TOO
+            db.ref('trade_requests').push({
+                user_key: activeUserKey,
+                coin: coinKey.replace('/', ''),
+                side: currentSignalData[coinKey].side,
+                status: 'pending',
+                timestamp: Date.now(),
+                type: 'MANUAL_CLICK'
+            });
+        }
     </script>
 </body>
 </html>
