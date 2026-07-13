@@ -412,6 +412,18 @@
         .logic-box-container, .admin-panel-container, .account-box-container { max-width: 700px; width: 90%; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; padding: 35px; position: relative; max-height: 85vh; overflow-y: auto; }
         .logic-header { font-size: 24px; font-weight: 800; color: #fff; border-bottom: 1px solid var(--card-border); padding-bottom: 15px; margin-bottom: 25px; font-family: 'Rajdhani', sans-serif;}
         .logic-content-block { background: rgba(0,0,0,0.6); border: 1px solid var(--card-border); padding: 18px; border-radius: 12px; font-family: monospace; font-size: 14px; color: var(--accent); margin-bottom: 20px; white-space: pre-wrap; }
+        
+        .module-badge {
+            background: rgba(0, 240, 255, 0.15);
+            color: var(--accent);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 5px;
+            display: inline-block;
+        }
     </style>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -552,15 +564,16 @@
                                     <span id="whale-data" style="color:var(--primary); font-size: 13px; font-weight: bold; display: block;">AWAITING DATA...</span>
                                 </div>
                                 
-                                <div class="module-card">
-                                    <span>🔥 Liquidity Map</span>
+                                <div class="module-card" id="mod-liquidity" style="border-color: rgba(0, 240, 255, 0.25);">
+                                    <span>🔥 Live Liquidity Map</span>
                                     <div class="embedded-ring-box">
                                         <svg class="embedded-ring-svg" viewBox="0 0 36 36">
                                             <circle cx="18" cy="18" r="16" fill="none" stroke="rgba(0,240,255,0.1)" stroke-width="3"></circle>
                                             <circle cx="18" cy="18" r="16" fill="none" stroke="var(--accent)" stroke-width="3" stroke-dasharray="75 100"></circle>
                                         </svg>
                                     </div>
-                                    <span class="module-badge">Phase 3</span>
+                                    <span id="liquidity-live-data" style="color:var(--accent); font-size: 12px; font-weight: bold; display: block; line-height: 1.3;">SCANNING BLOCKS...</span>
+                                    <span class="module-badge" id="liq-risk-badge" style="background:var(--accent); color:#000; font-weight:bold;">STANDBY</span>
                                 </div>
                                 
                                 <div class="module-card" onclick="openStrategyBuilder()" style="cursor:pointer; border-color: var(--accent);">
@@ -599,7 +612,7 @@
                                         <div class="voice-mic-line"></div><div class="voice-mic-line"></div><div class="voice-mic-line"></div>
                                         <div class="voice-mic-line"></div><div class="voice-mic-line"></div><div class="voice-mic-line"></div>
                                     </div>
-                                    <span class="module-badge" style="background:rgba(0,240,255,0.15); color:var(--accent);">INTEGRATED</span>
+                                    <span class="module-badge" style="background:rgba(0, 240, 255, 0.15); color:var(--accent);">INTEGRATED</span>
                                 </div>
 
                             </div>
@@ -913,6 +926,7 @@
             initCoreListeners();
             initHeartbeatPulse(); 
             initWhaleTracker(); 
+            initLiveLiquidityListener(); // 💥 Fire-up Live Liquidity Matrix Stream Listener
         }
 
         function initWhaleTracker() {
@@ -930,6 +944,45 @@
                     triggerAIVoiceBroadcast("Alert. Large whale inflow detected.");
                     setTimeout(() => { card.style.borderColor = "rgba(221, 0, 255, 0.2)"; }, 1000);
                 });
+            });
+        }
+
+        // ==============================================================================
+        // 🔥 LIVE LIQUIDITY REALTIME DATA STREAM INTERCEPTOR
+        // ==============================================================================
+        function initLiveLiquidityListener() {
+            db.ref('liquidity_map').on('value', (snap) => {
+                const liqBox = document.getElementById('liquidity-live-data');
+                const badge = document.getElementById('liq-risk-badge');
+                const card = document.getElementById('mod-liquidity');
+                
+                if (!snap.exists()) {
+                    liqBox.innerHTML = "NO HIGH CONFLUENCE<br/>LIQUIDITY DETECTED";
+                    return;
+                }
+                
+                const data = snap.val();
+                // Expecting structure: { coin: "BTCUSDT", high_zone: 64250.00, low_zone: 62100.00, dynamic_risk: "HIGH INFLOW" }
+                const coinName = data.coin ? data.coin.replace('USDT', '') : 'BTC';
+                liqBox.innerHTML = `
+                    <span style="color:#fff;">${coinName} POOLS:</span><br/>
+                    <span style="color:var(--long);">⚡ $${data.high_zone || '0'}</span><br/>
+                    <span style="color:var(--short);">⚡ $${data.low_zone || '0'}</span>
+                `;
+                
+                if(data.dynamic_risk) {
+                    badge.innerText = data.dynamic_risk.toUpperCase();
+                    if(data.dynamic_risk.toLowerCase().includes('high') || data.dynamic_risk.toLowerCase().includes('surge')) {
+                        badge.style.background = 'var(--primary)';
+                        badge.style.color = '#fff';
+                        card.style.borderColor = 'var(--primary)';
+                        triggerAIVoiceBroadcast(`Notice. High Liquidity volatility cluster detected on ${coinName} markets.`);
+                    } else {
+                        badge.style.background = 'var(--accent)';
+                        badge.style.color = '#000';
+                        card.style.borderColor = 'var(--accent)';
+                    }
+                }
             });
         }
 
@@ -1096,9 +1149,6 @@
         function openAiLogicModal(t, r) { document.getElementById('logic-modal').style.display = 'flex'; document.getElementById('tech-logic-field').innerText = t; document.getElementById('risk-logic-field').innerText = r; }
         function closeAiLogicModal() { document.getElementById('logic-modal').style.display = 'none'; }
 
-        // ==============================================================================
-        // 🚀 FIX CRITICAL SECURITY EXCLUSION FOR ADMIN BLOCK DEVIATION SYNC
-        // ==============================================================================
         function initCoreListeners() {
             db.ref('global_stats').on('value', (snap) => {
                 const s = snap.val() || { total_trades: 0, total_tp: 0 };
@@ -1106,7 +1156,6 @@
                 document.getElementById('global-win-rate').innerText = s.total_trades > 0 ? ((s.total_tp / s.total_trades)*100).toFixed(0) + "%" : "0%";
             });
 
-            // 🎯 CRITICAL RE-BALANCED PROJECTION Matrix Core (Admin හෝ User ඕනෑම කෙනෙක් ලොග් වුණාම Live Update වීම)
             setTimeout(() => {
                 if (!activeUserKey) return;
                 const pathRef = (activeUserKey === "pehelitha") ? 'premium_keys/pehelitha' : `premium_keys/${activeUserKey}`;
@@ -1139,7 +1188,6 @@
             showUiNotification(`Placing Auto-Execution Frame for ${coinKey}`, "success"); 
             if (!activeUserKey || !currentSignalData[coinKey]) return;
 
-            // 💥 TRIGGER API REALTIME SIMULATION FOR USER CLICKS TOO
             db.ref('trade_requests').push({
                 user_key: activeUserKey,
                 coin: coinKey.replace('/', ''),
